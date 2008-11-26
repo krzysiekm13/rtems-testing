@@ -57,12 +57,29 @@ install_auto()
   done
 }
 
+# This handles GNU tools from CVS
+update_others()
+{
+  for d in ${BINUTILSDIR} ${GDBDIR} ${NEWLIBDIR}
+  do
+    case ${d} in
+      *cvs*)
+        cd ${d}
+	cvs up -P 2>&1 | grep -v ^cvs
+        ;;
+      *)
+        ;;
+    esac
+  done
+}
+
 # Clean the install point
 clean_up
 
 # Update gcc and install autotools in parallel
 install_auto &
 update_gcc &
+update_others &
 wait
 
 # Do any remaining prep work in parallel

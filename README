@@ -15,12 +15,13 @@ You are responsible for setting up the source. And it should look
 something like this:
 
 TESTROOT
-  - gcc-SOURCE
-  - gdb-SOURCE
-  - rtems-SOURCE
-  - automake-SOURCE
-  - autoconf-SOURCE
-  - binutils-SOURCE
+  - gcc SOURCE directory
+  - gdb SOURCE directory
+  - rtems SOURCE directory
+  - automake SOURCE directory
+  - autoconf SOURCE directory
+  - binutils SOURCE directory
+  - newlib SOURCE directory
   - gcc-testing (this package)
 
 Update gcc-testing/VERSIONS to point to the appropriate directories
@@ -29,11 +30,64 @@ and versions.
 rtems-SOURCE is assumed to be a CVS checkout by test_driver.
 gcc-SOURCE is assumed to be an SVN checkout by test_driver.
 
+If the binutils, newlib, or gdb directories or of the pattern "*cvs*",
+then they will also be updated.
+
 Look near the top of do_one for a number of environment variables
 such as whether to build binutils and gdb from source or just
 copy the RPM contents to the working install point.
 
 do_one in this directory has a LOT of options to control what to do.
+
+Joel's Attempt to Setup a Tree
+==============================
+mkdir ~/test-gcc
+cd ~/test-gcc
+cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src login
+cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS login
+
+# rtems
+cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P rtems
+
+# binutils
+mkdir binutils-cvs
+cd binutils-cvs
+cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co binutils
+cd ..
+
+# newlib
+mkdir newlib-cvs
+cd newlib-cvs
+cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co newlib
+cd ..
+
+# gdb
+mkdir gdb-cvs
+cd gdb-cvs
+cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co gdb
+cd ..
+
+# gcc
+svn checkout svn://gcc.gnu.org/svn/gcc/trunk gcc-svn
+
+# symlink newlib into gcc-svn
+cd gcc-svn
+ln -s FULL_PATH/newlib-SOURCE/newlib .
+ln -s FULL_PATH/newlib-SOURCE/libgloss .
+cd ..
+
+# obtain automake and autoconf from ftp.gnu.org as tarballs
+tar xjf autoconf-XXX.tar.bz2
+tar xjf automake-XXX.tar.bz2
+
+# make install points
+mkdir install
+mkdir bsp-install
+mkdir log
+=========================================
+
+Update VERSIONS appropriately
+
 
 DejaGNU Support Files
 =====================
