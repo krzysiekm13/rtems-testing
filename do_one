@@ -1,0 +1,573 @@
+#! /bin/sh 
+#
+# Execution Times (for sparc-rtems${RTEMS_VERSION})
+#
+#   - building native                   - 45m43.697s
+#   - building stage1 (non-multilib)    - 7m26.749s
+#   - building stage1 (multilib)        - 
+#   - building Ada stack (non-multilib) - 13m25.945s
+#   - building RTEMS                    - 12m27.799s
+#   - Running ACAT           (sis)      - 
+#   - Running GCC Test Suite (sis)      - 60m26.523s
+#
+# Computer Info
+#   Fedora 8 on Intel Core2 Duo T7500  @ 2.20GHz w/ 2GB RAM
+
+vfile=`dirname $0`/VERSIONS
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS file not found
+  exit 1
+fi
+
+source ${vfile}
+
+
+######################## Set defaults #############################
+# Remove Build Directories
+do_cleanup=yes
+# Install Binutils (from rpm or source)
+do_binutils=no
+  do_binutils_method=source
+# Install GDB (from rpm or source)
+do_gdb=no
+  do_gdb_method=source
+# Build the native compiler?
+do_native=no
+  do_native_ada=yes
+# Build the base level cross compiler. C++ and multilib are optional.
+do_stage1=no
+  do_cxx=yes
+  do_multilib=yes
+# Build the Ada language cross compiler. Multilib is NOT supported
+do_ada=no
+  do_ada_multilib=yes
+# Build RTEMS for a particular CPU/BSP combination
+do_rtems=no
+# Which test suites do we attempt
+run_gcctests=no
+run_acats=no
+# Do we send email to gcc-testresults with the test results?
+do_mail=yes
+# Are we noisy when running?
+verbose=no
+######################## Parse arguments ###########################
+
+usage()
+{
+cat <<EOF
+  -A - binutils, stage 1, C++, C/C++ multilib, Ada, RTEMS
+  -T - run GCC and Ada tests
+  -b - install binutils (from source or copy installed RPM contents)
+  -D - install gdb (from source or copy installed RPM contents)
+  -n - native compiler
+  -1 - stage 1 C/C++ compiler
+  -c -   do not include C++ 
+  -m -   do not build multilib
+  -a - stage 2 Ada compiler
+  -r - build RTEMS
+  -g - run GCC C/C++ tests
+  -C - run ACATS
+  -d - do not clean up (delete build directories)
+  -v - verbose
+  -M - do NOT email test results to gcc-testresults
+EOF
+}
+
+fatal()
+{
+  usage
+  exit 1
+}
+
+while getopts bdDnv1cmargCATM OPT
+do
+    case "$OPT" in
+        A) do_binutils="yes"
+           do_gdb="yes"
+           do_stage1="yes"
+           do_cxx="yes"
+           do_multilib="yes"
+           do_ada="yes"
+           do_rtems="yes"
+           ;;
+        d) do_cleanup="no" ;;
+        D) do_gdb="yes" ;;
+        T) run_gcctests="yes"
+           run_acats="yes"
+           ;;
+        # unrpm binutils
+        b) do_binutils="yes" ;;
+        # Build the native
+        n) do_native="yes";;
+        # Stage 1 arguments
+        1) do_stage1="yes";;
+        c) do_cxx="no";;
+        m) do_multilib="no";;
+        # Stage 2 arguments
+        a) do_ada="yes" ;;
+        # Build RTEMS
+        r) do_rtems="yes" ;;
+        # Testsuites to run
+        g) run_gcctests="yes" ;;
+        C) run_acats="yes" ;;
+        v) verbose="yes";;
+        M) do_mail="no";;
+        *) fatal;;
+    esac
+done
+
+########################### Grab CPU/BSP ###########################
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+cpu=${1}
+bsp=${2}
+
+case ${cpu} in
+  m32c)
+    do_ada=no
+    do_cxx=no
+    run_acats=no
+    echo M32C does not support C++ or Ada
+    ;;
+  *);;
+esac
+
+if [ ${verbose} = yes ] ; then
+  echo "Target        : " ${cpu}
+  echo "BSP           : " ${bsp}
+  echo "Binutils      : " ${do_binutils}
+  echo "GDB           : " ${do_gdb}
+  echo "Build Native  : " ${do_native}
+  echo "Build Stage 1 : " ${do_stage1}
+  echo "  C++         : " ${do_cxx}
+  echo "  Multilib    : " ${do_multilib}
+  echo "Stage 2       : " ${do_ada}
+  echo "  Ada         : " ${do_ada}
+  echo "  Multilib    : " ${do_ada_multilib}
+  echo "Build RTEMS   : " ${do_rtems}
+  echo "Run GCC Tests : " ${run_gcctests}
+  echo "Run ACATS     : " ${run_acats}
+  echo "Email Tests   : " ${do_mail}
+  echo "Native GCC    : " `type gcc`
+  echo "PATH          : " ${PATH}
+  echo "Clean up      : " ${do_cleanup}
+fi
+
+# Should the user have specified a CPU and/or BSP?
+needBSP=no
+needCPU=no
+
+if [ ${do_binutils} = yes -o ${do_gdb} = yes -o \
+     ${do_stage1} = yes -o ${do_ada} = yes ] ; then
+  needCPU=yes
+fi
+
+if [ ${do_rtems} = yes -o ${run_gcctests} = yes -o ${run_acats} = yes ] ; then
+  needBSP=yes
+  needCPU=yes
+  if [ x${bsp} = x ] ; then
+    echo "BSP NOT SET"
+    fatal
+  fi
+fi
+
+if [ ${needCPU} = yes -a x${cpu} = x ] ; then
+  echo "CPU NOT SET"
+  fatal
+fi
+
+if [ ${needBSP} = yes -a x${bsp} = x ] ; then
+  echo "BSP NOT SET"
+  fatal
+fi
+
+TARGET=${cpu}-rtems${RTEMS_VERSION}
+  
+######### Consistency check installation of source
+
+if [ ! -d ${GCCDIR}/newlib ] ; then
+  echo "${GCCDIR}/newlib not present"
+  exit 1
+fi
+
+ADASCRIPTDIR=${SCRIPTDIR}/gcc/testsuite/ada/acats
+for i in Makefile.rtems rtems_acats_reasons rtems_acats_status \
+    rtems_generate_acats_email rtems_init.c run_all_rtems.sh
+do
+  if [ ! -r ${ADASCRIPTDIR}/${i} ] ; then
+    echo "${ADASCRIPTDIR}/gcc/testsuite/ada/acats/${i} not present"
+    echo "RTEMS ACATS support files not present"
+    exit 1
+  fi
+done
+
+if [ ${needCPU} = yes -a ${needBSP} = yes ] ; then
+  DEJADIR=${SCRIPTDIR}/dejagnu/boards 
+  if [ ! -d ${DEJADIR} ] ; then
+    echo "Missing DejaGNU configuration directory (${DEJADIR})"
+    exit 1
+  fi
+
+  case ${cpu}-${bsp} in
+    arm-edb7312)          dejacfg=rtems-arm-edb7312 ;;
+    bfin-eZKit533)        dejacfg=rtems-bfin-nosim ;;
+    h8300-h8sim)          dejacfg=rtems-h8300-h8sim ;;
+    i386-pc386|i386-qemu) dejacfg=rtems-i386-qemu ;;
+    m68k-mcf5206elite)    dejacfg=rtems-m68k-nosim ;;
+    m32c-m32csim)         dejacfg=rtems-m32c-m32csim ;;
+    mips-jmr3904)         dejacfg=rtems-mips-jmr3904 ;;
+    powerpc-psim)         dejacfg=rtems-powerpc-psim ;;
+    sh-simsh1)            dejacfg=rtems-sh-simsh1 ;;
+    sparc-sis)            dejacfg=rtems-sparc-sis ;;
+    *)
+      echo "ERROR ${bsp} is not known to DegaGNU"
+      exit 1
+      ;;
+  esac
+
+  if [ ! -r ${DEJADIR}/${dejacfg}.exp ] ; then
+    echo "Missing DejaGNU file for ${cpu}/${bsp}"
+    exit 1
+  fi
+fi
+######### END OF Consistency check installation of source
+
+######### Log Directory
+if [ ! -d ${LOGDIR} ] ; then
+  mkdir ${LOGDIR}
+fi
+######### 
+
+######### Install binutils
+j_binutils()
+{
+  test -d ${INSTALL} || mkdir -p ${INSTALL}
+
+  cd ${INSTALL}/..
+  
+  case ${do_binutils_method} in
+    rpm)
+      if [ ! -r /opt/rtems-${RTEMS_VERSION}/bin/${TARGET}-as ] ; then
+         echo "Binutils RPMs not installed"
+         exit 0
+      fi
+
+      echo "Extracting binutils from installed RPMs"
+      DIR=`pwd`
+      mkdir tmp-unrpm
+      cd tmp-unrpm
+      cd /
+      for cpu in $*
+      do
+        pkg=`rpm -qf /opt/rtems-${RTEMS_VERSION}/bin/${TARGET}-as`
+        rpm -ql $pkg | cpio -pvdum ${DIR}/tmp-unrpm
+      done
+      cd ${DIR}/tmp-unrpm/opt/rtems-${RTEMS_VERSION}
+      find . | cpio -pdum ${INSTALL}
+      cd ${DIR}
+      rm -rf tmp-unrpm
+      ;;
+    source)
+      echo "Building Binutils from source"
+      rm -rf b-binutils-${cpu}
+      mkdir b-binutils-${cpu}
+      cd b-binutils-${cpu}
+      (${BINUTILSDIR}/configure --target=${TARGET} --prefix=$INSTALL && \
+        make -j3 && make install) >${LOGDIR}/${cpu}-binutils.log 2>&1
+      if [ $? -ne 0 ] ; then
+        echo "Failed to build Binutils from source"
+        exit 1
+      fi
+      cd .. 
+      test ${do_cleanup} = "yes" && rm -rf b-binutils-${cpu}
+      ;;
+    *)
+      echo "Where do I get the binutils from?"
+      exit 1
+      ;;
+  esac
+}
+
+if [ ${do_binutils} = yes ] ; then
+  echo "Building binutils..."
+  j_binutils ${cpu}
+fi
+
+######### Install gdb
+j_gdb()
+{
+set -x
+  test -d ${INSTALL} || mkdir -p ${INSTALL}
+
+  cd ${INSTALL}/..
+
+  case ${cpu} in
+    mips) GDBTARGET=${cpu}tx39-rtems${RTEMS_VERSION} ;;
+    *)    GDBTARGET=${TARGET} ;;
+  esac
+
+  case ${do_gdb_method} in
+    rpm)
+      if [ ! -r /opt/rtems-${RTEMS_VERSION}/bin/${GDBTARGET}-gdb ] ; then
+         echo "Binutils RPMs not installed"
+         exit 0
+      fi
+
+      echo "Extracting gdb from installed RPMs"
+      DIR=`pwd`
+      mkdir tmp-unrpm
+      cd tmp-unrpm
+      cd /
+      for cpu in $*
+      do
+        pkg=`rpm -qf /opt/rtems-${RTEMS_VERSION}/bin/${GDBTARGET}-gdb`
+        rpm -ql $pkg | cpio -pvdum ${DIR}/tmp-unrpm
+      done
+      cd ${DIR}/tmp-unrpm/opt/rtems-${RTEMS_VERSION}
+      find . | cpio -pdum ${INSTALL}
+      cd ${DIR}
+      rm -rf tmp-unrpm
+      ;;
+    source)
+      echo "Building GDB from source"
+      cd ${BASEDIR}
+      rm -rf b-gdb-${cpu}
+      mkdir b-gdb-${cpu}
+      cd b-gdb-${cpu}
+      (${GDBDIR}/configure --target=${GDBTARGET} \
+        --enable-sim --enable-sim-hardware \
+        --enable-timebase --enable-sim-trace  --prefix=$INSTALL && \
+        make -j3 && make install) >${LOGDIR}/${cpu}-gdb.log 2>&1
+      if [ $? -ne 0 ] ; then
+        echo "Failed to build gdb from source"
+        exit 1
+      fi
+      cd .. 
+      test ${do_cleanup} = "yes" && rm -rf b-gdb-${cpu}
+      ;;
+    *)
+      echo "Where do I get the gdb from?"
+      exit 1
+      ;;
+  esac
+}
+
+if [ ${do_gdb} = yes ] ; then
+  echo "Building gdb..."
+  j_gdb ${cpu}
+fi
+
+######### Build a native compiler
+j_native()
+{
+  test ${do_native_ada} = "yes" && AdaArg=",ada"
+  ${GCCDIR}/configure \
+    --enable-languages=c${AdaArg} --prefix=$INSTALL &&
+  make -j3 && make install
+}
+
+if [ ${do_native} = "yes" ] ; then
+  echo "Building native compiler..."
+  (cd ${BASEDIR} && \
+   rm -rf b-native && \
+   mkdir  b-native && \
+   cd b-native && \
+   time j_native >${LOGDIR}/native.log 2>&1 && cd .. ) || exit 1
+   test ${do_cleanup} = "yes" && rm -rf b-native
+else
+  echo Skipping native
+fi
+# END of build native compiler
+
+######### Build Cross C/C++ baseline compiler
+j_gcc1()
+{
+
+  if [ X${1} = X ] ; then
+    echo Usage: $0 TARGET_CPU
+    exit 1
+  fi
+
+  if [ ! -d ${INSTALL} ]; then
+    echo ${INSTALL} does not exist
+    exit 1
+  fi
+
+  if [ ${verbose} = yes ] ; then
+    echo "Cross Assembler ==>" `type ${TARGET}-as`
+  fi
+
+  if [ ${do_cxx} = yes ] ; then
+     cxx=",c++"
+  fi
+  if [ ${do_multilib} = yes ] ; then
+     multilib="--enable-multilib"
+  else
+     multilib="--disable-multilib"
+  fi
+
+  ${GCCDIR}/configure \
+   --enable-threads=rtems  --with-gnu-as ${multilib} \
+   --enable-newlib-mb --enable-newlib-iconv \
+   --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
+    --enable-version-specific-runtime-libs \
+    --enable-languages=c${cxx} --target=$TARGET --prefix=$INSTALL &&
+  make -j3 &&
+  make install
+}
+
+if [ ${do_stage1} = "yes" ] ; then
+  echo "Building Stage 1 compiler (C/C++)..."
+  (cd ${BASEDIR} && \
+   rm -rf b-gcc1-${cpu} && \
+   mkdir  b-gcc1-${cpu} && \
+   cd b-gcc1-${cpu} && \
+     time j_gcc1 ${cpu} >${LOGDIR}/${cpu}-stage1.log 2>&1 && cd ..) || exit 1
+else
+  echo Skipping Stage 1 for ${cpu}
+fi
+
+#################### RTEMS
+
+j_rtems()
+{
+  cpuArg=$1
+  bspArg=$2
+  bspdir=b-${cpuArg}-${bspArg}
+
+  cd ${BASEDIR}
+  rm -rf ${bspdir}
+  mkdir  ${bspdir} || exit 1
+  cd ${bspdir}     || exit 1
+
+  case $bspArg in
+    multilib)
+      ENABLE_BSP="--enable-multilib"
+      ;;
+    qemu|pc386)
+      ENABLE_BSP="--enable-rtemsbsp=pc386"
+      ENABLE_BSP="${ENABLE_BSP} USE_COM1_AS_CONSOLE=1"
+      ENABLE_BSP="${ENABLE_BSP} BSP_PRESS_KEY_FOR_RESET=0"
+      ;;
+    *)
+      ENABLE_BSP="--enable-rtemsbsp=${bspArg}"
+      ;;
+  esac
+  case ${cpu} in
+    m32c) RTEMS_ARGS="--disable-ada --disable-posix --disable-networking" ;;
+    *)    RTEMS_ARGS="--enable-ada --enable-posix --enable-networking" ;;
+  esac
+  ${RTEMSDIR}/configure --target=${TARGET} ${ENABLE_BSP} \
+  ${RTEMS_ARGS} --enable-maintainer-mode --disable-tests \
+  --prefix=${BSP_INSTALL} && make -j3 && make install
+  cd ..
+}
+
+if [ ${do_rtems} = "yes" ] ; then 
+  echo "Building RTEMS for ${cpu} ${bsp} ..."
+  #time j_rtems ${cpu} multilib >${LOGDIR}/${cpu}-rtems-multilib.log 2>&1 || \
+  #  exit 1
+  time j_rtems ${cpu} ${bsp} >${LOGDIR}/${cpu}-rtems-${bsp}.log 2>&1 || \
+    exit 1
+  test ${do_cleanup} = "yes" && rm -rf b-${cpu}-${bsp} b-${cpu}-multilib
+else
+  echo Skipping RTEMS for ${cpu}/${bsp}
+fi
+pwd
+
+##### Do the gcc tests
+if [ ${run_gcctests} = "yes" ] ; then 
+  echo "Running GCC Tests..."
+  cd ${BASEDIR}/b-gcc1-${cpu} || exit 1
+  time sh -x ${SCRIPTDIR}/rundeja ${bsp} \
+    >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
+
+  if [ ${do_mail} = "yes" ] ; then
+    echo Sending test results to GCC community..
+    ${GCCDIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
+    if [ $? -ne 0 ] ; then
+      echo "Failed to email GCC Test Results .. bailing"
+      exit 1
+    fi
+  fi
+  cd .. || exit 1
+else
+  echo Skipping GCC DejaGNU tests for ${cpu}/${bsp}
+fi
+test ${do_cleanup} = "yes" && rm -rf b-gcc1-${cpu}
+
+##### Build an Ada compiler now that we have a cross installed
+j_gcc2()
+{
+  if [ X${1} = X ] ; then
+    echo Usage: $0 TARGET_CPU
+    exit 1
+  fi
+  TARGET=${1}-rtems${RTEMS_VERSION}
+
+  if [ ! -d ${INSTALL} ]; then
+    echo ${INSTALL} does not exist
+    exit 1
+  fi
+
+  if [ ${verbose} = yes ] ; then
+    echo "Cross GCC ==>" `type ${TARGET}-gcc`
+  fi
+
+  if [ ${do_ada_multilib} = yes ] ; then
+     ada_multilib="--enable-multilib"
+  else
+     ada_multilib="--disable-multilib"
+  fi
+
+#    CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${bsp}/lib/
+
+  ${GCCDIR}/configure \
+   --enable-threads=rtems  --with-gnu-as ${ada_multilib} \
+   --enable-newlib-mb --enable-newlib-iconv \
+   --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
+    CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${bsp}/lib/ \
+    --enable-version-specific-runtime-libs \
+    --enable-languages=c,ada --target=$TARGET --prefix=$INSTALL &&
+  make -j3 &&
+  make install
+}
+
+if [ ${do_ada} = "yes" ] ; then 
+  echo "Building Stage 2 cross Ada compiler for ${1} ..."
+  (cd ${BASEDIR} && \
+   rm -rf b-gcc2-${cpu} && \
+   mkdir  b-gcc2-${cpu} && \
+   cd b-gcc2-${cpu} && \
+   time j_gcc2 ${cpu} >${LOGDIR}/${cpu}-stage2.log 2>&1 && cd ..) || exit 1
+else
+  echo Skipping Stage 2 Ada for ${cpu}
+fi
+
+#### Run the Ada ACATS tests
+if [ ${run_acats} = "yes" -a -d b-gcc2-${cpu} ] ; then 
+  echo "Running ACATS..."
+  cd ${GCCDIR}/gcc/testsuite/ada/acats/ || exit 1
+
+  time ${ADASCRIPTDIR}/run_all_rtems.sh ${INSTALL} ${BSP_INSTALL} \
+   ${TARGET} ${bsp} >${LOGDIR}/${cpu}-acats-${bsp}-build.log 2>&1
+  if [ -r work-${bsp}/acats.log ] ; then
+    cp work-${bsp}/acats.log ${LOGDIR}/${cpu}-acats-${bsp}.log
+  fi
+
+  if [ ${do_mail} = "yes" ] ; then
+    echo Sending ACATS test results to GCC community..
+    ${ADASCRIPTDIR}/rtems_generate_acats_email ${cpu} ${bsp} yes
+  fi
+
+  cd ../../../../.. || exit 1
+else
+  echo Skipping ACATS for ${cpu}
+fi
+
+if [ ${do_ada} = "yes" ] ; then 
+  test ${do_cleanup} = "yes" && rm -rf b-gcc2-${cpu}
+fi
+exit 0

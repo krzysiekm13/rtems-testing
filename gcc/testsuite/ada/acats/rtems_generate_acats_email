@@ -1,0 +1,121 @@
+#! /bin/sh
+#
+#  Generate ACATS Email
+#
+#  $Id$
+#
+
+if [ $# -ne 3 ] ; then
+  echo Usage $0: CPU BSP domail
+  exit 1
+fi
+
+vfile=`dirname $0`/../../../../VERSIONS
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS file not found
+  exit 1
+fi
+
+source ${vfile}
+domail=$3
+BSP=$2
+CPU=$1
+rtemsVersion=4.10
+Target=${CPU}-rtems${rtemsVersion}
+
+DIR=${GCCDIR}/gcc/testsuite/ada/acats
+if [ ! -d ${DIR} ] ; then
+  echo "No Ada build directory for the BSP (${DIR})"
+  exit 1
+fi
+
+cd ${DIR}
+if [ ! -d work-${BSP} ] ; then
+  echo "Usage No ACATS working directory for the BSP (${BSP})"
+  exit 1
+fi
+
+f=work-${BSP}/acats.sum
+logfile=work-${BSP}/acats.log
+if [ ! -r ${f} ] ; then
+  echo "Usage No ACATS summary file working directory for the BSP (${BSP})"
+  exit 1
+fi
+
+${CPU}-rtems${rtemsVersion}-gcc --version >/dev/null 2>&1
+if [ ${?} -ne 0 ] ; then
+  echo "${CPU}-rtems${rtemsVersion}-gcc not found"
+  exit 1
+fi
+
+get_count()
+{
+  fileIn=${1}
+  shift
+  grep "${*}" <${fileIn}
+}
+
+
+cp /dev/null LOGS.tmp
+
+get_failed()
+{
+  grep "^${2}" <${1} | while read l
+  do
+     Test=`echo ${l} | cut -d':' -f2 | tr -d '[:blank:]'`
+     LowTest=`echo ${l} | cut -d':' -f2 | tr '[:upper:]' '[:lower:]'`
+     Reason=`grep "[${BSP}|all]:${Test}" ${REASONS}`
+     if [ $? -eq 0 ] ; then
+       Reason=`echo ${Reason} | cut -d':' -f3- | sed -e 's/^ //'`
+     else
+       grep "Error detected.*${Test}" ${logfile} >/dev/null
+       if [ $? -eq 0 ] ; then
+         Reason="GNAT BUG DETECTED -- follow up required"
+       else
+         Reason="unknown reason for failure"
+       fi
+       #( echo "==================== ${LowTest}.log ====================" ; \
+       #  cat `find work-${BSP} -name ${LowTest}.log` ; \
+       #  echo "========================================================" \
+       #) >> LOGS.tmp
+     fi
+     echo "${Test} - ${Reason}"
+  done 
+}
+
+gen_report()
+{
+  echo
+  ${CPU}-rtems${rtemsVersion}-gcc --version | head -1
+  echo
+
+  echo "                === acats Summary ==="
+  get_count ${f}  '# of expected passes'
+  get_count ${f}  '# of unexpected failures'
+  get_count ${f}  '# of unsupported tests'
+
+  echo
+  get_failed ${f} 'UNSUPPORTED'
+  get_failed ${f} 'FAIL'
+
+  echo
+  echo "======= Logs for failed tests ======"
+  cat LOGS.tmp
+}
+
+REASONS=${SCRIPTDIR}/gcc/testsuite/ada/acats/rtems_acats_reasons
+
+if [ ! -r ${REASONS} ] ; then
+  echo "Cannot find rtems_acats_reasons (${REASONS})"
+  exit 1
+fi
+
+if [ ${domail} = "yes" ] ; then
+  gccver=`${CPU}-rtems${rtemsVersion}-gcc --version | head -1 | cut -d' ' -f4-`
+  gen_report | joelmail \
+    -s "ACATS results for ${gccver} on ${CPU}-rtems${rtemsVersion}" \
+    gcc-testresults@gcc.gnu.org
+
+else
+  gen_report 
+fi

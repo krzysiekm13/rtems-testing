@@ -1,0 +1,83 @@
+#
+#  Makefile for ACATS -- Helps pull BSP specific information
+#  into a form the script can use
+#
+
+include $(RTEMS_MAKEFILE_PATH)/Makefile.inc
+
+include $(RTEMS_CUSTOM)
+include $(PROJECT_ROOT)/make/leaf.cfg
+
+# Tool helpers
+rtemsdir=${RTEMS_MAKEFILE_PATH}
+GNATMAKE=$(AS:as=gnatmake)
+GNATCHOP=$(AS:as=gnatchop)
+CARGS  = -B${rtemsdir}/lib/ -specs bsp_specs -qrtems 
+CARGS += $(CPU_CFLAGS) $(LDFLAGS) $(AM_LDFLAGS)
+
+all: RTEMS_SETTINGS rtems_init.o 
+
+rtems_init.o: ${ADASCRIPTDIR}/rtems_init.c
+	$(CC) $(CFLAGS) -c ${ADASCRIPTDIR}/rtems_init.c
+
+RTEMS_SETTINGS: stamp-targetrun stamp-targetgcc \
+	stamp-targetchop stamp-targetmake
+	cat $? >RTEMS_SETTINGS
+
+stamp-targetrun:
+	echo "target_run() {" >$@
+  ifeq ($(RTEMS_BSP),pc386)
+	echo "  runqemu -l 60 -c $$"'*' >> $@
+  endif # pc386
+  ifeq ($(RTEMS_BSP),jmr3904)
+	echo "  jmr3904-4.10 -l 240 $$"'*' >> $@
+  endif # jmr3904
+  ifeq ($(RTEMS_BSP),psim)
+	echo "  psim-4.10 -l 180 $$"'*' >> $@
+  endif # psim
+  ifeq ($(RTEMS_BSP),erc32)
+	echo "  runerc32 -c $$"'*' >> $@
+  endif # erc32
+  ifeq ($(RTEMS_BSP),sis)
+	echo "  sis-4.10 -l 180 $$"'*' >> $@
+  endif # sis
+  ifeq ($(RTEMS_BSP),edb7312)
+	echo "  edb7312 -l 180 $$"'*' >> $@
+  endif # edb7312
+  ifeq ($(RTEMS_BSP),simsh1)
+	echo "  simsh1-4.10 -l 60 $$"'*' >> $@
+  endif # simsh1
+  ifeq ($(RTEMS_BSP),h8sim)
+	echo "  h8sim-4.10 -l 60 $$"'*' >> $@
+  endif # h8sim
+  ifeq ($(RTEMS_BSP),mcf5206elite)
+	echo "  nosim $$"'*' >> $@
+  endif # mcf5206elite
+  ifeq ($(RTEMS_BSP),eZKit533)
+	echo "  nosim $$"'*' >> $@
+  endif # mcf5206elite
+	echo "}" >>$@
+
+stamp-targetgcc:
+	echo "target_gcc() {" >$@
+	echo "  $(CC) $$"'*' >> $@
+	echo "}" >>$@
+
+stamp-targetchop:
+	echo "target_gnatchop() {" >$@
+	echo "  $(GNATCHOP) $$"'*' >> $@
+	echo "}" >>$@
+
+stamp-targetmake:
+	echo "target_gnatmake() {" >$@
+	echo "set -x" >>$@
+	echo '  $(GNATMAKE) -fstack-check -v -O $$gnatflags $$gccflags $$* -bargs -Mgnat_main -largs $(CARGS) '$(shell pwd)/rtems_init.o' $$EXTERNAL_OBJECTS' >> $@
+	echo "}" >>$@
+
+#	$(GNATMAKE) -v -O -gnata -gnatE -gnato $(MAIN) -g \
+#	    -bargs -Mgnat_main \
+#	    -largs $(CARGS) rtems_init.o
+#	$(SIZE) $(MAIN)
+
+clean:
+	rm -f b~$(MAIN).*  *.o *.ali $(MAIN) stamp-*

@@ -1,0 +1,113 @@
+#! /bin/sh
+#
+#
+
+if [ $# -ne 1 ] ; then
+  echo USAGE: BSP
+  exit 1
+fi
+
+vfile=`dirname $0`/VERSIONS
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS file not found
+  exit 1
+fi
+
+source ${vfile}
+
+case $1 in
+  eZKit533) 
+    CPU=bfin
+    BSP=eZKit533
+    DEJABSP=nosim
+    BSP_SIM=nosim
+    ;;
+  edb7312) 
+    CPU=arm
+    BSP=edb7312
+    DEJABSP=edb7312
+    BSP_SIM=edb7312
+    ;;
+  m32csim) 
+    CPU=m32c
+    BSP=m32csim
+    DEJABSP=m32csim
+    BSP_SIM=m32csim
+    ;;
+  mcf5206elite) 
+    CPU=m68k
+    BSP=mcf5206elite
+    DEJABSP=nosim
+    BSP_SIM=nosim
+    ;;
+  h8sim) 
+    CPU=h8300
+    BSP=h8sim
+    DEJABSP=h8sim
+    BSP_SIM=h8sim-${RTEMS_VERSION}
+    ;;
+  simsh1) 
+    CPU=sh
+    BSP=simsh1
+    DEJABSP=simsh1
+    BSP_SIM=simsh-${RTEMS_VERSION}
+    ;;
+  jmr3904) 
+    CPU=mips
+    BSP=jmr3904
+    DEJABSP=jmr3904
+    BSP_SIM=jmr3904-${RTEMS_VERSION}
+    ;;
+  sis) 
+    CPU=sparc
+    BSP=sis
+    DEJABSP=sis
+    BSP_SIM=sis-${RTEMS_VERSION}
+    ;;
+  psim)
+    CPU=powerpc
+    BSP=psim
+    DEJABSP=psim
+    BSP_SIM=psim-${RTEMS_VERSION}
+    ;;
+  qemu|pc386)
+    CPU=i386
+    BSP=pc386
+    DEJABSP=qemu
+    BSP_SIM=runqemu
+    ;;
+  *)
+    echo UNKNOWN BSP
+    exit 1
+    ;;
+esac
+
+rtemsdir=${BASEDIR}/bsp-install/${CPU}-rtems${RTEMS_VERSION}/${BSP}
+
+dfile=~/.dejagnurc
+if [ -r ${dfile} ] ; then
+  sed -e "s,^set boards_dir.*$,set boards_dir ${SCRIPTDIR}/dejagnu/boards," \
+     <${dfile} >XXX
+  mv XXX ${dfile}
+else
+  echo "set boards_dir ${SCRIPTDIR}/dejagnu/boards" >${dfile}
+fi
+
+RTEMS_MAKEFILE_PATH=${rtemsdir} \
+SCRIPTDIR=${SCRIPTDIR} \
+  make -f ${SCRIPTDIR}/Makefile.rtems_gccmain
+if [ $? -ne 0 ] ; then
+  echo unable to compile RTEMS GCC Main
+  exit 1
+fi
+rtems_config=`pwd`/rtems_gcc_main.o
+make check-gcc RUNTESTFLAGS="\
+SIM=${BSP_SIM} \
+RTEMS_MAKEFILE_PATH=${rtemsdir} \
+RTEMS_CONFIG_OBJ=${rtems_config} \
+--target_board=rtems-${CPU}-${DEJABSP} \
+"
+#"execute.exp=pr206*"
+# "execute.exp=pr206*"
+# vect.exp=vect*
+# powerpc.exp=405*

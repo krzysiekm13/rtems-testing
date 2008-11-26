@@ -1,0 +1,21 @@
+# USE FULL PATHS!!!
+BASEDIR=/home/joel/work-gnat/svn/
+
+RTEMS_VERSION=4.10
+
+AUTOCONF=${BASEDIR}/autoconf-2.62
+AUTOMAKE=${BASEDIR}/automake-1.10.1
+GCCDIR=${BASEDIR}/gcc
+BINUTILSDIR=${BASEDIR}/binutils-cvs/src
+GDBDIR=${BASEDIR}/gdb-cvs/src
+RTEMSDIR=${BASEDIR}/rtems
+
+# Needed on GCC CFARM
+# NATIVE_GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
+# GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
+
+INSTALL=${BASEDIR}/install
+BSP_INSTALL=${BASEDIR}/bsp-install
+SCRIPTDIR=${BASEDIR}/gcc-testing-import
+LOGDIR=${BASEDIR}/log
+

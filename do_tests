@@ -1,0 +1,21 @@
+#
+#
+#
+
+gcc=gcc
+prefix=/home/joel/work-gnat/svn/install
+target=powerpc-rtems4.10
+bsp=psim
+tmpdir=/home/joel/work-gnat/svn/install/../gcctests-${bsp}
+
+cd ${gcc}
+rm -f site.exp
+sh -x ./contrib/test_installed \
+  --target=${target} \
+  --target_board=rtems-${bsp} \
+  --with-gcc=${prefix}/bin/${target}-gcc \
+  --without-g++ \
+  --without-gfortran \
+  --without-objc \
+  --tmpdir=${tmpdir}
+  

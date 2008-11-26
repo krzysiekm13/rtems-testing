@@ -1,0 +1,52 @@
+#! /bin/sh
+#
+#  Report ACATS status summary
+#
+#  $Id$
+#
+
+if [ $# -ne 2 -a $# -ne 3 ] ; then
+  echo Usage $0: CPU BSP [seconds]
+  exit 1
+fi
+
+vfile=`dirname $0`/../../../../VERSIONS
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS file not found
+  exit 1
+fi
+
+source ${vfile}
+
+CPU=$1
+BSP=$2
+if [ $# -eq 3 ] ; then
+  seconds=$3
+else
+  seconds=0
+fi
+
+DIR=${GCCDIR}/gcc/testsuite/ada/acats
+if [ ! -d ${DIR} ] ; then
+  echo "No Ada build directory for the BSP (${DIR})"
+  exit 1
+fi
+
+cd ${DIR}
+if [ ! -d work-${BSP} ] ; then
+  echo "No ACATS working directory for the BSP (${BSP})"
+  exit 1
+fi
+
+
+while true
+do
+  printf "PASSED: %4d FAILED %4d\n"  \
+   `grep ^PASS work-${BSP}/acats.sum | wc -l` \
+   `grep ^FAIL work-${BSP}/acats.sum | wc -l` 
+  if [ ${seconds} -eq 0 ] ; then
+    break
+  fi
+  sleep ${seconds}
+done
+exit 0

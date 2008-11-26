@@ -1,0 +1,86 @@
+#! /bin/sh
+#
+#  Test Driver
+#
+#  $Id$
+#
+
+vfile=`dirname $0`/VERSIONS
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS file not found
+  exit 1
+fi
+
+source ${vfile}
+
+start=`date`
+echo Started at: ${start}
+
+BASEDIR=`pwd`
+
+# HELPER - Update RTEMS
+update_rtems()
+{
+  cd ${RTEMSDIR}
+  cvs up -Pd 2>&1 | grep -v ^cvs
+  ./bootstrap -c
+  ./bootstrap
+}
+
+# HELPER - Update GCC
+update_gcc()
+{
+  cd ${GCCDIR}
+  ./contrib/gcc_update
+}
+
+# HELPER - Remove all the installed previous builds
+clean_up()
+{
+  rm -rf install/* &
+  rm -rf bsp-install/* &
+  wait
+}
+
+install_auto()
+{
+  for auto in ${AUTOCONF} ${AUTOMAKE}
+  do
+    if [ ! -d ${auto} ] ; then
+      echo "${d} not installed"
+      exit 0
+    fi
+    cd ${auto}
+    make distclean
+    ./configure --prefix=${BASEDIR}/install
+    make all install
+  done
+}
+
+# Clean the install point
+clean_up
+
+# Update gcc and install autotools in parallel
+install_auto &
+update_gcc &
+wait
+
+# Do any remaining prep work in parallel
+update_rtems &
+wait
+
+# Build the native compiler as a baseline to build the others
+${SCRIPTDIR}/do_cpus native 
+
+# Now cycle over all these CPUs
+if [ $? -eq 0 ] ; then
+  ${SCRIPTDIR}/do_cpus sparc mips
+  #${SCRIPTDIR}/do_cpus m32c arm h8300 i386 mips sh powerpc sparc
+  #${SCRIPTDIR}/do_cpus i386 
+  # wait
+fi
+# ${SCRIPTDIR}/do_cpus sparc powerpc mips i386 arm
+
+stopped=`date`
+echo Started at: ${start}
+echo Stopped at: ${stopped}

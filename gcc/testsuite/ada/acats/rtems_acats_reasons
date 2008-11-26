@@ -1,0 +1,78 @@
+# ACATS Tests which are near constant
+all:ce2108f: simulator does not have persistent files
+all:ce2108h: simulator does not have persistent files
+all:ce3112d: simulator does not have persistent files
+
+# GCC Ada PRs:
+PR:37094: in copyprop_hardreg_forward_1, at regrename.c:1589
+
+# Last updated: 30 July 2008
+sis:cxg2005: FP exception - SIS simulator is not accurate enough
+sis:cxg2012: FP exception - SIS simulator is not accurate enough
+sis:cxg2014: FP exception - SIS simulator is not accurate enough
+sis:cxg2017: FP exception - SIS simulator is not accurate enough
+sis:cxg2020: FP exception - SIS simulator is not accurate enough
+sis:c37213j: address exception
+sis:c37213k: alignment exception
+sis:c47007a: alignment exception
+sis:c47009a: alignment exception
+sis:c953002: ran too long, may eventually finish
+
+# Last updated: 30 July 2008
+pc386:a71004a: ran too long, no output
+pc386:c64005c: WRONG ITERATIVE TRACE LENGTH.
+pc386:c64005d: WRONG I:RATIVE TRACE LENGTH.
+pc386:c95065c: ran too long, no output
+pc386:c95085m: ran too long, no output
+pc386:c953002: ran too long, some output
+pc386:cc3305a: ran too long, no output
+pc386:cxg2002: FPU precision issue on qemu
+pc386:cxg2003: FPU precision issue on qemu
+pc386:cxg2004: FPU precision issue on qemu
+pc386:cxg2006: FPU precision issue on qemu
+pc386:cxg2007: FPU precision issue on qemu
+pc386:cxg2010: FPU precision issue on qemu
+pc386:cxg2011: FPU precision issue on qemu
+pc386:cxg2012: FPU precision issue on qemu
+pc386:cxg2013: FPU precision issue on qemu
+pc386:cxg2014: ran too long, some output
+pc386:cxg2015: FPU precision issue on qemu
+pc386:cxg2016: FPU precision issue on qemu
+pc386:cxg2017: FPU precision issue on qemu
+pc386:cxg2018: FPU precision issue on qemu
+pc386:cxg2019: FPU precision issue on qemu
+pc386:cxg2020: FPU precision issue on qemu
+pc386:cxg2021: FPU precision issue on qemu
+
+# Last updated: 30 July 2008
+jmr3904:c380004: read from bad address
+jmr3904:c64005c: WRONG ITERATIVE TRACE LENGTH.
+jmr3904:c64005d: WRONG ITERATIVE TRACE LENGTH.
+jmr3904:ca11012: Incorrect results from complex operation.  Exception not raised in child package.
+jmr3904:cdd2a02: CONSTRAINT_ERROR range check failed
+jmr3904:cxf3a01:  read from bad address
+jmr3904:cxf3a02: read from bad address
+
+# Last updated: 30 July 2008
+psim:c41328a: INCORRECT RESULTS FROM DERIVED SUBPROGRAM - 3.
+psim:c64005c: WRONG ITERATIVE TRACE LENGTH.
+psim:c64005d: WRONG ITERATIVE TRACE LENGTH.
+
+# Last updated: 25 September 2008
+simsh1:a22006c: Memory exception at ffc2b4bc (illegal address)
+simsh1:c380004: Memory exception at 44000 (illegal address)
+simsh1:c45532m: raised CONSTRAINT_ERROR : c45532m.adb:143 range check failed
+simsh1:c45532o: raised CONSTRAINT_ERROR : c45532o.adb:147 range check failed
+simsh1:c45532p: raised CONSTRAINT_ERROR : c45532p.adb:141 range check failed
+simsh1:c953002: Memory exception at 44000 (illegal address)
+simsh1:c974013: Memory exception at 44000 (illegal address)
+simsh1:cd1c04e: explicit fail THE VALUES OF DERIVED_TYPE COMPONENTS WERE INCORRECT.
+simsh1:cxa4009: explicit fail Incorrect results
+simsh1:cxa4020: explicit fail Incorrect results
+simsh1:cxg2018: Memory exception at 44000 (illegal address)
+simsh1:cxg2019: Memory exception at 44000 (illegal address)
+simsh1:cxg2021: Memory exception at 44000 (illegal address)
+
+
+
+

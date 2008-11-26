@@ -1,0 +1,37 @@
+#
+#  $Id$
+#
+
+This package contains a collection of scripts and support files
+that support running the GCC (http://gcc.gnu.org) testsuite for
+C, C++, Ada.
+
+This testing environment is used on the GCC Compile Farm as well
+as at OAR.
+
+Source Code and Patches
+=======================
+You are responsible for setting up the source.
+
+
+DejaGNU Support Files
+=====================
+
+${HOME}/.dejagnurc contains the following single line:
+
+      set boards_dir /home/joel/dejagnu/boards
+
+And the tree "dejagnu" in this source package is mirrored
+or symlinked to ${HOME}.
+
+Ada ACATS Testing Support Files
+===============================
+
+The files in gcc/testsuite/ada/acats/ go into that directory
+in the gcc source tree.
+
+C/C++ Support Files
+======================
+
+rtems_gcc_main.c and rundeja go in the top directory
+

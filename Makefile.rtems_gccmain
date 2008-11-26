@@ -1,0 +1,18 @@
+#
+#  Makefile for ACATS -- Helps pull BSP specific information
+#  into a form the script can use
+#
+
+include $(RTEMS_MAKEFILE_PATH)/Makefile.inc
+include $(RTEMS_CUSTOM)
+include $(PROJECT_ROOT)/make/leaf.cfg
+
+# Tool helpers
+
+all: clean rtems_gcc_main.o 
+
+clean:
+	rm -f rtems_gcc_main.o
+
+rtems_gcc_main.o: ${SCRIPTDIR}/rtems_gcc_main.c
+	$(CC) $(CFLAGS) $(CPU_CFLAGS) -c ${SCRIPTDIR}/rtems_gcc_main.c
