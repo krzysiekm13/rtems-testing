@@ -16,6 +16,6 @@ RTEMSDIR=${BASEDIR}/rtems
 
 INSTALL=${BASEDIR}/install
 BSP_INSTALL=${BASEDIR}/bsp-install
-SCRIPTDIR=${BASEDIR}/gcc-testing-import
+SCRIPTDIR=${BASEDIR}/gcc-testing
 LOGDIR=${BASEDIR}/log
 

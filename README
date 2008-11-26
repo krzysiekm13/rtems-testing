@@ -11,27 +11,48 @@ as at OAR.
 
 Source Code and Patches
 =======================
-You are responsible for setting up the source.
+You are responsible for setting up the source. And it should look
+something like this:
 
+TESTROOT
+  - gcc-SOURCE
+  - gdb-SOURCE
+  - rtems-SOURCE
+  - automake-SOURCE
+  - autoconf-SOURCE
+  - binutils-SOURCE
+  - gcc-testing (this package)
+
+Update gcc-testing/VERSIONS to point to the appropriate directories
+and versions.
+
+rtems-SOURCE is assumed to be a CVS checkout by test_driver.
+gcc-SOURCE is assumed to be an SVN checkout by test_driver.
+
+Look near the top of do_one for a number of environment variables
+such as whether to build binutils and gdb from source or just
+copy the RPM contents to the working install point.
+
+do_one in this directory has a LOT of options to control what to do.
 
 DejaGNU Support Files
 =====================
 
-${HOME}/.dejagnurc contains the following single line:
+${HOME}/.dejagnurc may point dejagnu to another location.
 
       set boards_dir /home/joel/dejagnu/boards
 
-And the tree "dejagnu" in this source package is mirrored
-or symlinked to ${HOME}.
+The scripts in this directory use their own dejagnu/boards support.
 
 Ada ACATS Testing Support Files
 ===============================
 
-The files in gcc/testsuite/ada/acats/ go into that directory
-in the gcc source tree.
+The files in gcc/testsuite/ada/acats/ directory support 
+that directory in the gcc source tree.
 
 C/C++ Support Files
 ======================
 
-rtems_gcc_main.c and rundeja go in the top directory
+The files rtems_gcc_main.c and rundeja in the top directory
+support the gcc/testsuite subdirectory in the gcc source tree.
 
