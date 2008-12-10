@@ -45,7 +45,7 @@ stamp-targetrun:
 	echo "  edb7312 -l 180 $$"'*' >> $@
   endif # edb7312
   ifeq ($(RTEMS_BSP),simsh1)
-	echo "  simsh1-4.10 -l 60 $$"'*' >> $@
+	echo "  simsh-4.10 -l 60 $$"'*' >> $@
   endif # simsh1
   ifeq ($(RTEMS_BSP),h8sim)
 	echo "  h8sim-4.10 -l 60 $$"'*' >> $@
