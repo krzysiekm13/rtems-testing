@@ -21,17 +21,18 @@ for cpu in $*
 do
   case $cpu in
     native)  bsp=native       ;;
-    sparc)   bsp=sis          ;;
-    powerpc) bsp=psim         ;;
+    arm)     bsp=edb7312      ;;
+    avr)     bsp=avrtest      ;;
+    bfin)    bsp=eZKit533     ;;
+    h8300)   bsp=h8sim        ;;
     i386)    bsp=pc386        ;;
     m32c)    bsp=m32csim      ;;
     m32r)    bsp=m32rsim      ;;
-    mips)    bsp=jmr3904      ;;
-    bfin)    bsp=eZKit533     ;;
-    h8300)   bsp=h8sim        ;;
-    sh)      bsp=simsh1       ;;
-    arm)     bsp=edb7312      ;;
     m68k)    bsp=mcf5206elite ;;
+    mips)    bsp=jmr3904      ;;
+    powerpc) bsp=psim         ;;
+    sh)      bsp=simsh1       ;;
+    sparc)   bsp=sis          ;;
     *)
       echo "Unknown CPU ${cpu}"
       exit 1
