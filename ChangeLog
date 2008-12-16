@@ -1,5 +1,9 @@
 2008-12-16	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* do_one: Honor extra arguments.
+
+2008-12-16	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* VERSIONS, do_cpus, do_one: Update script.
 
 2008-12-10	Joel Sherrill <joel.sherrill@oarcorp.com>

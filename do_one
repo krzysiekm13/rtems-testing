@@ -366,6 +366,7 @@ j_native()
 {
   test ${do_native_ada} = "yes" && AdaArg=",ada"
   ${GCCDIR}/configure \
+    ${NATIVE_GCC_EXTRA_ARGS} \
     --enable-languages=c${AdaArg} --prefix=$INSTALL &&
   make -j3 && make install
 }
@@ -415,6 +416,7 @@ j_gcc1()
   fi
 
   ${GCCDIR}/configure \
+    ${GCC_EXTRA_ARGS} \
    --enable-threads=rtems  --with-gnu-as ${multilib} \
    --enable-newlib-mb --enable-newlib-iconv \
    --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
