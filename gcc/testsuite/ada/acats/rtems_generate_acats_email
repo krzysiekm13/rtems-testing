@@ -114,7 +114,7 @@ if [ ${domail} = "yes" ] ; then
   gccver=`${CPU}-rtems${rtemsVersion}-gcc --version | head -1 | cut -d' ' -f4-`
   gen_report | joelmail \
     -s "ACATS results for ${gccver} on ${CPU}-rtems${rtemsVersion}" \
-    gcc-testresults@gcc.gnu.org
+    rtems-tooltestresults@rtems.org gcc-testresults@gcc.gnu.org 
 
 else
   gen_report 

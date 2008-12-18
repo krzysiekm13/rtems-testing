@@ -1,3 +1,8 @@
+2008-12-18	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/testsuite/ada/acats/rtems_generate_acats_email: Send status mail
+	to RTEMS and GCC.
+
 2008-12-16	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_one: Honor extra arguments.
