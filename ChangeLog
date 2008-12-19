@@ -1,3 +1,8 @@
+2008-12-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* VERSIONS, do_one: Add sending results to RTEMS as well as GCC
+	Community.
+
 2008-12-18	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gcc/testsuite/ada/acats/rtems_generate_acats_email: Send status mail

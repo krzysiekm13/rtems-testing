@@ -31,4 +31,5 @@ INSTALL=${BASEDIR}/install
 BSP_INSTALL=${BASEDIR}/bsp-install
 SCRIPTDIR=${BASEDIR}/gcc-testing
 LOGDIR=${BASEDIR}/log
+RESULTSDIR=${BASEDIR}/results-trunk
 

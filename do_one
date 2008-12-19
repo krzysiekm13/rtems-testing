@@ -492,11 +492,23 @@ if [ ${run_gcctests} = "yes" ] ; then
   time sh -x ${SCRIPTDIR}/rundeja ${bsp} \
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
 
+  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
+  mkdir -p ${RDIR}
+  cp gcc/testsuite/gcc/gcc.log gcc/testsuite/gcc/gcc.sum \
+     gcc/testsuite/g++/g++.log gcc/testsuite/g++/g++.sum ${RDIR}
+
   if [ ${do_mail} = "yes" ] ; then
     echo Sending test results to GCC community..
     ${GCCDIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
     if [ $? -ne 0 ] ; then
-      echo "Failed to email GCC Test Results .. bailing"
+      echo "Failed to email GCC Test Results to GCC Community .. bailing"
+      exit 1
+    fi
+
+    echo Sending test results to RTEMS community..
+    ${GCCDIR}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
+    if [ $? -ne 0 ] ; then
+      echo "Failed to email GCC Test Results to RTEMS Community .. bailing"
       exit 1
     fi
   fi
