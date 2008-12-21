@@ -300,7 +300,6 @@ fi
 ######### Install gdb
 j_gdb()
 {
-set -x
   test -d ${INSTALL} || mkdir -p ${INSTALL}
 
   cd ${INSTALL}/..
@@ -475,8 +474,8 @@ j_rtems()
 
 if [ ${do_rtems} = "yes" ] ; then 
   echo "Building RTEMS for ${cpu} ${bsp} ..."
-  #time j_rtems ${cpu} multilib >${LOGDIR}/${cpu}-rtems-multilib.log 2>&1 || \
-  #  exit 1
+  time j_rtems ${cpu} multilib >${LOGDIR}/${cpu}-rtems-multilib.log 2>&1 || \
+    exit 1
   time j_rtems ${cpu} ${bsp} >${LOGDIR}/${cpu}-rtems-${bsp}.log 2>&1 || \
     exit 1
   test ${do_cleanup} = "yes" && rm -rf b-${cpu}-${bsp} b-${cpu}-multilib
@@ -494,8 +493,10 @@ if [ ${run_gcctests} = "yes" ] ; then
 
   RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
   mkdir -p ${RDIR}
-  cp gcc/testsuite/gcc/gcc.log gcc/testsuite/gcc/gcc.sum \
-     gcc/testsuite/g++/g++.log gcc/testsuite/g++/g++.sum ${RDIR}
+  cp gcc/testsuite/gcc/gcc.log gcc/testsuite/gcc/gcc.sum ${RDIR}
+  if [ -r gcc/testsuite/g++/g++.log ] ; then
+    cp gcc/testsuite/g++/g++.log gcc/testsuite/g++/g++.sum ${RDIR}
+  fi
 
   if [ ${do_mail} = "yes" ] ; then
     echo Sending test results to GCC community..

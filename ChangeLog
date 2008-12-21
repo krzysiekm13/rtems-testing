@@ -1,3 +1,8 @@
+2008-12-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one: Build RTEMS multilib so Ada builds.
+	* dejagnu/boards/rtems-powerpc-psim.exp: add -l 180.
+
 2008-12-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* dejagnu/boards/rtems-avr-avrtest.exp: New file.
