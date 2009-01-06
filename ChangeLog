@@ -1,5 +1,9 @@
 2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* gcc/testsuite/ada/acats/Makefile.rtems: Add m32c to Ada run rules.
+
+2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* test_driver: Incorporate do_cpus so it is no longer needed
 	* dejagnu/boards/rtems-m32r-m32rsim.exp: New file.
 
