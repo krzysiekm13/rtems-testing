@@ -91,6 +91,26 @@ mkdir log
 
 Update VERSIONS appropriately
 
+MPFR/GMP
+========
+
+You must have a sufficiently recent version of GMP and MPFR to build
+GCC.  On some OSes you can install a standard package.  On others, 
+you may have to provide your own installation.
+
+Fedora 10: Install mpfr-devel.
+
+GNAT
+====
+
+You must have a native GNAT installed.  .  On some OSes you can
+install a standard package.  On others, you may have to provide
+your own installation.  The first step in the build process is
+building a native compiler with potentially C, C++ and Ada support.
+This compiler will be used for all subsequent cross tool builds.
+
+Fedora 10: Install gcc-gnat.
+
 
 DejaGNU Support Files
 =====================

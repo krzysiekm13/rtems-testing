@@ -1,5 +1,10 @@
 2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* README: Add information on host requirements.
+	* do_cpus: Removed. Now in test_driver.
+
+2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* README: Update to fix mistakes noticed while installing on rtbf32
 	(RTEMS Build Fedora 32) machine.
 
