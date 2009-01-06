@@ -46,6 +46,9 @@ cd ~/test-gcc
 cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src login
 cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS login
 
+# test script infrastructure
+cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P gcc-testing
+
 # rtems
 cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P rtems
 
