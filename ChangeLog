@@ -1,5 +1,9 @@
 2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* do_one: Add GCC_EXTRA_ARGS to cross Ada build.
+
+2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* gcc/testsuite/ada/acats/Makefile.rtems: Add m32c to Ada run rules.
 
 2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
