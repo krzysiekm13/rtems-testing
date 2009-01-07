@@ -139,7 +139,7 @@ time sh -x ${SCRIPTDIR}/do_one -n >native.log 2>&1
 
 # Now cycle over all these CPUs
 if [ $? -eq 0 ] ; then
-  ${SCRIPTDIR}/do_cpus powerpc sparc
+  do_cpus powerpc sh sparc
   #${SCRIPTDIR}/do_cpus m32c arm h8300 i386 mips sh powerpc sparc
   #${SCRIPTDIR}/do_cpus i386 
   # wait

@@ -1,3 +1,9 @@
+2009-01-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* VERSIONS: Set parallelism based upon machine name.
+	* do_one: Use MAKEJOBS variable.
+	* test_driver: use function not external script.
+
 2009-01-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* README: Add information on host requirements.

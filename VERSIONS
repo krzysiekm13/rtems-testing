@@ -27,6 +27,15 @@ case `hostname` in
     ;;
 esac
 
+case `hostname` in
+  RTBF32|RTBF64)
+    MAKEJOBS="-j6"
+    ;;
+  *)
+    MAKEJOBS="-j3"
+    ;;
+esac
+
 INSTALL=${BASEDIR}/install
 BSP_INSTALL=${BASEDIR}/bsp-install
 SCRIPTDIR=${BASEDIR}/gcc-testing

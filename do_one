@@ -277,7 +277,7 @@ j_binutils()
       mkdir b-binutils-${cpu}
       cd b-binutils-${cpu}
       (${BINUTILSDIR}/configure --target=${TARGET} --prefix=$INSTALL && \
-        make -j3 && make install) >${LOGDIR}/${cpu}-binutils.log 2>&1
+        make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-binutils.log 2>&1
       if [ $? -ne 0 ] ; then
         echo "Failed to build Binutils from source"
         exit 1
@@ -340,7 +340,7 @@ j_gdb()
       (${GDBDIR}/configure --target=${GDBTARGET} \
         --enable-sim --enable-sim-hardware \
         --enable-timebase --enable-sim-trace  --prefix=$INSTALL && \
-        make -j3 && make install) >${LOGDIR}/${cpu}-gdb.log 2>&1
+        make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-gdb.log 2>&1
       if [ $? -ne 0 ] ; then
         echo "Failed to build gdb from source"
         exit 1
@@ -367,7 +367,7 @@ j_native()
   ${GCCDIR}/configure \
     ${NATIVE_GCC_EXTRA_ARGS} \
     --enable-languages=c${AdaArg} --prefix=$INSTALL &&
-  make -j3 && make install
+  make ${MAKEJOBS} && make install
 }
 
 if [ ${do_native} = "yes" ] ; then
@@ -421,7 +421,7 @@ j_gcc1()
    --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
     --enable-version-specific-runtime-libs \
     --enable-languages=c${cxx} --target=$TARGET --prefix=$INSTALL &&
-  make -j3 &&
+  make ${MAKEJOBS} &&
   make install
 }
 
@@ -468,7 +468,7 @@ j_rtems()
   esac
   ${RTEMSDIR}/configure --target=${TARGET} ${ENABLE_BSP} \
   ${RTEMS_ARGS} --enable-maintainer-mode --disable-tests \
-  --prefix=${BSP_INSTALL} && make -j3 && make install
+  --prefix=${BSP_INSTALL} && make ${MAKEJOBS} && make install
   cd ..
 }
 
@@ -553,7 +553,7 @@ j_gcc2()
     CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${bsp}/lib/ \
     --enable-version-specific-runtime-libs \
     --enable-languages=c,ada --target=$TARGET --prefix=$INSTALL &&
-  make -j3 &&
+  make ${MAKEJOBS} &&
   make install
 }
 
