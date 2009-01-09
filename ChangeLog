@@ -1,5 +1,9 @@
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* test_driver: Fix doOne bug. Add checks that directories exist.
+
+2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* README: Improve more as part of installing test environment on rtbf64.
 	* VERSIONS: Bump to autoconf 2.63 and add more on rtbf64.
 

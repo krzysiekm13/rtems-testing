@@ -13,6 +13,11 @@ fi
 
 source ${vfile}
 
+if [ ! -d ${BASEDIR} ] ; then
+  echo Have you set the BASEDIR in VERSIONS correctly?
+  exit 1
+fi
+
 start=`date`
 echo Started at: ${start}
 
@@ -62,6 +67,12 @@ update_others()
 {
   for d in ${BINUTILSDIR} ${GDBDIR} ${NEWLIBDIR}
   do
+    
+    if [ ! -d ${d} ] ; then
+      echo "Cannot locate ${d} -- aborting"
+      exit 1
+    fi
+
     case ${d} in
       *cvs*)
         cd ${d}
@@ -107,7 +118,7 @@ do_cpus()
 
     doOne=${SCRIPTDIR}/do_one 
     # Everything
-    time sh -x {doOne} -v -d -A ${tests} ${cpu} ${bsp} >${bsp}.log 2>&1
+    time sh -x ${doOne} -v -d -A ${tests} ${cpu} ${bsp} >${bsp}.log 2>&1
     # Just C
     #time sh -x ${doOne} -v -b -D -1 -r ${tests} ${cpu} ${bsp} >${bsp}.log 2>&1
     # Just C/C++
