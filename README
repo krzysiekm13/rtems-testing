@@ -90,9 +90,19 @@ tar xjf automake-1.10.2.tar.bz2
 mkdir install
 mkdir bsp-install
 mkdir log
+
+### Verify the file VERSIONS matches your installation.
 =========================================
 
-Update VERSIONS appropriately
+x86_64 Host
+============
+
+You will likely need the 32 bit glibc development kit.  If you do not
+have this you will get an error like the following while building gcc:
+
+gnu/stubs-32.h: No such file or directory
+
+Fedora 10: yum install glibc-devel
 
 DejaGNU
 ========

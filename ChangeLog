@@ -1,5 +1,9 @@
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* README: Add more details now that rtbf64 is running tests.
+
+2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* test_driver: Allow selection of CPUs from command line.
 
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
