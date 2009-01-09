@@ -150,10 +150,23 @@ time sh -x ${SCRIPTDIR}/do_one -n >native.log 2>&1
 
 # Now cycle over all these CPUs
 if [ $? -eq 0 ] ; then
-  do_cpus powerpc sh sparc
-  #${SCRIPTDIR}/do_cpus m32c arm h8300 i386 mips sh powerpc sparc
-  #${SCRIPTDIR}/do_cpus i386 
-  # wait
+  if [ $# -eq 0 ] ; then
+    # Simulators included in gdb
+    do_cpus powerpc sh sparc powerpc h8300 mips sh m32c m32r
+    # Requires qemu installation
+    #${SCRIPTDIR}/do_cpus i386 
+
+    # Requires Skyeye install
+    #${SCRIPTDIR}/do_cpus arm
+
+    # TBD bfin m68k avr
+  else
+    for cpu in $*
+    do
+      do_cpus ${cpu}
+    done
+  fi
+  
 fi
 # ${SCRIPTDIR}/do_cpus sparc powerpc mips i386 arm
 

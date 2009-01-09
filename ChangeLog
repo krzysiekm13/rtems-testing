@@ -1,5 +1,9 @@
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* test_driver: Allow selection of CPUs from command line.
+
+2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* VERSIONS: Pick up some rtbf64 changes.
 
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
