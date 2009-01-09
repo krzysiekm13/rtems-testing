@@ -1,3 +1,8 @@
+2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* README: Improve more as part of installing test environment on rtbf64.
+	* VERSIONS: Bump to autoconf 2.63 and add more on rtbf64.
+
 2009-01-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* VERSIONS: Set parallelism based upon machine name.

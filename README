@@ -75,13 +75,16 @@ svn checkout svn://gcc.gnu.org/svn/gcc/trunk gcc-svn
 
 # symlink newlib into gcc-svn
 cd gcc-svn
-ln -s FULL_PATH/newlib-SOURCE/newlib .
-ln -s FULL_PATH/newlib-SOURCE/libgloss .
+ln -s ~/test-gcc/newlib-cvs/src/newlib .
+ln -s ~/test-gcc/newlib-cvs/src/libgloss .
 cd ..
 
 # obtain automake and autoconf from ftp.gnu.org as tarballs
-tar xjf autoconf-XXX.tar.bz2
-tar xjf automake-XXX.tar.bz2
+# NOTE: Check versions required for RTEMS CVS.
+wget ftp://ftp.gnu.org/pub/gnu/autoconf/autoconf-2.63.tar.bz2
+tar xjf autoconf-2.63.tar.bz2
+wget ftp://ftp.gnu.org/pub/gnu/automake/automake-1.10.2.tar.bz2
+tar xjf automake-1.10.2.tar.bz2
 
 # make install points
 mkdir install
@@ -91,6 +94,11 @@ mkdir log
 
 Update VERSIONS appropriately
 
+DejaGNU
+========
+
+Fedora 10: Install dejagnu RPM.
+
 MPFR/GMP
 ========
 
@@ -98,7 +106,7 @@ You must have a sufficiently recent version of GMP and MPFR to build
 GCC.  On some OSes you can install a standard package.  On others, 
 you may have to provide your own installation.
 
-Fedora 10: Install mpfr-devel.
+Fedora 10: Install mpfr-devel RPM.
 
 GNAT
 ====
@@ -109,7 +117,7 @@ your own installation.  The first step in the build process is
 building a native compiler with potentially C, C++ and Ada support.
 This compiler will be used for all subsequent cross tool builds.
 
-Fedora 10: Install gcc-gnat.
+Fedora 10: Install gcc-gnat RPM.
 
 
 DejaGNU Support Files

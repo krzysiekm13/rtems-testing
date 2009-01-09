@@ -3,7 +3,7 @@ BASEDIR=/home/joel/work-gnat/svn/
 
 RTEMS_VERSION=4.10
 
-AUTOCONF=${BASEDIR}/autoconf-2.62
+AUTOCONF=${BASEDIR}/autoconf-2.63
 AUTOMAKE=${BASEDIR}/automake-1.10.2
 GCCDIR=${BASEDIR}/gcc-svn
 BINUTILSDIR=${BASEDIR}/binutils-cvs/src
@@ -13,7 +13,7 @@ RTEMSDIR=${BASEDIR}/rtems
 
 # These things vary between the GCC CFARM and OAR test machines
 case `hostname` in
-  gcc*)
+  gcc*|RTBF64)
     NATIVE_GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
     GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
     ;;
