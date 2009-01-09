@@ -11,13 +11,13 @@ NEWLIBDIR=${BASEDIR}/newlib-cvs/
 GDBDIR=${BASEDIR}/gdb-cvs/src
 RTEMSDIR=${BASEDIR}/rtems
 
-# These things vary between the GCC CFARM and OAR test machines
+# These things vary between the GCC CFARM Debian and OAR Fedora test machines
 case `hostname` in
-  gcc*|RTBF64)
+  gcc*)
     NATIVE_GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
     GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
     ;;
-  iceland*|*oarcorp*)
+  RTBF32|RTBF64|iceland*|*oarcorp*)
     NATIVE_GCC_EXTRA_ARGS=""
     GCC_EXTRA_ARGS=""
     ;;

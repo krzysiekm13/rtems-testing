@@ -1,5 +1,9 @@
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* VERSIONS: Pick up some rtbf64 changes.
+
+2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* test_driver: Fix doOne bug. Add checks that directories exist.
 
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
