@@ -55,23 +55,27 @@ cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P rtems
 # binutils
 mkdir binutils-cvs
 cd binutils-cvs
-cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co binutils
+READ ONLY: cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co binutils
+WRITE: CVS_RSH=ssh cvs -d :ext:joel@sourceware.org:/cvs/src co -P binutils
 cd ..
 
 # newlib
 mkdir newlib-cvs
 cd newlib-cvs
-cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co newlib
+READ ONLY: cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co newlib
+WRITE: CVS_RSH=ssh cvs -d :ext:joel@sourceware.org:/cvs/src co -P newlib
 cd ..
 
 # gdb
 mkdir gdb-cvs
 cd gdb-cvs
-cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co gdb
+READ ONLY: cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co gdb
+WRITE: CVS_RSH=ssh cvs -d :ext:joel@sourceware.org:/cvs/src co -P gdb
 cd ..
 
 # gcc
-svn checkout svn://gcc.gnu.org/svn/gcc/trunk gcc-svn
+READ ONLY: svn checkout svn://gcc.gnu.org/svn/gcc/trunk gcc-svn
+WRITE      svn co svn+ssh://joel@gcc.gnu.org/svn/gcc/trunk gcc-svn
 
 # symlink newlib into gcc-svn
 cd gcc-svn

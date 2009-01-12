@@ -23,6 +23,12 @@ echo Started at: ${start}
 
 BASEDIR=`pwd`
 
+### TODO: Parse arguments to get these
+doCleanInstallPoint="yes"
+doUpdateTools=yes
+doUpdateRTEMS=yes
+doNative=yes
+
 # HELPER - Update RTEMS
 update_rtems()
 {
@@ -132,21 +138,31 @@ do_cpus()
   echo Stopped at: ${stopped}
 }
 
-# Clean the install point
-clean_up
+if [ ${doCleanInstallPoint} = "yes" ] ; then
+  # Clean the install point
+  clean_up
+fi
 
 # Update gcc and install autotools in parallel
-install_auto &
-update_gcc &
-update_others &
+  if [ ${doCleanInstallPoint} = "yes" ] ; then
+    install_auto &
+  fi
+  if [ ${doUpdateTools} = "yes" ] ; then
+    update_gcc &
+    update_others &
+  fi
 wait
 
 # Do any remaining prep work in parallel
-update_rtems &
+  if [ ${doUpdateRTEMS} = "yes" ] ; then
+    update_rtems &
+  fi
 wait
 
 # Build the native compiler as a baseline to build the others
-time sh -x ${SCRIPTDIR}/do_one -n >native.log 2>&1
+  if [ ${doNative} = "yes" ] ; then
+    time sh -x ${SCRIPTDIR}/do_one -n >native.log 2>&1
+  fi
 
 # Now cycle over all these CPUs
 if [ $? -eq 0 ] ; then

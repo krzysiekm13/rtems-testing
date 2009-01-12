@@ -1,5 +1,5 @@
 # USE FULL PATHS!!!
-BASEDIR=/home/joel/work-gnat/svn/
+BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 
@@ -7,11 +7,12 @@ AUTOCONF=${BASEDIR}/autoconf-2.63
 AUTOMAKE=${BASEDIR}/automake-1.10.2
 GCCDIR=${BASEDIR}/gcc-svn
 BINUTILSDIR=${BASEDIR}/binutils-cvs/src
-NEWLIBDIR=${BASEDIR}/newlib-cvs/
+NEWLIBDIR=${BASEDIR}/newlib-cvs/src
 GDBDIR=${BASEDIR}/gdb-cvs/src
 RTEMSDIR=${BASEDIR}/rtems
 
 # These things vary between the GCC CFARM Debian and OAR Fedora test machines
+# TODO: It would be good to probe to figure this out.
 case `hostname` in
   gcc*)
     NATIVE_GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
@@ -27,6 +28,8 @@ case `hostname` in
     ;;
 esac
 
+# Specify the desired parallelism based upon the host name.
+# TODO: It would be good to probe to figure this out.
 case `hostname` in
   RTBF32|RTBF64)
     MAKEJOBS="-j6"

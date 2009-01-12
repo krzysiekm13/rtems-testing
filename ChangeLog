@@ -1,3 +1,11 @@
+2009-01-12	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* README: Add information about checking out writeable copies
+	of the tools.
+	* VERSIONS: Switch to directory structure most commonly used.
+	* test_driver: Add beginnings of having pieces optional so eventually
+	command line arguments can be added.
+
 2009-01-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* README: Add more details now that rtbf64 is running tests.
