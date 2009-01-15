@@ -23,6 +23,15 @@ echo Started at: ${start}
 
 BASEDIR=`pwd`
 
+for d in ${AUTOCONF} ${AUTOMAKE} ${BINUTILSDIR} \
+    ${GDBDIR} ${NEWLIBDIR} ${GCCDIR}
+do
+  if [ ! -d ${d} ] ; then
+    echo "Cannot locate ${d} -- aborting"
+    exit 1
+  fi
+done
+
 ### TODO: Parse arguments to get these
 doCleanInstallPoint="yes"
 doUpdateTools=yes
@@ -57,10 +66,6 @@ install_auto()
 {
   for auto in ${AUTOCONF} ${AUTOMAKE}
   do
-    if [ ! -d ${auto} ] ; then
-      echo "${d} not installed"
-      exit 0
-    fi
     cd ${auto}
     make distclean
     ./configure --prefix=${BASEDIR}/install
@@ -74,11 +79,6 @@ update_others()
   for d in ${BINUTILSDIR} ${GDBDIR} ${NEWLIBDIR}
   do
     
-    if [ ! -d ${d} ] ; then
-      echo "Cannot locate ${d} -- aborting"
-      exit 1
-    fi
-
     case ${d} in
       *cvs*)
         cd ${d}
