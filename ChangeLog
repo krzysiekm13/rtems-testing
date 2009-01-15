@@ -1,5 +1,10 @@
 2009-01-15	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* README: Add initial Skyeye information.
+	* test_driver: Fix typo on invoking do_cpus.
+
+2009-01-15	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* test_driver: Check for missing directories MUCH earlier.
 
 2009-01-12	Joel Sherrill <joel.sherrill@oarcorp.com>

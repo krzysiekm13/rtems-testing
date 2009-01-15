@@ -155,3 +155,15 @@ C/C++ Support Files
 The files rtems_gcc_main.c and rundeja in the top directory
 support the gcc/testsuite subdirectory in the gcc source tree.
 
+Skyeye Installation
+===================
+
+15 Jan 2009: 1.2.7 does not work with RTEMS. Unknown reason.  Use 1.2.5
+  until this is resolved.
+
+mkdir ~/skyeye
+cd ~/skyeye
+svn co https://skyeye.svn.sourceforge.net/svnroot/skyeye/skyeye-v1/branches/skyeye-1.2.5/
+cd skyeye-1.2.5
+./configure
+make
