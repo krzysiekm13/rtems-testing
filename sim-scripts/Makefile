@@ -3,7 +3,8 @@
 #
 
 INSTALL_DIR=../bin
-GENERATED_SCRIPTS=h8sim-4.10 jmr3904-4.10 sis-4.10
+GENERATED_SCRIPTS=h8sim-4.10 jmr3904-4.10 m32csim-4.10 m32rsim-4.10 \
+    sis-4.10 simsh-4.10
 COMPILED_PROGRAMS=usleep
 
 all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} install
@@ -28,11 +29,32 @@ jmr3904-4.10: gdb-sim-run.in jmr3904.in
 	    -e '/^##INSERT BSP SUPPORT HERE/r jmr3904.in' <$< >$@
 	chmod +x $@
 
+m32csim-4.10: gdb-sim-run.in m32csim.in
+	sed -e 's/@CPU@/M32C/' \
+	    -e 's/@CPU_TARGET@/m32c/' \
+	    -e 's/@BSP@/m32csim/' \
+            -e '/^##INSERT BSP SUPPORT HERE/r m32csim.in' <$< >$@
+	chmod +x $@
+
+m32rsim-4.10: gdb-sim-run.in m32rsim.in
+	sed -e 's/@CPU@/M32R/' \
+	    -e 's/@CPU_TARGET@/m32r/' \
+	    -e 's/@BSP@/m32rsim/' \
+            -e '/^##INSERT BSP SUPPORT HERE/r m32rsim.in' <$< >$@
+	chmod +x $@
+
 sis-4.10: gdb-sim-run.in sis.in
 	sed -e 's/@CPU@/SPARC/' \
 	    -e 's/@CPU_TARGET@/sparc/' \
 	    -e 's/@BSP@/sis/' \
             -e '/^##INSERT BSP SUPPORT HERE/r sis.in' <$< >$@
+	chmod +x $@
+
+simsh-4.10: gdb-sim-run.in simsh.in
+	sed -e 's/@CPU@/SuperH/' \
+	    -e 's/@CPU_TARGET@/sh/' \
+	    -e 's/@BSP@/simsh/' \
+            -e '/^##INSERT BSP SUPPORT HERE/r simsh.in' <$< >$@
 	chmod +x $@
 
 clean:

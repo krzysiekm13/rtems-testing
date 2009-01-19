@@ -1,5 +1,11 @@
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile, gdb-sim-run.in: Add m32csim, m32rsim, and
+	simsh.
+	* m32csim.in, m32rsim.in, simsh.in: New files.
+
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile, gdb-sim-run.in: Add h8300/h8sim.
 	* h8sim.in: New file.
 

@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-#  Framework script tailored for the @CPU@/@BSP
+#  Framework script tailored for the @CPU@/@BSP@
 #
 #  NOTE: If the does not have the name of a specific CPU/BSP pair, then
 #        this is the source file.  If it does have specific CPU/BSP pair,
