@@ -488,7 +488,7 @@ pwd
 if [ ${run_gcctests} = "yes" ] ; then 
   echo "Running GCC Tests..."
   cd ${BASEDIR}/b-gcc1-${cpu} || exit 1
-  time sh -x ${SCRIPTDIR}/rundeja ${bsp} \
+  time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} \
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
 
   RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`

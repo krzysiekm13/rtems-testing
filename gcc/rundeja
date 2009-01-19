@@ -95,7 +95,7 @@ fi
 
 RTEMS_MAKEFILE_PATH=${rtemsdir} \
 SCRIPTDIR=${SCRIPTDIR} \
-  make -f ${SCRIPTDIR}/Makefile.rtems_gccmain
+  make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccmain
 if [ $? -ne 0 ] ; then
   echo unable to compile RTEMS GCC Main
   exit 1

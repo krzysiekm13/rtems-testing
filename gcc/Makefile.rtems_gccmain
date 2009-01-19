@@ -14,5 +14,5 @@ all: clean rtems_gcc_main.o
 clean:
 	rm -f rtems_gcc_main.o
 
-rtems_gcc_main.o: ${SCRIPTDIR}/rtems_gcc_main.c
-	$(CC) $(CFLAGS) $(CPU_CFLAGS) -c ${SCRIPTDIR}/rtems_gcc_main.c
+rtems_gcc_main.o: ${SCRIPTDIR}/gcc/rtems_gcc_main.c
+	$(CC) $(CFLAGS) $(CPU_CFLAGS) -c ${SCRIPTDIR}/gcc/rtems_gcc_main.c

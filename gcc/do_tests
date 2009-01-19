@@ -1,5 +1,7 @@
 #
+# Example script to show how to test an installed RTEMS and GCC
 #
+# $Id$
 #
 
 gcc=gcc

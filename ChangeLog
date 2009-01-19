@@ -1,3 +1,10 @@
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/Makefile.rtems_gccmain, gcc/do_one, gcc/do_tests, gcc/gcc_status,
+	gcc/rtems_gcc_main.c, gcc/rundeja, gcc/test_driver: New files.
+	* Makefile.rtems_gccmain, do_one, do_tests, gcc_status,
+	rtems_gcc_main.c, rundeja, test_driver: Removed.
+
 2009-01-15	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* README: Add initial Skyeye information.

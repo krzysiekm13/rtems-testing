@@ -122,7 +122,7 @@ do_cpus()
 	;;
     esac
 
-    doOne=${SCRIPTDIR}/do_one 
+    doOne=${SCRIPTDIR}/gcc/do_one 
     # Everything
     time sh -x ${doOne} -v -d -A ${tests} ${cpu} ${bsp} >${bsp}.log 2>&1
     # Just C
@@ -161,7 +161,7 @@ wait
 
 # Build the native compiler as a baseline to build the others
   if [ ${doNative} = "yes" ] ; then
-    time sh -x ${SCRIPTDIR}/do_one -n >native.log 2>&1
+    time sh -x ${SCRIPTDIR}/gcc/do_one -n >native.log 2>&1
   fi
 
 # Now cycle over all these CPUs
@@ -184,7 +184,6 @@ if [ $? -eq 0 ] ; then
   fi
   
 fi
-# ${SCRIPTDIR}/do_cpus sparc powerpc mips i386 arm
 
 stopped=`date`
 echo Started at: ${start}
