@@ -94,6 +94,11 @@ checkGenericFaults()
 {
   logfile=$1
 
+  grep "^\*\*\* END OF " ${logfile}
+  normalExit=$?
+  if [ $normalExit -eq 0 ] ; then
+    return 1
+  fi
   grep "Suspending faulting task" ${logfile}
   Fault=$?
   grep "assertion failed" ${logfile}

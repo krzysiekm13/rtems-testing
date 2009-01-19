@@ -3,7 +3,7 @@
 #
 
 INSTALL_DIR=../bin
-GENERATED_SCRIPTS=jmr3904-4.10 sis-4.10
+GENERATED_SCRIPTS=h8sim-4.10 jmr3904-4.10 sis-4.10
 COMPILED_PROGRAMS=usleep
 
 all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} install
@@ -13,6 +13,13 @@ prep:
 
 usleep: usleep.c
 	$(CC) -o $@ $<
+
+h8sim-4.10: gdb-sim-run.in h8sim.in
+	sed -e 's/@CPU@/h8300/' \
+	    -e 's/@CPU_TARGET@/h8300/' \
+	    -e 's/@BSP@/h8sim/' \
+            -e '/^##INSERT BSP SUPPORT HERE/r h8sim.in' <$< >$@
+	chmod +x $@
 
 jmr3904-4.10: gdb-sim-run.in jmr3904.in
 	sed -e 's/@CPU@/MIPS/' \

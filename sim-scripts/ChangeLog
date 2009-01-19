@@ -1,5 +1,10 @@
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile, gdb-sim-run.in: Add h8300/h8sim.
+	* h8sim.in: New file.
+
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, sis.in: New files.
 
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
