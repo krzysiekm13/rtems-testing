@@ -3,7 +3,8 @@
 #
 
 INSTALL_DIR=../bin
-GENERATED_SCRIPTS=h8sim jmr3904 m32csim m32rsim sis simsh
+GENERATED_SCRIPTS=h8sim h8sim-gdb jmr3904 jmr3904-gdb m32csim m32csim-gdb \
+  m32rsim m32rsim-gdb sis sis-gdb simsh simsh-gdb
 COMPILED_PROGRAMS=usleep
 
 all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} install
@@ -14,22 +15,22 @@ prep:
 usleep: usleep.c
 	$(CC) -o $@ $<
 
-h8sim: gdb-sim-run.in h8sim.in
+h8sim h8sim-gdb: gdb-sim-run.in gdb-sim.in h8sim.in
 	./mkrun H8300 h8300 h8sim
 
-jmr3904: gdb-sim-run.in jmr3904.in
+jmr3904 jmr3904-gdb: gdb-sim-run.in gdb-sim.in jmr3904.in
 	./mkrun MIPS mipstx39 jmr3904
 
-m32csim: gdb-sim-run.in m32csim.in
+m32csim m32csim-gdb: gdb-sim-run.in gdb-sim.in m32csim.in
 	./mkrun M32C m32c m32csim
 
-m32rsim: gdb-sim-run.in m32rsim.in
+m32rsim m32rsim-gdb: gdb-sim-run.in gdb-sim.in m32rsim.in
 	./mkrun M32R m32r m32rsim
 
-sis: gdb-sim-run.in sis.in
+sis sis-gdb: gdb-sim-run.in gdb-sim.in sis.in
 	./mkrun SPARC sparc sis
 
-simsh: gdb-sim-run.in simsh.in
+simsh simsh-gdb: gdb-sim-run.in gdb-sim.in simsh.in
 	./mkrun SuperH sh simsh
 
 clean:
@@ -41,6 +42,7 @@ install:
 	done
 	for i in ${GENERATED_SCRIPTS} ; do \
 	  cp $${i} ${INSTALL_DIR}/$${i}-4.10 ; \
+	  chmod +x ${INSTALL_DIR}/$${i}-4.10 ; \
 	done
 	cd ${INSTALL_DIR} ; for i in ${GENERATED_SCRIPTS} ; do \
 	  for v in 4.9 4.8 4.7 4.6 ; do \

@@ -33,3 +33,13 @@ bspLimit()
   esac
   return ${limit}
 }
+
+bspGeneratesGDBCommands="yes"
+
+bspGenerateGDBCommands()
+{
+cat <<EOF
+tar sim --board=jmr3904
+load
+EOF
+}

@@ -1,0 +1,51 @@
+#! /bin/sh
+#
+#  Framework script tailored for the @CPU@/@BSP@
+#
+#  NOTE: If the does not have the name of a specific CPU/BSP pair, then
+#        this is the source file.  If it does have specific CPU/BSP pair,
+#        then this is generated output and should NOT be edited.
+#
+#  $Id$
+#
+
+trap "test_exit 1" 1 2 3 13 14 15
+
+progname=${0##*/}        # fast basename hack for ksh, bash
+rtemsVersion=`echo ${progname} | sed -e 's/@BSP@-//' -e 's/gdb-//'`
+GDB=@CPU_TARGET@-rtems${rtemsVersion}-gdb
+
+test_exit()
+{
+  exit_code=$1
+  rm -f @BSP@-cmds
+  exit $exit_code
+}
+
+if [ $# -eq 0 ] ; then
+  echo "No arguments .. no executable specified"
+  exit 1 
+fi
+
+bspGeneratesGDBCommands="no"
+
+###################################################################
+###################################################################
+###################################################################
+##INSERT BSP SUPPORT HERE
+###################################################################
+###################################################################
+###################################################################
+
+if [ ${bspGeneratesGDBCommands} = "no" ] ; then
+  cat <<EOF
+tar sim 
+load
+EOF
+else
+  bspGenerateGDBCommands 
+fi >@BSP@-cmds
+
+${GDB} --command=@BSP@-cmds $*
+
+test_exit $?

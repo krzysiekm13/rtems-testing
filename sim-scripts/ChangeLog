@@ -1,5 +1,11 @@
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile, jmr3904.in, mkrun: Now generate gdb script for
+	h8sim, jmr3904 m32csim, m32rsim, simsh and sis.
+	* gdb-sim.in: New file.
+
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile: Switch to using script to do sed and add
 	versioning on installation.
 	* mkrun: New file.

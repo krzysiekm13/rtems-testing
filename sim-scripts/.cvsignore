@@ -1,7 +1,13 @@
 h8sim
+h8sim-gdb
 jmr3904
+jmr3904-gdb
 m32csim
+m32csim-gdb
 m32rsim
+m32rsim-gdb
 simsh
+simsh-gdb
 sis
+sis-gdb
 usleep

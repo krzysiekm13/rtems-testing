@@ -10,9 +10,18 @@ BSP=$3
 RUN=${BSP}
 GDB=${BSP}-gdb
 
+# Generate RUN script
 sed -e "s/@CPU@/${CPU}/" \
     -e "s/@CPU_TARGET@/${CPU_TARGET}/" \
     -e "s/@BSP@/${BSP}/" \
     -e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" <gdb-sim-run.in >${RUN}
-chmod +x ${RUN}
+
+# Generate GDB script
+sed -e "s/@CPU@/${CPU}/" \
+    -e "s/@CPU_TARGET@/${CPU_TARGET}/" \
+    -e "s/@BSP@/${BSP}/" \
+    -e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" <gdb-sim.in >${GDB}
+
+# Make both executable
+chmod +x ${RUN} ${GDB}
 exit 0
