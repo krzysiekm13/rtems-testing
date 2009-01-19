@@ -1,0 +1,35 @@
+#
+#  MIPS JMR3904 Support 
+#
+#  $Id$
+#
+
+runBSP()
+{
+  ${RUN} --board=jmr3904 ${1}
+}
+
+checkBSPFaults()
+{
+  logfile=$1
+  grep "^Unhandled exception" ${logfile}
+  exceptionExit=$?
+  grep "^mips-core: " ${logfile}
+  badAccessExit=$?
+  if [ $badAccessExit -eq 0 -o $exceptionExit -eq 0 ] ; then
+    return 1
+  fi
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}

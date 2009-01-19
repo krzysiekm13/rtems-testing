@@ -1,0 +1,223 @@
+#! /bin/sh
+#
+#  Framework script tailored for the @CPU@/@BSP
+#
+#  NOTE: If the does not have the name of a specific CPU/BSP pair, then
+#        this is the source file.  If it does have specific CPU/BSP pair,
+#        then this is generated output and should NOT be edited.
+#  
+#  $Id$
+#
+
+trap "test_exit 1" 1 2 3 13 14 15
+
+test_exit()
+{
+  exit_code=$1
+  exit $exit_code
+}
+
+
+progname=${0##*/}        # fast basename hack for ksh, bash
+
+USAGE=\
+"usage: $progname [ -opts ] test [ test ... ]
+	-v	   -- verbose
+	-c	   -- enabled coverage (not supported by all BSPs)
+	-i	   -- interactive (no time limit)
+        -l limit   -- specify time limit (default is 'BSP dependent')
+"
+
+#   log an error to stderr
+prerr()
+{
+    echo "$*" >&2
+}
+
+fatal() {
+    [ "$1" ] && prerr $*
+    prerr "$USAGE"
+    exit 1
+}
+
+warn() {
+    [ "$1" ] && prerr $*
+}
+
+#
+# process the options
+#
+# defaults for getopt vars
+#
+
+coverage="no"
+verbose="no"
+limit="not_set"
+interactive="no"
+
+while getopts vil: OPT
+do
+    case "$OPT" in
+	v) verbose="yes";;
+	c) coverage="yes";;
+	i) interactive="yes";;
+        l) limit="$OPTARG";;
+        *) fatal;;
+    esac
+done
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+if [ ${interactive} = "yes" ] ; then
+  limit=0
+fi
+
+args=$*
+
+### Set BSP defaults.  If BSP does not have default, it will override
+bspRunFatal="no"
+bspGeneratesDeviceTree="no"
+
+rtemsVersion=`echo ${progname} | sed -e 's/@BSP@-//' -e 's/-gdb//'`
+RUN=@CPU_TARGET@-rtems${rtemsVersion}-run
+
+###################################################################
+###################################################################
+###################################################################
+##INSERT BSP SUPPORT HERE
+###################################################################
+###################################################################
+###################################################################
+
+## These are faults any BSP may generate.  They are common to RTEMS.
+checkGenericFaults()
+{
+  logfile=$1
+
+  grep "Suspending faulting task" ${logfile}
+  Fault=$?
+  grep "assertion failed" ${logfile}
+  Assert=$?
+  if [ $Fault -eq 0 -o $Assert -eq 0 ] ; then
+    return 1
+  fi
+  return 0
+}
+
+runtest()
+{
+  testname=${1}
+  testtype=${2}
+  max_run_time=${3}
+  if [ ${max_run_time} -eq 0 ] ; then
+    #echo run ${testname} forever
+    runBSP ${testname}
+    return
+  fi
+
+  #echo run ${testname} for maximum ${max_run_time} seconds
+  logfile=${testname}.tmp
+  runBSP ${testname} >${logfile} 2>&1 &
+  pid=$!
+
+  # Make sure it won't run forever...
+  millilimit=`expr ${max_run_time} \* 1000`
+  milliseconds=0
+  while :
+  do
+    # sleep 10ms at a time waiting for job to finish or timer to expire
+    # if job has exited, then we exit, too.
+    usleep 10000  # ten milliseconds
+    milliseconds=`expr ${milliseconds} + 10`
+    kill -0 $pid 2> /dev/null
+    running=$?
+    if [ $running -eq 0 ] ; then
+      if [ ${milliseconds} -ge ${millilimit} ]; then
+        kill -9 $pid 2> /dev/null
+        cat ${logfile}
+        echo "${testname} killed after running ${max_run_time} seconds"
+        break
+      fi
+      checkBSPFaults ${logfile} >/dev/null 2>&1
+      bspFaults=$?
+      checkGenericFaults ${logfile} >/dev/null 2>&1
+      genericFaults=$?
+      if [ ${bspFaults} -ne 0 -o ${genericFaults} -ne 0 ] ; then
+        kill -9 ${pid} >/dev/null 2>&1
+        cat ${logfile}
+        echo Ran in ${milliseconds} milliseconds
+    fi
+
+  else
+    # done normally
+    cat ${logfile}
+    echo "${testname} ran in ${milliseconds} milliseconds"
+    break
+  fi
+  done
+  kill -9 $pid >/dev/null 2>&1
+}
+
+if [ "X${args}" = "X" ] ; then
+  echo no tests to run
+  exit 1
+fi
+
+## Some BSPs must generate device trees to provide to the simulator
+if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
+  bspGenerateDeviceTree
+fi
+
+## Now run the tests
+for toRun in $args
+do
+  case `basename ${toRun}` in
+    *-node*) testtype="mp"     ;;
+    *fatal*) testtype="fatal"  ;;
+    *)       testtype="single" ;;
+  esac
+
+  if [ ${interactive} = "yes" ] ; then
+    echo INTERACTIVE runtest ${toRun} ${testtype} 0
+    continue
+  fi
+
+  if [ ${limit} = "not_set" ] ; then
+    bspLimit ${toRun}
+    limit=$?
+  fi
+  if [ ${testtype} = "fatal" -a ${bspRunFatal} = "no" ] ; then
+    warn "Skipping fatal error test ${toRun}"
+    continue
+  fi
+
+  ## If the test is known to be interactive or locks up and we are
+  ## in batch mode, skip it.
+  case ${toRun} in
+    monitor* | termios* | fileio*)
+        warn "Skipping $tname; it is interactive"
+        continue
+        ;;
+    *-node2*)
+        fatal "MP tests not supported"
+        warn "Skipping $tname; 'runtest' runs both nodes when for *-node1"
+        continue;;
+    *-node1*)
+      warn "Running both nodes associated with $tname"
+      ;;
+    minimum*|spfatal|termio*)
+      warn "Skipping $tname; it locks up or takes a VERY long time to run"
+      continue
+      ;;
+   esac
+
+  test ${verbose} = "yes" && runtest ${toRun} ${testtype} ${limit}
+  runtest ${toRun} ${testtype} ${limit}
+done
+
+if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
+  bspCleanDeviceTree
+fi
+
+exit $?
+
