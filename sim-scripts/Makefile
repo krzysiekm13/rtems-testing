@@ -3,8 +3,7 @@
 #
 
 INSTALL_DIR=../bin
-GENERATED_SCRIPTS=h8sim-4.10 jmr3904-4.10 m32csim-4.10 m32rsim-4.10 \
-    sis-4.10 simsh-4.10
+GENERATED_SCRIPTS=h8sim jmr3904 m32csim m32rsim sis simsh
 COMPILED_PROGRAMS=usleep
 
 all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} install
@@ -15,56 +14,35 @@ prep:
 usleep: usleep.c
 	$(CC) -o $@ $<
 
-h8sim-4.10: gdb-sim-run.in h8sim.in
-	sed -e 's/@CPU@/h8300/' \
-	    -e 's/@CPU_TARGET@/h8300/' \
-	    -e 's/@BSP@/h8sim/' \
-            -e '/^##INSERT BSP SUPPORT HERE/r h8sim.in' <$< >$@
-	chmod +x $@
+h8sim: gdb-sim-run.in h8sim.in
+	./mkrun H8300 h8300 h8sim
 
-jmr3904-4.10: gdb-sim-run.in jmr3904.in
-	sed -e 's/@CPU@/MIPS/' \
-	    -e 's/@CPU_TARGET@/mipstx39/' \
-	    -e 's/@BSP@/jmr3904/' \
-	    -e '/^##INSERT BSP SUPPORT HERE/r jmr3904.in' <$< >$@
-	chmod +x $@
+jmr3904: gdb-sim-run.in jmr3904.in
+	./mkrun MIPS mipstx39 jmr3904
 
-m32csim-4.10: gdb-sim-run.in m32csim.in
-	sed -e 's/@CPU@/M32C/' \
-	    -e 's/@CPU_TARGET@/m32c/' \
-	    -e 's/@BSP@/m32csim/' \
-            -e '/^##INSERT BSP SUPPORT HERE/r m32csim.in' <$< >$@
-	chmod +x $@
+m32csim: gdb-sim-run.in m32csim.in
+	./mkrun M32C m32c m32csim
 
-m32rsim-4.10: gdb-sim-run.in m32rsim.in
-	sed -e 's/@CPU@/M32R/' \
-	    -e 's/@CPU_TARGET@/m32r/' \
-	    -e 's/@BSP@/m32rsim/' \
-            -e '/^##INSERT BSP SUPPORT HERE/r m32rsim.in' <$< >$@
-	chmod +x $@
+m32rsim: gdb-sim-run.in m32rsim.in
+	./mkrun M32R m32r m32rsim
 
-sis-4.10: gdb-sim-run.in sis.in
-	sed -e 's/@CPU@/SPARC/' \
-	    -e 's/@CPU_TARGET@/sparc/' \
-	    -e 's/@BSP@/sis/' \
-            -e '/^##INSERT BSP SUPPORT HERE/r sis.in' <$< >$@
-	chmod +x $@
+sis: gdb-sim-run.in sis.in
+	./mkrun SPARC sparc sis
 
-simsh-4.10: gdb-sim-run.in simsh.in
-	sed -e 's/@CPU@/SuperH/' \
-	    -e 's/@CPU_TARGET@/sh/' \
-	    -e 's/@BSP@/simsh/' \
-            -e '/^##INSERT BSP SUPPORT HERE/r simsh.in' <$< >$@
-	chmod +x $@
+simsh: gdb-sim-run.in simsh.in
+	./mkrun SuperH sh simsh
 
 clean:
 	rm -f ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS}
 
 install:
-	for i in ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} ; do \
+	for i in ${COMPILED_PROGRAMS} ; do \
 	  cp $${i} ${INSTALL_DIR} ; \
 	done
-	cd ${INSTALL_DIR} ; for i in jmr3904 ; do \
+	for i in ${GENERATED_SCRIPTS} ; do \
+	  cp $${i} ${INSTALL_DIR}/$${i}-4.10 ; \
+	done
+	cd ${INSTALL_DIR} ; for i in ${GENERATED_SCRIPTS} ; do \
 	  for v in 4.9 4.8 4.7 4.6 ; do \
 	    rm -f $${i}-$${v} ; ln -s $${i}-4.10 $${i}-$${v} ; \
 	done ;\

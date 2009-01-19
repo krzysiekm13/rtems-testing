@@ -1,5 +1,11 @@
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile: Switch to using script to do sed and add
+	versioning on installation.
+	* mkrun: New file.
+
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile, gdb-sim-run.in: Add m32csim, m32rsim, and
 	simsh.
 	* m32csim.in, m32rsim.in, simsh.in: New files.

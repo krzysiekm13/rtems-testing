@@ -1,0 +1,18 @@
+#! /bin/sh
+#
+#  Helper to sed run scripts
+#
+#  $Id$
+
+CPU=$1
+CPU_TARGET=$2
+BSP=$3
+RUN=${BSP}
+GDB=${BSP}-gdb
+
+sed -e "s/@CPU@/${CPU}/" \
+    -e "s/@CPU_TARGET@/${CPU_TARGET}/" \
+    -e "s/@BSP@/${BSP}/" \
+    -e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" <gdb-sim-run.in >${RUN}
+chmod +x ${RUN}
+exit 0
