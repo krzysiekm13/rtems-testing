@@ -1,5 +1,23 @@
 2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* dejagnu/boards/rtems-arm-edb7312.exp,
+	dejagnu/boards/rtems-arm-nosim.exp,
+	dejagnu/boards/rtems-avr-avrtest.exp,
+	dejagnu/boards/rtems-bfin-nosim.exp,
+	dejagnu/boards/rtems-h8300-h8sim.exp,
+	dejagnu/boards/rtems-i386-qemu.exp,
+	dejagnu/boards/rtems-m32c-m32csim.exp,
+	dejagnu/boards/rtems-m32r-m32rsim.exp,
+	dejagnu/boards/rtems-m68k-nosim.exp,
+	dejagnu/boards/rtems-mips-jmr3904.exp,
+	dejagnu/boards/rtems-powerpc-psim.exp,
+	dejagnu/boards/rtems-sh-simsh1.exp,
+	dejagnu/boards/rtems-sparc-sis.exp,
+	gcc/testsuite/ada/acats/Makefile.rtems: Eliminate version specific
+	file names.
+
+2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* gcc/do_one, gcc/gcc_status, gcc/rundeja, gcc/test_driver:
 	Adjust path to VERSIONS to account for being in a subdirectory.
 	* gcc/testsuite/ada/acats/rtems_generate_acats_email: Include host in

@@ -30,28 +30,28 @@ stamp-targetrun:
 	echo "  runqemu -l 60 -c $$"'*' >> $@
   endif # pc386
   ifeq ($(RTEMS_BSP),m32csim)
-	echo "  m32crun -l 20 -c $$"'*' >> $@
+	echo "  m32csim -l 20 -c $$"'*' >> $@
   endif # m32csim
   ifeq ($(RTEMS_BSP),jmr3904)
-	echo "  jmr3904-4.10 -l 240 $$"'*' >> $@
+	echo "  jmr3904 -l 240 $$"'*' >> $@
   endif # jmr3904
   ifeq ($(RTEMS_BSP),psim)
-	echo "  psim-4.10 -l 180 $$"'*' >> $@
+	echo "  psim -l 180 $$"'*' >> $@
   endif # psim
   ifeq ($(RTEMS_BSP),erc32)
 	echo "  runerc32 -c $$"'*' >> $@
   endif # erc32
   ifeq ($(RTEMS_BSP),sis)
-	echo "  sis-4.10 -l 180 $$"'*' >> $@
+	echo "  sis -l 180 $$"'*' >> $@
   endif # sis
   ifeq ($(RTEMS_BSP),edb7312)
 	echo "  edb7312 -l 180 $$"'*' >> $@
   endif # edb7312
   ifeq ($(RTEMS_BSP),simsh1)
-	echo "  simsh-4.10 -l 60 $$"'*' >> $@
+	echo "  simsh -l 60 $$"'*' >> $@
   endif # simsh1
   ifeq ($(RTEMS_BSP),h8sim)
-	echo "  h8sim-4.10 -l 60 $$"'*' >> $@
+	echo "  h8sim -l 60 $$"'*' >> $@
   endif # h8sim
   ifeq ($(RTEMS_BSP),mcf5206elite)
 	echo "  nosim $$"'*' >> $@

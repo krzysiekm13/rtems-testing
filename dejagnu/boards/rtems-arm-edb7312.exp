@@ -26,7 +26,7 @@ set_board_info isremote 0
 # We only have a small stack available to us
 set_board_info gcc,stack_size 2048
 
-# psim-4.9 is a wrapper script which handles the device tree
+# wrapper script which handles the device tree
 set_board_info sim "edb7312"
 
 # No support for signals on this target.

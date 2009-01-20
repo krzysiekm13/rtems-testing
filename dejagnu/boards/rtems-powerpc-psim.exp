@@ -28,7 +28,7 @@ load_generic_config "sim"
 load_base_board_description "basic-sim"
 
 # The name of the simulator is "ppc".
-setup_sim psim-4.9
+setup_sim psim
 
 # No multilib flags needed by default.
 process_multilib_options ""
@@ -47,8 +47,8 @@ set_board_info isremote 0
 # We only have a small stack available to us
 set_board_info gcc,stack_size 2048
 
-# psim-4.9 is a wrapper script which handles the device tree
-set_board_info sim "psim-4.9 -l 180"
+# wrapper script which handles the device tree
+set_board_info sim "psim -l 180"
 
 # No support for signals on this target.
 set_board_info gdb,nosignals 1
