@@ -17,7 +17,8 @@ cat gdb-sim-run.in | \
       -e "s/@CPU_TARGET@/${CPU_TARGET}/" \
       -e "s/@BSP@/${BSP}/" \
       -e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" | \
-  sed -e "/^##INSERT SKYEYE SUPPORT HERE/r skyeye-support" >${RUN}
+  sed -e "/^##INSERT SKYEYE SUPPORT HERE/r skyeye-support" \
+      -e "/^##INSERT TSIM SUPPORT HERE/r tsim-support" >${RUN}
 chmod +x ${RUN}
 
 # Generate GDB script

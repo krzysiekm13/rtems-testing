@@ -64,7 +64,7 @@ interactive="no"
 use_sysv_ipc="no"
 generate_tree_and_exit="no"
 
-while getopts vgil:s OPT
+while getopts vcgil:s OPT
 do
  case "$OPT" in
    v) verbose="yes";;
@@ -130,13 +130,38 @@ checkGenericFaults()
 {
   logfile=$1
 
+  ## Clean exit patterns -- delay for coverage to get written
   for pattern in  \
      "^.*EXECUTIVE SHUTDOWN" \
-     "^\*\*\* END OF " \
+     "^\*\*\* END OF "
+  do
+    grep "${pattern}" ${logfile} >/dev/null 2>&1
+    if [ $? -eq 0 ] ; then
+      if [ ${coverage} = "yes" ] ; then
+        # give the simulator a chance to write the coverage
+        # ASSUME: It will exit
+        # TODO:  Add timeout logic here
+        while :
+        do
+	  kill -0 $pid 2> /dev/null
+	  running=$?
+	  if [ $running -eq 0 ] ; then
+	    sleep 1
+          else
+            return 1
+          fi
+        done
+      fi
+      return 1
+    fi
+  done
+
+  ## Error exit patterns -- should not happen on coverage runs
+  for pattern in  \
      "Suspending faulting task" \
      "assertion failed"
   do
-    grep "${pattern}" ${logfile} >/dev/null
+    grep "${pattern}" ${logfile} >/dev/null 2>&1
     if [ $? -eq 0 ] ; then
       return 1
     fi
@@ -207,6 +232,8 @@ if [ "X${args}" = "X" ] ; then
 fi
 
 ## Now run the tests
+test ${verbose} = "yes" && \
+  echo TESTS TO RUN: ${args}
 for toRun in $args
 do
   baseToRun=`basename ${toRun}`
@@ -228,9 +255,16 @@ do
       echo "Device tree generated and in ${bspTreeFile}"
       exit 0
     fi 
+    if [ ${verbose} = "yes" ] ; then
+      echo "=================================================="
+      cat ${bspTreeFile}
+      echo "=================================================="
+    fi
   fi
 
   if [ ${interactive} = "yes" ] ; then
+    test ${verbose} = "yes" && \
+      echo INTERACTIVE runtest ${toRun} ${testtype} 0
     runtest ${toRun} ${testtype} 0
     continue
   fi
@@ -260,7 +294,8 @@ do
       ;;
    esac
 
-  test ${verbose} = "yes" && runtest ${toRun} ${testtype} ${limit}
+  test ${verbose} = "yes" && \
+    echo BACKGROUND runtest ${toRun} ${testtype} ${limit}
   runtest ${toRun} ${testtype} ${limit}
 
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then

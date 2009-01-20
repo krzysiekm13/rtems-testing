@@ -1,0 +1,10 @@
+#
+#  SPARC/LEON3 Support (on TSIM)
+#
+#  $Id$
+#
+
+tsimName=leon3
+tsimGoAddress=0x40000000
+
+##INSERT TSIM SUPPORT HERE
