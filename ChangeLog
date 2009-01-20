@@ -1,5 +1,9 @@
 2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* README: Add make of sim-scripts.
+
+2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* gcc/rtems_gcc_main.c: Lower memory requirements on m32c and use
 	unified memory configuration.
 
