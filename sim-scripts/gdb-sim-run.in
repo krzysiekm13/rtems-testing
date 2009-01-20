@@ -91,6 +91,7 @@ bspRunFatal="no"
 bspGeneratesDeviceTree="no"
 bspSupportsSystemVIPC="no"
 bspUsesGDBSimulator="yes"
+bspNeedsDos2Unix="no"
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -102,8 +103,6 @@ do
 done
 
 runBSP=${defaultRUN}
-
-rtemsVersion=`echo ${progname} | sed -e 's/@BSP@-//' -e 's/-gdb//'`
 
 ###################################################################
 ###################################################################
@@ -126,14 +125,17 @@ fi
 test ${verbose} = "yes" && echo Using ${runBSP}
 
 ## These are faults any BSP may generate.  They are common to RTEMS.
-checkGenericFaults()
+checkGenericExits()
 {
   logfile=$1
 
   ## Clean exit patterns -- delay for coverage to get written
   for pattern in  \
-     "^.*EXECUTIVE SHUTDOWN" \
-     "^\*\*\* END OF "
+      "^\*\*\* END OF " \
+      "^.*EXECUTIVE SHUTDOWN" \
+      "===.*FAILED.*===" \
+      "===.*PASSED.*===" \
+      "FAULTY THREAD WILL BE DELETED"
   do
     grep "${pattern}" ${logfile} >/dev/null 2>&1
     if [ $? -eq 0 ] ; then
@@ -169,6 +171,16 @@ checkGenericFaults()
   return 0
 }
 
+catLog()
+{
+  if [ ${bspNeedsDos2Unix} = "yes" ] ; then
+    dos2unix ${1}
+  fi
+
+  tr -d "\015" <${1}
+  echo
+}
+
 runtest()
 {
   testname=${1}
@@ -192,33 +204,35 @@ runtest()
   do
     # sleep 10ms at a time waiting for job to finish or timer to expire
     # if job has exited, then we exit, too.
-    usleep 10000  # ten milliseconds
-    milliseconds=`expr ${milliseconds} + 10`
+    usleep 25000  # twenty five milliseconds
+    milliseconds=`expr ${milliseconds} + 25`
     kill -0 $pid 2> /dev/null
     running=$?
     if [ $running -eq 0 ] ; then
       if [ ${milliseconds} -ge ${millilimit} ]; then
         kill -9 $pid 2> /dev/null
-        cat ${logfile}
+        catLog ${logfile}
         echo "${testname} killed after running ${max_run_time} seconds"
         break
       fi
       if [ ! -r ${logfile} ] ; then
         continue
       fi
+      # check for BSP specific messages which indicate program ended
       checkBSPFaults ${logfile} >/dev/null 2>&1
       bspFaults=$?
-      checkGenericFaults ${logfile} >/dev/null 2>&1
-      genericFaults=$?
-      if [ ${bspFaults} -ne 0 -o ${genericFaults} -ne 0 ] ; then
+      # check for cross platform messages which indicate program ended
+      checkGenericExits ${logfile} >/dev/null 2>&1
+      genericExits=$?
+      if [ ${bspFaults} -ne 0 -o ${genericExits} -ne 0 ] ; then
         kill -9 ${pid} >/dev/null 2>&1
-        cat ${logfile}
+        catLog ${logfile}
         echo Ran in ${milliseconds} milliseconds
         break
       fi
   else
     # done normally
-    cat ${logfile}
+    catLog ${logfile}
     echo "${testname} ran in ${milliseconds} milliseconds"
     break
   fi

@@ -1,0 +1,83 @@
+#
+#  i386/qemu Support 
+#
+#  $Id$
+#
+
+bspUsesGDBSimulator="no"
+runBSP=qemu
+bspNeedsDos2Unix="yes"
+
+# Set the defaults based upon arguments given and do some error checking
+if [ X${QEMUDIR} == X ] ; then
+  QEMUDIR=${HOME}/qemu
+fi
+if [ ! -d ${QEMUDIR} ] ; then
+  fatal Base directory ${QEMUDIR} does not exist or is not a directory
+fi
+
+if [ X${hd0Dir} == X ] ; then
+  hd0Dir=${QEMUDIR}/hd
+fi
+if [ ! -d ${hd0Dir} ] ; then
+  fatal VFAT directory ${hd0Dir} does not exist or is not a directory
+fi
+
+if [ X${fd0Image} == X ] ; then
+  fd0Image=${QEMUDIR}/pc386_fda
+fi
+if [ ! -e ${fd0Image} ] ; then
+  fatal Boot floppy ${fd0Image} does not exist or is not a file
+fi
+
+if [ ${verbose} == "yes" ] ; then
+  echo "QEMU Working Directory: " ${qemudir}
+  echo "QEMU VFAT HD Directory: " ${hd0Dir}
+  echo "QEMU Boot Floppy File : " ${fd0Image}
+fi
+
+runARGS()
+{
+  file ${1} | grep "Netboot image" >/dev/null 2>&1
+  if [ $? -eq 0 ] ; then
+    echo "INCORRECT FORMAT -- ${1}"
+    echo "MUST BE ELF -- look at using the .exe"
+    exit 1
+  fi
+  cp ${1} ${hd0Dir}/test.exe
+
+  echo "-m 8 -boot a -fda ${fd0Image} -hda fat:${hd0Dir} \
+         -monitor null -nographic -serial stdio --no-reboot"
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}
+
+bspGeneratesDeviceTree="yes"
+bspTreeFile=edb7312.conf
+
+### Generate the PSIM device tree based upon the type of application being run
+bspGenerateDeviceTree()
+{
+cat <<EOF
+cpu: arm720t
+mach: ep7312
+mem_bank: map=I,type=RW, addr=0x80000000, size=0x00100000
+mem_bank: map=M, type=RW, addr=0x00000000, size=0x1000000
+uart: mod=pipe, desc_in=/dev/null, desc_out=/dev/stdout
+EOF
+}

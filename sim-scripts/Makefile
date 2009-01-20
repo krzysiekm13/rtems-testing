@@ -9,7 +9,9 @@ GDBSIM_SCRIPTS=h8sim h8sim-gdb jmr3904 jmr3904-gdb \
 SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   rtl22xx smdk2410
 TSIM_SCRIPTS=erc32 leon2 leon3
-GENERATED_SCRIPTS=${GDBSIM_SCRIPTS} ${SKYEYE_SCRIPTS} ${TSIM_SCRIPTS}
+QEMU_SCRIPTS=qemu-rtems
+GENERATED_SCRIPTS=${GDBSIM_SCRIPTS} ${SKYEYE_SCRIPTS} \
+  ${TSIM_SCRIPTS} ${QEMU_SCRIPTS}
 COMPILED_PROGRAMS=usleep
 
 all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} install
@@ -19,6 +21,10 @@ prep:
 
 usleep: usleep.c
 	$(CC) -o $@ $<
+
+### QEMU BSPs
+qemu-rtems: gdb-sim-run.in qemu-rtems.in
+	./mkrun no i386 i386 qemu-rtems
 
 ### Skyeye Simulator BSPs
 ant5206: gdb-sim-run.in ant5206.in

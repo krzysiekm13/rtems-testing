@@ -5,6 +5,7 @@
 #
 
 bspUsesGDBSimulator="no"
+bspNeedsDos2Unix="yes"
 runBSP=skyeye
 
 bspExited_ARM()

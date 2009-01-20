@@ -12,7 +12,6 @@
 trap "test_exit 1" 1 2 3 13 14 15
 
 progname=${0##*/}        # fast basename hack for ksh, bash
-rtemsVersion=`echo ${progname} | sed -e 's/@BSP@-//' -e 's/gdb-//'`
 
 for v in 4.10 4.9 4.8 4.7 ""
 do

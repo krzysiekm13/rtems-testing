@@ -1,5 +1,11 @@
 2009-01-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* .cvsignore, Makefile, gdb-sim-run.in, gdb-sim.in, skyeye-support: Add
+	qemu-rtems script.
+	* qemu-rtems.in: New file.
+
+2009-01-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* .cvsignore, Makefile, erc32.in, gdb-sim-run.in, mkrun: Add TSIM
 	support for ERC32, LEON2, and LEON3 BSPs. Include using all three for
 	coverage.

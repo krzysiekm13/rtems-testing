@@ -18,6 +18,7 @@ m32rsim
 m32rsim-gdb
 psim
 psim-gdb
+qemu-rtems
 rtl22xx
 smdk2410
 simsh
