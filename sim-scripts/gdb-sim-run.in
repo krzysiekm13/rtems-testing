@@ -90,9 +90,20 @@ args=$*
 bspRunFatal="no"
 bspGeneratesDeviceTree="no"
 bspSupportsSystemVIPC="no"
+bspUsesGDBSimulator="yes"
+
+for v in 4.10 4.9 4.8 4.7 ""
+do
+  type @CPU_TARGET@-rtems${v}-run >/dev/null 2>&1
+  if [ $? -eq 0 ] ; then
+    defaultRUN=@CPU_TARGET@-rtems${v}-run
+    break
+  fi
+done
+
+runBSP=${defaultRUN}
 
 rtemsVersion=`echo ${progname} | sed -e 's/@BSP@-//' -e 's/-gdb//'`
-RUN=@CPU_TARGET@-rtems${rtemsVersion}-run
 
 ###################################################################
 ###################################################################
@@ -106,6 +117,13 @@ if [ ${bspSupportsSystemVIPC} = "no" -a ${use_sysv_ipc} = "yes"  ]; then
   echo "Simulator does not support System V IPC."
   exit 1
 fi
+
+if [ X${runBSP} = X ] ; then
+  echo "Unable to find a way to run @CPU_TARGET@/@BSP@"
+  exit 1
+fi
+
+test ${verbose} = "yes" && echo Using ${runBSP}
 
 ## These are faults any BSP may generate.  They are common to RTEMS.
 checkGenericFaults()
@@ -200,7 +218,7 @@ do
 
   ## Some BSPs must generate device trees to provide to the simulator
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
-    bspGenerateDeviceTree ${baseToRun}
+    bspGenerateDeviceTree ${baseToRun} >${bspTreeFile}
     if [ ${generate_tree_and_exit} = "yes" ] ; then
       echo "Device tree generated and in ${bspTreeFile}"
       exit 0

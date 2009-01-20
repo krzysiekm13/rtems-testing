@@ -4,7 +4,6 @@
 #  $Id$
 #
 
-runBSP=${RUN}
 runARGS()
 {
   echo "-f ${bspTreeFile} ${1}"
@@ -45,7 +44,7 @@ bspGenerateDeviceTree()
 {
   enable_sysv_ipc="yes"
 
-  if [ ${use_sysv_ipc} = "yes" ] ; then
+  if [ X${use_sysv_ipc} = X"yes" ] ; then
     enable_sysv_ipc="yes"
     value=-1               # for now assume we are slave in this mode
   else

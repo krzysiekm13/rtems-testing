@@ -6,7 +6,6 @@
 
 ##INSERT SKYEYE SUPPORT HERE
 
-runBSP=skyeye
 runARGS()
 {
   echo "-c ${bspTreeFile} -e ${1}"
@@ -36,7 +35,7 @@ bspTreeFile=edb7312.conf
 ### Generate the PSIM device tree based upon the type of application being run
 bspGenerateDeviceTree()
 {
-cat >${bspTreeFile} <<EOF
+cat <<EOF
 cpu: arm720t
 mach: ep7312
 mem_bank: map=I,type=RW, addr=0x80000000, size=0x00100000

@@ -4,6 +4,9 @@
 #  $Id$ 
 #
 
+bspUsesGDBSimulator="no"
+runBSP=skyeye
+
 bspExited_ARM()
 {
   for pattern in  \

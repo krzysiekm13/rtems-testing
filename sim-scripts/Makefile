@@ -51,12 +51,7 @@ install:
 	  cp $${i} ${INSTALL_DIR} ; \
 	done
 	for i in ${GENERATED_SCRIPTS} ; do \
-	  cp $${i} ${INSTALL_DIR}/$${i}-4.10 ; \
-	  chmod +x ${INSTALL_DIR}/$${i}-4.10 ; \
+	  cp $${i} ${INSTALL_DIR}/$${i} ; \
+	  chmod +x ${INSTALL_DIR}/$${i} ; \
 	done
-	cd ${INSTALL_DIR} ; for i in ${GENERATED_SCRIPTS} ; do \
-	  for v in 4.9 4.8 4.7 4.6 ; do \
-	    rm -f $${i}-$${v} ; ln -s $${i}-4.10 $${i}-$${v} ; \
-	done ;\
-	done
-	
+

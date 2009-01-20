@@ -1,3 +1,11 @@
+2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Makefile, edb7312.in, gdb-sim-run.in, gdb-sim.in, h8sim.in,
+	jmr3904.in, m32csim.in, m32rsim.in, psim.in, simsh.in, sis.in,
+	skyeye-support: Find run or gdb along PATH. Check for multiple RTEMS
+	versions so there is only one version of the script. Default the
+	simulator name so the BSP specific files do not have to do as much.
+
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in: Add initial generate device tree and exit capability.

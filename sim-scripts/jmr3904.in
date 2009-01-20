@@ -4,7 +4,6 @@
 #  $Id$
 #
 
-runBSP=${RUN}
 runARGS()
 {
   echo "--board=jmr3904 ${1}"
