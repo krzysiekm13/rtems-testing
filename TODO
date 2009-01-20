@@ -8,13 +8,19 @@ GCC Testing
     a deviances report.
   + Narrow down failures to see which can be resolved into unsupported.
 
-Skyeye
-======
-  + Some BSPs could work but have issues in Skyeye.  csb350 and csb360
-    are at the top of this list.  The bfin ones have some patches to
-    Skyeye that are required.
+sim-scripts Directory
+=====================
+  Skyeye
+  ======
+    + Some BSPs could work but have issues in Skyeye.  csb350 and csb360
+      are at the top of this list.  The bfin ones have some patches to
+      Skyeye that are required.
 
-  + Support Skyeye coverage statistics.
+    + Support Skyeye coverage statistics.
+
+  GDB Scripts
+  ===========
+    + What can we do to assist for running GDB with Skyeye and Qemu?
 
 RTEMS
 =====
