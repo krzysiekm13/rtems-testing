@@ -1,3 +1,8 @@
+2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/rtems_gcc_main.c: Lower memory requirements on m32c and use
+	unified memory configuration.
+
 2009-01-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* TODO: Update.

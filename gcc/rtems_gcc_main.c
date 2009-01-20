@@ -19,10 +19,17 @@ int main( int, char **, char **);
 #define CONFIGURE_USE_IMFS_AS_BASE_FILESYSTEM
 #define CONFIGURE_LIBIO_MAXIMUM_FILE_DESCRIPTORS 20
 
+/* might as well treat all memory as one pool */
+#define CONFIGURE_UNIFIED_WORK_AREAS
+
 /* GCC tests start at main, use a lot of stack and may use the FPU */
 #define CONFIGURE_RTEMS_INIT_TASKS_TABLE
 #define CONFIGURE_INIT_TASK_ENTRY_POINT   (void *)main
-#define CONFIGURE_INIT_TASK_STACK_SIZE    (256 * 1024)
+#if defined(__m32c__)
+  #define CONFIGURE_INIT_TASK_STACK_SIZE    (16 * 1024)
+#else
+  #define CONFIGURE_INIT_TASK_STACK_SIZE    (256 * 1024)
+#endif
 #define CONFIGURE_INIT_TASK_ATTRIBUTES    RTEMS_FLOATING_POINT
 
 #define CONFIGURE_APPLICATION_NEEDS_CONSOLE_DRIVER
