@@ -1,0 +1,38 @@
+#
+# $Id$
+#
+
+GCC Testing
+===========
+  + Diff results of subsequent runs for the same target and generate
+    a deviances report.
+  + Narrow down failures to see which can be resolved into unsupported.
+
+Skyeye
+======
+  + Some BSPs could work but have issues in Skyeye.  csb350 and csb360
+    are at the top of this list.  The bfin ones have some patches to
+    Skyeye that are required.
+
+  + Support Skyeye coverage statistics.
+
+RTEMS
+=====
+  + Merge Joel's test suite scripts
+
+RTEMS Coverage
+==============
+  + Merge RTEMS Coverage Analysis toolkit
+
+Newlib
+======
+  + Run glibc tests and report results?
+
+Binutils
+========
+  + Run tests and report results?
+
+GDB
+===
+  + Run tests and report results?
+
