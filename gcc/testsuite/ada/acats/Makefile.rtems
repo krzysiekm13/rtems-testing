@@ -27,7 +27,7 @@ RTEMS_SETTINGS: stamp-targetrun stamp-targetgcc \
 stamp-targetrun:
 	echo "target_run() {" >$@
   ifeq ($(RTEMS_BSP),pc386)
-	echo "  runqemu -l 60 -c $$"'*' >> $@
+	echo "  qemu-rtems -l 60 -c $$"'*' >> $@
   endif # pc386
   ifeq ($(RTEMS_BSP),m32csim)
 	echo "  m32csim -l 20 -c $$"'*' >> $@

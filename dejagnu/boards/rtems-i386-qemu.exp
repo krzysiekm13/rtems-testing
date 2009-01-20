@@ -46,7 +46,7 @@ set_board_info isremote 0
 # set_board_info gcc,stack_size 2048
 
 # wrapper script which handles the device tree
-set_board_info sim "runqemu"
+set_board_info sim "qemu-rtems "
 
 # No support for signals on this target.
 set_board_info gdb,nosignals 1
