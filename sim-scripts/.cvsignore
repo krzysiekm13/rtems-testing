@@ -6,6 +6,8 @@ m32csim
 m32csim-gdb
 m32rsim
 m32rsim-gdb
+psim
+psim-gdb
 simsh
 simsh-gdb
 sis

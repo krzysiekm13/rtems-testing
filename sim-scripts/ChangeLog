@@ -1,5 +1,10 @@
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile, gdb-sim-run.in, gdb-sim.in: Add psim support.
+	* psim.in: New file.
+
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile, jmr3904.in, mkrun: Now generate gdb script for
 	h8sim, jmr3904 m32csim, m32rsim, simsh and sis.
 	* gdb-sim.in: New file.

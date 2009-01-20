@@ -37,6 +37,13 @@ bspGeneratesGDBCommands="no"
 ###################################################################
 ###################################################################
 
+## Some BSPs must generate device trees to provide to the simulator
+if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
+  TREE_FILE=@BSP@_tree.${LOGNAME}
+  bspGenerateDeviceTree ${baseToRun} >${TREE_FILE}
+fi
+
+### generate bsp specific load command
 if [ ${bspGeneratesGDBCommands} = "no" ] ; then
   cat <<EOF
 tar sim 
@@ -46,6 +53,23 @@ else
   bspGenerateGDBCommands 
 fi >@BSP@-cmds
 
+###  Add CPU specific commands
+case @CPU@ in
+  powerpc) echo  "b C_exception_handler" ;;
+  *)       ;;
+esac >>@BSP@-cmds
+
+###  Add generic commands which break on known bad places
+cat >>@BSP@-cmds <<EOF
+b _Internal_error_Occurred
+b rtems_fatal_error_occurred
+b __assert
+printf "Use run to start the RTEMS application\\n"
+EOF
+
 ${GDB} --command=@BSP@-cmds $*
 
+if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
+  rm -f @BSP@_tree.${LOGNAME}
+fi
 test_exit $?

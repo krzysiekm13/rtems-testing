@@ -23,9 +23,12 @@ progname=${0##*/}        # fast basename hack for ksh, bash
 USAGE=\
 "usage: $progname [ -opts ] test [ test ... ]
 	-v	   -- verbose
-	-c	   -- enabled coverage (not supported by all BSPs)
-	-i	   -- interactive (no time limit)
+	-c	   -- enabled coverage (default=no)
+	-i	   -- interactive (default=no time limit)
+	-s	   -- force System V IPC support (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
+
+System V IPC and Coverage are not supported by all BSPs or simulators.
 "
 
 #   log an error to stderr
@@ -54,17 +57,20 @@ coverage="no"
 verbose="no"
 limit="not_set"
 interactive="no"
+use_sysv_ipc="no"
 
-while getopts vil: OPT
+while getopts vil:s OPT
 do
-    case "$OPT" in
-	v) verbose="yes";;
-	c) coverage="yes";;
-	i) interactive="yes";;
-        l) limit="$OPTARG";;
-        *) fatal;;
-    esac
+ case "$OPT" in
+   v) verbose="yes";;
+   c) coverage="yes";;
+   i) interactive="yes";;
+   l) limit="$OPTARG";;
+   s) use_sysv_ipc="yes";;
+   *) fatal;;
+ esac
 done
+
 shiftcount=`expr $OPTIND - 1`
 shift $shiftcount
 
@@ -77,6 +83,7 @@ args=$*
 ### Set BSP defaults.  If BSP does not have default, it will override
 bspRunFatal="no"
 bspGeneratesDeviceTree="no"
+bspSupportsSystemVIPC="no"
 
 rtemsVersion=`echo ${progname} | sed -e 's/@BSP@-//' -e 's/-gdb//'`
 RUN=@CPU_TARGET@-rtems${rtemsVersion}-run
@@ -88,6 +95,11 @@ RUN=@CPU_TARGET@-rtems${rtemsVersion}-run
 ###################################################################
 ###################################################################
 ###################################################################
+
+if [ ${bspSupportsSystemVIPC} = "no" -a ${use_sysv_ipc} = "yes"  ]; then
+  echo "Simulator does not support System V IPC."
+  exit 1
+fi
 
 ## These are faults any BSP may generate.  They are common to RTEMS.
 checkGenericFaults()
@@ -168,22 +180,24 @@ if [ "X${args}" = "X" ] ; then
   exit 1
 fi
 
-## Some BSPs must generate device trees to provide to the simulator
-if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
-  bspGenerateDeviceTree
-fi
-
 ## Now run the tests
 for toRun in $args
 do
-  case `basename ${toRun}` in
+  baseToRun=`basename ${toRun}`
+  case ${baseToRun} in
     *-node*) testtype="mp"     ;;
     *fatal*) testtype="fatal"  ;;
     *)       testtype="single" ;;
   esac
 
+  ## Some BSPs must generate device trees to provide to the simulator
+  if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
+    TREE_FILE=psim_tree.${LOGNAME}
+    bspGenerateDeviceTree ${baseToRun} >${TREE_FILE}
+  fi
+
   if [ ${interactive} = "yes" ] ; then
-    echo INTERACTIVE runtest ${toRun} ${testtype} 0
+    runtest ${toRun} ${testtype} 0
     continue
   fi
 
@@ -218,11 +232,11 @@ do
 
   test ${verbose} = "yes" && runtest ${toRun} ${testtype} ${limit}
   runtest ${toRun} ${testtype} ${limit}
-done
 
-if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
-  bspCleanDeviceTree
-fi
+  if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
+    rm -f @BSP@_tree.${LOGNAME}
+  fi
+done
 
 exit $?
 
