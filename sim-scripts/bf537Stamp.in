@@ -1,0 +1,43 @@
+#
+#  Blackfin/bf537Stamp Support 
+#
+#  $Id$
+#
+
+##INSERT SKYEYE SUPPORT HERE
+
+runARGS()
+{
+  echo "-c ${bspTreeFile} -e ${1}"
+}
+
+checkBSPFaults()
+{
+  bspExited_ARM
+  return $?
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}
+
+bspGeneratesDeviceTree="yes"
+bspTreeFile=bf537Stamp.conf
+
+### Generate the PSIM device tree based upon the type of application being run
+bspGenerateDeviceTree()
+{
+cat <<EOF
+arch:blackfin
+mach:bf537
+uart: mod=pipe, desc_in=/dev/null, desc_out=/dev/stdout
+EOF
+}

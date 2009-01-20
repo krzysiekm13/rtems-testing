@@ -1,0 +1,48 @@
+#
+#  ARM/RTL22xx Support 
+#
+#  $Id$
+#
+
+##INSERT SKYEYE SUPPORT HERE
+
+runARGS()
+{
+  echo "-c ${bspTreeFile} -e ${1}"
+}
+
+checkBSPFaults()
+{
+  bspExited_ARM
+  return $?
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}
+
+bspGeneratesDeviceTree="yes"
+bspTreeFile=rtl22xx.conf
+
+### Generate the PSIM device tree based upon the type of application being run
+bspGenerateDeviceTree()
+{
+cat <<EOF
+cpu: arm7tdmi
+mach: lpc2210
+uart: mod=pipe, desc_in=/dev/null, desc_out=/dev/stdout
+mem_bank: map=M, type=RW, addr=0x00000000, size=0x00004000
+mem_bank: map=M, type=RW, addr=0x81000000, size=0x00080000
+mem_bank: map=M, type=RW, addr=0x40000000, size=0x00400000
+mem_bank: map=I, type=RW, addr=0xE0000000, size=0xFFFFFFF
+mem_bank: map=I, type=RW, addr=0xF0000000, size=0xFFFFFFF
+EOF
+}

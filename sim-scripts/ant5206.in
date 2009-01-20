@@ -1,0 +1,45 @@
+#
+#  M68K-Coldfire/ant5206 Support 
+#
+#  $Id$
+#
+
+##INSERT SKYEYE SUPPORT HERE
+
+runARGS()
+{
+  echo "-c ${bspTreeFile} -e ${1}"
+}
+
+checkBSPFaults()
+{
+  bspExited_ARM
+  return $?
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}
+
+bspGeneratesDeviceTree="yes"
+bspTreeFile=ant5206.conf
+
+### Generate the PSIM device tree based upon the type of application being run
+bspGenerateDeviceTree()
+{
+cat <<EOF
+cpu: coldfire
+mach: mcf5206
+mem_bank: map=M, type=RW, addr=0x20100000, size=0x00F00000
+mem_bank: map=M, type=RW, addr=0x00200000, size=0x0004000
+uart: mod=pipe, desc_in=/dev/null, desc_out=/dev/stdout
+EOF
+}

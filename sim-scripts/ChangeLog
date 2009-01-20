@@ -1,5 +1,12 @@
 2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile: Add rest of Skyeye configurations whether
+	they work completely at this point or not.
+	* ant5206.in, bf537Stamp.in, csb337.in, csb350.in, csb360.in,
+	ezkit533.in, rtl22xx.in, smdk2410.in: New files.
+
+2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* Makefile, edb7312.in, gdb-sim-run.in, gdb-sim.in, h8sim.in,
 	jmr3904.in, m32csim.in, m32rsim.in, psim.in, simsh.in, sis.in,
 	skyeye-support: Find run or gdb along PATH. Check for multiple RTEMS

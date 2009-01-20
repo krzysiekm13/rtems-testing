@@ -6,7 +6,8 @@ INSTALL_DIR=../bin
 GENERATED_SCRIPTS=h8sim h8sim-gdb jmr3904 jmr3904-gdb \
   m32csim m32csim-gdb m32rsim m32rsim-gdb psim psim-gdb \
   sis sis-gdb simsh simsh-gdb
-SKYEYE_SCRIPTS=edb7312
+SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
+  rtl22xx smdk2410
 COMPILED_PROGRAMS=usleep
 
 all: prep ${GENERATED_SCRIPTS} ${SKYEYE_SCRIPTS} ${COMPILED_PROGRAMS} install
@@ -18,8 +19,32 @@ usleep: usleep.c
 	$(CC) -o $@ $<
 
 ### Skyeye Simulator BSPs
+ant5206: gdb-sim-run.in ant5206.in
+	./mkrun no M68K-Coldfire m68k ant5206
+
+csb337: gdb-sim-run.in csb337.in
+	./mkrun no ARM arm csb337
+
+csb350: gdb-sim-run.in csb350.in
+	./mkrun no MIPS mips csb350
+
+csb360: gdb-sim-run.in csb360.in
+	./mkrun no M68K-Coldfire m68k csb360
+
+bf537Stamp: gdb-sim-run.in bf537Stamp.in
+	./mkrun no Blackfin bfin bf537Stamp
+
 edb7312: gdb-sim-run.in edb7312.in
 	./mkrun no ARM arm edb7312
+
+rtl22xx: gdb-sim-run.in rtl22xx.in
+	./mkrun no ARM arm rtl22xx
+
+smdk2410: gdb-sim-run.in smdk2410.in
+	./mkrun no ARM arm smdk2410
+
+ezkit533: gdb-sim-run.in ezkit533.in
+	./mkrun no Blackfin bfin ezkit533
 
 ### GDB Simulator BSPs
 h8sim h8sim-gdb: gdb-sim-run.in gdb-sim.in h8sim.in
