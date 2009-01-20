@@ -49,7 +49,11 @@ bspGenerateDeviceTree()
   if [ ${coverage} = yes ] ; then
     echo "coverage enable"
   fi
-  echo "go ${tsimGoAddress} ${limit} s"
+  if [ ${limit} -eq 0 ] ; then
+    echo "go ${tsimGoAddress}"
+  else
+    echo "go ${tsimGoAddress} ${limit} s"
+  fi
   if [ ${coverage} = yes ] ; then
     echo "coverage save ${2}.cov"
   fi

@@ -1,5 +1,9 @@
 2009-01-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* tsim-support: Properly handle a limit of 0 which is no limit.
+
+2009-01-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* .cvsignore, Makefile, gdb-sim-run.in, gdb-sim.in, skyeye-support: Add
 	qemu-rtems script.
 	* qemu-rtems.in: New file.
