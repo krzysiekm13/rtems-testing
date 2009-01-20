@@ -1,5 +1,13 @@
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile, gdb-sim-run.in, gdb-sim.in, h8sim.in,
+	jmr3904.in, m32csim.in, m32rsim.in, mkrun, psim.in, simsh.in, sis.in:
+	Add ARM/edb7312 support. This is the first Skyeye BSP and adding this
+	required tinkering with all BSP scripts. All appear to still work OK.
+	* edb7312.in, skyeye-support: New files.
+
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile, gdb-sim-run.in, gdb-sim.in: Add psim support.
 	* psim.in: New file.
 

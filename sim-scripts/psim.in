@@ -4,9 +4,10 @@
 #  $Id$
 #
 
-runBSP()
+runBSP=${RUN}
+runARGS()
 {
-  ${RUN} -f ${TREE_FILE} ${1}
+  echo "-f ${bspTreeFile} ${1}"
 }
 
 checkBSPFaults()
@@ -30,13 +31,14 @@ bspGeneratesGDBCommands="yes"
 
 bspGenerateGDBCommands()
 {
-echo "tar sim -f ${TREE_FILE}"
+echo "tar sim -f ${bspTreeFile}"
 echo "load"
 }
 
 bspSupportsSystemVIPC="yes"
 
 bspGeneratesDeviceTree="yes"
+bspTreeFile=psim_tree.${LOGNAME}
 
 ### Generate the PSIM device tree based upon the type of application being run
 bspGenerateDeviceTree()

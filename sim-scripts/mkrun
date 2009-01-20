@@ -4,24 +4,30 @@
 #
 #  $Id$
 
-CPU=$1
-CPU_TARGET=$2
-BSP=$3
+doGdb=$1
+CPU=$2
+CPU_TARGET=$3
+BSP=$4
 RUN=${BSP}
 GDB=${BSP}-gdb
 
 # Generate RUN script
-sed -e "s/@CPU@/${CPU}/" \
-    -e "s/@CPU_TARGET@/${CPU_TARGET}/" \
-    -e "s/@BSP@/${BSP}/" \
-    -e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" <gdb-sim-run.in >${RUN}
+cat gdb-sim-run.in | \
+  sed -e "s/@CPU@/${CPU}/" \
+      -e "s/@CPU_TARGET@/${CPU_TARGET}/" \
+      -e "s/@BSP@/${BSP}/" \
+      -e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" | \
+  sed -e "/^##INSERT SKYEYE SUPPORT HERE/r skyeye-support" >${RUN}
+chmod +x ${RUN}
 
 # Generate GDB script
-sed -e "s/@CPU@/${CPU}/" \
-    -e "s/@CPU_TARGET@/${CPU_TARGET}/" \
-    -e "s/@BSP@/${BSP}/" \
-    -e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" <gdb-sim.in >${GDB}
+if [ ${doGdb} = yes ] ; then
+  cat gdb-sim.in | \
+    sed -e "s/@CPU@/${CPU}/" \
+	-e "s/@CPU_TARGET@/${CPU_TARGET}/" \
+	-e "s/@BSP@/${BSP}/" \
+	-e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" >${GDB}
+  chmod +x ${GDB}
+fi
 
-# Make both executable
-chmod +x ${RUN} ${GDB}
 exit 0

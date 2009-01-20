@@ -4,11 +4,11 @@
 #  $Id$
 #
 
-runBSP()
+runBSP=${RUN}
+runARGS()
 {
-  ${RUN} ${1}
+  echo ${1}
 }
-
 checkBSPFaults()
 {
   return 0

@@ -1,0 +1,19 @@
+#
+#  Shared Skyeye Support
+#
+#  $Id$ 
+#
+
+bspExited_ARM()
+{
+  for pattern in  \
+     "^Unhandled exception" \
+     "^SKYEYE:Error"
+  do
+    grep "${pattern}" ${logfile}
+    if [ $? -eq 0 ] ; then
+      return 1
+    fi
+  done
+  return 0
+}

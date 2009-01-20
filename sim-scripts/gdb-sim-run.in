@@ -106,18 +106,17 @@ checkGenericFaults()
 {
   logfile=$1
 
-  grep "^\*\*\* END OF " ${logfile}
-  normalExit=$?
-  if [ $normalExit -eq 0 ] ; then
-    return 1
-  fi
-  grep "Suspending faulting task" ${logfile}
-  Fault=$?
-  grep "assertion failed" ${logfile}
-  Assert=$?
-  if [ $Fault -eq 0 -o $Assert -eq 0 ] ; then
-    return 1
-  fi
+  for pattern in  \
+     "^.*EXECUTIVE SHUTDOWN" \
+     "^\*\*\* END OF " \
+     "Suspending faulting task" \
+     "assertion failed"
+  do
+    grep "${pattern}" ${logfile} >/dev/null
+    if [ $? -eq 0 ] ; then
+      return 1
+    fi
+  done
   return 0
 }
 
@@ -128,13 +127,13 @@ runtest()
   max_run_time=${3}
   if [ ${max_run_time} -eq 0 ] ; then
     #echo run ${testname} forever
-    runBSP ${testname}
+    ${runBSP} `runARGS ${testname}`
     return
   fi
 
   #echo run ${testname} for maximum ${max_run_time} seconds
   logfile=${testname}.tmp
-  runBSP ${testname} >${logfile} 2>&1 &
+  ${runBSP} `runARGS ${testname}` >${logfile} 2>&1 &
   pid=$!
 
   # Make sure it won't run forever...
@@ -155,6 +154,9 @@ runtest()
         echo "${testname} killed after running ${max_run_time} seconds"
         break
       fi
+      if [ ! -r ${logfile} ] ; then
+        continue
+      fi
       checkBSPFaults ${logfile} >/dev/null 2>&1
       bspFaults=$?
       checkGenericFaults ${logfile} >/dev/null 2>&1
@@ -163,8 +165,8 @@ runtest()
         kill -9 ${pid} >/dev/null 2>&1
         cat ${logfile}
         echo Ran in ${milliseconds} milliseconds
-    fi
-
+        break
+      fi
   else
     # done normally
     cat ${logfile}
@@ -192,8 +194,7 @@ do
 
   ## Some BSPs must generate device trees to provide to the simulator
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
-    TREE_FILE=psim_tree.${LOGNAME}
-    bspGenerateDeviceTree ${baseToRun} >${TREE_FILE}
+    bspGenerateDeviceTree ${baseToRun}
   fi
 
   if [ ${interactive} = "yes" ] ; then
@@ -234,7 +235,7 @@ do
   runtest ${toRun} ${testtype} ${limit}
 
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
-    rm -f @BSP@_tree.${LOGNAME}
+    rm -f ${bspTreeFile}
   fi
 done
 

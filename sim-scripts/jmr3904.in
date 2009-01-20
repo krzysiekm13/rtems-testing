@@ -4,9 +4,10 @@
 #  $Id$
 #
 
-runBSP()
+runBSP=${RUN}
+runARGS()
 {
-  ${RUN} --board=jmr3904 ${1}
+  echo "--board=jmr3904 ${1}"
 }
 
 checkBSPFaults()
