@@ -1,5 +1,9 @@
 2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore: New file.
+
+2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* dejagnu/boards/rtems-arm-edb7312.exp,
 	dejagnu/boards/rtems-arm-nosim.exp,
 	dejagnu/boards/rtems-avr-avrtest.exp,
