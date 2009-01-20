@@ -1,5 +1,9 @@
 2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* gdb-sim-run.in: Add initial generate device tree and exit capability.
+
+2009-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile, gdb-sim-run.in, gdb-sim.in, h8sim.in,
 	jmr3904.in, m32csim.in, m32rsim.in, mkrun, psim.in, simsh.in, sis.in:
 	Add ARM/edb7312 support. This is the first Skyeye BSP and adding this

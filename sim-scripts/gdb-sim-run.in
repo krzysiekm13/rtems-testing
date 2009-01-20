@@ -24,11 +24,15 @@ USAGE=\
 "usage: $progname [ -opts ] test [ test ... ]
 	-v	   -- verbose
 	-c	   -- enabled coverage (default=no)
+	-g	   -- generate device tree and exit (default=no)
 	-i	   -- interactive (default=no time limit)
 	-s	   -- force System V IPC support (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
 
 System V IPC and Coverage are not supported by all BSPs or simulators.
+
+When you generate a device tree and exit, remember to specify an executable.
+Otherwise, the script won't know what to generate it for.
 "
 
 #   log an error to stderr
@@ -58,12 +62,14 @@ verbose="no"
 limit="not_set"
 interactive="no"
 use_sysv_ipc="no"
+generate_tree_and_exit="no"
 
-while getopts vil:s OPT
+while getopts vgil:s OPT
 do
  case "$OPT" in
    v) verbose="yes";;
    c) coverage="yes";;
+   g) generate_tree_and_exit="yes" ;;
    i) interactive="yes";;
    l) limit="$OPTARG";;
    s) use_sysv_ipc="yes";;
@@ -195,6 +201,10 @@ do
   ## Some BSPs must generate device trees to provide to the simulator
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
     bspGenerateDeviceTree ${baseToRun}
+    if [ ${generate_tree_and_exit} = "yes" ] ; then
+      echo "Device tree generated and in ${bspTreeFile}"
+      exit 0
+    fi 
   fi
 
   if [ ${interactive} = "yes" ] ; then
