@@ -3,7 +3,7 @@
 #  $Id$
 #
 
-vfile=`dirname $0`/VERSIONS
+vfile=`dirname $0`/../VERSIONS
 if [ ! -r ${vfile} ] ; then
   echo VERSIONS file not found
   exit 1

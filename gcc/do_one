@@ -13,7 +13,7 @@
 # Computer Info
 #   Fedora 8 on Intel Core2 Duo T7500  @ 2.20GHz w/ 2GB RAM
 
-vfile=`dirname $0`/VERSIONS
+vfile=`dirname $0`/../VERSIONS
 if [ ! -r ${vfile} ] ; then
   echo VERSIONS file not found
   exit 1

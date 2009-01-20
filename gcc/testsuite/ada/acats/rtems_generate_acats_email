@@ -86,6 +86,7 @@ get_failed()
 gen_report()
 {
   echo
+  echo "HOST: " `${GCCDIR}/config.guess`
   ${CPU}-rtems${rtemsVersion}-gcc --version | head -1
   echo
 
