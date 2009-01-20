@@ -3,14 +3,16 @@
 #
 
 INSTALL_DIR=../bin
-GENERATED_SCRIPTS=h8sim h8sim-gdb jmr3904 jmr3904-gdb \
+GDBSIM_SCRIPTS=h8sim h8sim-gdb jmr3904 jmr3904-gdb \
   m32csim m32csim-gdb m32rsim m32rsim-gdb psim psim-gdb \
   sis sis-gdb simsh simsh-gdb
 SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   rtl22xx smdk2410
+TSIM_SCRIPTS=erc32
+GENERATED_SCRIPTS=${GDBSIM_SCRIPTS} ${SKYEYE_SCRIPTS} ${TSIM_SCRIPTS}
 COMPILED_PROGRAMS=usleep
 
-all: prep ${GENERATED_SCRIPTS} ${SKYEYE_SCRIPTS} ${COMPILED_PROGRAMS} install
+all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} install
 
 prep:
 	test -d ${INSTALL_DIR} || mkdir ${INSTALL_DIR}
@@ -46,6 +48,10 @@ smdk2410: gdb-sim-run.in smdk2410.in
 ezkit533: gdb-sim-run.in ezkit533.in
 	./mkrun no Blackfin bfin ezkit533
 
+### TSIM Simulator BSPs
+erc32: gdb-sim-run.in erc32.in
+	./mkrun no SPARC sparc erc32
+
 ### GDB Simulator BSPs
 h8sim h8sim-gdb: gdb-sim-run.in gdb-sim.in h8sim.in
 	./mkrun yes H8300 h8300 h8sim
@@ -69,13 +75,10 @@ simsh simsh-gdb: gdb-sim-run.in gdb-sim.in simsh.in
 	./mkrun yes SuperH sh simsh
 
 clean:
-	rm -f ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} ${SKYEYE_SCRIPTS}
+	rm -f ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS}
 
 install:
-	for i in ${COMPILED_PROGRAMS} ${SKYEYE_SCRIPTS}; do \
-	  cp $${i} ${INSTALL_DIR} ; \
-	done
-	for i in ${GENERATED_SCRIPTS} ; do \
+	for i in ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} ; do \
 	  cp $${i} ${INSTALL_DIR}/$${i} ; \
 	  chmod +x ${INSTALL_DIR}/$${i} ; \
 	done

@@ -215,10 +215,15 @@ do
     *fatal*) testtype="fatal"  ;;
     *)       testtype="single" ;;
   esac
+  # calculate the limit in case it is used by the simulator script
+  if [ ${limit} = "not_set" ] ; then
+    bspLimit ${toRun}
+    limit=$?
+  fi
 
-  ## Some BSPs must generate device trees to provide to the simulator
+  ## Some BSPs must generate device trees or scripts to provide to the simulator
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
-    bspGenerateDeviceTree ${baseToRun} >${bspTreeFile}
+    bspGenerateDeviceTree ${baseToRun} ${toRun} >${bspTreeFile}
     if [ ${generate_tree_and_exit} = "yes" ] ; then
       echo "Device tree generated and in ${bspTreeFile}"
       exit 0
@@ -230,10 +235,6 @@ do
     continue
   fi
 
-  if [ ${limit} = "not_set" ] ; then
-    bspLimit ${toRun}
-    limit=$?
-  fi
   if [ ${testtype} = "fatal" -a ${bspRunFatal} = "no" ] ; then
     warn "Skipping fatal error test ${toRun}"
     continue

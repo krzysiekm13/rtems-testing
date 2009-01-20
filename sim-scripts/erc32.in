@@ -1,0 +1,58 @@
+#
+#  SPARC/ERC32 Support (on TSIM)
+#
+#  $Id$
+#
+
+bspUsesGDBSimulator="no"
+runBSP=tsim-erc32
+
+type ${runBSP} >/dev/null 2>&1
+if [ $? -ne 0 ] ; then
+  echo "Unable to find ${runBSP} on PATH."
+  exit 1
+fi
+
+# required for this to run
+echo | ${runBSP} -nohaspnet >/dev/null
+if [ $? -ne 0 ] ; then
+  echo "No TSIM License for this machine."
+  exit 1
+fi
+
+runARGS()
+{
+  echo ${1}
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}
+
+bspGeneratesDeviceTree="yes"
+bspTreeFile=erc32.conf
+
+### Generate the PSIM device tree based upon the type of application being run
+bspGenerateDeviceTree()
+{
+  if [ ${coverage} = yes ] ; then
+    echo "coverage enable"
+  fi
+  echo "go 0x2000000 ${limit} s"
+  if [ ${coverage} = yes ] ; then
+    echo "coverage save ${2}.cov"
+  fi
+}

@@ -1,5 +1,11 @@
 2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* .cvsignore, Makefile, README, gdb-sim-run.in: Add first cut at ERC32.
+	Need to test on machine with TSIM license.
+	* erc32.in: New file.
+
+2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile: Add rest of Skyeye configurations whether
 	they work completely at this point or not.
 	* ant5206.in, bf537Stamp.in, csb337.in, csb350.in, csb360.in,
