@@ -1,0 +1,15 @@
+#! /bin/sh
+#
+#  $Id$
+#
+
+case $1 in 
+  *acats*)
+    acatsTest=`basename $1 | tr "[:lower:]" "[:upper:]" `
+    echo ==== ${acatsTest} PASSED ============================.
+    ;;
+  *)
+    ;;
+esac
+echo "*** EXIT code 0"
+exit 0

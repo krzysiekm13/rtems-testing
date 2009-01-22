@@ -12,9 +12,12 @@ TSIM_SCRIPTS=erc32 leon2 leon3
 QEMU_SCRIPTS=qemu-rtems
 GENERATED_SCRIPTS=${GDBSIM_SCRIPTS} ${SKYEYE_SCRIPTS} \
   ${TSIM_SCRIPTS} ${QEMU_SCRIPTS}
-COMPILED_PROGRAMS=usleep
 
-all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} install
+COMPILED_PROGRAMS=usleep
+UNPROCESSED_SCRIPTS=nosim
+
+all: prep ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} \
+     ${UNPROCESSED_SCRIPTS} install
 
 prep:
 	test -d ${INSTALL_DIR} || mkdir ${INSTALL_DIR}
@@ -90,7 +93,8 @@ clean:
 	rm -f ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS}
 
 install:
-	for i in ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} ; do \
+	for i in ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS} \
+                 ${UNPROCESSED_SCRIPTS} ; do \
 	  cp $${i} ${INSTALL_DIR}/$${i} ; \
 	  chmod +x ${INSTALL_DIR}/$${i} ; \
 	done
