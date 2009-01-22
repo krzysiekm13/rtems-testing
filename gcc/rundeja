@@ -44,31 +44,31 @@ case $1 in
     CPU=h8300
     BSP=h8sim
     DEJABSP=h8sim
-    BSP_SIM=h8sim-${RTEMS_VERSION}
+    BSP_SIM=h8sim
     ;;
   simsh1) 
     CPU=sh
     BSP=simsh1
     DEJABSP=simsh1
-    BSP_SIM=simsh-${RTEMS_VERSION}
+    BSP_SIM=simsh
     ;;
   jmr3904) 
     CPU=mips
     BSP=jmr3904
     DEJABSP=jmr3904
-    BSP_SIM=jmr3904-${RTEMS_VERSION}
+    BSP_SIM=jmr3904
     ;;
   sis) 
     CPU=sparc
     BSP=sis
     DEJABSP=sis
-    BSP_SIM=sis-${RTEMS_VERSION}
+    BSP_SIM=sis
     ;;
   psim)
     CPU=powerpc
     BSP=psim
     DEJABSP=psim
-    BSP_SIM=psim-${RTEMS_VERSION}
+    BSP_SIM=psim
     ;;
   qemu|pc386)
     CPU=i386

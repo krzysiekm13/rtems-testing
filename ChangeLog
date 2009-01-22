@@ -1,3 +1,7 @@
+2009-01-22	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/rundeja: Do not use versioned names for simulator scripts.
+
 2009-01-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* README: Add make of sim-scripts.
