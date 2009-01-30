@@ -170,12 +170,16 @@ if [ $? -eq 0 ] ; then
     # Simulators included in gdb
     do_cpus powerpc sh sparc powerpc h8300 mips sh m32c m32r
     # Requires qemu installation
-    #do_cpus i386 
+    do_cpus i386 
 
     # Requires Skyeye install
-    #do_cpus arm
+    do_cpus arm
 
-    # TBD bfin m68k avr
+    # no simulator -- waiting for Skyeye
+    do_cpus bfin m68k avr
+
+    # port insufficient to run gcc tests
+    do_cpus avr
   else
     for cpu in $*
     do

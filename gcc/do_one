@@ -216,9 +216,10 @@ if [ ${needCPU} = yes -a ${needBSP} = yes ] ; then
     bfin-eZKit533)        dejacfg=rtems-bfin-nosim ;;
     h8300-h8sim)          dejacfg=rtems-h8300-h8sim ;;
     i386-pc386|i386-qemu) dejacfg=rtems-i386-qemu ;;
-    m68k-mcf5206elite)    dejacfg=rtems-m68k-nosim ;;
+   #lm32-lm32_evr)
     m32c-m32csim)         dejacfg=rtems-m32c-m32csim ;;
     m32r-m32rsim)         dejacfg=rtems-m32r-m32rsim ;;
+    m68k-mcf5206elite)    dejacfg=rtems-m68k-nosim ;;
     mips-jmr3904)         dejacfg=rtems-mips-jmr3904 ;;
     powerpc-psim)         dejacfg=rtems-powerpc-psim ;;
     sh-simsh1)            dejacfg=rtems-sh-simsh1 ;;

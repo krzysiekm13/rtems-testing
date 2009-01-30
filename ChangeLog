@@ -1,5 +1,11 @@
 2009-01-30	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* gcc/do_one, gcc/test_driver: Start at least building toolsets even if
+	we cannot run tests on them yet.
+	* dejagnu/boards/rtems-avr-nosim.exp: New file.
+
+2009-01-30	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* ChangeLog, gcc/testsuite/ada/acats/rtems_init.c,
 	gcc/testsuite/ada/acats/run_all_rtems.sh: c380004 needs > 1 MB of
 	stack space. Compile it with a special argument to account for this.
