@@ -1,3 +1,15 @@
+2009-01-30	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ChangeLog, gcc/testsuite/ada/acats/rtems_init.c,
+	gcc/testsuite/ada/acats/run_all_rtems.sh: c380004 needs > 1 MB of
+	stack space. Compile it with a special argument to account for this.
+
+2009-01-30	Joel Sherrill <joel.sherrill@rtems.org>
+
+	* gcc/testsuite/ada/acats/rtems_init.c,
+	gcc/testsuite/ada/acats/run_all_rtems.sh: Allow c380004 to have a
+	stack greater than 1 MB.
+
 2009-01-22	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gcc/rundeja: Do not use versioned names for simulator scripts.

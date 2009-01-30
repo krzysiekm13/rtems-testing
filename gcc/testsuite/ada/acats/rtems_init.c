@@ -65,12 +65,15 @@ void *POSIX_Init( void *argument )
   status = pthread_attr_init( &attr );
   assert( !status );
 
-#define GNAT_MAIN_STACKSPACE 100
-#ifdef GNAT_MAIN_STACKSPACE
-  stacksize = GNAT_MAIN_STACKSPACE * 1024;
-#else
-#define GNAT_MAIN_STACKSPACE 0
-#endif
+  #ifndef GNAT_MAIN_STACKSPACE
+    #define GNAT_MAIN_STACKSPACE 100
+  #endif
+
+  #ifdef GNAT_MAIN_STACKSPACE
+    stacksize = GNAT_MAIN_STACKSPACE * 1024;
+  #else
+    #define GNAT_MAIN_STACKSPACE 0
+  #endif
 
   status = pthread_attr_setstacksize( &attr, stacksize );
   assert( !status );
