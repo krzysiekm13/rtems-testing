@@ -1,0 +1,62 @@
+#! /bin/bash
+#
+#  Do a full test sweep using the other helper scripts
+#
+
+all_confs=no
+do_cvs_update=no
+
+testdir=`pwd`
+
+# update all the add-ons
+if [ ${do_cvs_update} = yes ] ; then
+  cd ${testdir}/rtems
+  cvs up -Pd 2>&1 | grep -v cvs
+  for addon in class-examples examples rtems-addon-packages network-demos
+  do
+    cd ${testdir}/${addon}
+    cvs up -Pd 2>&1 | grep -v cvs
+  done
+fi
+
+# Bootstrap the tree just to start with a known good place
+cd ${testdir}/rtems
+./bootstrap -c
+start=`date`
+./bootstrap
+stop=`date`
+echo "Bootstrap started at:" $start
+echo "Bootstrap stopped at:" $stop
+cd $testdir
+rm -f log/*
+
+# build all standard BSPs non-multilib
+./bit_all
+
+# build all of the multilibs
+# sh -x ./bit_all_multilib
+
+# build the native configuration
+#./bit_rtems unix posix >log/unix.log 2>&1
+#rm -rf build-unix-rtems
+
+# build a bare bsp
+#./bit_rtems m68k bare-m5200 >log/m68k-bare-m5200.log 2>&1
+#rm -rf build-m68k-rtems
+
+# build the documentation
+./bit_docs >log/docs.log
+
+# build all configurations of a single BSP (powerpc/psim)
+if [ X${all_confs} = Xno ] ; then
+  echo "**** skipping all configurations test. ****"
+else
+  all_bsp=psim
+  all_target=powerpc
+  sh -x ./bit_all_confs ${all_target} ${all_bsp}
+  rm -rf build-${all_target}-${all_bsp}-rtems
+fi
+
+stop=`date`
+echo "All started at:" $start
+echo "All stopped at:" $stop

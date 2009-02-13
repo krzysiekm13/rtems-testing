@@ -1,0 +1,17 @@
+
+  # sh-elf is being ignored temporarily
+  # m68k now equal m68k-elf
+  # c4x is temporary out.
+  #ALL_CPUS="a29k arm c4x h8300 i386 m68k mips mips64orion \
+  #      or32 powerpc sh sparc"
+ALL_CPUS="arm avr h8300 i386 m32c m32r m68k mips powerpc sh sparc"
+
+start=`date`
+for cpu in ${ALL_CPUS}
+do
+  ./bit_rtems ${cpu} multilib >log/${cpu}-multilib.log 2>&1 
+  rm -rf build-${cpu}-multilib-rtems
+done
+stop=`date`
+echo "Multilibs started at:" $start
+echo "Multilibs stopped at:" $stop

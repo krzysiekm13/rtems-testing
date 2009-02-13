@@ -1,0 +1,5 @@
+2009-02-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ChangeLog, README, bit_ALL, bit_all, bit_all_confs, bit_all_multilib,
+	bit_rtems, common.sh, user.cfg: New files.
+

@@ -1,0 +1,622 @@
+#! /bin/sh -x
+#
+#  Simple shell script to configure and build rtems
+#
+#  build-${CPU}-rtems is created as the build tree
+#
+#  Recommended prefix for various OS's:
+#     Linux:    /usr/local/rtems
+#     Solaris:  /opt/gnu/rtems
+#
+#  $Id$
+#
+
+usage()
+{
+  echo "usage: $0 CPU [BSP]"
+  print_rtems_cpus
+}
+
+my_exit()
+{
+  exit $0
+}
+
+#if [ $# -ne 1 ]; then
+#  usage
+#  exit 1
+#fi
+
+CPU=$1
+shift
+if [ $# -eq 1 ] ; then
+  BSP_ARG=$1
+  BSP_TO_TEST=$1
+  shift
+fi
+
+args=$*
+
+# The argument to the "--target" argument of configure.
+BUILD_PIECE=rtems
+
+# Include shared setup
+if [ ! -r ./common.sh ] ; then
+  echo "Cannot find shared shell script support (common.sh)"
+  exit 1
+fi
+. `echo $0 | sed -e 's/bit_rtems/common.sh/'`
+
+# Include user configurable information
+test -r ./user.cfg || \
+  check_fatal 1 "Cannot find user configuration (user.cfg)"
+. ./user.cfg
+
+# Now set some internal variables based on the user configuration
+verbose=yes
+testing=no
+if [ "X${INSTALL_RTEMS}" = "Xno" ] ; then
+  do_install=no
+else
+  do_install=yes
+fi
+
+export PATH=$PATH:${INSTALL_POINT}/bin
+echo $PATH
+
+#
+# Remove the build directory
+#
+BUILDDIR=build-${CPU}-${BSP_TO_TEST}-rtems
+echo "Removing build directory ${BUILDDIR} ..."
+if [ ${testing} = no ] ; then
+  rm -rf ${BUILDDIR}
+  mkdir ${BUILDDIR}
+  cd ${BUILDDIR}
+fi
+
+#
+# Configure_rtems
+#
+
+conf_rtems()
+{
+echo "../${RTEMS}/configure $* ${BARE_CPU}${BARE_MODEL_ARG} \
+    ${BARE_CFLAGS}${BARE_CFLAGS_ARG}"
+if [ ${testing} = no ] ; then
+  if [ "X${BARE_MODEL_ARG}" != "X" ] ; then
+    ../${RTEMS}/configure $* ${BARE_CPU}"${BARE_MODEL_ARG}" \
+      ${BARE_CFLAGS}"${BARE_CFLAGS_ARG}"
+  else
+    ../${RTEMS}/configure $*
+  fi
+else
+  echo "In test mode: Not actually configuring"
+echo
+fi
+
+if [ $? -eq 0 ] ; then
+  echo "${BUILDDIR} has been successfully prepared"
+else
+  echo "Could not successfully configure into ${BUILDDIR}!"
+  exit 1
+fi
+
+}
+
+# enable-gcc28
+# --enable-libcdir=${INSTALL_POINT}
+
+doing_bare_bsp=no
+if [ x${BSP_TO_TEST} != x ] ; then
+ 
+  if [ `echo ${BSP_TO_TEST} | cut -d'-' -f1` != bare ]; then
+    case ${BSP_TO_TEST} in
+      all) ;;
+      multilib) ENABLE_BSP="--enable-multilib" ;;
+      psim)
+         ENABLE_BSP="--enable-rtemsbsp=psim"
+         ## ENABLE_BSP="${ENABLE_BSP} BSP_DIRTY_MEMORY=1"
+         ENABLE_BSP="${ENABLE_BSP} CLOCK_DRIVER_USE_FAST_IDLE=0"
+         BSP_TO_TEST=psim
+         ;;
+      bf537Stamp)
+         ENABLE_BSP="--enable-rtemsbsp=bf537Stamp BFIN_ON_SKYEYE=1"
+         BSP_TO_TEST=bf537Stamp
+         ;;
+      eZKit533)
+         ENABLE_BSP="--enable-rtemsbsp=eZKit533 BFIN_ON_SKYEYE=1"
+         BSP_TO_TEST=eZKit533
+         ;;
+      qemu)
+         ENABLE_BSP="--enable-rtemsbsp=pc386 USE_COM1_AS_CONSOLE=1"
+         BSP_TO_TEST=pc386
+         ;;
+      pc386)
+         ENABLE_BSP="--enable-rtemsbsp=pc386 BSP_VIDEO_80x50=1"
+         BSP_TO_TEST=pc386
+         ;;
+      *) ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
+    esac
+
+  else
+    doing_bare_bsp=yes
+    ENABLE_BSP=--enable-rtemsbsp="bare"
+    BARE_CPU="--enable-bare-cpu-model="
+    BARE_CFLAGS="--enable-bare-cpu-cflags="
+    case ${BSP_TO_TEST} in
+       # Hitachi SH family
+         bare-sh7032)
+           BARE_MODEL_ARG=sh7032
+           BARE_CFLAGS_ARG="-Wall -m1 -DMHZ=20 -DCPU_CONSOLE_DEVNAME="\\\"/dev/null\\\"""
+           ;;
+
+       # Intel i386 family
+         bare-i386_fp)
+           BARE_MODEL_ARG=i386_fp
+           BARE_CFLAGS_ARG="-m386"
+           ;;
+         bare-i386_nofp)
+           BARE_MODEL_ARG=i386_nofp
+           BARE_CFLAGS_ARG="-m386 -msoft-float"
+           ;;
+         bare-i486dx)
+           BARE_MODEL_ARG=i486dx
+           BARE_CFLAGS_ARG="-m486"
+           ;;
+         bare-i486sx)
+           BARE_MODEL_ARG=i486sx
+           BARE_CFLAGS_ARG="-m486 -msoft-float"
+           ;;
+         bare-pentium)
+           BARE_MODEL_ARG=pentium
+           BARE_CFLAGS_ARG="-mpentium"
+           ;;
+       
+       # Motorola m68xxx and Coldfire family
+         bare-m68000)
+           BARE_MODEL_ARG=m68000
+           BARE_CFLAGS_ARG="-m68000 -msoft-float"
+           ;;
+         bare-m68020)
+           BARE_MODEL_ARG=m68020
+           BARE_CFLAGS_ARG="-m68020"
+           ;;
+         bare-m68020nofp)
+           BARE_MODEL_ARG=m68020
+           BARE_CFLAGS_ARG="-m68020 -msoft-float"
+           ;;
+         bare-m68040)
+           BARE_MODEL_ARG=m68040
+           BARE_CFLAGS_ARG="-m68040"
+           ;;
+         bare-m68040nofp)
+           BARE_MODEL_ARG=m68040
+           BARE_CFLAGS_ARG="-m68040 -msoft-float"
+           ;;
+         bare-m68060)
+           BARE_MODEL_ARG=m68060
+           BARE_CFLAGS_ARG="-m68060"
+           ;;
+         bare-m68060nofp)
+           BARE_MODEL_ARG=m68060
+           BARE_CFLAGS_ARG="-m68060 -msoft-float"
+           ;;
+         bare-m68302)
+           BARE_MODEL_ARG=m68302
+           BARE_CFLAGS_ARG="-m68302 -msoft-float"
+           ;;
+         bare-cpu32)
+           BARE_MODEL_ARG=cpu32
+           BARE_CFLAGS_ARG="-mcpu32"
+           ;;
+         bare-cpu32+)
+           BARE_MODEL_ARG=cpu32+
+           BARE_CFLAGS_ARG="-mcpu32 -DRTEMS__mcpu32p__"
+           ;;
+         bare-m5200)
+           BARE_MODEL_ARG=m5200
+           BARE_CFLAGS_ARG="-m5200"
+           ;;
+
+       # Motorola PowerPC Family
+         bare-ppc403)
+           BARE_MODEL_ARG=ppc403
+           BARE_CFLAGS_ARG="-mcpu=403"
+           ;;
+         bare-ppc603e)
+           BARE_MODEL_ARG=ppc603e
+           BARE_CFLAGS_ARG="-m60e"
+           ;;
+
+       # ARM Family
+         bare-arm9tdmi)
+           BARE_MODEL_ARG=arm9tdmi
+           BARE_CFLAGS_ARG="-mcpu=arm9tdmi"
+           ;;
+
+       # Unknown CPU family
+         *)
+           echo This script does not know how to build ${BSP_TO_TEST} yet.
+           echo
+           usage
+           exit 1
+           ;;
+    esac
+    BSP_TO_TEST=bare
+  fi
+fi
+
+#
+#  Convert user.cfg variables into RTEMS configuration options
+#
+
+case ${ENABLE_RTEMS_TESTS} in
+  samples) RTEMS_TESTS_FLAG="--enable-tests=samples" ;;
+  yes)     RTEMS_TESTS_FLAG="--enable-tests" ;;
+  *)       RTEMS_TESTS_FLAG="--disable-tests" ;;
+esac
+  
+if [ ${ENABLE_BSP_DIRTY_MEMORY} = yes ] ; then
+ # Not all BSPs support this
+ ENABLE_BSP="${ENABLE_BSP} BSP_DIRTY_MEMORY=1"
+fi
+
+if [ ${ENABLE_RTEMS_TCPIP} = yes ] ; then
+  TCPIP_FLAG="--enable-networking"
+else
+  TCPIP_FLAG="--disable-networking"
+fi
+
+#    --disable-rtems-inlines
+if [ x${DISABLE_INLINES} = xyes ] ; then
+  DISABLE_INLINES_FLAG="--disable-rtems-inlines"
+fi
+
+if [ ${ENABLE_RTEMS_POSIX} = yes ] ; then
+  POSIX_FLAG="--enable-posix"
+else
+  POSIX_FLAG="--disable-posix"
+fi
+
+if [ ${ENABLE_RTEMS_ITRON} = yes ] ; then
+  ITRON_FLAG="--enable-itron"
+else
+  ITRON_FLAG="--disable-itron"
+fi
+
+ADA_FLAG="--disable-ada"
+ADA_TESTS_FLAG="--disable-expada"
+case ${target} in 
+  sparc*|powerpc*|i386*)
+    if [ ${ENABLE_RTEMS_ADA} = yes ] ; then
+      ADA_FLAG="--enable-ada"
+    fi
+
+    if [ ${ENABLE_RTEMS_ADA_TESTS} = yes ] ; then
+      ADA_TESTS_FLAG="--enable-expada"
+    fi
+    ;;
+  *)
+    ;;
+esac
+
+# Only a few BSPs really support MP
+if [ ${ENABLE_RTEMS_MP} = yes ] ; then
+  case ${BSP_TO_TEST} in
+    simhppa|cvme961|mvme136|mvme147s|psim|posix|multilib|leon3)
+      ENABLE_MP_FLAG="--enable-multiprocessing"
+      ;;
+    *)
+      echo "AUTOMATICALLY DISABLING MULTIPROCESSING!!!"
+      ENABLE_MP_FLAG="--disable-multiprocessing"
+      ;;
+  esac
+else
+  ENABLE_MP_FLAG="--disable-multiprocessing"
+fi
+
+# Some CPUs do not have C++ support
+if [ ${ENABLE_RTEMS_CXX} = yes ] ; then
+  case ${CPU} in
+    bfin|tic4x) ENABLE_RTEMS_CXX="--disable-cxx" ;;
+    *)          ENABLE_RTEMS_CXX="--enable-cxx" ;;
+  esac
+else
+  ENABLE_RTEMS_CXX="--disable-cxx"
+fi
+
+if [ ${ENABLE_RTEMS_RDBG} = yes ] ; then
+  ENABLE_RTEMS_RDBG="--enable-rdbg"
+else
+  ENABLE_RTEMS_RDBG="--disable-rdbg"
+fi
+
+if [ ${ENABLE_RTEMS_MAINTAINER_MODE} = yes ] ; then
+  ENABLE_RTEMS_MAINTAINER_MODE="--enable-maintainer-mode"
+else
+  ENABLE_RTEMS_MAINTAINER_MODE=""
+fi
+
+ENABLE_DEPRECATED_HEADERS="--disable-deprecated"
+
+if [ ${BUILD_RTEMS_DEBUG} = "yes" ] ; then
+  ENABLE_RTEMS_DEBUG="--enable-rtems-debug"
+else
+  ENABLE_RTEMS_DEBUG=""
+fi
+
+ENABLE_ARGS="\
+    --prefix=${INSTALL_POINT} \
+    ${DISABLE_INLINES_FLAG} ${ENABLE_MP_FLAG} \
+    ${ENABLE_RTEMS_DEBUG} ${ENABLE_RTEMS_CXX} \
+    ${ENABLE_RTEMS_RDBG} ${ENABLE_RTEMS_MAINTAINER_MODE} \
+    ${RTEMS_TESTS_FLAG} ${TCPIP_FLAG} \
+    ${POSIX_FLAG} ${ITRON_FLAG} ${ENABLE_DEPRECATED_HEADERS} \
+    ${ADA_FLAG} ${ADA_TESTS_FLAG}"
+
+if [ $CPU != unix ] ; then
+  TARGET_ARG=--target=${target}
+  #ENABLE_BSP=
+fi
+
+conf_rtems ${TARGET_ARG} ${ENABLE_ARGS} ${ENABLE_BSP} $args
+
+if [ $? -ne 0 ] ; then
+  echo "Unable to configure successfully"
+  exit 1
+fi
+
+
+build_status=0
+
+export  PATH=$PATH:${INSTALL_POINT}/bin
+if [ ${verbose} = yes ]; then
+  echo "Initiating ${MAKE} .."
+fi
+
+if [ ${BUILD_RTEMS_DEBUG} = "yes" ] ; then
+ MAKE_DEBUG_ARG="VARIANT=DEBUG"
+fi
+
+case ${BSP_TO_TEST} in
+  multilib)
+     echo "Executing ${MAKE} ${MAKE_DEBUG_ARG} ..."
+     ${MAKE} -j8 RTEMS_BSP= ${MAKE_DEBUG_ARG}
+     check_fatal $? "failed ${MAKE} ${MAKE_DEBUG_ARG}."
+     BSP_TO_TEST=
+     ;;
+  *)
+     echo "Executing ${MAKE} ${MAKE_DEBUG_ARG} ..."
+     ${MAKE} -j8 RTEMS_BSP=${BSP_TO_TEST} ${MAKE_DEBUG_ARG}
+     check_fatal $? "failed ${MAKE} ${MAKE_DEBUG_ARG}."
+     ;;
+esac
+
+case $CPU in
+  unix) ;;
+  *)
+     if [ ${do_install} = "yes" ] ; then
+       echo "Executing ${MAKE} install ..."
+       if [ X${BSP_TO_TEST} = X ] ; then
+	 ${MAKE} RTEMS_BSP= ${MAKE_DEBUG_ARG} install
+       else
+	 find ${INSTALL_POINT}/${target} -name "*.h" -o -name "*.a" | \
+	   while read f
+	   do
+	     rpm -qf $f >/dev/null 2>&1
+	     test $? -eq 1 && (echo $f ; rm -f $f)
+	   done
+
+	 ${MAKE} RTEMS_BSP=${BSP_TO_TEST} ${MAKE_DEBUG_ARG} install
+       fi
+       check_fatal $? "failed ${MAKE} ${MAKE_DEBUG_ARG} install."
+     fi
+     ;;
+esac
+build_status=$?
+
+case ${BSP_ARG} in
+  multilib)
+     # should be in build-CPU-multilib-rtems
+     pwd
+     cd ..
+     rm -rf ${BUILDDIR}-bsps
+     mkdir ${BUILDDIR}-bsps
+     cd ${BUILDDIR}-bsps
+     
+     # same configure but this time we build the BSPs 
+     conf_rtems ${TARGET_ARG} ${ENABLE_ARGS} $args
+     check_fatal $? "Unable to configure BSP step successfully"
+
+     echo "Executing multilib BSP: ${MAKE} ${MAKE_DEBUG_ARG} ..."
+     ${MAKE} -k -j8 ${MAKE_DEBUG_ARG}
+     status=$?
+
+     # clean up install point
+     find ${INSTALL_POINT}/${target}/lib -name "*rtems*.a" | xargs -e rm -f
+     rm -rf ${INSTALL_POINT}/${target}/lib/include
+
+     mkdir -p ../ticker-executables
+     find . -name ticker.ralf | while read f
+     do
+        bsp=`echo $f | cut -d'/' -f4`
+        cp $f ../ticker-executables/${CPU}-${bsp}-multilib-ticker.ralf
+     done
+
+     check_fatal $status "failed BSP ${MAKE} ${MAKE_DEBUG_ARG}."
+     exit 0
+     ;;
+  *)
+     ;;
+esac
+
+# If we were installing a bare BSP, then we must fix the install point
+if [ ${do_install} = yes -a ${doing_bare_bsp} = yes ] ; then
+  echo "Moving the RTEMS bare bsp directory to ${BSP_TO_TEST} ... "
+  test -d ${INSTALL_POINT}/${target}/bare
+  check_fatal $? "${INSTALL_POINT}/${target}/bare does not exist"
+  mv ${INSTALL_POINT}/${target}/bare ${INSTALL_POINT}/${target}/${BSP_TO_TEST}
+  check_fatal $? "failed to move the bare bsp directory to ${BSP_TO_TEST}."
+fi
+
+# gather size info of executables
+case ${target} in
+  unix) sizecmd=size           ; searchtestdir="NOT_SET";;
+  *)    sizecmd=${target}-size ; searchtestdir=${target}/${BSP_TO_TEST} ;;
+esac
+ext=exe
+count=`find . -name "*.nxe" | wc -l`
+if [ ${count} -ne 0 ] ; then
+  ext=nxe
+fi
+${sizecmd} `find . -name "*.${ext}"` | sed -e '1,1d' -e 's/^/SIZE:/'
+
+# Can we run the tests on a simulator?
+if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
+     ${ENABLE_RTEMS_TESTS} = "yes" ] ; then
+
+  if [ ${RUN_RTEMS_TESTS} = yes ] ; then
+    case ${BSP_TO_TEST} in
+      edb7312) testable=yes ;;  # arm/edb7312
+      rtl22xx) testable=yes ;;  # arm/rtl22xx
+      jmr3904) testable=yes ;;  # mips/jmr3904
+      psim)    testable=yes ;;  # powerpc/psim
+      sis)     testable=yes ;;  # sparc/sis
+      erc32|leon2|leon3)        # sparc using tsim
+        case `uname -n` in
+          england*|iceland*) testable=yes ;; 
+          *)                 testable=no ;;
+        esac
+        ;;
+      posix)   testable=yes ;;  # unix/posix
+      *)       testable=no  ;;
+    esac
+  else
+    # Running tests disabled by user
+    testable=no
+  fi
+
+  # If not multilib, grab the ticker.ralf and save it out
+  if [ X${BSP_TO_TEST} != X ] ; then
+    mkdir -p ../ticker-executables
+    cp `find . -name ticker.ralf` \
+        ../ticker-executables/${CPU}-${BSP_TO_TEST}-ticker.ralf
+  fi
+
+  if [ ${testable} = yes ] ; then
+    echo TESTING BSP
+    testdir=${target}-${BSP_TO_TEST}
+    rm -rf ${testdir}
+
+    mkdir ${testdir}
+    check_fatal $? "failed to mkdir test directory for ${BSP_TO_TEST}."
+    cp `find . -name "*.ralf"` ${testdir}
+    case ${BSP_TO_TEST} in
+      jmr3904|psim|sis|posix)
+        cp `find ${searchtestdir} -name "runtest"` ${testdir}
+        runner=./runtest
+        ;;
+      edb7312)  runner="runskyeye -b edb7312" ;;
+      rtl22xx)  runner="runskyeye -b rtl22xx" ;;
+      erc32)    runner=runerc32 ;;
+      leon2)    runner=runleon  ;;
+      leon3)    runner=runleon3 ;;
+      *) ;;
+    esac
+
+    cd ${testdir}
+    check_fatal $? "failed to enter test directory for ${BSP_TO_TEST}."
+
+    # This should run the tests
+    ${runner} *.ralf
+
+    # Check Logs
+    echo "Checking Logs for Proper Test Completion ..."
+    check_endof
+
+    cd ..
+
+    # Do not gather test executables as they are very large
+    
+    # gather results as best we can
+    tar cjf ../log/${target}-${BSP_TO_TEST}-logs.tar.bz2 \
+        ${target}-${BSP_TO_TEST}/log
+ 
+
+    # Should be back at the top of the build tree
+  fi
+fi
+
+pwd
+
+# if we installed it, then try to build hello world
+if [ ${do_install} = yes -a ${doing_bare_bsp} = no ] ; then
+  # if this is a multilib, then handle it specially
+  if [ X${BSP_TO_TEST} = X ] ; then
+      find ${INSTALL_POINT}/${target}/lib -name "*rtems*.a" | xargs -e rm -f
+      rm -rf ${INSTALL_POINT}/${target}/lib/include
+  else
+    case ${BSP_TO_TEST} in
+      posix|bare*) ;;
+      *)
+        # Build non-networked application level tests
+        for suite in examples class-examples
+        do
+          cd ..
+          cd ${suite}
+          check_fatal $? "failed cd to ${suite}."
+
+          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
+             ${MAKE} ${MAKE_DEBUG_ARG} clean
+          check_fatal $? "failed 1st clean ${suite} on ${BSP_TO_TEST}."
+
+          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
+             ${MAKE} ${MAKE_DEBUG_ARG} 
+          check_fatal $? "failed ${suite} on ${BSP_TO_TEST}."
+
+          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
+             ${MAKE} ${MAKE_DEBUG_ARG} clean
+          check_fatal $? "failed clean ${suite} on ${BSP_TO_TEST}."
+        done
+
+        # Build TCP/IP demos and addons
+        if [ ${ENABLE_RTEMS_POSIX} = yes -a  \
+              ${ENABLE_RTEMS_TCPIP} = yes ] ; then
+
+          cd ../rtems-addon-packages
+          check_fatal $? "failed cd to rtems-addon-packages."
+
+          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
+             sh ./bit
+          check_fatal $? "failed to build add on on ${BSP_TO_TEST}."
+
+
+        fi
+
+        if [ ${ENABLE_RTEMS_TCPIP} = yes ] ; then
+          suite=network-demos
+          cd ../network-demos
+          check_fatal $? "failed cd to network-demos."
+
+          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
+             ${MAKE} ${MAKE_DEBUG_ARG} clean
+          check_fatal $? "failed 1st clean ${suite} on ${BSP_TO_TEST}."
+
+          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
+             ${MAKE} ${MAKE_DEBUG_ARG} 
+          check_fatal $? "failed ${suite} on ${BSP_TO_TEST}."
+
+          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
+             ${MAKE} ${MAKE_DEBUG_ARG} clean
+          check_fatal $? "failed clean ${suite} on ${BSP_TO_TEST}."
+        fi
+
+        # now clean up the install image
+        du -s -k ${INSTALL_POINT}/${target}/${BSP_TO_TEST}
+        rm -rf ${INSTALL_POINT}/${target}/${BSP_TO_TEST}
+        ;;
+    esac
+  fi
+fi
+exit 0

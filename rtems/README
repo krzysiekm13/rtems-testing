@@ -1,0 +1,9 @@
+#
+#  $Id$
+#
+
+These are the scripts used to test all RTEMS configurations.
+
+They have not been tightly integrated into the test structure.  They
+get checked out along with appropriate RTEMS source, network-demos, etc.
+into a single directory.  Then the user.cfg gets tailored.
