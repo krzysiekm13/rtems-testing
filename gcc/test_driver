@@ -42,16 +42,20 @@ doNative=yes
 update_rtems()
 {
   cd ${RTEMSDIR}
-  cvs up -Pd 2>&1 | grep -v ^cvs
-  ./bootstrap -c
-  ./bootstrap
+  if [ -d CVS ] ; then
+    cvs up -Pd 2>&1 | grep -v ^cvs
+    ./bootstrap -c
+    ./bootstrap
+  fi
 }
 
 # HELPER - Update GCC
 update_gcc()
 {
   cd ${GCCDIR}
-  ./contrib/gcc_update
+  if [ -d .svn ] ; then
+    ./contrib/gcc_update
+  fi
 }
 
 # HELPER - Remove all the installed previous builds
@@ -79,14 +83,14 @@ update_others()
   for d in ${BINUTILSDIR} ${GDBDIR} ${NEWLIBDIR}
   do
     
-    case ${d} in
-      *cvs*)
-        cd ${d}
-	cvs up -P 2>&1 | grep -v ^cvs
-        ;;
-      *)
-        ;;
-    esac
+    cd ${d} 
+    if [ -d .svn ] ; then
+      echo "I do not update SVN for ${d}"
+      exit 1
+   fi
+   if [ -d CVS ] ; then
+     cvs up -P 2>&1 | grep -v ^cvs
+   fi
   done
 }
 

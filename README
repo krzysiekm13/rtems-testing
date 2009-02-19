@@ -27,11 +27,11 @@ TESTROOT
 Update gcc-testing/VERSIONS to point to the appropriate directories
 and versions.
 
-rtems-SOURCE is assumed to be a CVS checkout by test_driver.
-gcc-SOURCE is assumed to be an SVN checkout by test_driver.
+If the various source directories contain a CVS subdirectory,
+then they will be updated using CVS.
 
-If the binutils, newlib, or gdb directories or of the pattern "*cvs*",
-then they will also be updated.
+If the various source directories contain a .svn subdirectory,
+then they will be updated using svn.
 
 Look near the top of do_one for a number of environment variables
 such as whether to build binutils and gdb from source or just
