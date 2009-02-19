@@ -1,5 +1,9 @@
 2009-02-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* VERSIONS: Move variable settings up.
+
+2009-02-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* README, gcc/test_driver: Do not assume anything is a CVS/SVN
 	checkout. Look for the CVS or .svn subdirectory and act accordingly.
 

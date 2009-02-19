@@ -11,6 +11,13 @@ NEWLIBDIR=${BASEDIR}/newlib-cvs/src
 GDBDIR=${BASEDIR}/gdb-cvs/src
 RTEMSDIR=${BASEDIR}/rtems
 
+# These are inferred from above but double check
+INSTALL=${BASEDIR}/install
+BSP_INSTALL=${BASEDIR}/bsp-install
+SCRIPTDIR=${BASEDIR}/gcc-testing
+LOGDIR=${BASEDIR}/log
+RESULTSDIR=${BASEDIR}/results-trunk
+
 # These things vary between the GCC CFARM Debian and OAR Fedora test machines
 # TODO: It would be good to probe to figure this out.
 case `hostname` in
@@ -38,10 +45,3 @@ case `hostname` in
     MAKEJOBS="-j3"
     ;;
 esac
-
-INSTALL=${BASEDIR}/install
-BSP_INSTALL=${BASEDIR}/bsp-install
-SCRIPTDIR=${BASEDIR}/gcc-testing
-LOGDIR=${BASEDIR}/log
-RESULTSDIR=${BASEDIR}/results-trunk
-
