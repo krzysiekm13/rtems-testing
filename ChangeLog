@@ -1,3 +1,7 @@
+2009-02-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/test_driver: Put top level logs in ${BASEDIR}.
+
 2009-02-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* VERSIONS: Move variable settings up.

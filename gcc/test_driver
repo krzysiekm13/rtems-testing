@@ -128,11 +128,14 @@ do_cpus()
 
     doOne=${SCRIPTDIR}/gcc/do_one 
     # Everything
-    time sh -x ${doOne} -v -d -A ${tests} ${cpu} ${bsp} >${bsp}.log 2>&1
+    time sh -x ${doOne} -v -d -A ${tests} \
+        ${cpu} ${bsp} >$${BASEDIR}/{bsp}.log 2>&1
     # Just C
-    #time sh -x ${doOne} -v -b -D -1 -r ${tests} ${cpu} ${bsp} >${bsp}.log 2>&1
+    #time sh -x ${doOne} -v -b -D -1 -r ${tests} \
+    #    ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     # Just C/C++
-    #time sh -x ${doOne} -v -1 -r -g ${tests} ${cpu} ${bsp} >${bsp}.log 2>&1
+    #time sh -x ${doOne} -v -1 -r -g ${tests}\
+    #     ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
   done
 
@@ -165,7 +168,7 @@ wait
 
 # Build the native compiler as a baseline to build the others
   if [ ${doNative} = "yes" ] ; then
-    time sh -x ${SCRIPTDIR}/gcc/do_one -n >native.log 2>&1
+    time sh -x ${SCRIPTDIR}/gcc/do_one -n >${BASEDIR}/native.log 2>&1
   fi
 
 # Now cycle over all these CPUs
