@@ -37,19 +37,19 @@ print_rtems_cpus()
 {
   echo
   echo "CPU is one of the following: "
-  echo "  arm           h8300		i386"
-  echo "  m68k		nios2		powerpc"
-  echo "  sh		m32c		m32r"
-  echo "  sparc		tic4x"
+  echo "  arm           h8300		i386		lm32"
+  echo "  m68k		nios2		powerpc		sh"
+  echo "  m32c		m32r            sparc		tic4x"
   echo 
   echo "Formats without a -XXX suffix are the preferred target."
   echo 
   echo "CPU-rtems is used as the GNU target and results in:"
   echo "    arm-rtems         -- ARM"
-  echo "    avr-rtems         -- avr"
+  echo "    avr-rtems         -- Atmel AVR"
   echo "    bfin-rtems        -- Blackfin"
   echo "    h8300-rtems       -- Renesas H8/300"
   echo "    i386-rtems        -- Intel i386 and above in protected mode (ELF)"
+  echo "    lm32-rtems        -- Lattice Micro (ELF)"
   echo "    m32c-rtems        -- Renesas M32C (ELF)"
   echo "    m32R-rtems        -- Renesas M32R (ELF)"
   echo "    m68k-rtems        -- Motorola mc680x0, mc683xx, and ColdFire (ELF)"
@@ -75,6 +75,7 @@ case ${CPU} in
   h8300)       ;;
   hppa1.1)     ;;
   i386)        ;;
+  lm32)        ;;
   m32c)        ;;
   m32r)        ;;
   m68k)        ;;

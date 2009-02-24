@@ -1,3 +1,8 @@
+2009-02-24	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* common.sh, user.cfg: If not running tests, do not confirm BSP has a
+	DejaGNU configuration.
+
 2009-02-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ChangeLog, README, bit_ALL, bit_all, bit_all_confs, bit_all_multilib,
