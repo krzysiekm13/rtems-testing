@@ -82,7 +82,7 @@ case $1 in
     ;;
 esac
 
-rtemsdir=${BASEDIR}/bsp-install/${CPU}-rtems${RTEMS_VERSION}/${BSP}
+rtemsdir=${BSP_INSTALL}/${CPU}-rtems${RTEMS_VERSION}/${BSP}
 
 dfile=~/.dejagnurc
 if [ -r ${dfile} ] ; then

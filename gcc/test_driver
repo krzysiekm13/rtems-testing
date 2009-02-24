@@ -61,8 +61,8 @@ update_gcc()
 # HELPER - Remove all the installed previous builds
 clean_up()
 {
-  rm -rf install/* &
-  rm -rf bsp-install/* &
+  rm -rf ${INSTALL}/* &
+  rm -rf ${BSP_INSTALL}/* &
   wait
 }
 
@@ -72,7 +72,7 @@ install_auto()
   do
     cd ${auto}
     make distclean
-    ./configure --prefix=${BASEDIR}/install
+    ./configure --prefix=${INSTALL}
     make all install
   done
 }

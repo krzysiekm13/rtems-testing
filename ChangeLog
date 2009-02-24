@@ -1,5 +1,10 @@
 2009-02-24	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* gcc/rundeja, gcc/test_driver: Use INSTALL and BSP_INSTALL more
+	consistently.
+
+2009-02-24	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* gcc/do_one: If not running tests, do not confirm BSP has a DejaGNU
 	configuration.
 
