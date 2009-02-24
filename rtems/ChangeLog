@@ -1,7 +1,10 @@
 2009-02-24	Joel Sherrill <joel.sherrill@oarcorp.com>
 
-	* common.sh, user.cfg: If not running tests, do not confirm BSP has a
-	DejaGNU configuration.
+	* ChangeLog: Fix.
+
+2009-02-24	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* common.sh, user.cfg: Update for lm32.
 
 2009-02-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
