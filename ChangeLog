@@ -1,3 +1,8 @@
+2009-02-24	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/do_one: If not running tests, do not confirm BSP has a DejaGNU
+	configuration.
+
 2009-02-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gcc/test_driver: Put top level logs in ${BASEDIR}.

@@ -203,7 +203,8 @@ do
   fi
 done
 
-if [ ${needCPU} = yes -a ${needBSP} = yes ] ; then
+if [ ${needCPU} = yes -a ${needBSP} = yes -a \
+     ${run_gcctests} = yes -a ${run_acats} = yes ] ; then
   DEJADIR=${SCRIPTDIR}/dejagnu/boards 
   if [ ! -d ${DEJADIR} ] ; then
     echo "Missing DejaGNU configuration directory (${DEJADIR})"
