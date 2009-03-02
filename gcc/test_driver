@@ -129,7 +129,7 @@ do_cpus()
     doOne=${SCRIPTDIR}/gcc/do_one 
     # Everything
     time sh -x ${doOne} -v -d -A ${tests} \
-        ${cpu} ${bsp} >$${BASEDIR}/{bsp}.log 2>&1
+        ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     # Just C
     #time sh -x ${doOne} -v -b -D -1 -r ${tests} \
     #    ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
@@ -183,7 +183,7 @@ if [ $? -eq 0 ] ; then
     do_cpus arm
 
     # no simulator -- waiting for Skyeye
-    do_cpus bfin m68k avr
+    do_cpus bfin m68k
 
     # port insufficient to run gcc tests
     do_cpus avr

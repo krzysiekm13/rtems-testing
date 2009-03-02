@@ -1,3 +1,9 @@
+2009-03-02	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/do_one, gcc/test_driver,
+	gcc/testsuite/ada/acats/run_all_rtems.sh: Fix typos and use -k on
+	make RTEMS multilib.
+
 2009-02-24	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gcc/rundeja, gcc/test_driver: Use INSTALL and BSP_INSTALL more

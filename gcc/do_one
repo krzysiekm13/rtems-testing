@@ -454,6 +454,7 @@ j_rtems()
   case $bspArg in
     multilib)
       ENABLE_BSP="--enable-multilib"
+      MAKE_ARG="-k"
       ;;
     qemu|pc386)
       ENABLE_BSP="--enable-rtemsbsp=pc386"
@@ -470,7 +471,7 @@ j_rtems()
   esac
   ${RTEMSDIR}/configure --target=${TARGET} ${ENABLE_BSP} \
   ${RTEMS_ARGS} --enable-maintainer-mode --disable-tests \
-  --prefix=${BSP_INSTALL} && make ${MAKEJOBS} && make install
+  --prefix=${BSP_INSTALL} && make ${MAKEJOBS} ${MAKE_ARG} && make install
   cd ..
 }
 
