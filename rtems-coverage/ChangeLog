@@ -1,5 +1,9 @@
 2009-03-12	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* README: Update.
+
+2009-03-12	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* do_coverage, gen_report: Now should be more tailorable.
 	* VERSIONS-COVERAGE: New file.
 	* c, cp_em, j-erc32: Removed.

@@ -3,7 +3,19 @@
 #
 
 The script do_coverage now is a living README.  Please see it for
-procedural information.  It can perform all steps.
+procedural information.  It can perform all steps.  You should only
+have to edit VERSIONS-COVERAGE to tailor to your local installation
+and run
+
+./do_coverage -?
+
+to get some further advice.  The script catches common errors
+and deals with as much as possible.
+
+The report ends up in your test directory (${BSP}-tests).
+
+
+====================== By hand information 
 
 Example invocations:
 
