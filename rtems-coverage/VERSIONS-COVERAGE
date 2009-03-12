@@ -1,0 +1,29 @@
+# USE FULL PATHS!!!
+BASEDIR=${HOME}/test-gcc
+
+RTEMS_VERSION=4.10
+
+CPU=sparc
+BSP=erc32
+RUNNER=runerc32
+
+RTEMSDIR=${BASEDIR}/rtems
+LOGDIR=${BASEDIR}/log
+
+# These symbols mark the range of the code block we are analyzing.
+# If the structure of the linked executable changes, then we need
+# to change these.  This COULD change if you switch BSPs.  We don't
+# know yet.
+#
+# NOTE: The highsym is still in libposix so needs to be analyzed
+#       as well. :( We really need the first symbol AFTER it but
+#       things are not setup to make that reliable.
+lowsym=rtems_build_id
+highsym=sysconf 
+
+# Calculated
+SCRIPTDIR=${BASEDIR}/gcc-testing
+COVBASE=${SCRIPTDIR}/rtems-coverage
+TARGET=${CPU}-rtems${RTEMS_VERSION}
+
+

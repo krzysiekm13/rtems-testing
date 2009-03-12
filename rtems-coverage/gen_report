@@ -5,9 +5,20 @@
 #  $Id$
 #
 
-low=020011f4
-#high=02011f50
-high=02012684
+vfile=`dirname $0`/VERSIONS-COVERAGE
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS-COVERAGE file not found
+  exit 1
+fi
+
+source ${vfile}
+
+if [ ! -d ${BASEDIR} ] ; then
+  echo Have you set the BASEDIR in VERSIONS correctly?
+  exit 1
+fi
+
+progname=${0##*/}        # fast basename hack for ksh, bash
 
 if [ $# -ne 1 ] ; then
   echo Usage: ${0} TARGET
@@ -32,10 +43,6 @@ check_fatal $? "Cannot find ${NM} on PATH"
 
 ${NM} -g -n hello.exe >hello.num
 
-# the highsym is still in libposix so needs to be analyzed as well. :(
-lowsym=rtems_build_id
-highsym=sysconf 
-
 # Basic validity checking 
 tlow=`grep "T ${lowsym}$" hello.num | cut -d' ' -f1`
 if [ X${tlow} = X ] ; then
@@ -52,21 +59,12 @@ if [ X${tlow} = X -o X${thigh} = X ] ; then
 fi
 
 rm -f merged.cov report 
-../covmerge/covmerge -l 0x${low} -h 0x${high} -r report \
- -E ../covmerge/Explanations.txt \
- -T sparc-rtems4.10 -e hello.exe -m merged.cov *.cov
+${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report \
+ -E ${COVBASE}/Explanations.txt \
+ -T ${TARGET} -e hello.exe -m merged.cov *.cov
 
 echo "====== 15 Largest Range Sizes ======"
 grep ^Size report | cut -d':' -f2 | sort -n | uniq -c | tail -15
 echo "====================================="
 
-if [ ${low} != ${tlow} ] ; then
-  echo old $low new $tlow
-  echo LOW ADDRESS MISMATCH: old $low new $tlow
-  echo Results may not be accurate
-fi
-if [ ${high} != ${thigh} ] ; then
-  echo HIGH ADDRESS MISMATCH: old $high new $thigh
-  echo Results may not be accurate
-fi
 exit 0

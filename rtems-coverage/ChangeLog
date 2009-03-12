@@ -1,5 +1,11 @@
 2009-03-12	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* do_coverage, gen_report: Now should be more tailorable.
+	* VERSIONS-COVERAGE: New file.
+	* c, cp_em, j-erc32: Removed.
+
+2009-03-12	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	Initial import.
 	* ChangeLog, CoverageMap.cc, CoverageMap.h, CoverageMapBase.cc,
 	CoverageMapBase.h, CoverageRanges.cc, CoverageRanges.h,

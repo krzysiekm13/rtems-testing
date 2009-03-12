@@ -4,13 +4,18 @@
 # 
 #  $Id$
 
-# Locked in for now.. maybe someday this will work on another BSP
-TARGET=sparc-rtems4.10
-BSP=erc32
-RUNNER=runerc32
+vfile=`dirname $0`/VERSIONS-COVERAGE
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS-COVERAGE file not found
+  exit 1
+fi
 
-# Assume for now that we run from this directory
-BASE=${HOME}/coverage
+source ${vfile}
+
+if [ ! -d ${BASEDIR} ] ; then
+  echo Have you set the BASEDIR in VERSIONS correctly?
+  exit 1
+fi
 
 progname=${0##*/}        # fast basename hack for ksh, bash
 
@@ -117,18 +122,19 @@ fi
 
 # Basic error checking and sanity checking on the directory structure
 # and PATH
-if [ ! -d ${BASE} ] ; then
-  echo You do not have ${BASE}
+if [ ! -d ${COVBASE} ] ; then
+  echo You do not have ${COVBASE}
   exit 1
 fi
 
-if [ ! -d ${BASE}/rtems ] ; then
+if [ ! -d ${RTEMSDIR} ] ; then
   echo "Check out RTEMS!!!"
   exit 1
 fi
 
-if [ ! -d ${BASE}/covmerge ] ; then
-  echo "Check out covmerge!!!"
+grep ENABLE_COVERAGE ${RTEMSDIR}/c/src/make/leaf.cfg >/dev/null
+if [ $? -ne 0 ] ; then
+  echo "It doesn't look like you patched the RTEMS source for coverage."
   exit 1
 fi
 
@@ -141,21 +147,21 @@ start=`date`
 # If necessary, clean up the RTEMS build and test run directories
 if [ ${do_clean} = "yes" ] ; then
   echo "Cleaning before building"
-  rm -rf ${BASE}/b-${BSP}
-  rm -rf ${BASE}/${BSP}-tests
+  rm -rf ${BASEDIR}/b-${BSP}
+  rm -rf ${BASEDIR}/${BSP}-tests
 else
   echo "Skipping clean before building"
 fi
 
 # If they don't exist, create the RTEMS build and test run directories
-test -d ${BASE}/b-${BSP}     || mkdir ${BASE}/b-${BSP}
-test -d ${BASE}/${BSP}-tests || mkdir ${BASE}/${BSP}-tests
+test -d ${BASEDIR}/b-${BSP}     || mkdir ${BASEDIR}/b-${BSP}
+test -d ${BASEDIR}/${BSP}-tests || mkdir ${BASEDIR}/${BSP}-tests
 
 # If requested, update and build the coverage support tools
 if [ ${do_covmerge} = "yes" ] ; then
   echo "Updating and building covmerge..."
 
-  cd ${BASE}/covmerge
+  cd ${COVBASE}
   check_status $? "cd covmerge"
 
   cvs up -Pd 2>&1 | grep -v ^cvs
@@ -171,7 +177,7 @@ fi
 # If requested, update the RTEMS tree
 if [ ${do_rtems_update} = "yes" ] ; then
   echo "Updating RTEMS ..."
-  cd ${BASE}/rtems
+  cd ${RTEMSDIR}
   check_status $? "cd rtems"
 
   cvs up -Pd 2>&1 | grep -v ^cvs
@@ -184,7 +190,7 @@ fi
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
   echo "Configuring RTEMS..."
-  cd ${BASE}/b-${BSP}/
+  cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
   ################## 
@@ -193,7 +199,7 @@ if [ ${do_rtems_configure} = "yes" ] ; then
   ################## BE CAREFUL ABOUT THIS CONFIGURE COMMAND.  IT IS
   ################## VERY SPECIFIC TO COVERAGE TESTING
   ################## 
-  ../rtems/configure NDEBUG=1 \
+  ${RTEMSDIR}/configure NDEBUG=1 \
      RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
      RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
     --target=${TARGET} --enable-rtemsbsp=${BSP} \
@@ -209,7 +215,7 @@ fi
 if [ ${do_rtems_build} = "yes" ] ; then
   echo "Building RTEMS..."
 
-  cd ${BASE}/b-${BSP}/
+  cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
   make -j4 >b.log 2>&1
@@ -223,14 +229,13 @@ if [ ${do_copy_tests} = "yes" ] ; then
   echo "Copying tests..."
 
   # clean destination
-  rm -rf ${BASE}/${BSP}-tests/*
+  rm -rf ${BASEDIR}/${BSP}-tests/*
   check_status $? "clean test directory"
   rm -f *.exe *.cov *.tmp
   rm -rf log
   rm -f annotated.dmp hello.num report
- 
 
-  cd ${BASE}/b-${BSP}/
+  cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
   cp `find . -name *.exe` ../${BSP}-tests
@@ -241,7 +246,7 @@ fi
 # If requested, run the tests with coverage reporting enabled
 if [ ${do_run_tests} = "yes" ] ; then
   echo "Running tests..."
-  cd ${BASE}/${BSP}-tests/
+  cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
   time ${RUNNER} -C
@@ -253,10 +258,10 @@ fi
 if [ ${do_report} = "yes" ] ; then
   echo "Generating report..."
 
-  cd ${BASE}/${BSP}-tests/
+  cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  ${BASE}/covmerge/gen_report ${TARGET}
+  ${COVBASE}/gen_report ${TARGET}
 else
   echo "Skipping Generating report..."
 fi
