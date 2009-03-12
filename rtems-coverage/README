@@ -1,0 +1,24 @@
+#
+#  $Id$
+#
+
+The script do_coverage now is a living README.  Please see it for
+procedural information.  It can perform all steps.
+
+Example invocations:
+
+./covmerge -v -l 0x40000000 -h 0x40000100 -T sparc-rtems4.10 \
+   -e test_input/hello.exe test_input/hello.cov
+
+./covmerge -v -l 0x40000000 -h 0x40000100 -m merged.cov test_input/*.cov
+
+=============== Sample Build of RTEMS =================
+
+../rtems/configure NDEBUG=1 \
+   RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
+   RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
+  --target=sparc-rtems4.10 --enable-rtemsbsp=erc32 \
+  --enable-maintainer-mode \
+  --disable-itron --enable-tests --disable-tcpip --disable-ada --disable-cxx \
+  --prefix=${HOME}/coverage/install && make -j4 && exit 0
+exit 1

@@ -1,0 +1,72 @@
+#! /bin/sh
+#
+#  Script to generate coverage report
+#
+#  $Id$
+#
+
+low=020011f4
+#high=02011f50
+high=02012684
+
+if [ $# -ne 1 ] ; then
+  echo Usage: ${0} TARGET
+  exit 1
+fi
+
+#
+#  Checks the status returned by executables and exits if it is non-zero.
+#
+check_fatal()
+{
+  if [ $1 -ne 0 ] ; then
+    shift
+    echo "ERROR: $*" >&2
+    exit 1
+  fi
+}
+
+NM=${1}-nm
+type ${NM}
+check_fatal $? "Cannot find ${NM} on PATH"
+
+${NM} -g -n hello.exe >hello.num
+
+# the highsym is still in libposix so needs to be analyzed as well. :(
+lowsym=rtems_build_id
+highsym=sysconf 
+
+# Basic validity checking 
+tlow=`grep "T ${lowsym}$" hello.num | cut -d' ' -f1`
+if [ X${tlow} = X ] ; then
+  echo "low symbol (${lowsym}) not found"
+fi
+thigh=`grep "T ${highsym}$" hello.num | cut -d' ' -f1`
+if [ X${thigh} = X ] ; then
+  echo "high symbol (${highsym}) not found"
+fi
+
+if [ X${tlow} = X -o X${thigh} = X ] ; then
+  echo "Did you patch RTEMS for coverage testing?"
+  exit 1
+fi
+
+rm -f merged.cov report 
+../covmerge/covmerge -l 0x${low} -h 0x${high} -r report \
+ -E ../covmerge/Explanations.txt \
+ -T sparc-rtems4.10 -e hello.exe -m merged.cov *.cov
+
+echo "====== 15 Largest Range Sizes ======"
+grep ^Size report | cut -d':' -f2 | sort -n | uniq -c | tail -15
+echo "====================================="
+
+if [ ${low} != ${tlow} ] ; then
+  echo old $low new $tlow
+  echo LOW ADDRESS MISMATCH: old $low new $tlow
+  echo Results may not be accurate
+fi
+if [ ${high} != ${thigh} ] ; then
+  echo HIGH ADDRESS MISMATCH: old $high new $thigh
+  echo Results may not be accurate
+fi
+exit 0

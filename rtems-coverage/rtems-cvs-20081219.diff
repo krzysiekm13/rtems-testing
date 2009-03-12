@@ -1,0 +1,285 @@
+? hello.num
+? j.log
+? cpukit/j.diff
+? cpukit/log
+? testsuites/sptests/hold
+Index: c/src/make/leaf.cfg
+===================================================================
+RCS file: /usr1/CVS/rtems/c/src/make/leaf.cfg,v
+retrieving revision 1.10
+diff -u -r1.10 leaf.cfg
+--- c/src/make/leaf.cfg	18 Sep 2008 17:34:06 -0000	1.10
++++ c/src/make/leaf.cfg	19 Dec 2008 17:02:56 -0000
+@@ -41,8 +41,9 @@
+ # Create a RTEMS executable based on MANAGERS which was set in
+ #  app's Makefile
+ 
+-MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
+-	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
++## XXX Joel make conditional
++## MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
++## 	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
+ 
+ # Allow user to override link commands (to build a prom image, perhaps)
+ ifndef LINKCMDS
+@@ -57,12 +58,12 @@
+ 
+ define bsp-link-c
+ 	$(LINK.c) $(CPU_CFLAGS) $(AM_CFLAGS) $(AM_LDFLAGS) \
+-	    -o $(basename $@).exe $(LINK_OBJS) $(LINK_LIBS)
++	    -o $(basename $@).exe $(COV_ARGS) $(LINK_OBJS) $(LINK_LIBS)
+ endef
+ 
+ define bsp-link-cxx
+ 	$(LINK.cc) $(CPU_CFLAGS) $(AM_CFLAGS) $(AM_LDFLAGS) \
+-	    -o $(basename $@).exe $(LINK_OBJS) $(LINK_LIBS)
++	    -o $(basename $@).exe $(COV_ARGS) $(LINK_OBJS) $(LINK_LIBS)
+ endef
+ 
+ define default-bsp-post-link
+Index: c/src/make/target.cfg.in
+===================================================================
+RCS file: /usr1/CVS/rtems/c/src/make/target.cfg.in,v
+retrieving revision 1.7
+diff -u -r1.7 target.cfg.in
+--- c/src/make/target.cfg.in	4 Aug 2007 05:45:16 -0000	1.7
++++ c/src/make/target.cfg.in	19 Dec 2008 17:02:56 -0000
+@@ -55,6 +55,7 @@
+ # Create a RTEMS executable based on MANAGERS which was set in
+ #  app's Makefile
+ 
+-MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
+-	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
++## XXX Joel make conditional
++## MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
++## 	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
+ 
+Index: cpukit/libmisc/dummy/dummy.c
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/libmisc/dummy/dummy.c,v
+retrieving revision 1.13
+diff -u -r1.13 dummy.c
+--- cpukit/libmisc/dummy/dummy.c	20 Aug 2008 22:24:09 -0000	1.13
++++ cpukit/libmisc/dummy/dummy.c	19 Dec 2008 17:02:58 -0000
+@@ -71,4 +71,3 @@
+       0                       /* tcp_rx_buf_size */
+   };
+ #endif
+-
+Index: cpukit/rtems/Makefile.am
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/rtems/Makefile.am,v
+retrieving revision 1.45
+diff -u -r1.45 Makefile.am
+--- cpukit/rtems/Makefile.am	17 Dec 2008 20:21:39 -0000	1.45
++++ cpukit/rtems/Makefile.am	19 Dec 2008 17:02:58 -0000
+@@ -7,6 +7,7 @@
+ 
+ AM_CPPFLAGS += -D__RTEMS_INSIDE__
+ 
++project_lib_LIBRARIES = librtems.a
+ noinst_LIBRARIES = librtems.a
+ librtems_a_CPPFLAGS = $(AM_CPPFLAGS)
+ 
+Index: cpukit/rtems/preinstall.am
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/rtems/preinstall.am,v
+retrieving revision 1.11
+diff -u -r1.11 preinstall.am
+--- cpukit/rtems/preinstall.am	29 Jan 2008 21:52:20 -0000	1.11
++++ cpukit/rtems/preinstall.am	19 Dec 2008 17:02:58 -0000
+@@ -8,16 +8,30 @@
+ PREINSTALL_DIRS =
+ DISTCLEANFILES = $(PREINSTALL_DIRS)
+ 
++all-local: $(TMPINSTALL_FILES)
++
++TMPINSTALL_FILES =
++CLEANFILES = $(TMPINSTALL_FILES)
++
+ all-am: $(PREINSTALL_FILES)
+ 
+ PREINSTALL_FILES =
+-CLEANFILES = $(PREINSTALL_FILES)
++CLEANFILES += $(PREINSTALL_FILES)
++
++$(PROJECT_LIB)/$(dirstamp):
++	@$(MKDIR_P) $(PROJECT_LIB)
++	@: > $(PROJECT_LIB)/$(dirstamp)
++PREINSTALL_DIRS += $(PROJECT_LIB)/$(dirstamp)
+ 
+ $(PROJECT_INCLUDE)/$(dirstamp):
+ 	@$(MKDIR_P) $(PROJECT_INCLUDE)
+ 	@: > $(PROJECT_INCLUDE)/$(dirstamp)
+ PREINSTALL_DIRS += $(PROJECT_INCLUDE)/$(dirstamp)
+ 
++$(PROJECT_LIB)/librtems.a: librtems.a $(PROJECT_LIB)/$(dirstamp)
++	$(INSTALL_DATA) $< $(PROJECT_LIB)/librtems.a
++TMPINSTALL_FILES += $(PROJECT_LIB)/librtems.a
++
+ $(PROJECT_INCLUDE)/rtems.h: include/rtems.h $(PROJECT_INCLUDE)/$(dirstamp)
+ 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/rtems.h
+ PREINSTALL_FILES += $(PROJECT_INCLUDE)/rtems.h
+Index: cpukit/sapi/Makefile.am
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/sapi/Makefile.am,v
+retrieving revision 1.35
+diff -u -r1.35 Makefile.am
+--- cpukit/sapi/Makefile.am	15 Jul 2008 22:56:45 -0000	1.35
++++ cpukit/sapi/Makefile.am	19 Dec 2008 17:02:58 -0000
+@@ -20,6 +20,7 @@
+ ## src
+ AM_CPPFLAGS += -D__RTEMS_INSIDE__
+ 
++project_lib_LIBRARIES = libsapi.a
+ noinst_LIBRARIES = libsapi.a
+ libsapi_a_SOURCES = src/debug.c src/extension.c src/extensioncreate.c \
+     src/extensiondelete.c src/extensionident.c src/fatal.c src/exinit.c \
+Index: cpukit/sapi/preinstall.am
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/sapi/preinstall.am,v
+retrieving revision 1.10
+diff -u -r1.10 preinstall.am
+--- cpukit/sapi/preinstall.am	3 Jul 2008 01:37:38 -0000	1.10
++++ cpukit/sapi/preinstall.am	19 Dec 2008 17:02:58 -0000
+@@ -8,10 +8,20 @@
+ PREINSTALL_DIRS =
+ DISTCLEANFILES = $(PREINSTALL_DIRS)
+ 
++all-local: $(TMPINSTALL_FILES)
++
++TMPINSTALL_FILES =
++CLEANFILES = $(TMPINSTALL_FILES)
++
+ all-am: $(PREINSTALL_FILES)
+ 
+ PREINSTALL_FILES =
+-CLEANFILES = $(PREINSTALL_FILES)
++CLEANFILES += $(PREINSTALL_FILES)
++
++$(PROJECT_LIB)/$(dirstamp):
++	@$(MKDIR_P) $(PROJECT_LIB)
++	@: > $(PROJECT_LIB)/$(dirstamp)
++PREINSTALL_DIRS += $(PROJECT_LIB)/$(dirstamp)
+ 
+ $(PROJECT_INCLUDE)/rtems/$(dirstamp):
+ 	@$(MKDIR_P) $(PROJECT_INCLUDE)/rtems
+@@ -62,3 +72,7 @@
+ 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/rtems/extension.inl
+ PREINSTALL_FILES += $(PROJECT_INCLUDE)/rtems/extension.inl
+ 
++$(PROJECT_LIB)/libsapi.a: libsapi.a $(PROJECT_LIB)/$(dirstamp)
++	$(INSTALL_DATA) $< $(PROJECT_LIB)/libsapi.a
++TMPINSTALL_FILES += $(PROJECT_LIB)/libsapi.a
++
+Index: cpukit/score/Makefile.am
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/score/Makefile.am,v
+retrieving revision 1.65
+diff -u -r1.65 Makefile.am
+--- cpukit/score/Makefile.am	18 Dec 2008 17:15:12 -0000	1.65
++++ cpukit/score/Makefile.am	19 Dec 2008 17:02:58 -0000
+@@ -66,6 +66,7 @@
+ 
+ AM_CPPFLAGS += -D__RTEMS_INSIDE__
+ 
++project_lib_LIBRARIES = libscore.a
+ noinst_LIBRARIES = libscore.a
+ libscore_a_SOURCES =
+ libscore_a_CPPFLAGS = $(AM_CPPFLAGS)
+Index: cpukit/score/preinstall.am
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/score/preinstall.am,v
+retrieving revision 1.18
+diff -u -r1.18 preinstall.am
+--- cpukit/score/preinstall.am	9 Dec 2008 21:27:35 -0000	1.18
++++ cpukit/score/preinstall.am	19 Dec 2008 17:02:58 -0000
+@@ -8,10 +8,20 @@
+ PREINSTALL_DIRS =
+ DISTCLEANFILES += $(PREINSTALL_DIRS)
+ 
++all-local: $(TMPINSTALL_FILES)
++
++TMPINSTALL_FILES =
++CLEANFILES = $(TMPINSTALL_FILES)
++
+ all-am: $(PREINSTALL_FILES)
+ 
+ PREINSTALL_FILES =
+-CLEANFILES = $(PREINSTALL_FILES)
++CLEANFILES += $(PREINSTALL_FILES)
++
++$(PROJECT_LIB)/$(dirstamp):
++	@$(MKDIR_P) $(PROJECT_LIB)
++	@: > $(PROJECT_LIB)/$(dirstamp)
++PREINSTALL_DIRS += $(PROJECT_LIB)/$(dirstamp)
+ 
+ $(PROJECT_INCLUDE)/rtems/$(dirstamp):
+ 	@$(MKDIR_P) $(PROJECT_INCLUDE)/rtems
+@@ -285,3 +295,7 @@
+ 	$(INSTALL_DATA) $< $(PROJECT_INCLUDE)/rtems/score/threadmp.inl
+ PREINSTALL_FILES += $(PROJECT_INCLUDE)/rtems/score/threadmp.inl
+ endif
++$(PROJECT_LIB)/libscore.a: libscore.a $(PROJECT_LIB)/$(dirstamp)
++	$(INSTALL_DATA) $< $(PROJECT_LIB)/libscore.a
++TMPINSTALL_FILES += $(PROJECT_LIB)/libscore.a
++
+Index: make/leaf.cfg
+===================================================================
+RCS file: /usr1/CVS/rtems/make/leaf.cfg,v
+retrieving revision 1.24
+diff -u -r1.24 leaf.cfg
+--- make/leaf.cfg	15 Sep 2008 17:43:22 -0000	1.24
++++ make/leaf.cfg	19 Dec 2008 17:02:59 -0000
+@@ -118,12 +118,12 @@
+ 
+ define bsp-link-c
+ 	$(LINK.c) $(CPU_CFLAGS) $(AM_CFLAGS) $(AM_LDFLAGS) \
+-	    -o $(basename $@).exe $(LINK_OBJS) $(LINK_LIBS)
++	    -o $(basename $@).exe $(COV_ARGS) $(LINK_OBJS) $(LINK_LIBS)
+ endef
+ 
+ define bsp-link-cxx
+ 	$(LINK.cc) $(CPU_CFLAGS) $(AM_CFLAGS) $(AM_LDFLAGS) \
+-	    -o $(basename $@).exe $(LINK_OBJS) $(LINK_LIBS)
++	    -o $(basename $@).exe $(COV_ARGS) $(LINK_OBJS) $(LINK_LIBS)
+ endef
+ 
+ define default-bsp-post-link
+Index: make/compilers/gcc-no_bsp.cfg
+===================================================================
+RCS file: /usr1/CVS/rtems/make/compilers/gcc-no_bsp.cfg,v
+retrieving revision 1.14
+diff -u -r1.14 gcc-no_bsp.cfg
+--- make/compilers/gcc-no_bsp.cfg	18 Sep 2008 17:33:55 -0000	1.14
++++ make/compilers/gcc-no_bsp.cfg	19 Dec 2008 17:02:59 -0000
+@@ -201,8 +201,9 @@
+ 
+ # Create a RTEMS executable based on MANAGERS which was set in app's Makefile
+ 
+-MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS), $(MANAGER_LIST))
+-MANAGERS_NOT_WANTED:=$(filter-out $(MANAGERS_REQUIRED), $(MANAGERS_NOT_WANTED))
++## XXX JOEL make conditional
++## MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS), $(MANAGER_LIST))
++## MANAGERS_NOT_WANTED:=$(filter-out $(MANAGERS_REQUIRED), $(MANAGERS_NOT_WANTED))
+ 
+ CONSTRUCTOR=
+ 
+Index: make/custom/erc32.cfg
+===================================================================
+RCS file: /usr1/CVS/rtems/make/custom/erc32.cfg,v
+retrieving revision 1.37
+diff -u -r1.37 erc32.cfg
+--- make/custom/erc32.cfg	1 Oct 2008 13:19:51 -0000	1.37
++++ make/custom/erc32.cfg	19 Dec 2008 17:02:59 -0000
+@@ -18,4 +18,9 @@
+ CPU_CFLAGS = -mcpu=cypress
+ 
+ # optimize flag: typically -O2
+-CFLAGS_OPTIMIZE_V = -O2 -g
++CFLAGS_OPTIMIZE_V = -Os -g
++
++COV_ARGS=-Wl,--undefined=rtems_task_create \
++           -Wl,--undefined=pthread_create \
++           -Wl,--whole-archive -lrtems -lsapi \
++             -lscore -lposix -Wl,--no-whole-archive

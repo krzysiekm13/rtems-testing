@@ -1,0 +1,271 @@
+#! /bin/sh
+#
+#  Simple script to help automate coverage testing
+# 
+#  $Id$
+
+# Locked in for now.. maybe someday this will work on another BSP
+TARGET=sparc-rtems4.10
+BSP=erc32
+RUNNER=runerc32
+
+# Assume for now that we run from this directory
+BASE=${HOME}/coverage
+
+progname=${0##*/}        # fast basename hack for ksh, bash
+
+USAGE=\
+"usage: $progname [ -opts ] test [ test ... ]
+	-v	  -- verbose
+        -A        -- Execute all steps
+        -m        -- Update and build covMerge
+        -u        -- Do CVS update on RTEMS
+        -c        -- Configure RTEMS
+        -b        -- Build RTEMS
+        -C        -- copy tests from build to test execution point
+        -r        -- run the tests
+        -R        -- generate a report
+
+NOTE: There are currently NO checks at each step to determine if the previous
+      steps were performed!!!
+"
+
+#   log an error to stderr
+prerr()
+{
+    echo "$*" >&2
+}
+
+fatal() {
+    [ "$1" ] && prerr $*
+    prerr "$USAGE"
+    exit 1
+}
+
+warn() {
+    [ "$1" ] && prerr $*
+}
+
+check_status()
+{
+  if [ $1 -ne 0 ] ; then
+    shift 
+    echo "FAILED: " "$*" >&2
+    exit 1
+  fi
+}
+
+# parse arguments for these
+verbose="no"
+do_all="no"
+do_covmerge="no"
+do_rtems_update="no"
+do_rtems_configure="no"
+do_rtems_build="no"
+do_copy_tests="no"
+do_run_tests="no"
+do_report="no"
+
+while getopts vmAucbCrR OPT
+do
+    case "$OPT" in
+        v) verbose="yes";;
+        A) do_all="yes";;
+        m) do_covmerge="yes";;
+        u) do_rtems_update="yes";;
+        c) do_rtems_configure="yes";;
+        b) do_rtems_build="yes";;
+        C) do_copy_tests="yes";;
+        r) do_run_tests="yes";;
+        R) do_report="yes";;
+        *) fatal;;
+    esac
+done
+
+#  If do_all was requested, then force the flags to yes
+if [ ${do_all} = "yes" ] ; then
+  do_all="yes"
+  do_covmerge="yes"
+  do_rtems_update="yes"
+  do_rtems_configure="yes"
+  do_rtems_build="yes"
+  do_copy_tests="yes"
+  do_run_tests="yes"
+  do_report="yes"
+fi
+
+#  If we are to update or configure RTEMS, then we need to clean the
+#  RTEMS build tree up.
+do_clean="no"
+if [ ${do_rtems_update} = "yes" -o \
+     ${do_rtems_configure} = "yes" ] ; then
+  do_clean="yes"
+fi
+
+##### VERBOSE
+if [ ${verbose} = "yes" ] ; then
+  echo "do_all:             " ${do_all}
+  echo "do_covmerge         " ${do_covmerge}
+  echo "do_rtems_update:    " ${do_rtems_update}
+  echo "do_rtems_configure: " ${do_rtems_configure}
+  echo "do_rtems_build:     " ${do_rtems_build}
+  echo "do_copy_tests:      " ${do_copy_tests}
+  echo "do_run_tests:       " ${do_run_tests}
+  echo "do_report:          " ${do_report}
+  echo "Clean Before:       " ${do_clean}
+fi
+
+# Basic error checking and sanity checking on the directory structure
+# and PATH
+if [ ! -d ${BASE} ] ; then
+  echo You do not have ${BASE}
+  exit 1
+fi
+
+if [ ! -d ${BASE}/rtems ] ; then
+  echo "Check out RTEMS!!!"
+  exit 1
+fi
+
+if [ ! -d ${BASE}/covmerge ] ; then
+  echo "Check out covmerge!!!"
+  exit 1
+fi
+
+type ${TARGET}-gcc
+check_status $? "Path appears to be broken"
+
+# Now we are ready to start doing real work
+start=`date`
+
+# If necessary, clean up the RTEMS build and test run directories
+if [ ${do_clean} = "yes" ] ; then
+  echo "Cleaning before building"
+  rm -rf ${BASE}/b-${BSP}
+  rm -rf ${BASE}/${BSP}-tests
+else
+  echo "Skipping clean before building"
+fi
+
+# If they don't exist, create the RTEMS build and test run directories
+test -d ${BASE}/b-${BSP}     || mkdir ${BASE}/b-${BSP}
+test -d ${BASE}/${BSP}-tests || mkdir ${BASE}/${BSP}-tests
+
+# If requested, update and build the coverage support tools
+if [ ${do_covmerge} = "yes" ] ; then
+  echo "Updating and building covmerge..."
+
+  cd ${BASE}/covmerge
+  check_status $? "cd covmerge"
+
+  cvs up -Pd 2>&1 | grep -v ^cvs
+  make clean all
+  check_status $? "build covmerge"
+
+  make
+  check_status $? "make covmerge"
+else
+  echo "Skipping Updating and building covmerge..."
+fi
+
+# If requested, update the RTEMS tree
+if [ ${do_rtems_update} = "yes" ] ; then
+  echo "Updating RTEMS ..."
+  cd ${BASE}/rtems
+  check_status $? "cd rtems"
+
+  cvs up -Pd 2>&1 | grep -v ^cvs
+  ./bootstrap -c
+  ./bootstrap
+else
+  echo "Skipping Updating RTEMS ..."
+fi
+
+# If requested, configure RTEMS
+if [ ${do_rtems_configure} = "yes" ] ; then
+  echo "Configuring RTEMS..."
+  cd ${BASE}/b-${BSP}/
+  check_status $? "cd b-${BSP}"
+
+  ################## 
+  ################## WARNING!!!!!!
+  ################## 
+  ################## BE CAREFUL ABOUT THIS CONFIGURE COMMAND.  IT IS
+  ################## VERY SPECIFIC TO COVERAGE TESTING
+  ################## 
+  ../rtems/configure NDEBUG=1 \
+     RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
+     RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
+    --target=${TARGET} --enable-rtemsbsp=${BSP} \
+    --enable-maintainer-mode \
+    --disable-itron --enable-tests --disable-tcpip --disable-ada --disable-cxx \
+    --prefix=${BASE}/coverage/install >c.log 2>&1
+    check_status $? "configuring RTEMS for ${BSP}"
+else
+  echo "Skipping Configuring RTEMS ..."
+fi
+
+# If requested, build RTEMS
+if [ ${do_rtems_build} = "yes" ] ; then
+  echo "Building RTEMS..."
+
+  cd ${BASE}/b-${BSP}/
+  check_status $? "cd b-${BSP}"
+
+  make -j4 >b.log 2>&1
+  check_status $? "Building RTEMS for ${BSP}"
+else
+  echo "Skipping Building RTEMS ..."
+fi
+
+# If requested, copy the tests from the build tree to the run tree
+if [ ${do_copy_tests} = "yes" ] ; then
+  echo "Copying tests..."
+
+  # clean destination
+  rm -rf ${BASE}/${BSP}-tests/*
+  check_status $? "clean test directory"
+  rm -f *.exe *.cov *.tmp
+  rm -rf log
+  rm -f annotated.dmp hello.num report
+ 
+
+  cd ${BASE}/b-${BSP}/
+  check_status $? "cd b-${BSP}"
+
+  cp `find . -name *.exe` ../${BSP}-tests
+else
+  echo "Skipping copying tests..."
+fi
+
+# If requested, run the tests with coverage reporting enabled
+if [ ${do_run_tests} = "yes" ] ; then
+  echo "Running tests..."
+  cd ${BASE}/${BSP}-tests/
+  check_status $? "cd ${BSP}-tests"
+
+  time ${RUNNER} -C
+else
+  echo "Skipping Running tests..."
+fi
+
+# If requested, generate the coverage report
+if [ ${do_report} = "yes" ] ; then
+  echo "Generating report..."
+
+  cd ${BASE}/${BSP}-tests/
+  check_status $? "cd ${BSP}-tests"
+
+  ${BASE}/covmerge/gen_report ${TARGET}
+else
+  echo "Skipping Generating report..."
+fi
+
+start=`date`
+stop=`date`
+
+echo "Started: " ${start}
+echo "Stopped: " ${stop}
+
+exit 0
+
