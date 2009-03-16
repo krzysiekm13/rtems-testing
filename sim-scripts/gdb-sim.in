@@ -13,6 +13,13 @@ trap "test_exit 1" 1 2 3 13 14 15
 
 progname=${0##*/}        # fast basename hack for ksh, bash
 
+USAGE=\
+"usage: $progname [ -opts ] test
+	-i	   -- interactive (default=no time limit)
+
+System V IPC and Coverage are not supported by all BSPs or simulators.
+"
+
 for v in 4.10 4.9 4.8 4.7 ""
 do
   type @CPU_TARGET@-rtems${v}-gdb >/dev/null 2>&1
@@ -40,10 +47,40 @@ test_exit()
   exit $exit_code
 }
 
+#   log an error to stderr
+prerr()
+{
+    echo "$*" >&2
+}
+
+fatal() {
+    [ "$1" ] && prerr $*
+    prerr "$USAGE"
+    exit 1
+}
+
+warn() {
+    [ "$1" ] && prerr $*
+}
+
 if [ $# -eq 0 ] ; then
   echo "No arguments .. no executable specified"
   exit 1 
 fi
+
+use_sysv_ipc="no"
+while getopts s OPT
+do
+ case "$OPT" in
+   s) use_sysv_ipc="yes";;
+   *) ;;
+ esac
+done
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+args=$*
 
 ### Set BSP defaults.  If BSP does not have default, it will override
 bspGeneratesGDBCommands="no"
@@ -74,8 +111,8 @@ else
 fi >@BSP@-cmds
 
 ###  Add CPU specific commands
-case @CPU@ in
-  powerpc) echo  "b C_exception_handler" ;;
+case @CPU_TARGET@ in
+  *powerpc*) echo  "b C_exception_handler" ;;
   *)       ;;
 esac >>@BSP@-cmds
 
@@ -87,6 +124,7 @@ b __assert
 printf "Use run to start the RTEMS application\\n"
 EOF
 
+exit 0
 ${GDB} --command=@BSP@-cmds $*
 
 if [ ${bspGeneratesDeviceTree} = "yes" ] ; then

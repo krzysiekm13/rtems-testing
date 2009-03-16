@@ -42,10 +42,10 @@ bspTreeFile=psim_tree.${LOGNAME}
 ### Generate the PSIM device tree based upon the type of application being run
 bspGenerateDeviceTree()
 {
-  enable_sysv_ipc="yes"
+  enable_sysv_devices="yes"
 
   if [ X${use_sysv_ipc} = X"yes" ] ; then
-    enable_sysv_ipc="yes"
+    enable_sysv_devices="yes"
     value=-1               # for now assume we are slave in this mode
   else
     case ${1} in 

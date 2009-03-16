@@ -1,3 +1,8 @@
+2009-03-16	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim.in, psim.in: Add -s to psim-gdb as way to turn on System V
+	IPC support.
+
 2009-01-22	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile: Add nosim.
