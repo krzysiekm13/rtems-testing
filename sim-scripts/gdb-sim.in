@@ -124,7 +124,6 @@ b __assert
 printf "Use run to start the RTEMS application\\n"
 EOF
 
-exit 0
 ${GDB} --command=@BSP@-cmds $*
 
 if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
