@@ -102,6 +102,7 @@ do
   fi
 done
 
+test ${verbose} = "yes" && echo Default program to run is ${defaultRun}
 runBSP=${defaultRUN}
 
 ###################################################################

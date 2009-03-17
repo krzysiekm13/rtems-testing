@@ -1,3 +1,8 @@
+2009-03-17	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in, gdb-sim.in: Fix bug where it would not find anything
+	but a 4.10 gdb.
+
 2009-03-16	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim.in: Remove debug exit.

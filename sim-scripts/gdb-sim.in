@@ -27,12 +27,6 @@ do
     GDB=@CPU_TARGET@-rtems${v}-gdb
     break
   fi
-  if [ X${GDB} = X ] ; then
-    echo "Unable to find a GDB for @CPU_TARGET@ along your PATH"
-    exit 1
-  fi
-
-  test ${verbose} = "yes" && echo Using ${GDB}
 done
 
 if [ X${GDB} = X ] ; then
