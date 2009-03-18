@@ -128,6 +128,7 @@ test ${verbose} = "yes" && echo Using ${runBSP}
 ## These are faults any BSP may generate.  They are common to RTEMS.
 checkGenericExits()
 {
+set -x
   logfile=$1
 
   ## Clean exit patterns -- delay for coverage to get written
@@ -149,7 +150,9 @@ checkGenericExits()
 	  kill -0 $pid 2> /dev/null
 	  running=$?
 	  if [ $running -eq 0 ] ; then
+	    kill -2 ${pid} 2>/dev/null  # SIGINT
 	    sleep 1
+	    kill -9 ${pid} 2>/dev/null
           else
             return 1
           fi
@@ -193,7 +196,7 @@ runtest()
     return
   fi
 
-  #echo run ${testname} for maximum ${max_run_time} seconds
+  echo run ${testname} for maximum ${max_run_time} seconds
   logfile=${testname}.tmp
   ${runBSP} `runARGS ${testname}` >${logfile} 2>&1 &
   pid=$!
@@ -223,7 +226,7 @@ runtest()
       checkBSPFaults ${logfile} >/dev/null 2>&1
       bspFaults=$?
       # check for cross platform messages which indicate program ended
-      checkGenericExits ${logfile} >/dev/null 2>&1
+      checkGenericExits ${logfile} #>/dev/null 2>&1
       genericExits=$?
       if [ ${bspFaults} -ne 0 -o ${genericExits} -ne 0 ] ; then
         kill -9 ${pid} >/dev/null 2>&1
@@ -239,6 +242,7 @@ runtest()
   fi
   done
   kill -9 $pid >/dev/null 2>&1
+  rm ${logfile}
 }
 
 if [ "X${args}" = "X" ] ; then
