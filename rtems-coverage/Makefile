@@ -1,4 +1,6 @@
-
+#
+# $Id$
+#
 
 CXXFLAGS=-g -Wall -O2
 PROGRAMS=covmerge
