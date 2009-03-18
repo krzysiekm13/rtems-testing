@@ -1,3 +1,12 @@
+2009-03-18	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* CoverageReaderTSIM.cc, CoverageReaderTSIM.h, Makefile,
+	VERSIONS-COVERAGE, covmerge.cc, do_coverage, gen_report: First
+	attempt at adding Skyeye code coverage support.
+	* CoverageFactory.cc, CoverageFactory.h, CoverageReaderSkyeye.cc,
+	CoverageReaderSkyeye.h, CoverageWriterSkyeye.cc,
+	CoverageWriterSkyeye.h, skyeye_header.h: New files.
+
 2009-03-12	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* README: Update.

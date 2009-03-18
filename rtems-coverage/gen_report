@@ -60,7 +60,7 @@ fi
 
 rm -f merged.cov report 
 ${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report \
- -E ${COVBASE}/Explanations.txt \
+ -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
  -T ${TARGET} -e hello.exe -m merged.cov *.cov
 
 echo "====== 15 Largest Range Sizes ======"

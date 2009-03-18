@@ -16,8 +16,7 @@
 #include <errno.h>
 
 #include "CoverageMap.h"
-#include "CoverageReaderTSIM.h"
-#include "CoverageWriterTSIM.h"
+#include "CoverageFactory.h"
 #include "ObjdumpProcessor.h"
 #include "app_common.h"
 #include "CoverageRanges.h"
@@ -27,7 +26,7 @@
  *  Variables to control global behavior
  */
 int verbose = 0;
-int useTSIMFormat = 1;
+Coverage::CoverageFormats_t coverageFormat;
 char *mergedCoverageFile = NULL;
 char *coverageReportFile = NULL;
 uint32_t lowAddress  = 0xffffffff;
@@ -94,7 +93,7 @@ void usage()
     "\n"
     "  -l low address   - low address of range to merge\n"
     "  -l high address  - high address of range to merge\n"
-    "  -t               - input files are in tsim format\n"
+    "  -f format        - coverage files are in <format> (TSIM or Skyeye)\n"
     "  -m FILE          - optional merged coverage file to write\n"
     "  -r REPORT        - optional coverage report to write\n"
     "  -T TARGET        - target name\n"
@@ -274,18 +273,22 @@ int main(
 {
   int opt;
   int i;
+  char *format = NULL;
 
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "a:e:E:h:l:tm:r:T:v")) != -1) {
+  while ((opt = getopt(argc, argv, "a:e:E:f:h:l:m:r:T:v")) != -1) {
     switch (opt) {
       case 'T': target             = optarg;  break;
       case 'e': executable         = optarg;  break;
       case 'E': explanations       = optarg;  break;
       case 'm': mergedCoverageFile = optarg;  break;
       case 'r': coverageReportFile = optarg;  break;
-      case 't': useTSIMFormat      = 1;       break;
       case 'v': verbose            = 1;       break;
+      case 'f':
+        coverageFormat = Coverage::CoverageFormatToEnum(optarg);
+        format = optarg;
+        break;
       case 'l':
         if ( ! stringToUint32( optarg, 16, &lowAddress ) ) {
           fprintf( stderr, "Low address is not a hexadecimal number\n" );
@@ -307,7 +310,7 @@ int main(
   }
   if ( verbose ) {
     fprintf( stderr, "verbose         : %d\n", verbose );
-    fprintf( stderr, "use TSIM Format : %d\n", useTSIMFormat );
+    fprintf( stderr, "Coverage Format : %s\n", format );
     fprintf( stderr, "low address     : 0x%08x\n", lowAddress );
     fprintf( stderr, "high address    : 0x%08x\n", highAddress );
     fprintf( stderr, "Target          : %s\n", PrintableString(target) );
@@ -327,6 +330,15 @@ int main(
   }
 
   Tools = new Coverage::Toolnames( target );
+
+  /*
+   *  Validate format
+   */
+  if ( !format ) {
+    fprintf( stderr, "coverage format report must be given.\n\n" );
+    usage();
+    exit(-1);
+  }
 
   /*
    *  Create a ranges set
@@ -370,12 +382,8 @@ int main(
   /*
    * Create input
    */
-  if ( useTSIMFormat ) {
-    CoverageReader = new Coverage::CoverageReaderTSIM();
-  } else {
-    fprintf( stderr, "No input format specified.\n\n" );
-    exit(-1);
-  }
+  
+  CoverageReader = Coverage::CreateCoverageReader(coverageFormat);
 
   if ( !CoverageReader ) {
     fprintf( stderr, "Unable to create coverage file reader.\n\n" );
@@ -392,7 +400,7 @@ int main(
    *
    * NOTE: We only support one format currently.
    */
-  CoverageWriter = new Coverage::CoverageWriterTSIM();
+  CoverageWriter = Coverage::CreateCoverageWriter(coverageFormat);
 
   if ( !CoverageWriter ) {
     fprintf( stderr, "Unable to create coverage file writer.\n\n" );

@@ -3,9 +3,14 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 
-CPU=sparc
-BSP=erc32
-RUNNER=runerc32
+# CPU=sparc
+# BSP=erc32
+# RUNNER=runerc32
+# COVERAGE_FORMAT=TSIM
+CPU=arm
+BSP=edb7312
+RUNNER=edb7312
+COVERAGE_FORMAT=Skyeye
 
 RTEMSDIR=${BASEDIR}/rtems
 LOGDIR=${BASEDIR}/log

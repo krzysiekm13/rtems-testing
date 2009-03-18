@@ -249,7 +249,7 @@ if [ ${do_run_tests} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  time ${RUNNER} -C
+  time ${RUNNER} -c *.exe
 else
   echo "Skipping Running tests..."
 fi

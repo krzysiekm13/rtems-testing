@@ -17,9 +17,10 @@ namespace Coverage {
 
   /*! @class CoverageReaderTSIM
    *
-   *  This class implements the class which reads a coverage map file produced by TSIM.
-   *  Since the SPARC has 32-bit instructions, TSIM produces a file with an integer for
-   *  each 32-bit word.  The integer will have the least significant bit if the address
+   *  This class implements the class which reads a coverage map file
+   *  produced by TSIM.  Since the SPARC has 32-bit instructions,
+   *  TSIM produces a file with an integer for each 32-bit word.  The
+   *  integer will have the least significant bit if the address
    *  was executed.
 
 @verbatim

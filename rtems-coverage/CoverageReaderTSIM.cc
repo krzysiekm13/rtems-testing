@@ -42,7 +42,8 @@ namespace Coverage {
 
     coverageFile = fopen( file, "r" );
     if ( !coverageFile ) {
-      fprintf( stderr, "CoverageReaderTSIM::ProcessFile - unable to open %s\n", file );
+      fprintf(
+        stderr, "CoverageReaderTSIM::ProcessFile - unable to open %s\n", file );
       exit(-1);
     }
 
@@ -55,7 +56,8 @@ namespace Coverage {
       for ( i=0 ; i < 0x80 ; i+=4 ) {
         status = fscanf( coverageFile, "%d", &cover );
 	if ( status == EOF || status == 0 ) {
-          fprintf( stderr, "Error in %s at address 0x%08x\n", file, baseAddress );
+          fprintf(
+            stderr, "Error in %s at address 0x%08x\n", file, baseAddress );
 	  exit( -1 );
 	}
         // fprintf( stderr, "%d ", cover );
