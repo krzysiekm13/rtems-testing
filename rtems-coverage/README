@@ -14,6 +14,16 @@ and deals with as much as possible.
 
 The report ends up in your test directory (${BSP}-tests).
 
+SPARC/ERC32 Information
+=======================
+Generated using the professional version of tsim.
+
+ARM/EDB7312 Information
+=======================
+Using skyeye 1.2.6 with profiling patch in this directory.
+
+Some tests lock up on skyeye which do not on other BSPs.
+
 
 ====================== By hand information 
 

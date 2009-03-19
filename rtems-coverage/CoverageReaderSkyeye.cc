@@ -32,18 +32,17 @@ namespace Coverage {
     CoverageMapBase *coverage
   )
   {
-    FILE *coverageFile;
-    int   baseAddress;
-    int   length;
-    int   status;
-    int   i;
-    int   cover;
-    prof_header_t header;
+    FILE          *coverageFile;
+    int            baseAddress;
+    int            length;
+    int            status;
+    int            i;
+    uint8_t        cover;
+    prof_header_t  header;
 
     /*
      *  read the file and update the coverage map passed in
      */
-
     coverageFile = fopen( file, "r" );
     if ( !coverageFile ) {
       fprintf(
@@ -69,7 +68,7 @@ namespace Coverage {
     length      = header.prof_end - header.prof_start;
     
     for ( i=0 ; i<length ; i += 8 ) {
-      fread( &cover, sizeof(int), 1, coverageFile );
+      fread( &cover, sizeof(uint8_t), 1, coverageFile );
       if ( status != 1 ) {
         fprintf(
 	  stderr,

@@ -1,3 +1,9 @@
+2009-03-19	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* CoverageReaderSkyeye.cc, CoverageWriterSkyeye.cc, README: Now runs OK
+	on skyeye 1.2.6 with patch in this directory.
+	* skyeye-1.2.6-rtems-20090319.diff: New file.
+
 2009-03-18	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Makefile: Add Id.
