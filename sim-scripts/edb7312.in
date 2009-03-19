@@ -44,6 +44,6 @@ uart: mod=pipe, desc_in=/dev/null, desc_out=/dev/stdout
 EOF
 
   if [ ${coverage} = yes ] ; then
-    echo "code_coverage: state=on, filename=${2}.cov, start=0x80000000, end=0x80100000"
+    echo "code_coverage: state=on, filename=${2}.cov, start=0x00000000, end=0x00100000"
   fi
 }

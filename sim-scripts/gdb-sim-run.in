@@ -128,7 +128,6 @@ test ${verbose} = "yes" && echo Using ${runBSP}
 ## These are faults any BSP may generate.  They are common to RTEMS.
 checkGenericExits()
 {
-set -x
   logfile=$1
 
   ## Clean exit patterns -- delay for coverage to get written
@@ -296,7 +295,7 @@ do
   ## If the test is known to be interactive or locks up and we are
   ## in batch mode, skip it.
   case ${toRun} in
-    monitor* | termios* | fileio*)
+    monitor* | termios* | fileio* | capture*)
         warn "Skipping $tname; it is interactive"
         continue
         ;;
