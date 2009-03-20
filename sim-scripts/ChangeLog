@@ -1,3 +1,8 @@
+2009-03-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* edb7312.in, gdb-sim-run.in, skyeye-support, tsim-support: More
+	tunning on skyeye and erc32.
+
 2009-03-19	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* edb7312.in, gdb-sim-run.in: Now works ok on skyeye 1.2.6

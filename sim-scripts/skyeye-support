@@ -6,7 +6,22 @@
 
 bspUsesGDBSimulator="no"
 bspNeedsDos2Unix="yes"
+if [ ${coverage} = "yes" ] ; then
+  bspRunFatal="yes"
+fi
 runBSP=skyeye
+
+bspLimit()
+{
+  tname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}
 
 bspExited_ARM()
 {

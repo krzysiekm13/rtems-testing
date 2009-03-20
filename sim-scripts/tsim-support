@@ -41,6 +41,7 @@ bspLimit()
   return ${limit}
 }
 
+bspSimTrustedToExit="yes"
 bspGeneratesDeviceTree="yes"
 bspTreeFile=${tsimName}.conf
 
@@ -56,6 +57,7 @@ bspGenerateDeviceTree()
   fi
   if [ ${coverage} = yes ] ; then
     echo "coverage save ${2}.cov"
+    echo "shell sleep 1"           # give tsim time to actually write file
   fi
   echo "quit"
   

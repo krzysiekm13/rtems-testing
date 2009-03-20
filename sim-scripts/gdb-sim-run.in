@@ -59,7 +59,7 @@ warn() {
 
 coverage="no"
 verbose="no"
-limit="not_set"
+defaultLimit="not_set"
 interactive="no"
 use_sysv_ipc="no"
 generate_tree_and_exit="no"
@@ -71,7 +71,7 @@ do
    c) coverage="yes";;
    g) generate_tree_and_exit="yes" ;;
    i) interactive="yes";;
-   l) limit="$OPTARG";;
+   l) defaultLimit="$OPTARG";;
    s) use_sysv_ipc="yes";;
    *) fatal;;
  esac
@@ -81,7 +81,7 @@ shiftcount=`expr $OPTIND - 1`
 shift $shiftcount
 
 if [ ${interactive} = "yes" ] ; then
-  limit=0
+  defaultLimit=0
 fi
 
 args=$*
@@ -92,6 +92,7 @@ bspGeneratesDeviceTree="no"
 bspSupportsSystemVIPC="no"
 bspUsesGDBSimulator="yes"
 bspNeedsDos2Unix="no"
+bspSimTrustedToExit="no"
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -197,9 +198,15 @@ runtest()
 
   echo run ${testname} for maximum ${max_run_time} seconds
   logfile=${testname}.tmp
+
+  if [ ${bspSimTrustedToExit} = "yes" ] ; then
+    ${runBSP} `runARGS ${testname}` >${logfile} 2>&1
+    catLog ${logfile}
+    rm -f ${logfile}
+    return
+  fi
   ${runBSP} `runARGS ${testname}` >${logfile} 2>&1 &
   pid=$!
-
   # Make sure it won't run forever...
   millilimit=`expr ${max_run_time} \* 1000`
   milliseconds=0
@@ -213,6 +220,8 @@ runtest()
     running=$?
     if [ $running -eq 0 ] ; then
       if [ ${milliseconds} -ge ${millilimit} ]; then
+        kill -2 $pid 2> /dev/null
+        usleep 1000
         kill -9 $pid 2> /dev/null
         catLog ${logfile}
         echo "${testname} killed after running ${max_run_time} seconds"
@@ -228,10 +237,12 @@ runtest()
       checkGenericExits ${logfile} #>/dev/null 2>&1
       genericExits=$?
       if [ ${bspFaults} -ne 0 -o ${genericExits} -ne 0 ] ; then
+        kill -2 $pid 2> /dev/null
+        usleep 1000
         kill -9 ${pid} >/dev/null 2>&1
         catLog ${logfile}
         echo Ran in ${milliseconds} milliseconds
-        break
+      break
       fi
   else
     # done normally
@@ -241,6 +252,7 @@ runtest()
   fi
   done
   kill -9 $pid >/dev/null 2>&1
+
   rm ${logfile}
 }
 
@@ -261,9 +273,11 @@ do
     *)       testtype="single" ;;
   esac
   # calculate the limit in case it is used by the simulator script
-  if [ ${limit} = "not_set" ] ; then
+  if [ ${defaultLimit} = "not_set" ] ; then
     bspLimit ${toRun}
     limit=$?
+  else
+    limit=${defaultLimit}
   fi
 
   ## Some BSPs must generate device trees or scripts to provide to the simulator
