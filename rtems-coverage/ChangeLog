@@ -1,3 +1,9 @@
+2009-03-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* CoverageReaderTSIM.cc, CoverageWriterTSIM.cc, VERSIONS-COVERAGE: Now
+	running on erc32 ok again. Added untested support for leon2 and
+	leon3.
+
 2009-03-19	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* CoverageReaderSkyeye.cc, CoverageWriterSkyeye.cc, README: Now runs OK

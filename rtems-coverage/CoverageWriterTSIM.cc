@@ -58,7 +58,12 @@ namespace Coverage {
         cover = ((coverage->wasExecuted( a + i )) ? 1 : 0);
         status = fprintf( coverageFile, "%d ", cover );
 	if ( status == EOF || status == 0 ) {
-          fprintf( stderr, "Error writing in %s at address 0x%08x\n", file, a );
+          fprintf(
+            stderr,
+            "CoverageWriterTSIM: Error writing in %s at address 0x%08x\n",
+            file,
+            a
+          );
 	  exit( -1 );
 	}
         // fprintf( stderr, "%d ", cover );

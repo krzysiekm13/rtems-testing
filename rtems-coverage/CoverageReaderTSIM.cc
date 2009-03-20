@@ -57,8 +57,12 @@ namespace Coverage {
         status = fscanf( coverageFile, "%d", &cover );
 	if ( status == EOF || status == 0 ) {
           fprintf(
-            stderr, "Error in %s at address 0x%08x\n", file, baseAddress );
-	  exit( -1 );
+            stderr,
+            "CoverageReaderTSIM: WARNING! Short line in %s at address 0x%08x\n",
+            file,
+            baseAddress
+          );
+          break;
 	}
         // fprintf( stderr, "%d ", cover );
         if ( cover & 1 ) {

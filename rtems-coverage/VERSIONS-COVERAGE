@@ -3,14 +3,24 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 
-# CPU=sparc
-# BSP=erc32
-# RUNNER=runerc32
-# COVERAGE_FORMAT=TSIM
-CPU=arm
-BSP=edb7312
-RUNNER=edb7312
-COVERAGE_FORMAT=Skyeye
+BSP=erc32
+
+# For most BSPs, there is a script with the same name as the BSP.
+RUNNER=${BSP}
+
+case ${BSP} in
+  erc32|leon2|leon3)
+    CPU=sparc
+    COVERAGE_FORMAT=TSIM
+    ;;
+  edb7312)
+    CPU=arm
+    COVERAGE_FORMAT=Skyeye
+    ;;
+  *)
+    echo "Unsupported BSP (${BSP} for coverage analysis."
+    ;;
+esac
 
 RTEMSDIR=${BASEDIR}/rtems
 LOGDIR=${BASEDIR}/log
