@@ -1,3 +1,8 @@
+2009-03-22  Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in: Output now left in log directory like "runtest"
+	scripts.  This makes it more useful for examining test output.
+
 2009-03-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* edb7312.in, gdb-sim-run.in, skyeye-support, tsim-support: More

@@ -24,10 +24,12 @@ USAGE=\
 "usage: $progname [ -opts ] test [ test ... ]
 	-v	   -- verbose
 	-c	   -- enabled coverage (default=no)
+	-C	   -- cat test output if not interactive (default=no)
 	-g	   -- generate device tree and exit (default=no)
 	-i	   -- interactive (default=no time limit)
 	-s	   -- force System V IPC support (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
+        -L dir     -- specify log directory (default is 'log')
 
 System V IPC and Coverage are not supported by all BSPs or simulators.
 
@@ -57,21 +59,25 @@ warn() {
 # defaults for getopt vars
 #
 
+doCatOutput="no"
 coverage="no"
 verbose="no"
 defaultLimit="not_set"
 interactive="no"
 use_sysv_ipc="no"
 generate_tree_and_exit="no"
+logdir="log"
 
-while getopts vcgil:s OPT
+while getopts "vcCgil:L:s" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
    c) coverage="yes";;
+   C) doCatOutput="yes";;
    g) generate_tree_and_exit="yes" ;;
    i) interactive="yes";;
    l) defaultLimit="$OPTARG";;
+   L) loggir="$OPTARG";;
    s) use_sysv_ipc="yes";;
    *) fatal;;
  esac
@@ -80,11 +86,15 @@ done
 shiftcount=`expr $OPTIND - 1`
 shift $shiftcount
 
+args=$*
+
 if [ ${interactive} = "yes" ] ; then
   defaultLimit=0
 fi
 
-args=$*
+if [ ! -d ${logdir} ] ; then
+  mkdir $logdir || fatal "could not create log directory ($logdir)"
+fi
 
 ### Set BSP defaults.  If BSP does not have default, it will override
 bspRunFatal="no"
@@ -103,7 +113,7 @@ do
   fi
 done
 
-test ${verbose} = "yes" && echo Default program to run is ${defaultRun}
+test ${verbose} = "yes" && echo Default program to run is ${defaultRUN}
 runBSP=${defaultRUN}
 
 ###################################################################
@@ -177,11 +187,16 @@ checkGenericExits()
 
 catLog()
 {
-  if [ ${bspNeedsDos2Unix} = "yes" ] ; then
-    dos2unix ${1}
+  logfile=${1}
+  if [ ${doCatOutput} = "no" ] ; then
+    return
   fi
 
-  tr -d "\015" <${1}
+  if [ ${bspNeedsDos2Unix} = "yes" ] ; then
+    dos2unix ${logfile}
+  fi
+
+  tr -d "\015" <${logfile}
   echo
 }
 
@@ -196,13 +211,21 @@ runtest()
     return
   fi
 
-  echo run ${testname} for maximum ${max_run_time} seconds
-  logfile=${testname}.tmp
+  echo Running ${testname} for maximum ${max_run_time} seconds
+  echo $testname | grep "exe$" >/dev/null
+  if [ $? -eq 0 ] ; then
+    ext=.exe
+  else
+    ext=.ralf
+  fi
+  tfile=`basename $testname`
+  tname=`basename $tfile ${ext}`
+
+  logfile=${logdir}/${tname}
 
   if [ ${bspSimTrustedToExit} = "yes" ] ; then
     ${runBSP} `runARGS ${testname}` >${logfile} 2>&1
     catLog ${logfile}
-    rm -f ${logfile}
     return
   fi
   ${runBSP} `runARGS ${testname}` >${logfile} 2>&1 &
@@ -247,13 +270,12 @@ runtest()
   else
     # done normally
     catLog ${logfile}
-    echo "${testname} ran in ${milliseconds} milliseconds"
+    test ${verbose} = "yes" && \
+      echo "${testname} ran in ${milliseconds} milliseconds"
     break
   fi
   done
   kill -9 $pid >/dev/null 2>&1
-
-  rm ${logfile}
 }
 
 if [ "X${args}" = "X" ] ; then
