@@ -45,4 +45,7 @@ mem_bank: map=M, type=RW, addr=0x40000000, size=0x00400000
 mem_bank: map=I, type=RW, addr=0xE0000000, size=0xFFFFFFF
 mem_bank: map=I, type=RW, addr=0xF0000000, size=0xFFFFFFF
 EOF
+if [ ${coverage} = yes ] ; then
+  echo "code_coverage: state=on, filename=${2}.cov, start=0x81000000, end=0x81080000"
+fi
 }
