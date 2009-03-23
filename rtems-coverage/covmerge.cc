@@ -59,7 +59,7 @@ bool stringToUint32(
   uint32_t    *n
 )
 {
-  long result;
+  long long result;
 
   if ( !n )
     return false;
@@ -67,18 +67,18 @@ bool stringToUint32(
   errno = 0;
   *n    = 0;
 
-  result = strtol( s, NULL, base );
+  result = strtoll( s, NULL, base );
 
   if ( (result == 0) && errno )
     return false; 
 
-  if ( (result == LONG_MAX) && (errno == ERANGE))
+  if ( (result == LLONG_MAX) && (errno == ERANGE))
     return false; 
 
-  if ( (result == LONG_MIN) && (errno == ERANGE))
+  if ( (result == LLONG_MIN) && (errno == ERANGE))
     return false; 
 
-  *n = result;
+  *n = (uint32_t)result;
   return true;
 }
 

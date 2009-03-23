@@ -1,3 +1,8 @@
+2009-03-23	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* VERSIONS-COVERAGE, covmerge.cc: Add rtl22xx. Fix issue on address
+	conversion with MSB is set.
+
 2009-03-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* CoverageReaderTSIM.cc, CoverageWriterTSIM.cc, VERSIONS-COVERAGE: Now

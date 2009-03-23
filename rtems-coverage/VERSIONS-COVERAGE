@@ -3,7 +3,7 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 
-BSP=erc32
+BSP=rtl22xx
 
 # For most BSPs, there is a script with the same name as the BSP.
 RUNNER=${BSP}
@@ -13,7 +13,7 @@ case ${BSP} in
     CPU=sparc
     COVERAGE_FORMAT=TSIM
     ;;
-  edb7312)
+  edb7312|rtl22xx)
     CPU=arm
     COVERAGE_FORMAT=Skyeye
     ;;
