@@ -1,3 +1,7 @@
+2009-03-25	Joel Sherrill <joel.sherrill@rtems.org>
+
+	* gcc/test_driver: Do not reset start time.
+
 2009-03-23	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* dejagnu/boards/rtems-arm-edb7312.exp,

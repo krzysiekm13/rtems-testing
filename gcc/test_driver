@@ -96,9 +96,6 @@ update_others()
 
 do_cpus()
 {
-  start=`date`
-  echo Started at: ${start}
-
   tests=-T
 
   bsp=
