@@ -141,6 +141,8 @@ fi
 type ${TARGET}-gcc
 check_status $? "Path appears to be broken"
 
+echo "Testing ${TARGET}/${BSP}"
+
 # Now we are ready to start doing real work
 start=`date`
 

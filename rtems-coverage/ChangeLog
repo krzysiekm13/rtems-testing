@@ -1,3 +1,7 @@
+2009-03-26	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Explanations.txt, VERSIONS-COVERAGE, do_coverage: Update.
+
 2009-03-23	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* VERSIONS-COVERAGE, covmerge.cc: Add rtl22xx. Fix issue on address

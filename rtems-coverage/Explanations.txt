@@ -1,7 +1,5 @@
 attr.c:31
 TEST SIMPLE - call rtems_interrupt_level_attribute
-exshutdown.c:37
-TEST - somehow call shutdown after we are shutdown
 taskinitusers.c:90
 INTERNAL ERROR - failed rtems_task_start
 ratemonperiod.c:310
@@ -12,12 +10,8 @@ ratemontimeout.c:68
 INTERRUPT SYNC - period must expire while attempting to block
 timerreset.c:60
 TEST SIMPLE - new error case
-timerserver.c:275
-TEST HARD - must overflow ticks value
 timerserverfireafter.c:80
 INTERRUPT SYNC - timer must be inserted by an ISR while we are inserting it
-attr.inl:125
-TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
 semcreate.c:148
 TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
 semcreate.c:158
@@ -26,8 +20,6 @@ coremutex.inl:167
 TEST SIMPLE - pri ceiling - acquire when pri = ceiling
 semflush.c:82
 TEST SIMPLE - need to flush a NOT counting semaphore
-eventseize.c:127
-ASK JOEL
 regionresizesegment.c:83
 TEST SIMPLE - need a test (9 instructions)
 debug.c:63
@@ -38,10 +30,6 @@ ioregisterdriver.c:71
 TEST SIMPLE - documented (not implemented) in sp40
 ioregisterdriver.c:83
 TEST SIMPLE - if reachable
-posixapi.c:88
-TEST SIMPLE - need a case for initializing with a null api_configuration
-apimutexlock.c:27
-UNREACHABLE PATH - RTEMS_INTERNAL_ERROR
 coremsgbroadcast.c:81
 TEST SIMPLE - Successful but no tasks waiting
 corerwlockrelease.c:54
@@ -58,18 +46,10 @@ dpmemcreate.c:87:
 TEST SIMPLE - need invalid address of return id
 heap.inl:239
 ASK JOEL (131 instructions)
-objectgetnoprotection.c:74
-TEST SIMPLE - bad region id of the right form
 timerfireafter.c:76
 INTERRUPT SYNC - timer must be inserted or state altered by ISR
 watchdog.inl:144
 Exercise _Timer_Server_reset_seconds_timer - quit inlining?
-semobtain.c:83
-FATAL - called from critical section or ISR
-threadqenqueuefifo.c:85
-event_surrender, fix dupe of _Thread_Unblock, cover it
-eventseize.c:139
-sp39 should cover this
 eventsurrender.c:78
 INTERRUPT_SYNC - send event to thread running from TSR?
 eventsurrender.c:100
@@ -86,8 +66,6 @@ attr.c:32
 TEST SIMPLE - rtems_interrupt_level_attribute
 thread.inl:35
 HARD/IMPOSSIBLE - return from context switch at shutdown
-coremsg.inl:100
-TEST SIMPLE - looks like multiple tasks waiting for broadcast
 coremsgflushwait.c:68
 TEST SIMPLE - flush waiting threads, available via API?
 coremsgsubmit.c:149
@@ -98,28 +76,12 @@ coremutexsurrender.c:83
 nesting is error and blocks doesn't appear to be tested
 corerwlockrelease.c:52
 COMPILER - looks like extra code generated for bad value on switch, change to if
-threadq.inl:58
-ThreadQ timeout, corerwmutex, need sync cases
-threadq.inl:61
-ThreadQ timeout, corerwmutex, need sync cases
-coresemseize.c:72
-Probably fixed by changing switch to if to avoid compiler code
-coresemseize.c:78
-looks like POSIX sem bad timeout value
-coresemseize.c:79
-looks like POSIX sem bad timeout value
-coresemseize.c:87
-Probably fixed by changing switch to if to avoid compiler code
-heap.c:130
-alignment of 0 to get CPU default alignment
 heapwalk.c:49
 not called at all in non-debug mode, force
 heapgetinfo.c:70
 HARD - requires a corrupted heap, block size mismatch
 heapresizeblock.c:81
 block not in heap, below and above cases split
-objectclearname.c:45
-only referenced in comments - remove?
 pthreadcreate.c:73
 SIMPLE - Joel thinks user specified stack
 pthreadcreate.c:113
@@ -144,45 +106,17 @@ chain.inl:296
 _POSIX_signals_Clear_signals:71 chain get when empty
 pthreadkill.c:69
 SIMPLE - psignal to running thread from ISR
-threadqdequeue.c:65
-restructure switch and verify
-threadqdequeuefifo.c:77
-INTERRUPT SYNC
-threadqdequeuepriority.c:70
-restructure switch and verify
-threadqdequeuepriority.c:80
-INTERRUPT SYNC
-threadqdequeuefifo.c:85
-INTERRUPT SYNC
-threadqdequeuefifo.c:83
-INTERRUPT SYNC - timeout/nothing happened if condition
-threadqdequeuefifo.c:86
-INTERRUPT SYNC - timeout/nothing happened else body
-threadqdequeuepriority.c:78
-INTERRUPT SYNC - timeout/nothing happened else body
-threadqenqueuefifo.c:57
-restructure switch and verify
-threadqenqueuefifo.c:75
-INTERRUPT SYNC - timeout/nothing happened else body
 watchdog.inl:84
 INTERRUPT SYNC - in event and threadq fifo/priority do not inline?
 threadqenqueuepriority.c:139
 INTERRUPT SYNC - restart insertion search
 threadqenqueuepriority.c:189
 need sp41 test cases with priority semaphore
-threadqextract.c:54
-restructure switch, done
 threadqextractfifo.c:55
 HARD - extract thread that isn't blocked on thread queue
 threadqextractpriority.c:64
 HARD - extract thread that isn't blocked on thread queue
-clockgettime.c:39
-restructure switch
-clocksettime.c:43
-set time < 1988 before and after a nop
 timersettime.c:79
 SIMPLE TEST - need to have it return previous value
 timersettime.c:121
 SIMPLE TEST - bad ID
-objectsetname.c:68
-SIMPLE FATAL TEST - run out of memory and try to add a string

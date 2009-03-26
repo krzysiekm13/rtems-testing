@@ -3,7 +3,8 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 
-BSP=rtl22xx
+#BSP=rtl22xx
+BSP=leon3
 
 # For most BSPs, there is a script with the same name as the BSP.
 RUNNER=${BSP}
