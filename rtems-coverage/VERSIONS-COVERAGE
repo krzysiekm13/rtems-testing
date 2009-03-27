@@ -35,7 +35,8 @@ LOGDIR=${BASEDIR}/log
 #       as well. :( We really need the first symbol AFTER it but
 #       things are not setup to make that reliable.
 lowsym=rtems_build_id
-highsym=sysconf 
+#highsym=sysconf 
+highsym=end_of_profiling 
 
 # Calculated
 SCRIPTDIR=${BASEDIR}/gcc-testing

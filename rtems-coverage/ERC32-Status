@@ -3,33 +3,33 @@
 #
 
 Generated on 27 March 2009 after getting where all explanations were found.
-This is a baseline for GSoC.
+This is a baseline for GSoC and uses the new "end_of_profile" marker.
 
-Bytes Analyzed          : 70768
-Bytes Not Executed      : 2604
-Percentage Executed     : 0.9632
-Percentage Not Executed : 0.0368
+Bytes Analyzed          : 71856
+Bytes Not Executed      : 2708
+Percentage Executed     : 0.9623
+Percentage Not Executed : 0.03769
 ====== 15 Largest Range Sizes ======
-     33  8
-     22  12
-     22  16
+     35  8
+     23  12
+     23  16
       9  20
      10  24
-      6  28
-      4  32
+      7  28
+      5  32
       1  36
-      4  40
+      5  40
       2  44
       1  48
-      2  56
+      1  56
       1  60
       1  72
       1  120
 =====================================
-Started:  Fri Mar 27 09:41:43 CDT 2009
-Stopped:  Fri Mar 27 09:41:43 CDT 2009
+Started:  Fri Mar 27 12:21:15 CDT 2009
+Stopped:  Fri Mar 27 12:21:15 CDT 2009
 
-===========================================
+================================================================
 
 ============ Range: 020019f0 - 020019ff ============
 020019f0 : taskinitusers.c:91
@@ -431,10 +431,18 @@ Size : 8
 Explanation:
 no explanation
 ====================================================
-============ Range: 02007ee4 - 02007f1b ============
-02007ee4 : heap.inl:243
+============ Range: 02007f00 - 02007f03 ============
+02007f00 : heap.inl:244
+02007f03 : heap.inl:244
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007f14 - 02007f1b ============
+02007f14 : heapallocatealigned.c:216
 02007f1b : heapallocatealigned.c:216
-Size : 56
+Size : 8
 
 Explanation:
 no explanation
@@ -1606,4 +1614,76 @@ Size : 56
 
 Explanation:
 TEST SIMPLE - (very) stub implementations. Add test as placeholder.
+====================================================
+============ Range: 020126b0 - 020126b7 ============
+020126b0 : sysconf.c:61
+020126b7 : sysconf.c:61
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020127e8 - 0201280f ============
+020127e8 : printk.c:110
+0201280f : printk.c:110
+Size : 40
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02012820 - 0201283b ============
+02012820 : printk.c:110
+0201283b : printk.c:151
+Size : 28
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02012850 - 02012853 ============
+02012850 : printk.c:110
+02012853 : printk.c:110
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0201285c - 0201285f ============
+0201285c : printk.c:110
+0201285f : printk.c:110
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020128a4 - 020128af ============
+020128a4 : printk.c:129
+020128af : printk.c:130
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020128b8 - 020128bb ============
+020128b8 : printk.c:129
+020128bb : printk.c:129
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0201292c - 0201293b ============
+0201292c : printk.c:148
+0201293b : printk.c:148
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02012968 - 02012987 ============
+02012968 : printk.c:46
+02012987 : printk.c:48
+Size : 32
+
+Explanation:
+no explanation
 ====================================================

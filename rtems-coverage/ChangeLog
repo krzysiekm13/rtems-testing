@@ -1,5 +1,12 @@
 2009-03-27	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* ERC32-Status, VERSIONS-COVERAGE: New baseline which is based upon
+	adding a symbol end_of_profiling to the image.
+	* rtems-cvs-20090327.diff: New file.
+	* rtems-cvs-20090312.diff: Removed.
+
+2009-03-27	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* ERC32-Status: New file.
 
 2009-03-27	Joel Sherrill <joel.sherrill@OARcorp.com>
