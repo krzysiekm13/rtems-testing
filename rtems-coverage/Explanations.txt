@@ -1,22 +1,22 @@
 attr.c:31
 TEST SIMPLE - call rtems_interrupt_level_attribute
-taskinitusers.c:90
-INTERNAL ERROR - failed rtems_task_start
+taskinitusers.c:91
+INTERNAL ERROR - failed rtems_task_start (override a confdefs parameter)
 ratemonperiod.c:310
 INTERRUPT SYNC - period must expire while attempting to block
-ratemontimeout.c:66
-INTERRUPT SYNC - period must expire while attempting to block
-ratemontimeout.c:68
-INTERRUPT SYNC - period must expire while attempting to block
+ratemontimeout.c:60
+TEST SIMPLE - violate visibility, call directly with bad Id
+watchdog.inl:129
+INTERRUPT SYNC - period expires while blocking (ratemontimeout.c:66)
 timerreset.c:60
 TEST SIMPLE - new error case
 timerserverfireafter.c:80
 INTERRUPT SYNC - timer must be inserted by an ISR while we are inserting it
-semcreate.c:148
+semcreate.c:152
 TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
-semcreate.c:158
+semcreate.c:162
 TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
-coremutex.inl:167
+coremutex.inl:171
 TEST SIMPLE - pri ceiling - acquire when pri = ceiling
 semflush.c:82
 TEST SIMPLE - need to flush a NOT counting semaphore
@@ -24,16 +24,12 @@ regionresizesegment.c:83
 TEST SIMPLE - need a test (9 instructions)
 debug.c:63
 TEST SIMPLE - need a test
-exinit.c:81
-TEST SIMPLE - need a case for NULL configuration table
 ioregisterdriver.c:71
 TEST SIMPLE - documented (not implemented) in sp40
 ioregisterdriver.c:83
 TEST SIMPLE - if reachable
-coremsgbroadcast.c:81
+coremsgbroadcast.c:86
 TEST SIMPLE - Successful but no tasks waiting
-corerwlockrelease.c:54
-TEST SIMPLE - need a case for release when already released
 corespinlockrelease.c:59
 TEST SIMPLE - need a case for unlock when not holder
 corespinlockwait.c:67
@@ -42,72 +38,30 @@ corespinlockwait.c:75
 TEST SIMPLE - need a case for a timeout
 corespinlockwait.c:76
 SAME AS ABOVE - corespinlockwait.c:75
-dpmemcreate.c:87:
+dpmemcreate.c:87
 TEST SIMPLE - need invalid address of return id
-heap.inl:239
-ASK JOEL (131 instructions)
 timerfireafter.c:76
 INTERRUPT SYNC - timer must be inserted or state altered by ISR
-watchdog.inl:144
-Exercise _Timer_Server_reset_seconds_timer - quit inlining?
-eventsurrender.c:78
+eventsurrender.c:82
 INTERRUPT_SYNC - send event to thread running from TSR?
-eventsurrender.c:100
-sp39 should cover this
-eventtimeout.c:70
-sp39 should cover this .. timeout while blocking
-eventtimeout.c:83
-sp39 should cover this .. timeout while blocking
+thread.inl:230
+sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 regionextend.c:75
 SIMPLE - possibly dead code from switch, change to if's
-regionextend.c:83
-TEST SIMPLE - (in sp09 now) need a case with an invalid starting_address
-attr.c:32
-TEST SIMPLE - rtems_interrupt_level_attribute
-thread.inl:35
-HARD/IMPOSSIBLE - return from context switch at shutdown
-coremsgflushwait.c:68
-TEST SIMPLE - flush waiting threads, available via API?
-coremsgsubmit.c:149
-TEST SIMPLE - POSIX mq send from ISR/TSR - no msgs available, can't block
-coremsgsubmit.c:178
-TEST SIMPLE - POSIX mq send - no msgs available, blocks
-coremutexsurrender.c:83
-nesting is error and blocks doesn't appear to be tested
-corerwlockrelease.c:52
-COMPILER - looks like extra code generated for bad value on switch, change to if
-heapwalk.c:49
-not called at all in non-debug mode, force
-heapgetinfo.c:70
-HARD - requires a corrupted heap, block size mismatch
-heapresizeblock.c:81
-block not in heap, below and above cases split
-pthreadcreate.c:73
-SIMPLE - Joel thinks user specified stack
-pthreadcreate.c:113
-SIMPLE - create thread with SCHED_SPORADIC
-pthreadcreate.c:246
-INTERRUPT SYNC - suspend thread from ISR while creating
-pthreadcreate.c:247
-INTERRUPT SYNC - suspend thread from ISR while creating
+priority.inl:35
+TEST SIMPLE - bad priority (pthreadcreate.c:118)
+pthreadcreate.c:130
+TEST SIMPLE - bad scheduling policy in switch
 pthreadsetschedparam.c:53
 SIMPLE - bad policy case
 pthreadsetschedparam.c:70
 SIMPLE - SCHED_SPORADIC with bad replenish period
-pthreadinitthreads.c:71
-FATAL - Bad pthread attr pointer
-pthreadinitthreads.c:74
-FATAL - set explicit sched -- probably impossible
-pthreadinitthreads.c:77
-FATAL - bad stack size
 pthreadinitthreads.c:85
-FATAL - pthread_create gives error
-chain.inl:296
+FATAL - pthread_create gives error (override a confdefs parameter)
+chain.inl:300
 _POSIX_signals_Clear_signals:71 chain get when empty
 pthreadkill.c:69
 SIMPLE - psignal to running thread from ISR
-watchdog.inl:84
-INTERRUPT SYNC - in event and threadq fifo/priority do not inline?
 threadqenqueuepriority.c:139
 INTERRUPT SYNC - restart insertion search
 threadqenqueuepriority.c:189
@@ -116,7 +70,15 @@ threadqextractfifo.c:55
 HARD - extract thread that isn't blocked on thread queue
 threadqextractpriority.c:64
 HARD - extract thread that isn't blocked on thread queue
-timersettime.c:79
+timersettime.c:85
 SIMPLE TEST - need to have it return previous value
-timersettime.c:121
+timersettime.c:129
 SIMPLE TEST - bad ID
+objectgetnext.c:64
+TEST SIMPLE - there is no test at all
+heapresizeblock.c:158
+TEST SIMPLE - looks like shrink block but so small the unused area gets freed
+killinfo.c:233
+TEST SIMPLE - signals to blocked/ready tasks with particular settings
+getitimer.c:25
+TEST SIMPLE - (very) stub implementations. Add test as placeholder.
