@@ -1,0 +1,1609 @@
+#
+# $Id$
+#
+
+Generated on 27 March 2009 after getting where all explanations were found.
+This is a baseline for GSoC.
+
+Bytes Analyzed          : 70768
+Bytes Not Executed      : 2604
+Percentage Executed     : 0.9632
+Percentage Not Executed : 0.0368
+====== 15 Largest Range Sizes ======
+     33  8
+     22  12
+     22  16
+      9  20
+     10  24
+      6  28
+      4  32
+      1  36
+      4  40
+      2  44
+      1  48
+      2  56
+      1  60
+      1  72
+      1  120
+=====================================
+Started:  Fri Mar 27 09:41:43 CDT 2009
+Stopped:  Fri Mar 27 09:41:43 CDT 2009
+
+===========================================
+
+============ Range: 020019f0 - 020019ff ============
+020019f0 : taskinitusers.c:91
+020019ff : taskinitusers.c:91
+Size : 16
+
+Explanation:
+INTERNAL ERROR - failed rtems_task_start (override a confdefs parameter)
+====================================================
+============ Range: 02002b70 - 02002b77 ============
+02002b70 : ratemonperiod.c:310
+02002b77 : ratemonperiod.c:310
+Size : 8
+
+Explanation:
+INTERRUPT SYNC - period must expire while attempting to block
+====================================================
+============ Range: 02002c24 - 02002c27 ============
+02002c24 : ratemontimeout.c:60
+02002c27 : ratemontimeout.c:60
+Size : 4
+
+Explanation:
+TEST SIMPLE - violate visibility, call directly with bad Id
+====================================================
+============ Range: 02002c50 - 02002c63 ============
+02002c50 : watchdog.inl:129
+02002c63 : ratemontimeout.c:66
+Size : 20
+
+Explanation:
+INTERRUPT SYNC - period expires while blocking (ratemontimeout.c:66)
+====================================================
+============ Range: 02003674 - 0200367f ============
+02003674 : timerfireafter.c:76
+0200367f : timerfireafter.c:77
+Size : 12
+
+Explanation:
+INTERRUPT SYNC - timer must be inserted or state altered by ISR
+====================================================
+============ Range: 020038c0 - 020038c7 ============
+020038c0 : timerreset.c:60
+020038c7 : timerreset.c:60
+Size : 8
+
+Explanation:
+TEST SIMPLE - new error case
+====================================================
+============ Range: 02003db0 - 02003dbb ============
+02003db0 : timerserverfireafter.c:80
+02003dbb : timerserverfireafter.c:81
+Size : 12
+
+Explanation:
+INTERRUPT SYNC - timer must be inserted by an ISR while we are inserting it
+====================================================
+============ Range: 02004478 - 0200447b ============
+02004478 : semcreate.c:152
+0200447b : semcreate.c:152
+Size : 4
+
+Explanation:
+TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
+====================================================
+============ Range: 020044b4 - 020044b7 ============
+020044b4 : semcreate.c:162
+020044b7 : semcreate.c:162
+Size : 4
+
+Explanation:
+TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
+====================================================
+============ Range: 0200484c - 02004857 ============
+0200484c : semflush.c:82
+02004857 : semflush.c:82
+Size : 12
+
+Explanation:
+TEST SIMPLE - need to flush a NOT counting semaphore
+====================================================
+============ Range: 02004af4 - 02004af7 ============
+02004af4 : eventsurrender.c:82
+02004af7 : eventsurrender.c:82
+Size : 4
+
+Explanation:
+INTERRUPT_SYNC - send event to thread running from TSR?
+====================================================
+============ Range: 02004b00 - 02004b03 ============
+02004b00 : eventsurrender.c:82
+02004b03 : eventsurrender.c:82
+Size : 4
+
+Explanation:
+INTERRUPT_SYNC - send event to thread running from TSR?
+====================================================
+============ Range: 02004bf8 - 02004c0b ============
+02004bf8 : thread.inl:230
+02004c0b : eventtimeout.c:71
+Size : 20
+
+Explanation:
+sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
+====================================================
+============ Range: 02004c10 - 02004c17 ============
+02004c10 : eventtimeout.c:71
+02004c17 : eventtimeout.c:71
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02005010 - 02005013 ============
+02005010 : regionextend.c:75
+02005013 : regionextend.c:75
+Size : 4
+
+Explanation:
+SIMPLE - possibly dead code from switch, change to if's
+====================================================
+============ Range: 02005474 - 02005493 ============
+02005474 : regionresizesegment.c:83
+02005493 : regionresizesegment.c:84
+Size : 32
+
+Explanation:
+TEST SIMPLE - need a test (9 instructions)
+====================================================
+============ Range: 02005928 - 02005933 ============
+02005928 : dpmemcreate.c:87
+02005933 : dpmemcreate.c:88
+Size : 12
+
+Explanation:
+TEST SIMPLE - need invalid address of return id
+====================================================
+============ Range: 02005a98 - 02005aaf ============
+02005a98 : workspace.c:59
+02005aaf : workspace.c:60
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02005afc - 02005b03 ============
+02005afc : attr.c:31
+02005b03 : attr.c:31
+Size : 8
+
+Explanation:
+TEST SIMPLE - call rtems_interrupt_level_attribute
+====================================================
+============ Range: 02005b38 - 02005b4f ============
+02005b38 : debug.c:63
+02005b4f : debug.c:65
+Size : 24
+
+Explanation:
+TEST SIMPLE - need a test
+====================================================
+============ Range: 02005e20 - 02005e27 ============
+02005e20 : thread.inl:47
+02005e27 : thread.inl:47
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020060f0 - 020060f3 ============
+020060f0 : ioregisterdriver.c:56
+020060f3 : ioregisterdriver.c:56
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02006150 - 02006153 ============
+02006150 : ioregisterdriver.c:71
+02006153 : ioregisterdriver.c:71
+Size : 4
+
+Explanation:
+TEST SIMPLE - documented (not implemented) in sp40
+====================================================
+============ Range: 02006198 - 0200619b ============
+02006198 : ioregisterdriver.c:83
+0200619b : ioregisterdriver.c:83
+Size : 4
+
+Explanation:
+TEST SIMPLE - if reachable
+====================================================
+============ Range: 02006624 - 0200662f ============
+02006624 : coremsgbroadcast.c:86
+0200662f : coremsgbroadcast.c:86
+Size : 12
+
+Explanation:
+TEST SIMPLE - Successful but no tasks waiting
+====================================================
+============ Range: 020066d4 - 020066e7 ============
+020066d4 : coremsgflushwait.c:65
+020066e7 : coremsgflushwait.c:65
+Size : 20
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02006a4c - 02006a4f ============
+02006a4c : coremsgsubmit.c:153
+02006a4f : coremsgsubmit.c:153
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02006a9c - 02006aa7 ============
+02006a9c : coremsgsubmit.c:179
+02006aa7 : coremsgsubmit.c:180
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02006be4 - 02006bef ============
+02006be4 : coremutexseize.c:39
+02006bef : coremutexseize.c:39
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02006cc4 - 02006ccf ============
+02006cc4 : coremutexsurrender.c:88
+02006ccf : coremutexsurrender.c:88
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02006db4 - 02006db7 ============
+02006db4 : coremutexsurrender.c:177
+02006db7 : coremutexsurrender.c:177
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02006e64 - 02006e67 ============
+02006e64 : coremutex.inl:171
+02006e67 : coremutex.inl:171
+Size : 4
+
+Explanation:
+TEST SIMPLE - pri ceiling - acquire when pri = ceiling
+====================================================
+============ Range: 020070b8 - 020070cf ============
+020070b8 : corerwlockrelease.c:53
+020070cf : corerwlockrelease.c:54
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200734c - 0200735b ============
+0200734c : corespinlockrelease.c:59
+0200735b : corespinlockrelease.c:59
+Size : 16
+
+Explanation:
+TEST SIMPLE - need a case for unlock when not holder
+====================================================
+============ Range: 02007434 - 02007453 ============
+02007434 : corespinlockwait.c:67
+02007453 : corespinlockwait.c:68
+Size : 32
+
+Explanation:
+TEST SIMPLE - need a case for not willing to wait
+====================================================
+============ Range: 0200745c - 02007467 ============
+0200745c : corespinlockwait.c:75
+02007467 : corespinlockwait.c:75
+Size : 12
+
+Explanation:
+TEST SIMPLE - need a case for a timeout
+====================================================
+============ Range: 0200746c - 0200748b ============
+0200746c : corespinlockwait.c:76
+0200748b : corespinlockwait.c:77
+Size : 32
+
+Explanation:
+SAME AS ABOVE - corespinlockwait.c:75
+====================================================
+============ Range: 02007af4 - 02007af7 ============
+02007af4 : heapwalk.c:67
+02007af7 : heapwalk.c:67
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007b08 - 02007b1b ============
+02007b08 : heapwalk.c:80
+02007b1b : heapwalk.c:80
+Size : 20
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007b30 - 02007b4b ============
+02007b30 : heapwalk.c:85
+02007b4b : heapwalk.c:136
+Size : 28
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007b78 - 02007b93 ============
+02007b78 : heapwalk.c:105
+02007b93 : heapwalk.c:155
+Size : 28
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007bb0 - 02007bc3 ============
+02007bb0 : heapwalk.c:115
+02007bc3 : heapwalk.c:118
+Size : 20
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007bcc - 02007bf3 ============
+02007bcc : heapwalk.c:119
+02007bf3 : heapwalk.c:120
+Size : 40
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007c08 - 02007c2f ============
+02007c08 : heapwalk.c:129
+02007c2f : heapwalk.c:136
+Size : 40
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007c3c - 02007c4b ============
+02007c3c : heapwalk.c:136
+02007c4b : heapwalk.c:138
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007c58 - 02007c63 ============
+02007c58 : heapwalk.c:139
+02007c63 : heapwalk.c:139
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007c78 - 02007c8f ============
+02007c78 : heapwalk.c:144
+02007c8f : heapwalk.c:155
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007cd0 - 02007ceb ============
+02007cd0 : heapwalk.c:155
+02007ceb : heap.inl:350
+Size : 28
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007d00 - 02007d0f ============
+02007d00 : heapwalk.c:161
+02007d0f : heapwalk.c:161
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007db4 - 02007dbb ============
+02007db4 : heapgetinfo.c:70
+02007dbb : heapgetinfo.c:70
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007ee4 - 02007f1b ============
+02007ee4 : heap.inl:243
+02007f1b : heapallocatealigned.c:216
+Size : 56
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02007f24 - 02007f27 ============
+02007f24 : heapallocatealigned.c:223
+02007f27 : heapallocatealigned.c:223
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02008160 - 02008163 ============
+02008160 : heapresizeblock.c:144
+02008163 : heapresizeblock.c:144
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020081b8 - 020081ff ============
+020081b8 : heapresizeblock.c:158
+020081ff : heapresizeblock.c:166
+Size : 72
+
+Explanation:
+TEST SIMPLE - looks like shrink block but so small the unused area gets freed
+====================================================
+============ Range: 02008504 - 0200850b ============
+02008504 : objectextendinformation.c:226
+0200850b : objectextendinformation.c:226
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02008730 - 020087a7 ============
+02008730 : objectgetnext.c:64
+020087a7 : objectgetnext.c:94
+Size : 120
+
+Explanation:
+TEST SIMPLE - there is no test at all
+====================================================
+============ Range: 020088a0 - 020088a3 ============
+020088a0 : objectnametoid.c:75
+020088a3 : objectnametoid.c:75
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02008948 - 0200894b ============
+02008948 : objectnametoidstring.c:66
+0200894b : objectnametoidstring.c:66
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200895c - 02008963 ============
+0200895c : objectnametoidstring.c:72
+02008963 : objectnametoidstring.c:72
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02008a5c - 02008a5f ============
+02008a5c : objectshrinkinformation.c:101
+02008a5f : objectshrinkinformation.c:101
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02008ba0 - 02008ba7 ============
+02008ba0 : objectidtoname.c:79
+02008ba7 : objectidtoname.c:79
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02008bc0 - 02008bc7 ============
+02008bc0 : objectidtoname.c:78
+02008bc7 : objectidtoname.c:78
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02008e00 - 02008e03 ============
+02008e00 : objectgetinfo.c:36
+02008e03 : objectgetinfo.c:36
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200913c - 0200914b ============
+0200913c : thread.c:66
+0200914b : thread.c:66
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020095ec - 020095ef ============
+020095ec : threadcreateidle.c:59
+020095ef : threadcreateidle.c:59
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200987c - 0200987f ============
+0200987c : threadevaluatemode.c:46
+0200987f : threadevaluatemode.c:46
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009944 - 0200994b ============
+02009944 : threadget.c:87
+0200994b : threadget.c:87
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009a14 - 02009a23 ============
+02009a14 : threadhandler.c:148
+02009a23 : threadhandler.c:148
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009a28 - 02009a2f ============
+02009a28 : threadhandler.c:169
+02009a2f : threadhandler.c:169
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009a4c - 02009a67 ============
+02009a4c : threadhandler.c:162
+02009a67 : threadhandler.c:169
+Size : 28
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009a6c - 02009a6f ============
+02009a6c : threadhandler.c:169
+02009a6f : threadhandler.c:169
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009a78 - 02009a87 ============
+02009a78 : threadhandler.c:186
+02009a87 : threadhandler.c:186
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009adc - 02009ae3 ============
+02009adc : threadinitialize.c:91
+02009ae3 : threadinitialize.c:91
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009b54 - 02009b5b ============
+02009b54 : threadinitialize.c:148
+02009b5b : threadinitialize.c:148
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009b60 - 02009b6f ============
+02009b60 : threadinitialize.c:149
+02009b6f : threadinitialize.c:152
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009bc8 - 02009bd3 ============
+02009bc8 : threadinitialize.c:188
+02009bd3 : threadinitialize.c:188
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009c44 - 02009c73 ============
+02009c44 : threadinitialize.c:231
+02009c73 : threadinitialize.c:239
+Size : 48
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009e98 - 02009e9b ============
+02009e98 : threadresettimeslice.c:69
+02009e9b : threadresettimeslice.c:69
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009f08 - 02009f13 ============
+02009f08 : threadreset.c:61
+02009f13 : threadreset.c:64
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009fe0 - 02009fe3 ============
+02009fe0 : threadresume.c:65
+02009fe3 : threadresume.c:65
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02009fec - 02009ff3 ============
+02009fec : threadresume.c:68
+02009ff3 : threadresume.c:68
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200a004 - 0200a007 ============
+0200a004 : threadresume.c:71
+0200a007 : threadresume.c:71
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200a378 - 0200a387 ============
+0200a378 : threadstackallocate.c:61
+0200a387 : threadstackallocate.c:82
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200a3cc - 0200a3cf ============
+0200a3cc : threadstackfree.c:58
+0200a3cf : threadstackfree.c:58
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200a3d4 - 0200a3db ============
+0200a3d4 : threadstackfree.c:58
+0200a3db : threadstackfree.c:58
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200a7a8 - 0200a7af ============
+0200a7a8 : iterateoverthreads.c:42
+0200a7af : iterateoverthreads.c:42
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ac74 - 0200ac7f ============
+0200ac74 : threadqenqueuepriority.c:92
+0200ac7f : threadqenqueuepriority.c:92
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ad00 - 0200ad03 ============
+0200ad00 : threadqenqueuepriority.c:131
+0200ad03 : threadqenqueuepriority.c:131
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ad34 - 0200ad43 ============
+0200ad34 : threadqenqueuepriority.c:139
+0200ad43 : threadqenqueuepriority.c:121
+Size : 16
+
+Explanation:
+INTERRUPT SYNC - restart insertion search
+====================================================
+============ Range: 0200adb4 - 0200adc3 ============
+0200adb4 : threadqenqueuepriority.c:189
+0200adc3 : threadqenqueuepriority.c:190
+Size : 16
+
+Explanation:
+need sp41 test cases with priority semaphore
+====================================================
+============ Range: 0200ae14 - 0200ae1b ============
+0200ae14 : threadqextractfifo.c:55
+0200ae1b : threadqextractfifo.c:55
+Size : 8
+
+Explanation:
+HARD - extract thread that isn't blocked on thread queue
+====================================================
+============ Range: 0200ae98 - 0200ae9b ============
+0200ae98 : threadqextractpriority.c:64
+0200ae9b : threadqextractpriority.c:64
+Size : 4
+
+Explanation:
+HARD - extract thread that isn't blocked on thread queue
+====================================================
+============ Range: 0200b0e0 - 0200b0e3 ============
+0200b0e0 : threadqprocesstimeout.c:46
+0200b0e3 : threadqprocesstimeout.c:46
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200b11c - 0200b11f ============
+0200b11c : threadqprocesstimeout.c:54
+0200b11f : threadqprocesstimeout.c:54
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200b478 - 0200b487 ============
+0200b478 : timespecdivide.c:46
+0200b487 : timespecdivide.c:47
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200b8e8 - 0200b90f ============
+0200b8e8 : coretodmsecstoticks.c:23
+0200b90f : coretodmsecstoticks.c:25
+Size : 40
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200b930 - 0200b94b ============
+0200b930 : coretodusectoticks.c:23
+0200b94b : coretodusectoticks.c:25
+Size : 28
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ba98 - 0200ba9f ============
+0200ba98 : chain.inl:300
+0200ba9f : chain.inl:300
+Size : 8
+
+Explanation:
+_POSIX_signals_Clear_signals:71 chain get when empty
+====================================================
+============ Range: 0200baf4 - 0200baf7 ============
+0200baf4 : watchdogadjusttochain.c:42
+0200baf7 : watchdogadjusttochain.c:42
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200bb34 - 0200bb37 ============
+0200bb34 : watchdoginsert.c:52
+0200bb37 : watchdoginsert.c:52
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200bc3c - 0200bc3f ============
+0200bc3c : watchdogremove.c:41
+0200bc3f : watchdogremove.c:41
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200bc90 - 0200bca3 ============
+0200bc90 : watchdogremove.c:64
+0200bca3 : chain.inl:248
+Size : 20
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200be38 - 0200be3f ============
+0200be38 : watchdogreportchain.c:47
+0200be3f : watchdogreportchain.c:47
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200bf9c - 0200bfa3 ============
+0200bf9c : userextremoveset.c:34
+0200bfa3 : userextremoveset.c:34
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c01c - 0200c01f ============
+0200c01c : userextthreadbegin.c:57
+0200c01f : userextthreadbegin.c:57
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c02c - 0200c033 ============
+0200c02c : userextthreadbegin.c:64
+0200c033 : userextthreadbegin.c:64
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c05c - 0200c067 ============
+0200c05c : userextthreadbegin.c:87
+0200c067 : userextthreadbegin.c:87
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c0c0 - 0200c0c7 ============
+0200c0c0 : userextthreadcreate.c:43
+0200c0c7 : userextthreadcreate.c:43
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c244 - 0200c247 ============
+0200c244 : apiext.c:61
+0200c247 : apiext.c:61
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c24c - 0200c24f ============
+0200c24c : apiext.c:56
+0200c24f : apiext.c:56
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c284 - 0200c287 ============
+0200c284 : apiext.c:81
+0200c287 : apiext.c:81
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c2d0 - 0200c2d3 ============
+0200c2d0 : apiext.c:102
+0200c2d3 : apiext.c:102
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c3e0 - 0200c3e7 ============
+0200c3e0 : chaininsert.c:41
+0200c3e7 : chaininsert.c:44
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c3ec - 0200c407 ============
+0200c3ec : chain.inl:326
+0200c407 : chaininsert.c:46
+Size : 28
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c490 - 0200c49f ============
+0200c490 : isr.c:52
+0200c49f : isr.c:52
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c520 - 0200c527 ============
+0200c520 : wkspace.c:95
+0200c527 : wkspace.c:95
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c558 - 0200c567 ============
+0200c558 : wkspace.c:39
+0200c567 : wkspace.c:39
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c574 - 0200c587 ============
+0200c574 : wkspace.c:46
+0200c587 : wkspace.c:48
+Size : 20
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c5a8 - 0200c5af ============
+0200c5a8 : wkspace.c:56
+0200c5af : wkspace.c:56
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200c9c4 - 0200c9cb ============
+0200c9c4 : vfork.c:22
+0200c9cb : vfork.c:22
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cd54 - 0200cd57 ============
+0200cd54 : cancelrun.c:44
+0200cd57 : cancelrun.c:44
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cd5c - 0200cd73 ============
+0200cd5c : cancelrun.c:45
+0200cd73 : cancelrun.c:48
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cd78 - 0200cd8b ============
+0200cd78 : cancelrun.c:50
+0200cd8b : cancelrun.c:52
+Size : 20
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ced8 - 0200cedb ============
+0200ced8 : setcancelstate.c:53
+0200cedb : setcancelstate.c:53
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cf1c - 0200cf33 ============
+0200cf1c : setcancelstate.c:62
+0200cf33 : setcancelstate.c:62
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cf48 - 0200cf57 ============
+0200cf48 : setcancelstate.c:69
+0200cf57 : setcancelstate.c:69
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cf60 - 0200cf6b ============
+0200cf60 : setcancelstate.c:69
+0200cf6b : setcancelstate.c:71
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cf98 - 0200cf9b ============
+0200cf98 : setcanceltype.c:53
+0200cf9b : setcanceltype.c:53
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200cff0 - 0200cff3 ============
+0200cff0 : setcanceltype.c:62
+0200cff3 : setcanceltype.c:62
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d008 - 0200d017 ============
+0200d008 : setcanceltype.c:68
+0200d017 : setcanceltype.c:68
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d020 - 0200d02b ============
+0200d020 : setcanceltype.c:68
+0200d02b : setcanceltype.c:71
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d420 - 0200d427 ============
+0200d420 : condwaitsupp.c:59
+0200d427 : condwaitsupp.c:59
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d4f0 - 0200d507 ============
+0200d4f0 : condget.c:44
+0200d507 : condget.c:45
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d5f8 - 0200d603 ============
+0200d5f8 : keycreate.c:82
+0200d603 : keycreate.c:83
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d60c - 0200d60f ============
+0200d60c : keycreate.c:81
+0200d60f : keycreate.c:81
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d6f4 - 0200d6f7 ============
+0200d6f4 : keydelete.c:50
+0200d6f7 : keydelete.c:50
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d70c - 0200d70f ============
+0200d70c : keydelete.c:50
+0200d70f : keydelete.c:50
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d728 - 0200d72b ============
+0200d728 : keydelete.c:51
+0200d72b : keydelete.c:51
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d730 - 0200d733 ============
+0200d730 : key.inl:48
+0200d733 : key.inl:48
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d81c - 0200d81f ============
+0200d81c : keyrundestructors.c:62
+0200d81f : keyrundestructors.c:62
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d82c - 0200d82f ============
+0200d82c : keyrundestructors.c:62
+0200d82f : keyrundestructors.c:62
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200d840 - 0200d843 ============
+0200d840 : keyrundestructors.c:64
+0200d843 : keyrundestructors.c:64
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200da90 - 0200da93 ============
+0200da90 : mqueuecreatesupp.c:101
+0200da93 : mqueuecreatesupp.c:101
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200da98 - 0200da9b ============
+0200da98 : mqueuecreatesupp.c:102
+0200da9b : mqueuecreatesupp.c:102
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200daa0 - 0200daa7 ============
+0200daa0 : mqueuecreatesupp.c:102
+0200daa7 : mqueuecreatesupp.c:102
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200db1c - 0200db33 ============
+0200db1c : mqueue.inl:60
+0200db33 : mqueuecreatesupp.c:141
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200db38 - 0200db3b ============
+0200db38 : mqueuecreatesupp.c:142
+0200db3b : mqueuecreatesupp.c:142
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200db40 - 0200db43 ============
+0200db40 : mqueuecreatesupp.c:142
+0200db43 : mqueuecreatesupp.c:142
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200dbb8 - 0200dbbb ============
+0200dbb8 : mqueuedeletesupp.c:57
+0200dbbb : mqueuedeletesupp.c:57
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200e2b0 - 0200e2b3 ============
+0200e2b0 : mqueuetimedreceive.c:71
+0200e2b3 : mqueuetimedreceive.c:71
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200e2f4 - 0200e2f7 ============
+0200e2f4 : mqueuetimedsend.c:71
+0200e2f7 : mqueuetimedsend.c:71
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200e72c - 0200e74b ============
+0200e72c : mutexinit.c:104
+0200e74b : mutexinit.c:104
+Size : 32
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200e804 - 0200e80b ============
+0200e804 : mutexinit.c:144
+0200e80b : mutexinit.c:144
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200e958 - 0200e95b ============
+0200e958 : mutexsetprioceiling.c:59
+0200e95b : mutexsetprioceiling.c:59
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ea80 - 0200eaa7 ============
+0200ea80 : mutexget.c:76
+0200eaa7 : mutexget.c:84
+Size : 40
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200eadc - 0200eaf3 ============
+0200eadc : mutexget.c:64
+0200eaf3 : mutexget.c:64
+Size : 24
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ebac - 0200ebaf ============
+0200ebac : pthread.c:260
+0200ebaf : pthread.c:260
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ecbc - 0200ecbf ============
+0200ecbc : pthread.c:179
+0200ecbf : pthread.c:179
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ed44 - 0200ed4f ============
+0200ed44 : pthread.c:129
+0200ed4f : pthread.c:129
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ed64 - 0200ed67 ============
+0200ed64 : pthread.c:131
+0200ed67 : pthread.c:131
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ed84 - 0200ed87 ============
+0200ed84 : pthread.c:84
+0200ed87 : pthread.c:84
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200edd8 - 0200eddb ============
+0200edd8 : pthread.c:98
+0200eddb : pthread.c:98
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200f168 - 0200f16b ============
+0200f168 : priority.inl:35
+0200f16b : priority.inl:35
+Size : 4
+
+Explanation:
+TEST SIMPLE - bad priority (pthreadcreate.c:118)
+====================================================
+============ Range: 0200f1c4 - 0200f1c7 ============
+0200f1c4 : pthreadcreate.c:130
+0200f1c7 : pthreadcreate.c:130
+Size : 4
+
+Explanation:
+TEST SIMPLE - bad scheduling policy in switch
+====================================================
+============ Range: 0200f35c - 0200f37f ============
+0200f35c : pthread.inl:46
+0200f37f : pthreadcreate.c:264
+Size : 36
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200f5e4 - 0200f5e7 ============
+0200f5e4 : pthreadsetschedparam.c:53
+0200f5e7 : pthreadsetschedparam.c:53
+Size : 4
+
+Explanation:
+SIMPLE - bad policy case
+====================================================
+============ Range: 0200f614 - 0200f617 ============
+0200f614 : pthreadsetschedparam.c:70
+0200f617 : pthreadsetschedparam.c:70
+Size : 4
+
+Explanation:
+SIMPLE - SCHED_SPORADIC with bad replenish period
+====================================================
+============ Range: 0200fa44 - 0200fa53 ============
+0200fa44 : pthreadinitthreads.c:85
+0200fa53 : pthreadinitthreads.c:85
+Size : 16
+
+Explanation:
+FATAL - pthread_create gives error (override a confdefs parameter)
+====================================================
+============ Range: 0200fbf8 - 0200fc03 ============
+0200fbf8 : psignal.c:146
+0200fc03 : psignal.c:146
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200fdfc - 0200fe0f ============
+0200fdfc : killinfo.c:143
+0200fe0f : killinfo.c:138
+Size : 20
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200fe64 - 0200fe67 ============
+0200fe64 : killinfo.c:186
+0200fe67 : killinfo.c:186
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200fe94 - 0200fe97 ============
+0200fe94 : killinfo.c:203
+0200fe97 : killinfo.c:203
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200fea4 - 0200fea7 ============
+0200fea4 : killinfo.c:212
+0200fea7 : killinfo.c:212
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200fec4 - 0200feff ============
+0200fec4 : killinfo.c:233
+0200feff : killinfo.c:265
+Size : 60
+
+Explanation:
+TEST SIMPLE - signals to blocked/ready tasks with particular settings
+====================================================
+============ Range: 0200ff94 - 0200ff97 ============
+0200ff94 : killinfo.c:325
+0200ff97 : killinfo.c:325
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0200ff9c - 0200ffa3 ============
+0200ff9c : killinfo.c:325
+0200ffa3 : killinfo.c:325
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020101d8 - 020101df ============
+020101d8 : chain.inl:300
+020101df : chain.inl:300
+Size : 8
+
+Explanation:
+_POSIX_signals_Clear_signals:71 chain get when empty
+====================================================
+============ Range: 02010470 - 02010473 ============
+02010470 : pthreadkill.c:69
+02010473 : pthreadkill.c:69
+Size : 4
+
+Explanation:
+SIMPLE - psignal to running thread from ISR
+====================================================
+============ Range: 0201092c - 0201092f ============
+0201092c : sigtimedwait.c:42
+0201092f : sigtimedwait.c:42
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02010b18 - 02010b1b ============
+02010b18 : sigwait.c:43
+02010b1b : sigwait.c:43
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02010b20 - 02010b2b ============
+02010b20 : sigwait.c:43
+02010b2b : sigwait.c:44
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02010d8c - 02010d9b ============
+02010d8c : prwlockinit.c:61
+02010d9b : prwlockinit.c:68
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02010f34 - 02010f5f ============
+02010f34 : prwlocktimedrdlock.c:87
+02010f5f : prwlocktimedrdlock.c:89
+Size : 44
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02011010 - 0201103b ============
+02011010 : prwlocktimedwrlock.c:87
+0201103b : prwlocktimedwrlock.c:89
+Size : 44
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0201138c - 0201138f ============
+0201138c : semaphorecreatesupp.c:61
+0201138f : semaphorecreatesupp.c:61
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02011394 - 02011397 ============
+02011394 : semaphorecreatesupp.c:62
+02011397 : semaphorecreatesupp.c:62
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0201139c - 020113a3 ============
+0201139c : semaphorecreatesupp.c:62
+020113a3 : semaphorecreatesupp.c:62
+Size : 8
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02011634 - 0201163f ============
+02011634 : semdestroy.c:51
+0201163f : semdestroy.c:52
+Size : 12
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02011644 - 02011653 ============
+02011644 : semdestroy.c:52
+02011653 : semdestroy.c:52
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020116f0 - 020116f3 ============
+020116f0 : seminit.c:45
+020116f3 : seminit.c:45
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020116f8 - 02011707 ============
+020116f8 : seminit.c:45
+02011707 : seminit.c:45
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020118c0 - 020118c3 ============
+020118c0 : semtimedwait.c:57
+020118c3 : semtimedwait.c:57
+Size : 4
+
+Explanation:
+no explanation
+====================================================
+============ Range: 0201231c - 02012327 ============
+0201231c : timersettime.c:85
+02012327 : timersettime.c:85
+Size : 12
+
+Explanation:
+SIMPLE TEST - need to have it return previous value
+====================================================
+============ Range: 020123c8 - 020123df ============
+020123c8 : timersettime.c:129
+020123df : timersettime.c:130
+Size : 24
+
+Explanation:
+SIMPLE TEST - bad ID
+====================================================
+============ Range: 020123fc - 0201240b ============
+020123fc : timertsr.c:46
+0201240b : timertsr.c:46
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 02012484 - 02012493 ============
+02012484 : timerinserthelper.c:45
+02012493 : timerinserthelper.c:45
+Size : 16
+
+Explanation:
+no explanation
+====================================================
+============ Range: 020124c8 - 020124ff ============
+020124c8 : getitimer.c:25
+020124ff : setitimer.c:34
+Size : 56
+
+Explanation:
+TEST SIMPLE - (very) stub implementations. Add test as placeholder.
+====================================================

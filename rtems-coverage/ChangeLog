@@ -1,5 +1,9 @@
 2009-03-27	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* ERC32-Status: New file.
+
+2009-03-27	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt, VERSIONS-COVERAGE: Update so there are no unused
 	explanations. This is a great starting point.
 
