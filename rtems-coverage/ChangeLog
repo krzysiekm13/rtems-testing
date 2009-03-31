@@ -1,3 +1,7 @@
+2009-03-31	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* CoverageReaderSkyeye.cc: Get return status.
+
 2009-03-27	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* ERC32-Status, VERSIONS-COVERAGE: New baseline which is based upon

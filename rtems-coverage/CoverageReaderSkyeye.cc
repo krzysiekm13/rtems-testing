@@ -68,7 +68,7 @@ namespace Coverage {
     length      = header.prof_end - header.prof_start;
     
     for ( i=0 ; i<length ; i += 8 ) {
-      fread( &cover, sizeof(uint8_t), 1, coverageFile );
+      status = fread( &cover, sizeof(uint8_t), 1, coverageFile );
       if ( status != 1 ) {
         fprintf(
 	  stderr,
