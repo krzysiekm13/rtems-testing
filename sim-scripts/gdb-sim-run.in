@@ -136,6 +136,9 @@ fi
 
 test ${verbose} = "yes" && echo Using ${runBSP}
 
+type ${runBSP}
+check_status $? "Path appears to be broken (cannot find ${runBSP})"
+
 ## These are faults any BSP may generate.  They are common to RTEMS.
 checkGenericExits()
 {

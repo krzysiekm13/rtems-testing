@@ -1,3 +1,7 @@
+2009-04-01	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* gdb-sim-run.in, gdb-sim.in: Verify runBSP program is in PATH.
+
 2009-03-23	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* rtl22xx.in: Add coverage enable to rtl22xx.

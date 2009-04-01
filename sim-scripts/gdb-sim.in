@@ -34,6 +34,9 @@ if [ X${GDB} = X ] ; then
   exit 1
 fi
 
+type ${runBSP}
+check_status $? "Path appears to be broken (cannot find ${runBSP})"
+
 test_exit()
 {
   exit_code=$1
