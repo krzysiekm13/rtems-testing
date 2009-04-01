@@ -1,0 +1,5 @@
+2009-04-01	Joel Sherrill <joel.sherrill@rtems.org>
+
+	* boards/rtems-mips-jmr3904.exp: Fix typo.
+	* ChangeLog: New file.
+
