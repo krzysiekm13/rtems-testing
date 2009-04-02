@@ -41,6 +41,9 @@ NM=${1}-nm
 type ${NM}
 check_fatal $? "Cannot find ${NM} on PATH"
 
+cd ${BASEDIR}/${BSP}-tests/
+check_fatal $? "cd ${BSP}-tests"
+
 ${NM} -g -n hello.exe >hello.num
 
 # Basic validity checking 
