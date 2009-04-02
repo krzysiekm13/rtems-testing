@@ -60,6 +60,15 @@ warn() {
     [ "$1" ] && prerr $*
 }
 
+check_status()
+{
+  if [ $1 -ne 0 ] ; then
+    shift 
+    echo "FAILED: " "$*" >&2
+    test_exit 1
+  fi
+}
+
 if [ $# -eq 0 ] ; then
   echo "No arguments .. no executable specified"
   exit 1 

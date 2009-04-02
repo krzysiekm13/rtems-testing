@@ -1,3 +1,7 @@
+2009-04-02	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* gdb-sim-run.in, gdb-sim.in: Add check_status.
+
 2009-04-01	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gdb-sim-run.in, gdb-sim.in: Verify runBSP program is in PATH.
