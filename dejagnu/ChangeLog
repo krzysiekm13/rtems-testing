@@ -1,3 +1,14 @@
+2009-04-03	Joel Sherrill <joel.sherrill@rtems.org>
+
+	* boards/rtems-arm-edb7312.exp, boards/rtems-arm-nosim.exp,
+	boards/rtems-avr-avrtest.exp, boards/rtems-avr-nosim.exp,
+	boards/rtems-bfin-nosim.exp, boards/rtems-h8300-h8sim.exp,
+	boards/rtems-i386-qemu.exp, boards/rtems-m32c-m32csim.exp,
+	boards/rtems-m32r-m32rsim.exp, boards/rtems-m68k-nosim.exp,
+	boards/rtems-mips-jmr3904.exp, boards/rtems-powerpc-psim.exp,
+	boards/rtems-sh-simsh1.exp, boards/rtems-sparc-sis.exp: Add
+	sim,options
+
 2009-04-01	Joel Sherrill <joel.sherrill@rtems.org>
 
 	* boards/rtems-mips-jmr3904.exp: Fix typo.
