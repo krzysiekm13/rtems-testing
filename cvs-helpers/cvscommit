@@ -1,0 +1,110 @@
+#! /bin/sh
+#
+#   Do a cvs diff from the current directory and put the file names
+#   in suitable format for use in a ChangeLog.
+#
+#   TODO:  No outstanding isses.
+#
+#  $Id$
+#
+
+
+progname=${0##*/}
+usage()
+{
+  echo "$progname [-dlq] [-e editor] [-u user] [-m message] [-M msgfile]"
+  echo "options:"
+  echo "  -d         .. debug, don't delete change files";
+  echo "  -q         .. quiet, don't display directories";
+  echo "  -l         .. local directory only";
+  echo "  -m message .. text to use for modified files";
+  echo "  -M msgfile .. file containing to use for modified files";
+  echo "  -u user    .. use user instead of LOGNAME";
+  echo "  -U user    .. use explicit user info -- not from passwd";
+  echo "  -P PR      .. PR info";
+  echo
+  exit 1
+}
+
+editor="vim"
+changefile="changes-xxx"
+rem_changes="yes"
+quiet="no"
+user=$LOGNAME
+mkchoptions="-n"
+message=
+localdir="no"
+while getopts dlqe:M:m:u:U:p: OPT
+do
+  case "$OPT" in 
+    d) rem_changes="yes" ;;
+    e) editor=$OPTARG ;;
+    l) localdir="yes" ;;
+    m) message=$OPTARG ;; 
+    M) message=`cat $OPTARG` ;; 
+    q) quiet="yes" ;;
+    u) user=$OPTARG ; mkchoptions=${mkchoptions}" -u ${user}" ;;
+    U) userArg="-U" userInfo=$OPTARG ;;
+    p) PrInfo=$OPTARG ; mkchoptions=${mkchoptions}" -p ${PrInfo}" ;;
+    *) usage ;;
+  esac
+done
+
+export message
+let $((shiftcount = $OPTIND - 1))
+shift #shiftcount
+
+args=$*
+
+# done parsing arguments, now work 
+if [ "X${CVSROOT}" = "X" ] ; then
+  CVS=cvs
+else
+  CVS="cvs -d ${CVSROOT}"
+fi
+
+CVS="${CVS}"
+
+if [ ${localdir} = "yes" ] ; then
+  subdirs="."
+else
+  subdirs="* ."
+fi
+
+commit()
+{
+  ${CVS} up ChangeLog
+  if [ $? -eq 0 ] ; then
+    prepend ${changefile}
+    cvs commit -F ${changefile}
+  fi
+}
+
+for ddir in ${subdirs} ; do
+  test ${ddir} = "CVS" && continue
+  test ${ddir} = "install" && continue
+  if [ -d $ddir ]; then
+    test -f ${ddir}/ChangeLog || continue
+    cd $ddir >/dev/null
+    mkChangeLogList ${mkchoptions} ${userArg} "${userInfo}" \
+          -m "${message}" >${changefile}
+    test $? -ne 0 && continue 
+    while test -s ${changefile} ; do
+      fullpath=`pwd`
+      test "$quiet" = "no" && echo "** directory: $fullpath **"
+      cat ${changefile}
+      response="n"
+      read -p "Commit changes? [y/n/e(edit)]: " response
+      case ${response} in
+        y) commit; break ;;
+        n) break ;;
+        e) ${editor} ${changefile} ;;
+        *) echo "*** enter y,n, or e ***" ;;
+      esac
+    done
+    test $rem_changes = "yes" && rm -rf $changefile
+    cd - >/dev/null
+  fi
+done
+
+

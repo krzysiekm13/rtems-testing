@@ -1,0 +1,119 @@
+#! /bin/sh
+#
+#   Do a cvs diff from the current directory and put the file names
+#   in suitable format for use in a ChangeLog.
+#
+#   TODO:  No outstanding isses.
+#
+#  $Id$
+#
+
+mklog_()
+{
+  cat >XXX
+  if test `cat XXX | wc -l` -ne 0 ; then
+    (cat XXX | cut -d':' -f2 | \
+    sed -e '$!s/$/,/' -e '$s/$/:/' ; \
+    test $? -ne 0 || echo $* )| \
+    xargs -s80 | sed -e '1s/^/	\* /' -e '2,$s/^/	/' 
+  fi
+  rm -f XXX
+}
+
+progname=${0##*/}
+usage()
+{
+  echo "$progname [-ln] [-u user] [-U user_information] [-m message] [-M msgfile]"
+  exit 1
+}
+
+print_name="no"
+user=$LOGNAME
+cvs_local_arg=""
+basedir=.
+while getopts d:lnM:m:p:u:U: OPT
+do
+  case "$OPT" in 
+    d) basedir=$OPTARG ;;
+    l) cvs_local_arg="-l" ;;
+    n) print_name="yes" ;;
+    p) prnum=$OPTARG ;;
+    m) message=$OPTARG ;; 
+    M) message=`cat $OPTARG` ;; 
+    u) user=$OPTARG ; print_name="yes" ;;
+    U) user_name=$OPTARG ; print_name="yes" ;;
+    *) usage ;;
+  esac
+done
+
+let $((shiftcount = $OPTIND - 1))
+shift #shiftcount
+
+args=$*
+
+cvsarg="${cvs_local_arg} ${basedir}"
+
+# done parsing arguments, now work 
+if [ "X${CVSROOT}" = "X" ] ; then
+  CVS=cvs
+else
+  CVS="cvs -d ${CVSROOT}"
+fi
+
+CVS="${CVS}"
+
+if [ ! -r ChangeLog ] ; then
+  ( echo "There is no ChangeLog in this directory." ;
+    echo "Where are you putting the entry?" )>/dev/stderr
+  exit 1
+fi
+
+files_modded=`${CVS} diff ${cvsarg} 2>&1 | grep ^Index | wc -l`
+files_added=`${CVS} diff ${cvsarg} 2>&1 | grep "is a new entry, no " | wc -l`
+files_deleted=`${CVS} diff ${cvsarg} 2>&1 | grep " was removed, no " | wc -l`
+files_changed=`expr ${files_modded} + ${files_added} + ${files_deleted}`
+if test ${files_changed} -eq 0 ; then
+  exit 0
+fi
+
+if test ${print_name} = "yes" ; then
+  if test "X${user_name}" = "X" ; then
+    if test "X${user}" = "X" ; then
+      echo "User not specified (LOGNAME not set or no -u option)"
+      usage
+    fi
+
+    user_name=`grep ^${user} /etc/passwd | cut -d':' -f5 | cut -d',' -f1`
+    if test "X${user_name}" = "X" ; then
+      echo "User information not set"
+      usage
+    fi
+  fi
+
+  date=`date +%Y-%m-%d`
+  echo "${date}	${user_name}"
+  echo
+fi
+
+if test "X${prnum}" != "X" ; then
+  echo "	PR ${prnum}"
+fi
+
+# Generate list of modified files
+${CVS} diff ${cvsarg} 2>/dev/null | grep ^Index | mklog_ ${message}
+
+# Generate list of deleted files
+test ${files_added} -gt 1 && plural=s
+${CVS} diff ${cvsarg} 2>&1 | grep "is a new entry, no comparison" | \
+  sed -e 's/^.*: //' -e 's/ is a .*$//' | mklog_ | \
+  sed -e "\$,\$s/:\$/: New file${plural}./"
+
+# Generate list of removed files
+${CVS} diff ${cvsarg} 2>&1 | grep "was removed, no comparison" | \
+  sed -e 's/^.*: //' -e 's/ was removed, no comparison.*$//' | mklog_ | \
+  sed -e '$,$s/:$/: Removed./'
+echo
+
+
+rm -f XXX
+exit 0

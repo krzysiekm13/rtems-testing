@@ -1,0 +1,21 @@
+#! /bin/sh
+
+if [ ! -r ChangeLog ] ; then
+  echo ChangeLog does not exist
+  exit 1
+fi
+
+if [ $# -ne 1 ] ; then
+  echo no file to prepend to ChangeLog specified
+  exit 1
+fi
+
+if [ ! -r $1 ] ; then
+  echo $1 does not exist so can not be prepended to ChangeLog
+  exit 1
+fi
+
+mv ChangeLog XXX
+cat $1 XXX > ChangeLog
+rm -f XXX
+exit 0

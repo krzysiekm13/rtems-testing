@@ -1,3 +1,8 @@
+2009-04-06	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* cvs-helpers/cvscommit, cvs-helpers/mkChangeLogList,
+	cvs-helpers/prepend: New files.
+
 2009-03-25	Joel Sherrill <joel.sherrill@rtems.org>
 
 	* gcc/test_driver: Do not reset start time.
