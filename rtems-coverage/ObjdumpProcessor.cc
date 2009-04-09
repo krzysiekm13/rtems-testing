@@ -158,7 +158,7 @@ namespace Coverage {
     fclose( objdumpFile );
 
     // Remove temporary file
-    system( "rm -f objdump.tmp" );
+    (void) system( "rm -f objdump.tmp" );
     return true;
   }
 

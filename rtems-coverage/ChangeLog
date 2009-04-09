@@ -1,3 +1,7 @@
+2009-04-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ObjdumpProcessor.cc: Remove warning.
+
 2009-04-03	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* .cvsignore: New file.
