@@ -1,3 +1,7 @@
+2009-04-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Makefile, cvs-helpers/Makefile: New files.
+
 2009-04-06	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* cvs-helpers/cvscommit, cvs-helpers/mkChangeLogList,
