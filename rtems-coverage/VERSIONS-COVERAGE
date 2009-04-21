@@ -3,8 +3,8 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 
-BSP=edb7312
-#BSP=erc32
+#BSP=edb7312
+BSP=erc32
 
 # For most BSPs, there is a script with the same name as the BSP.
 RUNNER=${BSP}
