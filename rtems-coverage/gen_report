@@ -61,13 +61,17 @@ if [ X${tlow} = X -o X${thigh} = X ] ; then
   exit 1
 fi
 
-rm -f merged.cov report 
-${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report \
- -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
- -T ${TARGET} -e hello.exe -m merged.cov *.cov
+rm -f merged.cov report.txt
 
-echo "====== 15 Largest Range Sizes ======"
-grep ^Size report | cut -d':' -f2 | sort -n | uniq -c | tail -15
-echo "====================================="
+( ${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report.txt \
+    -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
+    -T ${TARGET} -e hello.exe -m merged.cov *.cov; \
+  echo "====== 15 Largest Range Sizes ======" ; \
+  grep ^Size report | cut -d':' -f2 | sort -n | uniq -c | tail -15 ; 
+  echo "=====================================" ) >summary.txt
+
+cat summary.txt
+
+tar cjf ${BSP}-`date +%Y%m%d-%H%M`.tar.bz2 summary.txt report.txt annotated.dmp
 
 exit 0

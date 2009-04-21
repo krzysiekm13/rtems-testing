@@ -260,7 +260,7 @@ void WriteCoverageReport()
   /*
    *  Let the user know how many cases there were
    */
-  fprintf( stderr, "%d uncovered ranges found\n", cases );
+  printf( "%d uncovered ranges found\n", cases );
 }
 
 #define PrintableString(_s) \
@@ -480,10 +480,10 @@ int main(
 
     percentage = (double) notExecuted;
     percentage /= (double) (highAddress - lowAddress);
-    fprintf( stderr, "Bytes Analyzed          : %d\n", highAddress - lowAddress );
-    fprintf( stderr, "Bytes Not Executed      : %d\n", notExecuted );
-    fprintf( stderr, "Percentage Executed     : %5.4g\n", 1.00 - percentage  );
-    fprintf( stderr, "Percentage Not Executed : %5.4g\n", percentage  );
+    printf( "Bytes Analyzed          : %d\n", highAddress - lowAddress );
+    printf( "Bytes Not Executed      : %d\n", notExecuted );
+    printf( "Percentage Executed     : %5.4g\n", 1.00 - percentage  );
+    printf( "Percentage Not Executed : %5.4g\n", percentage  );
   }
 
   return 0;
