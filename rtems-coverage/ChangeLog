@@ -1,5 +1,9 @@
 2009-04-21	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* gen_report: Create tarball from dated subdirectory.
+
+2009-04-21	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* covmerge.cc: Direct output to stdout, not stderr.
 	* do_coverage: Starting timestamp was set twice.
 	* gen_report: Capture output files into a tarball.
