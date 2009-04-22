@@ -1,5 +1,9 @@
 attr.c:31
 TEST SIMPLE - call rtems_interrupt_level_attribute
+ratemontimeout.c:61
+TEST SIMPLE - period times out but thread is blocked on another period?
+taskinitusers.c:68
+TEST SIMPLE - Have multiple Classic API initialization tasks
 taskinitusers.c:91
 INTERNAL ERROR - failed rtems_task_start (override a confdefs parameter)
 ratemonperiod.c:310
@@ -46,6 +50,8 @@ eventsurrender.c:82
 INTERRUPT_SYNC - send event to thread running from TSR?
 thread.inl:230
 sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
+thread.inl:47
+TEST SIMPLE - (sys state trickery) shutdown while in shutdown statek
 regionextend.c:75
 SIMPLE - possibly dead code from switch, change to if's
 priority.inl:35
@@ -82,3 +88,5 @@ killinfo.c:233
 TEST SIMPLE - signals to blocked/ready tasks with particular settings
 getitimer.c:25
 TEST SIMPLE - (very) stub implementations. Add test as placeholder.
+workspace.c:60
+TEST SIMPLE - (requires conf trickery) too little wkspace to init heap
