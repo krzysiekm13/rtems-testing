@@ -67,7 +67,7 @@ rm -f merged.cov report.txt
     -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
     -T ${TARGET} -e hello.exe -m merged.cov *.cov; \
   echo "====== 15 Largest Range Sizes ======" ; \
-  grep ^Size report | cut -d':' -f2 | sort -n | uniq -c | tail -15 ; 
+  grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | tail -15 ; 
   echo "=====================================" ) >summary.txt
 
 cat summary.txt
