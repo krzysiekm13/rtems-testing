@@ -20,9 +20,10 @@ fi
 progname=${0##*/}        # fast basename hack for ksh, bash
 
 USAGE=\
-"usage: $progname [ -opts ] test [ test ... ]
+"usage: $progname [ -opts ]
 	-v	  -- verbose
         -A        -- Execute all steps
+        -B BSP    -- Specify BSP to test
         -m        -- Update and build covMerge
         -u        -- Do CVS update on RTEMS
         -c        -- Configure RTEMS
@@ -70,12 +71,14 @@ do_rtems_build="no"
 do_copy_tests="no"
 do_run_tests="no"
 do_report="no"
+BSP="not_set"
 
-while getopts vmAucbCrR OPT
+while getopts vB:mAucbCrR OPT
 do
     case "$OPT" in
         v) verbose="yes";;
         A) do_all="yes";;
+        B) BSP="${OPTARG}";;
         m) do_covmerge="yes";;
         u) do_rtems_update="yes";;
         c) do_rtems_configure="yes";;
@@ -107,8 +110,34 @@ if [ ${do_rtems_update} = "yes" -o \
   do_clean="yes"
 fi
 
+# allow bsp override 
+if [ ${BSP} == "not_set" ] ; then
+  fatal "No BSP selected" 
+fi
+
+# For most BSPs, there is a script with the same name as the BSP.
+RUNNER=${BSP}
+
+case ${BSP} in
+  erc32|leon2|leon3)
+    CPU=sparc
+    COVERAGE_FORMAT=TSIM
+    ;;
+  edb7312|rtl22xx)
+    CPU=arm
+    COVERAGE_FORMAT=Skyeye
+    ;;
+  *)
+    fatal "Unsupported BSP (${BSP}) for coverage analysis."
+    ;;
+esac
+
+TARGET=${CPU}-rtems${RTEMS_VERSION}
+
 ##### VERBOSE
 if [ ${verbose} = "yes" ] ; then
+  echo "BSP:                " ${bsp}
+  echo "Target:             " ${TARGET}
   echo "do_all:             " ${do_all}
   echo "do_covmerge         " ${do_covmerge}
   echo "do_rtems_update:    " ${do_rtems_update}
@@ -263,7 +292,7 @@ if [ ${do_report} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  ${COVBASE}/gen_report ${TARGET}
+  ${COVBASE}/gen_report ${TARGET} ${BSP} ${COVERAGE_FORMAT}
 else
   echo "Skipping Generating report..."
 fi

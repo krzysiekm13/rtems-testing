@@ -2,6 +2,8 @@
 #
 #  Script to generate coverage report
 #
+#  Usage: TARGET BSP COVERAGE_FORMAT
+#
 #  $Id$
 #
 
@@ -20,10 +22,14 @@ fi
 
 progname=${0##*/}        # fast basename hack for ksh, bash
 
-if [ $# -ne 1 ] ; then
-  echo Usage: ${0} TARGET
+if [ $# -ne 3 ] ; then
+  echo Usage: ${0} TARGET BSP COVERAGE_FORMAT
   exit 1
 fi
+
+TARGET=${1}
+BSP=${2}
+COVERAGE_FORMAT=${3}
 
 #
 #  Checks the status returned by executables and exits if it is non-zero.
@@ -37,7 +43,7 @@ check_fatal()
   fi
 }
 
-NM=${1}-nm
+NM=${TARGET}-nm
 type ${NM}
 check_fatal $? "Cannot find ${NM} on PATH"
 

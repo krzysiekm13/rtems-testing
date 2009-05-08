@@ -1,3 +1,8 @@
+2009-05-08	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* VERSIONS-COVERAGE, do_coverage, gen_report: Pass in BSP on command
+	line.
+
 2009-05-04	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gen_report: Correct name of report.
