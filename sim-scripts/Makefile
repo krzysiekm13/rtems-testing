@@ -7,7 +7,7 @@ GDBSIM_SCRIPTS=h8sim h8sim-gdb jmr3904 jmr3904-gdb \
   m32csim m32csim-gdb m32rsim m32rsim-gdb psim psim-gdb \
   sis sis-gdb simsh simsh-gdb
 SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
-  rtl22xx smdk2410
+  rtl22xx smdk2410 leon2-skyeye
 TSIM_SCRIPTS=erc32 leon2 leon3
 QEMU_SCRIPTS=qemu-rtems
 GENERATED_SCRIPTS=${GDBSIM_SCRIPTS} ${SKYEYE_SCRIPTS} \
@@ -56,6 +56,9 @@ smdk2410: gdb-sim-run.in smdk2410.in
 
 ezkit533: gdb-sim-run.in ezkit533.in
 	./mkrun no Blackfin bfin ezkit533
+
+leon2-skyeye: gdb-sim-run.in leon2-skyeye.in
+	./mkrun no SPARC sparc leon2-skyeye
 
 ### TSIM Simulator BSPs
 erc32: gdb-sim-run.in erc32.in

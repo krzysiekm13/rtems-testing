@@ -1,3 +1,9 @@
+2009-05-12	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* .cvsignore, Makefile: Add first cut at script to run leon2 BSP on
+	Skyeye.
+	* leon2-skyeye.in: New file.
+
 2009-04-02	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gdb-sim-run.in, gdb-sim.in: Add check_status.
