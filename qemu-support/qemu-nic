@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Run qemu with network interface if root.
+#
+#
+#  $Id$
+#
+# TODO:
+#    -s for gdb from command line
+
+QEMUDIR=/home/joel
+
+# Model - isapc for ISA PC or pc for PCI
+
+# PCI NIC model options that work with RTEMS:
+#   i82558er, i82551, i82557b, rtl8139
+# ISA NIC model: ne2k_isa
+
+MODEL="-M pc"
+#MODEL="-M isapc"
+NIC=i82557b
+
+GRAPHICS="-serial stdio"
+#GRAPHICS="${GRAPHICS} --nographic --monitor null"
+ARGS="${MODEL} -m 8 \
+    -boot a -fda ${QEMUDIR}/qemu/pc386_fda \
+    -hda fat:${QEMUDIR}/qemu/hd  --no-reboot"
+if [ $EUID -eq 0 ] ; then
+
+  if [ ! -r /etc/qemu-ifup ] ; then
+    echo /etc/qemu-ifup not found
+    exit 1
+  fi
+
+  /usr/local/bin/qemu ${ARGS} ${GRAPHICS} \
+    -net nic,model=${NIC} \
+    -net nic,macaddr=00:80:7F:22:61:77 \
+    -net tap,script=/etc/qemu-ifup
+else
+  qemu ${ARGS} ${GRAPHICS}
+fi

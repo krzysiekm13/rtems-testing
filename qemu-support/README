@@ -11,4 +11,39 @@ NOTE: Joel has two other things to add from other machines.
 
 pc386_fda_slow - pauses before booting test.exe so you can attach gdb. 
 
-qemu-nic - run with network support configured
+qemu-nic - run with network support configured.  EDIT THIS AS NEEDED
+
+qemu-ifup - Needs to be in /etc
+
+qemu-ifdown - Needs to be in /etc
+
+Networking Instructions
+=======================
+
+To run networking programs on qemu, you have to do some system setup.
+
+cp qemu-ifup qemu-ifdown /etc
+
+After each reboot, you will need to load the tap/tunneling interface.
+
+/sbin/modprobe tun
+
+You have to run the network programs as root (yes it sucks).  The script
+qemu-nic can do this.  Edit it as needed.  If you use COM1 as console,
+the script may need editing for that.
+
+As you:
+  cd network-demos
+  cp networkconfig-qemu.h networkconfig.h
+  RTEMS_MAKEFILE_PATH=${INSTALLPATH}/i386-rtems4.10/pc386 make clean all
+  cp TESTNAME/o-optimize/*.exe ~/qemu/hd/test.exe
+
+This should compile the network demos to use qemu with the Intel 
+EtherExpress Pro NIC driver in the RTEMS tree.  And it copies one
+of them into the directory we autoboot test.exe from.
+
+As root:
+  qemu-nic
+
+This should bring up qemu and put the NIC interface on 10.0.2.5.
+

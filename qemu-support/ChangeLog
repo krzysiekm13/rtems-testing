@@ -1,3 +1,8 @@
+2009-05-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* README: Add first cut at NIC instructions.
+	* qemu-ifdown, qemu-ifup, qemu-nic: New files.
+
 2009-05-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ChangeLog, README: New files.
