@@ -1,3 +1,7 @@
+2009-05-15	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemu-nic: Do not invoke qemu from /usr/local/bin.
+
 2009-05-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* pc386_fda-slow.bz2: New file.
