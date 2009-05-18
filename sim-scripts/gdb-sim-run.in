@@ -107,7 +107,11 @@ if [ ! -d ${logdir} ] ; then
 fi
 
 ### Set BSP defaults.  If BSP does not have default, it will override
-bspRunFatal="no"
+if [ ${coverage} = "yes" ] ; then
+  bspRunFatal="yes"
+else
+  bspRunFatal="no"
+fi
 bspGeneratesDeviceTree="no"
 bspSupportsSystemVIPC="no"
 bspUsesGDBSimulator="yes"

@@ -1,3 +1,7 @@
+2009-05-17	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in: When doing coverage, run fatal error tests.
+
 2009-05-12	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* .cvsignore, Makefile: Add first cut at script to run leon2 BSP on
