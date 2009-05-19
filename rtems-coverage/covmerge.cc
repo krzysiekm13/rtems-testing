@@ -107,6 +107,7 @@ void usage()
   );
 }
 
+int UncoveredCases = 0;
 /*
  *  Find source lines for addresses
  */
@@ -115,7 +116,6 @@ void FindSourceForAddresses(void)
   FILE *tmpfile;
   uint32_t a, la, ha;
   std::list<Coverage::CoverageRange>::iterator it;
-  int cases = 0;
 
   /*
    *  Find all the unexecuted addresses and add them to the range.
@@ -126,7 +126,7 @@ void FindSourceForAddresses(void)
       for (ha=a+1 ; ha<=highAddress && !CoverageMap->wasExecuted(ha) ; ha++ )
         ;
 
-      cases++;
+      UncoveredCases++;
       Ranges->add( la, ha-1 );
       a = ha;
     }
@@ -271,7 +271,6 @@ void WriteCoverageReport()
 {
   FILE *report;
   std::list<Coverage::CoverageRange>::iterator it;
-  int cases = 0;
 
   /*
    *  Now begin to write the real report
@@ -316,7 +315,7 @@ void WriteCoverageReport()
   /*
    *  Let the user know how many cases there were
    */
-  printf( "%d uncovered ranges found\n", cases );
+  printf( "%d uncovered ranges found\n", UncoveredCases );
 }
 
 /*
