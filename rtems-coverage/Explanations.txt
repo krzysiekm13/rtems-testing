@@ -64,6 +64,9 @@ need a case for a timeout
 corespinlockwait.c:76
 TEST SIMPLE
 need a case for a timeout
+coretodmsecstoticks.c:23
+TEST SIMPLE
+Need to disable inline/macro and test body
 dpmemcreate.c:87
 TEST SIMPLE
 need invalid address of return id
@@ -82,6 +85,15 @@ TEST SIMPLE
 regionextend.c:75
 SIMPLE
 possibly dead code from switch, change to if's
+mutexget.c:76
+TEST SIMPLE (if correct)
+mutex lock with auto initialization of mutex
+prwlocktimedwrlock.c:89
+TEST SIMPLE
+Need to deal with timeout cases (past and future)
+prwlocktimedrdlock.c:90
+TEST SIMPLE
+Need to deal with timeout cases (past and future)
 priority.inl:35
 TEST SIMPLE
 bad priority (pthreadcreate.c:118)
@@ -115,6 +127,9 @@ extract thread that isn't blocked on thread queue
 threadqextractpriority.c:64
 HARD
 extract thread that isn't blocked on thread queue
+threadinitialize.c:231
+TEST SIMPLE
+Add case with user extension which fails to allocate memory on create
 timersettime.c:85
 SIMPLE TEST
 need to have it return previous value
