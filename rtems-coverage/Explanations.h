@@ -22,6 +22,7 @@ namespace Coverage {
 
     std::string startingPoint;
     std::string explanation;
+    std::string classification;
     bool        found;
 
     Explanation() {found = false;}
@@ -58,7 +59,13 @@ namespace Coverage {
 
     /*!
      */
-    std::string lookup(
+    std::string lookupClassification(
+      std::string start
+    );
+
+    /*!
+     */
+    std::string lookupExplanation(
       std::string start
     );
 
@@ -70,7 +77,7 @@ namespace Coverage {
 
   protected:
 
-    bool NotFoundOccured;
+    bool NotFoundOccurred;
   };
 
 }

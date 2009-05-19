@@ -1,92 +1,138 @@
 attr.c:31
-TEST SIMPLE - call rtems_interrupt_level_attribute
+TEST SIMPLE
+call rtems_interrupt_level_attribute
 ratemontimeout.c:61
-TEST SIMPLE - period times out but thread is blocked on another period?
+TEST SIMPLE
+period times out but thread is blocked on another period?
 taskinitusers.c:68
-TEST SIMPLE - Have multiple Classic API initialization tasks
+TEST SIMPLE
+Have multiple Classic API initialization tasks
 taskinitusers.c:91
-INTERNAL ERROR - failed rtems_task_start (override a confdefs parameter)
+INTERNAL ERROR
+failed rtems_task_start (override a confdefs parameter)
 ratemonperiod.c:310
-INTERRUPT SYNC - period must expire while attempting to block
+INTERRUPT SYNC
+period must expire while attempting to block
 ratemontimeout.c:60
-TEST SIMPLE - violate visibility, call directly with bad Id
+TEST SIMPLE
+violate visibility, call directly with bad Id
 watchdog.inl:129
-INTERRUPT SYNC - period expires while blocking (ratemontimeout.c:66)
+INTERRUPT SYNC
+period expires while blocking (ratemontimeout.c:66)
 timerreset.c:60
-TEST SIMPLE - new error case
+TEST SIMPLE
+new error case
 timerserverfireafter.c:80
-INTERRUPT SYNC - timer must be inserted by an ISR while we are inserting it
+INTERRUPT SYNC
+timer must be inserted by an ISR while we are inserting it
 semcreate.c:152
-TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
+TEST SIMPLE
+need to create a semaphore that is RTEMS_PRIORITY_CEILING
 semcreate.c:162
-TEST SIMPLE - need to create a semaphore that is RTEMS_PRIORITY_CEILING
+TEST SIMPLE
+need to create a semaphore that is RTEMS_PRIORITY_CEILING
 coremutex.inl:171
-TEST SIMPLE - pri ceiling - acquire when pri = ceiling
+TEST SIMPLE
+pri ceiling, acquire when pri = ceiling
 semflush.c:82
-TEST SIMPLE - need to flush a NOT counting semaphore
+TEST SIMPLE
+need to flush a NOT counting semaphore
 regionresizesegment.c:83
-TEST SIMPLE - need a test (9 instructions)
+TEST SIMPLE
+need a test (9 instructions)
 debug.c:63
-TEST SIMPLE - need a test
+TEST SIMPLE
+need a test
 ioregisterdriver.c:71
-TEST SIMPLE - documented (not implemented) in sp40
+TEST SIMPLE
+documented (not implemented) in sp40
 ioregisterdriver.c:83
-TEST SIMPLE - if reachable
+TEST SIMPLE
+if reachable
 coremsgbroadcast.c:86
-TEST SIMPLE - Successful but no tasks waiting
+TEST SIMPLE
+Successful but no tasks waiting
 corespinlockrelease.c:59
-TEST SIMPLE - need a case for unlock when not holder
+TEST SIMPLE
+need a case for unlock when not holder
 corespinlockwait.c:67
-TEST SIMPLE - need a case for not willing to wait
+TEST SIMPLE
+need a case for not willing to wait
 corespinlockwait.c:75
-TEST SIMPLE - need a case for a timeout
+TEST SIMPLE
+need a case for a timeout
 corespinlockwait.c:76
-SAME AS ABOVE - corespinlockwait.c:75
+TEST SIMPLE
+need a case for a timeout
 dpmemcreate.c:87
-TEST SIMPLE - need invalid address of return id
+TEST SIMPLE
+need invalid address of return id
 timerfireafter.c:76
-INTERRUPT SYNC - timer must be inserted or state altered by ISR
+INTERRUPT SYNC
+timer must be inserted or state altered by ISR
 eventsurrender.c:82
-INTERRUPT_SYNC - send event to thread running from TSR?
+INTERRUPT_SYNC
+send event to thread running from TSR?
 thread.inl:230
+SHOULD BE COVERED
 sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 thread.inl:47
-TEST SIMPLE - (sys state trickery) shutdown while in shutdown statek
+TEST SIMPLE
+(sys state trickery) shutdown while in shutdown statek
 regionextend.c:75
-SIMPLE - possibly dead code from switch, change to if's
+SIMPLE
+possibly dead code from switch, change to if's
 priority.inl:35
-TEST SIMPLE - bad priority (pthreadcreate.c:118)
+TEST SIMPLE
+bad priority (pthreadcreate.c:118)
 pthreadcreate.c:130
-TEST SIMPLE - bad scheduling policy in switch
+TEST SIMPLE
+bad scheduling policy in switch
 pthreadsetschedparam.c:53
-SIMPLE - bad policy case
+SIMPLE
+bad policy case
 pthreadsetschedparam.c:70
-SIMPLE - SCHED_SPORADIC with bad replenish period
+SIMPLE
+SCHED_SPORADIC with bad replenish period
 pthreadinitthreads.c:85
-FATAL - pthread_create gives error (override a confdefs parameter)
+FATAL
+pthread_create gives error (override a confdefs parameter)
 chain.inl:300
+TEST SIMPLE
 _POSIX_signals_Clear_signals:71 chain get when empty
 pthreadkill.c:69
-SIMPLE - psignal to running thread from ISR
+SIMPLE
+psignal to running thread from ISR
 threadqenqueuepriority.c:139
-INTERRUPT SYNC - restart insertion search
+INTERRUPT SYNC
+restart insertion search
 threadqenqueuepriority.c:189
+TEST SIMPLE
 need sp41 test cases with priority semaphore
 threadqextractfifo.c:55
-HARD - extract thread that isn't blocked on thread queue
+HARD
+extract thread that isn't blocked on thread queue
 threadqextractpriority.c:64
-HARD - extract thread that isn't blocked on thread queue
+HARD
+extract thread that isn't blocked on thread queue
 timersettime.c:85
-SIMPLE TEST - need to have it return previous value
+SIMPLE TEST
+need to have it return previous value
 timersettime.c:129
-SIMPLE TEST - bad ID
+SIMPLE TEST
+bad ID
 objectgetnext.c:64
-TEST SIMPLE - there is no test at all
+TEST SIMPLE
+there is no test at all
 heapresizeblock.c:158
-TEST SIMPLE - looks like shrink block but so small the unused area gets freed
+TEST SIMPLE
+looks like shrink block but so small the unused area gets freed
 killinfo.c:233
-TEST SIMPLE - signals to blocked/ready tasks with particular settings
+TEST SIMPLE
+signals to blocked/ready tasks with particular settings
 getitimer.c:25
-TEST SIMPLE - (very) stub implementations. Add test as placeholder.
+TEST SIMPLE
+(very) stub implementations. Add test as placeholder.
 workspace.c:60
-TEST SIMPLE - (requires conf trickery) too little wkspace to init heap
+TEST SIMPLE
+(requires conf trickery) too little wkspace to init heap

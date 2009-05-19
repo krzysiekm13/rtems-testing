@@ -17,7 +17,7 @@ namespace Coverage {
 
   Explanations::Explanations()
   {
-    NotFoundOccured = false;
+    NotFoundOccurred = false;
   }
 
   Explanations::~Explanations()
@@ -28,44 +28,82 @@ namespace Coverage {
     const char *explanations
   )
   {
-    FILE *explain;
-    char buffer[512];
-    char *cStatus;
-    Explanation e;
+    FILE       *explain;
+    char        buffer[512];
+    char       *cStatus;
+    Explanation  e;
+    int          line = 1;
 
     if ( !explanations )
       return;
 
-    NotFoundOccured = false;
+    NotFoundOccurred = false;
     explain = fopen( explanations, "r" );
     if ( !explain ) {
-      fprintf( stderr, "Unable to open explanations file %s\n\n", explanations );
+      fprintf(
+        stderr,
+        "Unable to open explanations file %s\n\n",
+        explanations
+      );
       exit(-1);
     }
 
     while ( 1 ) {
+      // Read the starting line
       cStatus = fgets( buffer, 512, explain );
       if ( cStatus == NULL ) {
         break;
       }
       buffer[ strlen(buffer) - 1] = '\0';
 
+      // Have we already seen this one?
       if ( Set.find( buffer ) != Set.end() ) {
-        fprintf( stderr, "Duplicate explanation: %s\n", buffer );
+        fprintf(
+          stderr,
+          "File: %s, Line %d: Duplicate explanation: %s\n",
+          explanations,
+          line,
+          buffer
+        );
         exit( -1 );
       }
+
+      // Add the starting line and file
       e.startingPoint = std::string(buffer);
       e.found = false;
+      line++;
 
+      // Get the classification 
       cStatus = fgets( buffer, 512, explain );
       if ( cStatus == NULL ) {
-        fprintf( stderr, "Out of sync in explanations file %s\n", explanations );
+        fprintf(
+          stderr,
+          "File %s: Line %d: Out of sync at the classification\n",
+          explanations,
+          line
+        );
         exit( -1 );
       }
       buffer[ strlen(buffer) - 1] = '\0';
+      e.classification = buffer;
+      line++;
 
+      // Get the explanation 
+      cStatus = fgets( buffer, 512, explain );
+      if ( cStatus == NULL ) {
+        fprintf(
+          stderr,
+          "File %s: Line %d: Out of sync at the explanation\n",
+          explanations,
+          line
+        );
+        exit( -1 );
+      }
+      buffer[ strlen(buffer) - 1] = '\0';
       e.explanation = buffer;
+      line++;
 
+      // Add this to the Set of Explanations
       Set[ e.startingPoint ] = e;
     }
   }
@@ -92,13 +130,13 @@ namespace Coverage {
       std::string key = (*itr).first;
  
       if ( !e.found ) {
-        NotFoundOccured = true;
+        NotFoundOccurred = true;
         fprintf( notFoundFile,"%s\n%s\n", e.startingPoint.c_str(), e.explanation.c_str() );
       } 
     }
     fclose( notFoundFile );
 
-    if ( !NotFoundOccured ){
+    if ( !NotFoundOccurred ){
       if ( !unlink( fileName )) {
         fprintf( stderr, 
           "Warning: Unable to unlink %s\n\n", 
@@ -108,7 +146,16 @@ namespace Coverage {
     } 
   }
 
-  std::string Explanations::lookup(
+  std::string Explanations::lookupClassification(
+    std::string start
+  )
+  {
+    if ( Set.find( start ) == Set.end() )
+      return "no classification";
+    return Set[ start ].classification;
+  }
+
+  std::string Explanations::lookupExplanation(
     std::string start
   )
   {

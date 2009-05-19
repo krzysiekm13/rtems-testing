@@ -244,6 +244,8 @@ void WriteCoverageReport()
       "%08x : %s\n"
       "Size : %d\n"
       "\n"
+      "Classification: %s\n"
+      "\n"
       "Explanation:\n"
       "%s\n"
       "====================================================\n",
@@ -251,7 +253,8 @@ void WriteCoverageReport()
       it->lowAddress,  it->lowLine.c_str(),
       it->highAddress, it->highLine.c_str(),
       it->highAddress - it->lowAddress + 1,
-      Explanations->lookup( it->lowLine ).c_str()
+      Explanations->lookupClassification( it->lowLine ).c_str(),
+      Explanations->lookupExplanation( it->lowLine ).c_str()
     );
   }
 

@@ -1,3 +1,8 @@
+2009-05-19	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Explanations.cc, Explanations.h, Explanations.txt, covmerge.cc: Add
+	classication to explanations file format.
+
 2009-05-15	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* rtems-cvs-20090515.diff: New file. Adding vprintk.c resulted in
