@@ -43,6 +43,47 @@ check_fatal()
   fi
 }
 
+# Check that tests ended successfully
+check_endof()
+{
+  if [ -d log ] ; then
+    logdir=log/
+  else
+    logdir=
+  fi
+
+  someFails=no
+  while :
+  do
+    for f in `ls -1 ${logdir}* | grep -v info$`
+    do
+      case $f in
+        # we don't expect an "END OF" from these
+        *ppd*) ;;
+        *fatal*) ;;
+        *stackchk*) ;;
+        *)
+          grep "END OF" $f >/dev/null
+          if [ $? -ne 0 ] ; then
+            echo "WARNING - $f did not appear to complete execution"
+            someFails=yes
+          fi
+          ;;
+      esac
+    done
+
+    if [ X${1} = X ] ; then
+      break
+    fi
+    sleep $1
+    echo
+  done
+  if [ ${someFails} = yes ] ; then
+    echo "WARNING - Results may not be accurate"
+  fi
+}
+
+# Start real action
 NM=${TARGET}-nm
 type ${NM}
 check_fatal $? "Cannot find ${NM} on PATH"
@@ -69,7 +110,9 @@ fi
 
 rm -f merged.cov report.txt
 
-( ${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report.txt \
+( \
+  check_endof; \
+  ${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report.txt \
     -s sizes.txt \
     -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
     -T ${TARGET} -e hello.exe -m merged.cov *.cov; \

@@ -1,5 +1,9 @@
 2009-05-19	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* gen_report: Add end of test check.
+
+2009-05-19	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* covmerge.cc: Uncovered ranges was always 0.
 
 2009-05-19	Joel Sherrill <joel.sherrill@OARcorp.com>
