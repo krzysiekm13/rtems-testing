@@ -29,6 +29,7 @@ int verbose = 0;
 Coverage::CoverageFormats_t coverageFormat;
 char *mergedCoverageFile = NULL;
 char *coverageReportFile = NULL;
+char *sizeReportFile = NULL;
 uint32_t lowAddress  = 0xffffffff;
 uint32_t highAddress = 0xffffffff;
 
@@ -96,6 +97,7 @@ void usage()
     "  -f format        - coverage files are in <format> (TSIM or Skyeye)\n"
     "  -m FILE          - optional merged coverage file to write\n"
     "  -r REPORT        - optional coverage report to write\n"
+    "  -s REPORT        - optional size report to write\n"
     "  -T TARGET        - target name\n"
     "  -e EXECUTABLE    - name of executable to get symbols from\n"
     "  -E EXPLANATIONS  - name of file with explanations\n"
@@ -106,12 +108,10 @@ void usage()
 }
 
 /*
- *  Write coverage report
+ *  Find source lines for addresses
  */
-
-void WriteCoverageReport()
+void FindSourceForAddresses(void)
 {
-  FILE *report;
   FILE *tmpfile;
   uint32_t a, la, ha;
   std::list<Coverage::CoverageRange>::iterator it;
@@ -218,8 +218,61 @@ void WriteCoverageReport()
   fclose( tmpfile );
 
   // system( "rm -f ranges01.tmp" );
+  // system( "rm -f ranges.tmp" );
+
+  /*
+   *  Go back over the ranges, read the addr2line output, and correlate it.
+   */
+
+  if ( verbose )
+    fprintf( stderr, "Merging addr2line output into range\n" );
+
+  tmpfile = fopen( "ranges01.tmp", "r" );
+  if ( !tmpfile ) {
+    fprintf( stderr, "Unable to open %s\n\n", "ranges01.tmp" );
+    exit(-1);
+  }
+
+  for (it =  Ranges->Set.begin() ;
+       it != Ranges->Set.end() ;
+       it++ ) {
+    char buffer[512];
+    char *cStatus;
+
+    cStatus = fgets( buffer, 512, tmpfile );
+    if ( cStatus == NULL ) {
+      fprintf( stderr, "Out of sync in range vs addr2line output\n" );
+      exit( -1 );
+    }
+    buffer[ strlen(buffer) - 1] = '\0';
+
+    it->lowLine = std::string( buffer );
+
+    cStatus = fgets( buffer, 512, tmpfile );
+    if ( cStatus == NULL ) {
+      fprintf( stderr, "Out of sync in range vs addr2line output\n" );
+      exit( -1 );
+    }
+    buffer[ strlen(buffer) - 1] = '\0';
+
+    it->highLine = std::string( buffer );
+  }
+  fclose( tmpfile );
+
+  // system( "rm -f ranges01.tmp" );
 
   
+}
+
+/*
+ *  Write coverage report
+ */
+void WriteCoverageReport()
+{
+  FILE *report;
+  std::list<Coverage::CoverageRange>::iterator it;
+  int cases = 0;
+
   /*
    *  Now begin to write the real report
    */
@@ -266,6 +319,43 @@ void WriteCoverageReport()
   printf( "%d uncovered ranges found\n", cases );
 }
 
+/*
+ *  Write size report
+ */
+void WriteSizeReport(void)
+{
+  FILE *report;
+  std::list<Coverage::CoverageRange>::iterator it;
+
+  /*
+   *  Now begin to write the real report
+   */
+  report = fopen( sizeReportFile, "w" );
+
+  if ( !report ) {
+    fprintf( stderr, "Unable to open %s\n\n", sizeReportFile );
+    usage();
+    exit(-1);
+  }
+
+  if ( verbose )
+    fprintf( stderr, "Writing Report\n" );
+
+  for (it =  Ranges->Set.begin() ;
+       it != Ranges->Set.end() ;
+       it++ ) {
+    fprintf(
+      report,
+      "%s\t%d\n",
+      it->lowLine.c_str(),
+      it->highAddress - it->lowAddress + 1
+    );
+  }
+
+  fclose( report );
+
+}
+
 #define PrintableString(_s) \
        ((!(_s)) ? "NOT SET" : (_s))
 
@@ -280,13 +370,14 @@ int main(
 
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "a:e:E:f:h:l:m:r:T:v")) != -1) {
+  while ((opt = getopt(argc, argv, "a:e:E:f:h:l:m:r:s:T:v")) != -1) {
     switch (opt) {
       case 'T': target             = optarg;  break;
       case 'e': executable         = optarg;  break;
       case 'E': explanations       = optarg;  break;
       case 'm': mergedCoverageFile = optarg;  break;
       case 'r': coverageReportFile = optarg;  break;
+      case 's': sizeReportFile     = optarg;  break;
       case 'v': verbose            = 1;       break;
       case 'f':
         coverageFormat = Coverage::CoverageFormatToEnum(optarg);
@@ -444,7 +535,14 @@ int main(
   }
 
   /*
-   *  Display of ranges not executed
+   *  If we are generating a report which needs the address/source
+   *  information, then we need to generate it.
+   */ 
+  if ( coverageReportFile || sizeReportFile)
+    FindSourceForAddresses();
+
+  /*
+   *  Report of ranges not executed
    */ 
   if ( coverageReportFile ) {
     if ( verbose )
@@ -452,6 +550,18 @@ int main(
     WriteCoverageReport();
   }
 
+  /*
+   *  Simple formatted report of size of ranges 
+   */ 
+  if ( sizeReportFile ) {
+    if ( verbose )
+      fprintf( stderr, "Writing size report (%s)\n", sizeReportFile );
+    WriteSizeReport();
+  }
+
+  /*
+   *  Generate annotated assembly file
+   */
   ObjdumpProcessor->writeAnnotated(
     CoverageMap,
     lowAddress,

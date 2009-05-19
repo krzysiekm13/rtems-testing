@@ -70,6 +70,7 @@ fi
 rm -f merged.cov report.txt
 
 ( ${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report.txt \
+    -s sizes.txt \
     -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
     -T ${TARGET} -e hello.exe -m merged.cov *.cov; \
   echo "====== 15 Largest Range Sizes ======" ; \
@@ -82,7 +83,7 @@ cat summary.txt
 dated=${BSP}-`date +%Y%m%d-%H%M`
 rm -rf ${dated}
 mkdir ${dated}
-cp summary.txt report.txt annotated.dmp ${dated}
+cp summary.txt report.txt sizes.txt annotated.dmp ${dated}
 tar cjf ${dated}.tar.bz2 ${dated}
 rm -rf ${dated}
 
