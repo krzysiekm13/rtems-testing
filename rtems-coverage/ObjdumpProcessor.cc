@@ -146,10 +146,15 @@ namespace Coverage {
 
         contents.isNop = isNop( buffer );
         if ( contents.isNop ) {
-	  coverage->setWasExecuted( baseAddress );
-	  coverage->setWasExecuted( baseAddress + 1 );
-	  coverage->setWasExecuted( baseAddress + 2 );
-	  coverage->setWasExecuted( baseAddress + 3 );
+          // XXX this won't work on all architectures, fix me!!!
+          // XXX need to be size of NOP for 4
+          if ( coverage->wasExecuted( baseAddress - 1 ) ||
+               coverage->wasExecuted( baseAddress + 4 ) ) {
+	    coverage->setWasExecuted( baseAddress );
+	    coverage->setWasExecuted( baseAddress + 1 );
+	    coverage->setWasExecuted( baseAddress + 2 );
+	    coverage->setWasExecuted( baseAddress + 3 );
+          }
         }
       }
 

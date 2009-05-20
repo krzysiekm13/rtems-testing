@@ -79,11 +79,6 @@ TEST SIMPLE
 need a case for not willing to wait
 +++
 
-corespinlockwait.c:75
-TEST SIMPLE
-need a case for a timeout
-+++
-
 corespinlockwait.c:76
 TEST SIMPLE
 need a case for a timeout

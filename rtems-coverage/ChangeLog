@@ -1,5 +1,11 @@
 2009-05-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt, ObjdumpProcessor.cc: If nop divides uncovered
+	range, do not consider it executed. This results in slightly fewer
+	ranges of slightly larger size.
+
+2009-05-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.cc: +++ was ending up as explanation.
 	* Explanations.txt: Eliminate covered cases.
 
