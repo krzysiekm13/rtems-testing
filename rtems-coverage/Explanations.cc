@@ -28,8 +28,9 @@ namespace Coverage {
     const char *explanations
   )
   {
+    #define MAX_LINE_LENGTH 512
     FILE       *explain;
-    char        buffer[512];
+    char        buffer[MAX_LINE_LENGTH];
     char       *cStatus;
     Explanation  e;
     int          line = 1;
@@ -49,12 +50,17 @@ namespace Coverage {
     }
 
     while ( 1 ) {
-      // Read the starting line
-      cStatus = fgets( buffer, 512, explain );
-      if ( cStatus == NULL ) {
-        break;
-      }
-      buffer[ strlen(buffer) - 1] = '\0';
+      // Read the starting line of this explanation and
+      // skip blank lines between
+      do { 
+        buffer[0] = '\0';
+        cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
+        if ( cStatus == NULL ) {
+          goto done;
+        }
+        buffer[ strlen(buffer) - 1] = '\0';
+        line++;
+       } while ( buffer[0] == '\0' );
 
       // Have we already seen this one?
       if ( Set.find( buffer ) != Set.end() ) {
@@ -71,10 +77,9 @@ namespace Coverage {
       // Add the starting line and file
       e.startingPoint = std::string(buffer);
       e.found = false;
-      line++;
 
       // Get the classification 
-      cStatus = fgets( buffer, 512, explain );
+      cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
       if ( cStatus == NULL ) {
         fprintf(
           stderr,
@@ -89,23 +94,34 @@ namespace Coverage {
       line++;
 
       // Get the explanation 
-      cStatus = fgets( buffer, 512, explain );
-      if ( cStatus == NULL ) {
-        fprintf(
-          stderr,
-          "File %s: Line %d: Out of sync at the explanation\n",
-          explanations,
-          line
-        );
-        exit( -1 );
+      while (1) {
+        cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
+        if ( cStatus == NULL ) {
+          fprintf(
+            stderr,
+            "File %s: Line %d: Out of sync at the explanation\n",
+            explanations,
+            line
+          );
+          exit( -1 );
+        }
+        buffer[ strlen(buffer) - 1] = '\0';
+        line++;
+
+        const char delimiter[4] = "+++";
+        if ( !strncmp( buffer, delimiter, 3 ) ) {
+          e.explanation = buffer;
+          break;
+        }
       }
-      buffer[ strlen(buffer) - 1] = '\0';
-      e.explanation = buffer;
-      line++;
 
       // Add this to the Set of Explanations
       Set[ e.startingPoint ] = e;
     }
+done:
+    ;
+
+    #undef MAX_LINE_LENGTH
   }
 
   void Explanations::writeNotFound(
