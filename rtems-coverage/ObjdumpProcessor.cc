@@ -98,6 +98,8 @@ namespace Coverage {
     FILE *objdumpFile;
     char *cStatus;
     char  buffer[512];
+    int   nopSize;
+    int   i;
 
     /*
      * Generate the objdump
@@ -119,6 +121,11 @@ namespace Coverage {
       fprintf( stderr, "ObjdumpProcessor::ProcessFile - unable to open %s\n", "objdump.tmp" );
       exit(-1);
     }
+
+    /*
+     *  How many bytes is a nop?
+     */
+    nopSize = Tools->getNopSize();
 
     while ( 1 ) {
       ObjdumpLine contents;
@@ -146,14 +153,13 @@ namespace Coverage {
 
         contents.isNop = isNop( buffer );
         if ( contents.isNop ) {
-          // XXX this won't work on all architectures, fix me!!!
-          // XXX need to be size of NOP for 4
+          // check the byte immediately before and after the nop
+          // if either was executed, then mark NOP as executed. Otherwise,
+          // we do not want to split the unexecuted range.
           if ( coverage->wasExecuted( baseAddress - 1 ) ||
-               coverage->wasExecuted( baseAddress + 4 ) ) {
-	    coverage->setWasExecuted( baseAddress );
-	    coverage->setWasExecuted( baseAddress + 1 );
-	    coverage->setWasExecuted( baseAddress + 2 );
-	    coverage->setWasExecuted( baseAddress + 3 );
+               coverage->wasExecuted( baseAddress + nopSize ) ) {
+            for ( i=0 ; i < nopSize ; i++ )
+	      coverage->setWasExecuted( baseAddress + i );
           }
         }
       }

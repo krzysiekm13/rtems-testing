@@ -10,6 +10,8 @@
  */
 
 #include "Toolnames.h"
+#include <string.h>
+#include <stdlib.h>
 
 namespace Coverage {
 
@@ -20,6 +22,16 @@ namespace Coverage {
     target    = target_arg; 
     addr2line = target + "-addr2line";
     objdump   = target + "-objdump";
+    if ( !strncmp( target_arg, "sparc", 5 ) ) {
+      nopSize = 4;
+    } else if ( !strncmp( target_arg, "arm", 3 ) ) {
+      nopSize = 4;
+      fprintf( stderr, "SANTOSH - HOW LARGE IS NOP ON ARM? -- fix me ;)\n" );
+      exit(1);
+    } else {
+      fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
+      exit(1);
+    }
   }
 
   Toolnames::~Toolnames()
@@ -35,4 +47,10 @@ namespace Coverage {
   {
     return objdump.c_str();
   }
+
+  const int Toolnames::getNopSize( void )
+  {
+     return nopSize;
+  }
+  
 }
