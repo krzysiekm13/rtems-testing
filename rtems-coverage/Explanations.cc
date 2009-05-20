@@ -96,6 +96,7 @@ namespace Coverage {
       // Get the explanation 
       while (1) {
         cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
+        // fprintf( stderr, "%d - %s\n", line, buffer );
         if ( cStatus == NULL ) {
           fprintf(
             stderr,
@@ -110,9 +111,10 @@ namespace Coverage {
 
         const char delimiter[4] = "+++";
         if ( !strncmp( buffer, delimiter, 3 ) ) {
-          e.explanation = buffer;
           break;
         }
+        // XXX only taking last line.  Needs to be a vector
+        e.explanation = buffer;
       }
 
       // Add this to the Set of Explanations

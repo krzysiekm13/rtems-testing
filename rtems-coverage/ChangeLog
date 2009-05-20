@@ -1,5 +1,10 @@
 2009-05-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.cc: +++ was ending up as explanation.
+	* Explanations.txt: Eliminate covered cases.
+
+2009-05-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.cc, Explanations.txt: Add +++ as end of explanation and
 	allow blank lines between cases. This is in preparation for
 	supporting multiline comments.

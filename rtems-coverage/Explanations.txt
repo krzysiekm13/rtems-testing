@@ -1,8 +1,3 @@
-attr.c:31
-TEST SIMPLE
-call rtems_interrupt_level_attribute
-+++
-
 ratemontimeout.c:61
 TEST SIMPLE
 period times out but thread is blocked on another period?
@@ -10,12 +5,7 @@ period times out but thread is blocked on another period?
 
 taskinitusers.c:68
 TEST SIMPLE
-Have multiple Classic API initialization tasks
-+++
-
-taskinitusers.c:91
-INTERNAL ERROR
-failed rtems_task_start (override a confdefs parameter)
+Errors which require overriding confdefs and/or multiple init tasks (2 cases?)
 +++
 
 ratemonperiod.c:310
@@ -23,14 +13,8 @@ INTERRUPT SYNC
 period must expire while attempting to block
 +++
 
-ratemontimeout.c:60
-TEST SIMPLE
-violate visibility, call directly with bad Id
-+++
-
 watchdog.inl:129
 INTERRUPT SYNC
-+++
 
 period expires while blocking (ratemontimeout.c:66)
 +++
@@ -43,11 +27,6 @@ new error case
 timerserverfireafter.c:80
 INTERRUPT SYNC
 timer must be inserted by an ISR while we are inserting it
-+++
-
-semcreate.c:152
-TEST SIMPLE
-need to create a semaphore that is RTEMS_PRIORITY_CEILING
 +++
 
 semcreate.c:162
@@ -80,7 +59,7 @@ TEST SIMPLE
 documented (not implemented) in sp40
 +++
 
-ioregisterdriver.c:83
+ioregisterdriver.c:84
 TEST SIMPLE
 if reachable
 +++
@@ -132,8 +111,6 @@ send event to thread running from TSR?
 
 thread.inl:230
 SHOULD BE COVERED
-+++
-
 sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 +++
 
@@ -162,13 +139,6 @@ TEST SIMPLE
 Need to deal with timeout cases (past and future)
 +++
 
-priority.inl:35
-TEST SIMPLE
-+++
-
-bad priority (pthreadcreate.c:118)
-+++
-
 pthreadcreate.c:130
 TEST SIMPLE
 bad scheduling policy in switch
@@ -182,11 +152,6 @@ bad policy case
 pthreadsetschedparam.c:70
 SIMPLE
 SCHED_SPORADIC with bad replenish period
-+++
-
-pthreadinitthreads.c:85
-FATAL
-pthread_create gives error (override a confdefs parameter)
 +++
 
 chain.inl:300
@@ -224,21 +189,6 @@ TEST SIMPLE
 Add case with user extension which fails to allocate memory on create
 +++
 
-timersettime.c:85
-SIMPLE TEST
-need to have it return previous value
-+++
-
-timersettime.c:129
-SIMPLE TEST
-bad ID
-+++
-
-objectgetnext.c:64
-TEST SIMPLE
-there is no test at all
-+++
-
 heapresizeblock.c:158
 TEST SIMPLE
 looks like shrink block but so small the unused area gets freed
@@ -247,15 +197,5 @@ looks like shrink block but so small the unused area gets freed
 killinfo.c:233
 TEST SIMPLE
 signals to blocked/ready tasks with particular settings
-+++
-
-getitimer.c:25
-TEST SIMPLE
-(very) stub implementations. Add test as placeholder.
-+++
-
-workspace.c:60
-TEST SIMPLE
-(requires conf trickery) too little wkspace to init heap
 +++
 
