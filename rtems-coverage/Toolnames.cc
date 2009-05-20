@@ -25,9 +25,8 @@ namespace Coverage {
     if ( !strncmp( target_arg, "sparc", 5 ) ) {
       nopSize = 4;
     } else if ( !strncmp( target_arg, "arm", 3 ) ) {
+      // This is right for ARM mode, not Thumb mode.
       nopSize = 4;
-      fprintf( stderr, "SANTOSH - HOW LARGE IS NOP ON ARM? -- fix me ;)\n" );
-      exit(1);
     } else {
       fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
       exit(1);

@@ -87,6 +87,7 @@ namespace Coverage {
     if ( !strcmp( &line[strlen(line)-7], "unknown") )
       return true;
     
+    // ASSUME: ARM dump uses nop instruction. Really "mov r0,r0"
     return false;
   }
 

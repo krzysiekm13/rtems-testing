@@ -1,5 +1,10 @@
 2009-05-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* ObjdumpProcessor.cc, Toolnames.cc: Fix comments. Mark ARM nop as 4
+	bytes.
+
+2009-05-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* ObjdumpProcessor.cc, Toolnames.cc, Toolnames.h: Clean up nop
 	processing and get size of nop instruction from toolset class.
 
