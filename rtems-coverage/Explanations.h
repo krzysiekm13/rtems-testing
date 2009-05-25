@@ -14,16 +14,32 @@
 #include <stdint.h>
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Coverage {
 
   class Explanation {
   public:
 
-    std::string startingPoint;
-    std::string explanation;
-    std::string classification;
-    bool        found;
+    /*!
+     *  This is the starting line number of the uncovered range.
+     */
+    std::string              startingPoint;
+
+    /*!
+     *  This is the classification of the range.
+     */
+    std::string              classification;
+
+    /*!
+     *  This is the multi-line explanation.
+     */
+    std::vector<std::string> explanation;
+
+    /*!
+     *  This indicates whether we used this explanation on this run.
+     */
+    bool                     found;
 
     Explanation() {found = false;}
 
@@ -59,13 +75,7 @@ namespace Coverage {
 
     /*!
      */
-    std::string lookupClassification(
-      std::string start
-    );
-
-    /*!
-     */
-    std::string lookupExplanation(
+    const Explanation *lookupExplanation(
       std::string start
     );
 

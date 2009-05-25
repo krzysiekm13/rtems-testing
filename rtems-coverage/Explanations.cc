@@ -31,8 +31,8 @@ namespace Coverage {
     #define MAX_LINE_LENGTH 512
     FILE       *explain;
     char        buffer[MAX_LINE_LENGTH];
-    char       *cStatus;
-    Explanation  e;
+    char        *cStatus;
+    Explanation *e;
     int          line = 1;
 
     if ( !explanations )
@@ -50,6 +50,7 @@ namespace Coverage {
     }
 
     while ( 1 ) {
+      e = new Explanation;
       // Read the starting line of this explanation and
       // skip blank lines between
       do { 
@@ -75,8 +76,8 @@ namespace Coverage {
       }
 
       // Add the starting line and file
-      e.startingPoint = std::string(buffer);
-      e.found = false;
+      e->startingPoint = std::string(buffer);
+      e->found = false;
 
       // Get the classification 
       cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
@@ -90,7 +91,7 @@ namespace Coverage {
         exit( -1 );
       }
       buffer[ strlen(buffer) - 1] = '\0';
-      e.classification = buffer;
+      e->classification = buffer;
       line++;
 
       // Get the explanation 
@@ -114,11 +115,11 @@ namespace Coverage {
           break;
         }
         // XXX only taking last line.  Needs to be a vector
-        e.explanation = buffer;
+        e->explanation.push_back( buffer );
       }
 
       // Add this to the Set of Explanations
-      Set[ e.startingPoint ] = e;
+      Set[ e->startingPoint ] = *e;
     }
 done:
     ;
@@ -137,7 +138,11 @@ done:
    
     notFoundFile = fopen( fileName, "w" );
     if ( !fileName ) {
-      fprintf( stderr, "Unable to open File for unfound explanations %s\n\n", fileName );
+      fprintf(
+        stderr,
+        "Unable to open File for unfound explanations %s\n\n",
+        fileName
+      );
       exit( -1 );
     }
     
@@ -149,7 +154,11 @@ done:
  
       if ( !e.found ) {
         NotFoundOccurred = true;
-        fprintf( notFoundFile,"%s\n%s\n", e.startingPoint.c_str(), e.explanation.c_str() );
+        fprintf(
+          notFoundFile,
+          "%s\n",
+          e.startingPoint.c_str()
+        );
       } 
     }
     fclose( notFoundFile );
@@ -164,23 +173,21 @@ done:
     } 
   }
 
-  std::string Explanations::lookupClassification(
+  const Explanation *Explanations::lookupExplanation(
     std::string start
   )
   {
-    if ( Set.find( start ) == Set.end() )
-      return "no classification";
-    return Set[ start ].classification;
-  }
-
-  std::string Explanations::lookupExplanation(
-    std::string start
-  )
-  {
-    if ( Set.find( start ) == Set.end() )
-      return "no explanation";
+    if ( Set.find( start ) == Set.end() ) {
+      #if 0
+        fprintf( stderr, 
+          "Warning: Unable to find explanation for %s\n", 
+          start.c_str() 
+        );
+      #endif
+      return NULL;
+    }
     Set[ start ].found = true;
-    return Set[ start ].explanation;
+    return &Set[ start ];
   }
 
 }

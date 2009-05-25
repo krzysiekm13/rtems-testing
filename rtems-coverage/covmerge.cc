@@ -289,24 +289,54 @@ void WriteCoverageReport()
   for (it =  Ranges->Set.begin() ;
        it != Ranges->Set.end() ;
        it++ ) {
+    const Coverage::Explanation *explanation;
+    explanation = Explanations->lookupExplanation( it->lowLine );
+
     fprintf(
       report,
       "============ Range: %08x - %08x ============\n"
       "%08x : %s\n"
       "%08x : %s\n"
       "Size : %d\n"
-      "\n"
-      "Classification: %s\n"
-      "\n"
-      "Explanation:\n"
-      "%s\n"
-      "====================================================\n",
+      "\n",
       it->lowAddress, it->highAddress,
       it->lowAddress,  it->lowLine.c_str(),
       it->highAddress, it->highLine.c_str(),
-      it->highAddress - it->lowAddress + 1,
-      Explanations->lookupClassification( it->lowLine ).c_str(),
-      Explanations->lookupExplanation( it->lowLine ).c_str()
+      it->highAddress - it->lowAddress + 1
+    );
+
+    if ( !explanation ) {
+      fprintf(
+        report,
+        "Classification: NONE\n"
+        "\n"
+        "Explanation:\n"
+        "No Explanation\n"
+      );
+    } else {
+      fprintf(
+        report,
+        "Classification: %s\n"
+        "\n"
+        "Explanation:\n",
+        explanation->classification.c_str()
+      );
+
+      
+      for ( unsigned int i=0 ;
+            i < explanation->explanation.size();
+            i++) {
+        fprintf(
+          report,
+          "%s\n",
+          explanation->explanation[i].c_str()
+        );
+      }
+    }
+
+    fprintf(
+      report,
+      "====================================================\n"
     );
   }
 

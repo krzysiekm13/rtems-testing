@@ -1,3 +1,8 @@
+2009-05-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Explanations.cc, Explanations.h, covmerge.cc: Add multiple line
+	explanations.
+
 2009-05-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* ObjdumpProcessor.cc, Toolnames.cc: Fix comments. Mark ARM nop as 4
