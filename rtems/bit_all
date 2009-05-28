@@ -62,11 +62,11 @@ do
     case $CPU in   
       avr)     ALL_BSPS="avrtest" ;;
       bfin)    ALL_BSPS="eZKit533 bf537Stamp" ;;
-      arm)     ALL_BSPS="csb336 csb337 edb7312 gba gp32 nds"
+      arm)     ALL_BSPS="csb336 csb337 csb637 edb7312 gba gp32 nds"
                ALL_BSPS="${ALL_BSPS} rtl22xx rtl22xx_t smdk2410"
                ALL_BSPS="${ALL_BSPS} lpc2478" ;;
       h8300)   ALL_BSPS="h8sim" ;;
-      i386)    ALL_BSPS="i386ex pc386 pc386dx pc486 pc586 pc686 pck6"
+      i386)    ALL_BSPS="i386ex pc386 pc386dx pc486 pc586 pc686"
                ALL_BSPS="${ALL_BSPS} ts_386ex" ;;
       m32c)    ALL_BSPS="m32csim" ;;
       m32r)    ALL_BSPS="m32rsim" ;;
