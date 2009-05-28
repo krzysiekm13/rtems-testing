@@ -54,6 +54,11 @@ TEST SIMPLE
 need a test
 +++
 
+ioregisterdriver.c:61
+TEST SIMPLE
+Call with Major# > number of drivers
++++
+
 ioregisterdriver.c:71
 TEST SIMPLE
 documented (not implemented) in sp40
@@ -67,6 +72,11 @@ if reachable
 coremsgbroadcast.c:86
 TEST SIMPLE
 Successful but no tasks waiting
++++
+
+coremsgsubmit.c:153
+TEST SIMPLE
+Add call to mq_send from a TSR with a full queue from a dedicated test
 +++
 
 corespinlockrelease.c:59
