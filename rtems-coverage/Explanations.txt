@@ -220,35 +220,17 @@ There must not be a thread/task created
 with THREAD_CPU_BUDGET_ALGORITHM_EXHAUST_TIMESLICE.
 +++
 
-threadinitialize.c:231
+threadinitialize.c:233
 Simple Test Case
 A user extension must return an error for the create case of an Floating
 Point enabled task.  
 +++
 
-threadreset.c:61
+threadreset.c:63
 Simple Test Case
 This is a case where a task is restarted with its per task watchdog
 timer active. This probably can be hit by having a task do a long
 wake after and another thread restart it.
-+++
-
-threadresume.c:65
-Dead Code in Configuration
-This code can only be exercised from ITRON so all suspend with nesting
-count support should be disabled unless ITRON is enabled.  Do not
-write a test for it.  Just disable all related functionality on the
-ITRON enabled macro.
-+++
-
-threadresume.c:68
-Dead Code in Configuration
-See threadresume.c:65
-+++
-
-threadresume.c:71
-Dead Code in Configuration
-See threadresume.c:65
 +++
 
 regionextend.c:75

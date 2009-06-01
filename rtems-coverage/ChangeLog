@@ -1,5 +1,12 @@
 2009-06-01	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Nesting count on thread suspension is only
+	supported from ITRON API so disable if ITRON is disabled.
+	Implementing this eliminated 4 uncovered ranges in the tested
+	configuration.
+
+2009-06-01	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Eliminate covered cases.
 
 2009-06-01	Joel Sherrill <joel.sherrill@OARcorp.com>
