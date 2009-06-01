@@ -1,117 +1,179 @@
+eventsurrender.c:81
+Interrupt Synchronization
+This is executed when events are sent to the currently executing thread
+while it is in the process of blocking.  I think sp39 or sp41 relates to
+this but may not be hitting the correct combination of timed out or Any/All.
++++
+
+eventsurrender.c:82
+Interrupt Synchronization
+This is somehow related to eventsurrender.c:81 but the range is
+disconnected and I do not see why with certainty.  This could be
+when a timeout occurs while we are blocking on an event receive.
++++
+
 ratemontimeout.c:61
-TEST SIMPLE
+Simple Test Case
 period times out but thread is blocked on another period?
 +++
 
 taskinitusers.c:68
-TEST SIMPLE
+Simple Test Case
 Errors which require overriding confdefs and/or multiple init tasks (2 cases?)
 +++
 
 ratemonperiod.c:310
-INTERRUPT SYNC
+Interrupt Synchronization
 period must expire while attempting to block
 +++
 
 watchdog.inl:129
-INTERRUPT SYNC
+Interrupt Synchronization
 
 period expires while blocking (ratemontimeout.c:66)
 +++
 
 timerreset.c:60
-TEST SIMPLE
+Simple Test Case
 new error case
 +++
 
 timerserverfireafter.c:80
-INTERRUPT SYNC
+Interrupt Synchronization
 timer must be inserted by an ISR while we are inserting it
 +++
 
 semcreate.c:162
-TEST SIMPLE
+Simple Test Case
 need to create a semaphore that is RTEMS_PRIORITY_CEILING
 +++
 
+coremsgflushwait.c:65
+Dead Code?
+This appears to be dead code and the routine may be able to be removed.
+Verify this is the case and remove it.
++++
+
+coremsgsubmit.c:179
+Simple Test Case or Dead Code?
+This is the error path for a NULL message pointer.  This may not be able
+to be reached from the APIs and if so, should be conditionalized as DEBUG.
+If it can be reached from the APIs, then it is a simple test case.
+
 coremutex.inl:171
-TEST SIMPLE
+Simple Test Case
 pri ceiling, acquire when pri = ceiling
 +++
 
+coremutexsurrender.c:88
+Simple Test Case or Code Restructuring
+This is a switch which has two cases marked as not able to be hit. This
+documentation needs to be verified and if true, restructured to represent
+this.  The cases that are not executed need to be turned into a
+conditionalized debug assertion.
++++
+
+corerwlockrelease.c:53
+Simple Test Case
+This is a case where you are releasing an RWLock that is already released.
+So this should be a very simple test case.
++++
+
+corespinlockwait.c:75
+Simple Test Case (or unreachable SuperCore)
+This is either a simple test case or a case where the SuperCore includes
+functionality which is not promoted out yet via an API.  If this is code
+which is not available via the API yet, then it should be conditionalized
+and disabled.  This is the timeout case if that is available via an API.
++++
+
 semflush.c:82
-TEST SIMPLE
+Simple Test Case
 need to flush a NOT counting semaphore
 +++
 
 regionresizesegment.c:83
-TEST SIMPLE
+Simple Test Case
 need a test (9 instructions)
 +++
 
 debug.c:63
-TEST SIMPLE
+Simple Test Case
 need a test
 +++
 
-ioregisterdriver.c:61
-TEST SIMPLE
-Call with Major# > number of drivers
+heapgetinfo.c:70
+Simple Test Case
+The heap is corrupted.  The block's size does not match the next block's
+previous size backwards link.  This may make sense to add to the
+Heap Walk test.
++++
+
+objectidtoname.c:78
+Simple Test Case
+I find it hard to believe that this is not already covered but the code
+appears to be the exit path for the successful lookup of an id to return
+the object's name. Verify the lack of a test case and add one.  If there
+is a test case that would appear to cover this, investigate.
++++
+
+objectgetinfo.c:36
+Dead Code?
+This appears to be a case where a number which should be unsigned
+(and maybe isn't) is being checked for being negative.  The method
+being called probably should be changed to return an unsigned int
+and the < 0 comparison removed.
++++
+
+pheapgetinfo.c:40
+Simple Test Case
+This appears to be the exit path for all errors in this routine.  Obviously
+there are no tests for errors.
 +++
 
 ioregisterdriver.c:71
-TEST SIMPLE
+Simple Test Case
 documented (not implemented) in sp40
 +++
 
 ioregisterdriver.c:84
-TEST SIMPLE
+Simple Test Case
 if reachable
 +++
 
 coremsgbroadcast.c:86
-TEST SIMPLE
+Simple Test Case
 Successful but no tasks waiting
 +++
 
-coremsgsubmit.c:153
-TEST SIMPLE
-Add call to mq_send from a TSR with a full queue from a dedicated test
-+++
-
 corespinlockrelease.c:59
-TEST SIMPLE
+Simple Test Case
 need a case for unlock when not holder
 +++
 
 corespinlockwait.c:67
-TEST SIMPLE
+Simple Test Case
 need a case for not willing to wait
 +++
 
 corespinlockwait.c:76
-TEST SIMPLE
+Simple Test Case
 need a case for a timeout
 +++
 
 coretodmsecstoticks.c:23
-TEST SIMPLE
+Simple Test Case
 Need to disable inline/macro and test body
 +++
 
 dpmemcreate.c:87
-TEST SIMPLE
+Simple Test Case
 need invalid address of return id
 +++
 
 timerfireafter.c:76
-INTERRUPT SYNC
+Interrupt Synchronization
 timer must be inserted or state altered by ISR
-+++
-
-eventsurrender.c:82
-INTERRUPT_SYNC
-send event to thread running from TSR?
 +++
 
 thread.inl:230
@@ -120,32 +182,120 @@ sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 +++
 
 thread.inl:47
-TEST SIMPLE
+Simple Test Case
 (sys state trickery) shutdown while in shutdown statek
 +++
 
+threadcreateidle.c:59
+Simple Test Case
+This appears to be a case where the IDLE task stack size is explicitly
+configured to be less than the minimum stack size and has to be increased.
+It should be possible to make a minor configuration change to an existing
+test to cover this one.
++++
+
+threadget.c:88
+Simple Test Case
+This will require adding a POSIX test where only Classic API tasks are
+configured and what should be the valid Id of a POSIX thread is passed
+to any thread/task routine.
++++
+
+threadhandler.c:148
+Code Modification
+Given the current APIs, the switch cases with two arguments cannot be 
+executed.  Disable those as unused by any existing API and restructure
+switch to an if.
++++
+
+threadhandler.c:163
+Code Modification
+See threadhandler.c:148.
++++
+
+threadinitialize.c:91
+Simple Test Case and Code Should be Optional for Tiny/RTEMS
+This is for the case where the BSP/application is configured to provide
+their own stack allocation routines.  But this code is rarely used so
+(1) there needs to be a test and (2) the code supporting this capability
+needs to be inside a conditional which can be disabled for Tiny/RTEMS.
++++
+
+threadinitialize.c:148
+Medium Test Case
+The allocation of the user extension data area must fail.  The failure should
+occur during the create case of an Floating Point enabled task.
+
+Since the stack is allocated first, it should be possible to have a test
+with a fair (16-32?) number of user extensions configured and then
+create a thread with increasingly larger stack until this case is hit.
++++
+
+threadinitialize.c:188
+Simple Test Case
+There must not be a thread/task created
+with THREAD_CPU_BUDGET_ALGORITHM_EXHAUST_TIMESLICE.
++++
+
+threadinitialize.c:231
+Simple Test Case
+A user extension must return an error for the create case of an Floating
+Point enabled task.  
++++
+
+threadreset.c:61
+Simple Test Case
+This is a case where a task is restarted with its per task watchdog
+timer active. This probably can be hit by having a task do a long
+wake after and another thread restart it.
++++
+
+threadresume.c:65
+Dead Code in Configuration
+This code can only be exercised from ITRON so all suspend with nesting
+count support should be disabled unless ITRON is enabled.  Do not
+write a test for it.  Just disable all related functionality on the
+ITRON enabled macro.
++++
+
+threadresume.c:68
+Dead Code in Configuration
+See threadresume.c:65
++++
+
+threadresume.c:71
+Dead Code in Configuration
+See threadresume.c:65
++++
+
 regionextend.c:75
-SIMPLE
+Simple Test Case, Possible Restructuring
 possibly dead code from switch, change to if's
 +++
 
+corebarrierwait.c:64
+Simple Test Case
+This looks like a simple test case of being a automatically released 
+barrier and being the Nth task to block so tripping the automatic release.
++++
+
 mutexget.c:76
-TEST SIMPLE (if correct)
+Simple Test Case (if correct)
 mutex lock with auto initialization of mutex
 +++
 
 prwlocktimedwrlock.c:89
-TEST SIMPLE
+Simple Test Case
 Need to deal with timeout cases (past and future)
 +++
 
 prwlocktimedrdlock.c:90
-TEST SIMPLE
+Simple Test Case
 Need to deal with timeout cases (past and future)
 +++
 
 pthreadcreate.c:130
-TEST SIMPLE
+Simple Test Case
 bad scheduling policy in switch
 +++
 
@@ -160,7 +310,7 @@ SCHED_SPORADIC with bad replenish period
 +++
 
 chain.inl:300
-TEST SIMPLE
+Simple Test Case
 _POSIX_signals_Clear_signals:71 chain get when empty
 +++
 
@@ -170,12 +320,12 @@ psignal to running thread from ISR
 +++
 
 threadqenqueuepriority.c:139
-INTERRUPT SYNC
+Interrupt Synchronization
 restart insertion search
 +++
 
 threadqenqueuepriority.c:189
-TEST SIMPLE
+Simple Test Case
 need sp41 test cases with priority semaphore
 +++
 
@@ -189,18 +339,13 @@ HARD
 extract thread that isn't blocked on thread queue
 +++
 
-threadinitialize.c:231
-TEST SIMPLE
-Add case with user extension which fails to allocate memory on create
-+++
-
 heapresizeblock.c:158
-TEST SIMPLE
+Simple Test Case
 looks like shrink block but so small the unused area gets freed
 +++
 
 killinfo.c:233
-TEST SIMPLE
+Simple Test Case
 signals to blocked/ready tasks with particular settings
 +++
 
