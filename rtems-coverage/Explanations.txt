@@ -43,7 +43,7 @@ Interrupt Synchronization
 timer must be inserted by an ISR while we are inserting it
 +++
 
-semcreate.c:162
+semcreate.c:163
 Simple Test Case
 need to create a semaphore that is RTEMS_PRIORITY_CEILING
 +++
@@ -156,11 +156,6 @@ Simple Test Case
 need a case for not willing to wait
 +++
 
-corespinlockwait.c:76
-Simple Test Case
-need a case for a timeout
-+++
-
 coretodmsecstoticks.c:23
 Simple Test Case
 Need to disable inline/macro and test body
@@ -199,18 +194,6 @@ Simple Test Case
 This will require adding a POSIX test where only Classic API tasks are
 configured and what should be the valid Id of a POSIX thread is passed
 to any thread/task routine.
-+++
-
-threadhandler.c:148
-Code Modification
-Given the current APIs, the switch cases with two arguments cannot be 
-executed.  Disable those as unused by any existing API and restructure
-switch to an if.
-+++
-
-threadhandler.c:163
-Code Modification
-See threadhandler.c:148.
 +++
 
 threadinitialize.c:91
