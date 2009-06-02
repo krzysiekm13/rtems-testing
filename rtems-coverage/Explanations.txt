@@ -12,6 +12,11 @@ disconnected and I do not see why with certainty.  This could be
 when a timeout occurs while we are blocking on an event receive.
 +++
 
+eventtimeout.c:78
+Interrupt Synchronization
+This is a timeout while blocking waiting for an event receive with timeout.
++++
+
 ratemontimeout.c:61
 Simple Test Case
 period times out but thread is blocked on another period?
@@ -54,11 +59,18 @@ This appears to be dead code and the routine may be able to be removed.
 Verify this is the case and remove it.
 +++
 
+coremsgsubmit.c:153
+Simple Test Case
+Send message to full queue from ISR.  Must be done from POSIX API since you
+cannot block on send with Classic API.
++++
+
 coremsgsubmit.c:179
 Simple Test Case or Dead Code?
 This is the error path for a NULL message pointer.  This may not be able
 to be reached from the APIs and if so, should be conditionalized as DEBUG.
 If it can be reached from the APIs, then it is a simple test case.
++++
 
 coremutex.inl:171
 Simple Test Case
@@ -71,6 +83,15 @@ This is a switch which has two cases marked as not able to be hit. This
 documentation needs to be verified and if true, restructured to represent
 this.  The cases that are not executed need to be turned into a
 conditionalized debug assertion.
++++
+
+coremutexsurrender.c:178
+Simple Test Case
+I have trouble believing there is no simple priority ceiling mutex test
+which locks raises priority and then releases and lowers priority but this
+case sure looks like that.  Or it is a case where the thread's priority
+is equal to the ceiling and the branch is taken.  Hard to read SPARC assembly.
+I am leaning to the equal case.
 +++
 
 corerwlockrelease.c:53
@@ -125,16 +146,39 @@ being called probably should be changed to return an unsigned int
 and the < 0 comparison removed.
 +++
 
+objectnametoid.c:75
+Simple Test Case
+With POSIX configured, look up an invalid name.  There should be no
+Classic API objects.
++++
+
+objectnametoidstring.c:66
+Simple Test Case (or Dead Code)
+This is checking for a NULL name string.  This error may be caught at
+the API level.  Or is may simply not be tested.
++++
+
 pheapgetinfo.c:40
 Simple Test Case
 This appears to be the exit path for all errors in this routine.  Obviously
 there are no tests for errors.
 +++
 
+ioregisterdriver.c:61
+Simple Test Case
+documented (not implemented) in sp40.  Fill up the driver table and
+register another driver.
++++
+
+
 ioregisterdriver.c:71
 Simple Test Case
-documented (not implemented) in sp40
+documented (not implemented) in sp40.  Fill up the driver table and
+register another driver.  All of the cases in this file are probably
+related and will take attention when working on them to be sure I
+have explained them correctly.  The assembly is just hard to follow.
 +++
+
 
 ioregisterdriver.c:84
 Simple Test Case
