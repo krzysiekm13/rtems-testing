@@ -10,32 +10,64 @@
 
 QEMUDIR=/home/joel
 
-# Model - isapc for ISA PC or pc for PCI
+fatal()
+{
+  echo $*
+  echo FATAL ERROR
+  exit 1
+}
 
-# PCI NIC model options that work with RTEMS:
-#   i82558er, i82551, i82557b, rtl8139
-# ISA NIC model: ne2k_isa
+nic="none"
+verbose="no"
 
-MODEL="-M pc"
-#MODEL="-M isapc"
-NIC=i82557b
+while getopts "vn:" OPT
+do
+ case "$OPT" in
+   v) verbose="yes";;
+   n) nic="$OPTARG";;
+   *) fatal;;
+ esac
+done
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+args=$*
 
 GRAPHICS="-serial stdio"
 #GRAPHICS="${GRAPHICS} --nographic --monitor null"
+
+# Model - isapc for ISA PC or pc for PCI
+MODEL="-M pc"
+NIC=
+
+case ${nic} in
+  # PCI NIC model options that work with RTEMS:
+  #   i82558er, i82551, i82557b, rtl8139
+  i82558er|i82551|i82557b|rtl8139) NIC=${nic};;
+  # ISA NIC model: ne2k_isa
+  ne2k_isa) MODEL="-M isapc" ; NIC=${nic} ;;
+  none) ;;
+  *) fatal Unknown NIC ${nic} ;;
+esac
+ 
 ARGS="${MODEL} -m 8 \
     -boot a -fda ${QEMUDIR}/qemu/pc386_fda \
     -hda fat:${QEMUDIR}/qemu/hd  --no-reboot"
-if [ $EUID -eq 0 ] ; then
+if [ ${nic} != "none" -a $EUID -eq 0 ] ; then
+  NICARGS="\
+    -net nic,model=${NIC} \
+    -net nic,macaddr=00:80:7F:22:61:77 \
+    -net tap,script=/etc/qemu-ifup"
 
   if [ ! -r /etc/qemu-ifup ] ; then
     echo /etc/qemu-ifup not found
     exit 1
   fi
 
-  qemu ${ARGS} ${GRAPHICS} \
-    -net nic,model=${NIC} \
-    -net nic,macaddr=00:80:7F:22:61:77 \
-    -net tap,script=/etc/qemu-ifup
+  qemu ${ARGS} ${GRAPHICS} ${NICARGS}
 else
   qemu ${ARGS} ${GRAPHICS}
 fi
+
+exit 0

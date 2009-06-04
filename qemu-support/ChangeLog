@@ -1,3 +1,8 @@
+2009-06-04	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* qemu-nic: Improve qemu-nic so you can provide the NIC type as an
+	argument and force the network off when root.
+
 2009-05-15	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemu-nic: Do not invoke qemu from /usr/local/bin.
