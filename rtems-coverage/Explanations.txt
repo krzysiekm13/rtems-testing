@@ -309,12 +309,12 @@ bad scheduling policy in switch
 +++
 
 pthreadsetschedparam.c:53
-SIMPLE
+Simple Test Case
 bad policy case
 +++
 
 pthreadsetschedparam.c:70
-SIMPLE
+Simple Test Case
 SCHED_SPORADIC with bad replenish period
 +++
 
@@ -324,7 +324,7 @@ _POSIX_signals_Clear_signals:71 chain get when empty
 +++
 
 pthreadkill.c:69
-SIMPLE
+Simple Test Case
 psignal to running thread from ISR
 +++
 
@@ -358,3 +358,25 @@ Simple Test Case
 signals to blocked/ready tasks with particular settings
 +++
 
+killinfo.c:325
+Simple Test Case
+This is an error case where we can't allocate another signinfo structure.
++++
+
+timerinserthelper.c:45
+Interrupt Synchronization
+We just removed the timer but the watchdog timer is being inserted by
+a higher priority interrupt.  We may be able to get this to happen
+with Classic API Timers.  But that is unclear.
++++
+
+sigwait.c:43
+Simple Test Case
+This routine is implemented as a wrapper for sigtimedwait() and this is
+the error path.  We just need a simple error test case.
++++
+
+sigtimedwait.c:42
+Simple Test Case
+This is an error case where no POSIX real-time signals are set. (I think)
++++
