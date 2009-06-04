@@ -1,3 +1,8 @@
+2009-06-04	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Makefile: Add Gumstix on Skyeye script.
+	* gumstix.in: New file.
+
 2009-05-17	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in: When doing coverage, run fatal error tests.
