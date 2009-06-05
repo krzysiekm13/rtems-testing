@@ -1,3 +1,7 @@
+2009-06-05	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gumstix.in: Attempt to fix coverage range for gumstix.
+
 2009-06-04	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile: Add Gumstix on Skyeye script.
