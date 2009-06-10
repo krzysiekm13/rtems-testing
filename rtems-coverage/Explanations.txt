@@ -59,12 +59,6 @@ This appears to be dead code and the routine may be able to be removed.
 Verify this is the case and remove it.
 +++
 
-coremsgsubmit.c:153
-Simple Test Case
-Send message to full queue from ISR.  Must be done from POSIX API since you
-cannot block on send with Classic API.
-+++
-
 coremsgsubmit.c:179
 Simple Test Case or Dead Code?
 This is the error path for a NULL message pointer.  This may not be able
@@ -144,12 +138,6 @@ This appears to be a case where a number which should be unsigned
 (and maybe isn't) is being checked for being negative.  The method
 being called probably should be changed to return an unsigned int
 and the < 0 comparison removed.
-+++
-
-objectnametoid.c:75
-Simple Test Case
-With POSIX configured, look up an invalid name.  There should be no
-Classic API objects.
 +++
 
 objectnametoidstring.c:66
