@@ -94,14 +94,6 @@ This is a case where you are releasing an RWLock that is already released.
 So this should be a very simple test case.
 +++
 
-corespinlockwait.c:75
-Simple Test Case (or unreachable SuperCore)
-This is either a simple test case or a case where the SuperCore includes
-functionality which is not promoted out yet via an API.  If this is code
-which is not available via the API yet, then it should be conditionalized
-and disabled.  This is the timeout case if that is available via an API.
-+++
-
 semflush.c:82
 Simple Test Case
 need to flush a NOT counting semaphore
@@ -138,12 +130,6 @@ This appears to be a case where a number which should be unsigned
 (and maybe isn't) is being checked for being negative.  The method
 being called probably should be changed to return an unsigned int
 and the < 0 comparison removed.
-+++
-
-objectnametoidstring.c:66
-Simple Test Case (or Dead Code)
-This is checking for a NULL name string.  This error may be caught at
-the API level.  Or is may simply not be tested.
 +++
 
 pheapgetinfo.c:40
@@ -183,7 +169,7 @@ Simple Test Case
 need a case for unlock when not holder
 +++
 
-corespinlockwait.c:67
+corespinlockwait.c:69
 Simple Test Case
 need a case for not willing to wait
 +++
@@ -210,15 +196,7 @@ sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 
 thread.inl:47
 Simple Test Case
-(sys state trickery) shutdown while in shutdown statek
-+++
-
-threadcreateidle.c:59
-Simple Test Case
-This appears to be a case where the IDLE task stack size is explicitly
-configured to be less than the minimum stack size and has to be increased.
-It should be possible to make a minor configuration change to an existing
-test to cover this one.
+(sys state trickery) shutdown while in shutdown state
 +++
 
 threadget.c:88
@@ -252,7 +230,7 @@ There must not be a thread/task created
 with THREAD_CPU_BUDGET_ALGORITHM_EXHAUST_TIMESLICE.
 +++
 
-threadinitialize.c:233
+threadinitialize.c:234
 Simple Test Case
 A user extension must return an error for the create case of an Floating
 Point enabled task.  
@@ -263,11 +241,6 @@ Simple Test Case
 This is a case where a task is restarted with its per task watchdog
 timer active. This probably can be hit by having a task do a long
 wake after and another thread restart it.
-+++
-
-regionextend.c:75
-Simple Test Case, Possible Restructuring
-possibly dead code from switch, change to if's
 +++
 
 corebarrierwait.c:64
