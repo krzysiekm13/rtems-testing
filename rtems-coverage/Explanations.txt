@@ -64,11 +64,24 @@ Simple Test Case or Dead Code?
 This is the error path for a NULL message pointer.  This may not be able
 to be reached from the APIs and if so, should be conditionalized as DEBUG.
 If it can be reached from the APIs, then it is a simple test case.
+
+coremsgflushwait.c:65
+Dead Code?
+This appears to be dead code and the routine may be able to be removed.
+Verify this is the case and remove it.
 +++
 
 coremutex.inl:171
 Simple Test Case
 pri ceiling, acquire when pri = ceiling
++++
+
+corespinlockwait.c:75
+Simple Test Case (or unreachable SuperCore)
+This is either a simple test case or a case where the SuperCore includes
+functionality which is not promoted out yet via an API.  If this is code
+which is not available via the API yet, then it should be conditionalized
+and disabled.
 +++
 
 coremutexsurrender.c:88
@@ -99,6 +112,11 @@ Simple Test Case
 need to flush a NOT counting semaphore
 +++
 
+regionextend.c:83
+Code Restructuring
+Rerun with my modifications
++++
+
 regionresizesegment.c:83
 Simple Test Case
 need a test (9 instructions)
@@ -109,11 +127,32 @@ Simple Test Case
 need a test
 +++
 
-heapgetinfo.c:70
 Simple Test Case
 The heap is corrupted.  The block's size does not match the next block's
 previous size backwards link.  This may make sense to add to the
 Heap Walk test.
++++
+
+heapresizeblock.c:158
+Simple Test Case
+looks like shrink block but so small the unused area gets freed
++++
+
+objectextendinformation.c:226
+Simple Test Case
+I think this is a case of allocating objects in unlimited mode
+until you run out of memory.  Perhaps we are not running unlimited
+for the coverage runs.  Or maybe coverage has a limit on how many Ids
+it will create.
++++
+
+objectshrinkinformation.c:101
+Talk To Chris
+This code needs to be explained by Chris and possibly restructured.
+I think this is possibly dead code where a branch case cannot actually
+be taken because it is redundant.  But more than than that, I am not
+100% sure the code is correct. I am unsure how the loop ensures that
+all objects within an allocation block are verified as being free.
 +++
 
 objectidtoname.c:78
@@ -138,6 +177,13 @@ This appears to be the exit path for all errors in this routine.  Obviously
 there are no tests for errors.
 +++
 
+heapgetinfo.c:70
+Simple Test Case
+The heap is corrupted.  The block's size does not match the next block's
+previous size backwards link.  This may make sense to add to the
+Heap Walk test.
++++
+
 ioregisterdriver.c:61
 Simple Test Case
 documented (not implemented) in sp40.  Fill up the driver table and
@@ -152,7 +198,6 @@ register another driver.  All of the cases in this file are probably
 related and will take attention when working on them to be sure I
 have explained them correctly.  The assembly is just hard to follow.
 +++
-
 
 ioregisterdriver.c:84
 Simple Test Case
@@ -174,9 +219,9 @@ Simple Test Case
 need a case for not willing to wait
 +++
 
-coretodmsecstoticks.c:23
+corespinlockwait.c:76
 Simple Test Case
-Need to disable inline/macro and test body
+need a case for a timeout
 +++
 
 dpmemcreate.c:87
@@ -197,6 +242,21 @@ sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 thread.inl:47
 Simple Test Case
 (sys state trickery) shutdown while in shutdown state
++++
+
+threadcreateidle.c:59
+Simple Test Case
+This appears to be a case where the IDLE task stack size is explicitly
+configured to be less than the minimum stack size and has to be increased.
+It should be possible to make a minor configuration change to an existing
+test to cover this one.
++++
+
+threadhandler.c:148
+Code Modification
+Given the current APIs, the switch cases with two arguments cannot be 
+executed.  Disable those as unused by any existing API and restructure
+switch to an if.
 +++
 
 threadget.c:88
@@ -236,6 +296,87 @@ A user extension must return an error for the create case of an Floating
 Point enabled task.  
 +++
 
+threadinitialize.c:231
+Simple Test Case
+Add case with user extension which fails to allocate memory on create
++++
+
+threadinitialize.c:238
+Simple Test Case
+A user extension must return an error for the create case of an Floating
+Point enabled task.  
++++
+
+threadhandler.c:163
+Code Modification
+See threadhandler.c:148.
++++
+
+threadreset.c:61
+Simple Test Case
+This is a case where a task is restarted with its per task watchdog
+timer active. This probably can be hit by having a task do a long
+wake after and another thread restart it.
++++
+
+threadresume.c:65
+Dead Code in Configuration
+This code can only be exercised from ITRON so all suspend with nesting
+count support should be disabled unless ITRON is enabled.  Do not
+write a test for it.  Just disable all related functionality on the
+ITRON enabled macro.
++++
+
+threadresume.c:68
+Dead Code in Configuration
+See threadresume.c:65
++++
+
+threadresume.c:71
+Dead Code in Configuration
+See threadresume.c:65
++++
+
+threadstackallocate.c:61
+Simple Test Case
+We do not have a test for having a user provided stack allocator. This
+code is both the pass and fail to allocate case.
+
+NOTE: This code should probably be able to be disabled for Tiny/RTEMS.
++++
+
+threadstackfree.c:58
+Simple Test Case
+We do not have a test for having a user provided stack allocator. This
+code is the deallocate path.
+
+NOTE: This code should probably be able to be disabled for Tiny/RTEMS.
++++
+
+iterateoverthreads.c:42
+Simple Test Case
+Need to call iterate over threads in a test where there is an API configured
+which does not have threads.  Should be easy to add to sp54.
++++
+
+threadqenqueuepriority.c:92
+Interrupt Synchronization
+This case is where we are iterating to enqueue a thread into a priority
+based thread queue but the thread we are looking at gets unblocked when
+we flash interrupts. 
++++
+
+threadqenqueuepriority.c:131
+Simple Test Case
+I think! this is a case where we enqueue by priority with a thread 
+priority that requires searching from last to first.  But there is
+already a thread priority on the chain.  This priority will go before
+any in the set.  So we search backwards and insert at the head.
++++
+
+regionextend.c:75
+Simple Test Case, Possible Restructuring
+possibly dead code from switch, change to if's
 threadreset.c:63
 Simple Test Case
 This is a case where a task is restarted with its per task watchdog
@@ -280,8 +421,16 @@ SCHED_SPORADIC with bad replenish period
 +++
 
 chain.inl:300
-Simple Test Case
+Simple Test Case or Minor Code Rework
+This inlined case appears multiple times.
+
 _POSIX_signals_Clear_signals:71 chain get when empty
+
+This is actually part of _Watchdog_Adjust_to_chain and it appears to be
+dead because there is an explicit check for the chain being empty on the
+loop but the _Chain_Get_unprotected also checks for empty.  So we never
+get a case there _Chain_Get_unprotected returns NULL.  May be able to
+rework the loop to repeated call get until it gets a NULL.
 +++
 
 pthreadkill.c:69
@@ -300,18 +449,94 @@ need sp41 test cases with priority semaphore
 +++
 
 threadqextractfifo.c:55
-HARD
-extract thread that isn't blocked on thread queue
+Simple Test Case
+extract thread that isn't blocked on thread queue.  Probably requires
+bypassing APIs and going to SuperCode directly. Hard if API not bypassed.
 +++
 
 threadqextractpriority.c:64
-HARD
-extract thread that isn't blocked on thread queue
+Simple Test Case
+extract thread that isn't blocked on thread queue.  Probably requires
+bypassing APIs and going to SuperCode directly. Hard if API not bypassed.
 +++
 
-heapresizeblock.c:158
+threadqfirstpriority.c:51
 Simple Test Case
-looks like shrink block but so small the unused area gets freed
+Ask for first priority on a thread queue with no tasks.  May require
+bypassing APIs and going to SuperCode directly. Hard if API not bypassed.
++++
+
+threadqprocesstimeout.c:46
+Interrupt Synchronization
+This is processing a timeout on a thread that times out while it is in the
+process of blocking on a thread queue.
++++
+
+threadqprocesstimeout.c:54
+Interrupt Synchronization
+This is the return code from threadqprocesstimeout.c:46.  Perhaps
+restructuring this code will make it easier to combine these.  Hit the
+normal path first and return.  Then fall into the unusual synchronization
+path.
++++
+
+timespecdivide.c:44
+Simple Test Case
+Will probably have to bypass the APIs but this is a divide by zero case.
++++
+
+coretodmsecstoticks.c:23
+Simple Test Case
+TOD_MILLISECONDS_TO_TICKS is normally a macro.  Some test needs to undefine
+the macro so this is executed.  Probably a simple matter of adding this to
+an existing test in a place that does not impact a configuration table.
+One line and eliminate 40 bytes.
++++
+
+coretodusectoticks.c:23
+Simple Test Case
+TOD_MICROSECONDS_TO_TICKS is normally a macro.  Some test needs to undefine
+the macro so this is executed.  Probably a simple matter of adding this to
+an existing test.   in a place that does not impact a configuration table.
+One line and eliminate 28 bytes.
++++
+
+watchdogadjusttochain.c:42
+Simple Test Case?
+I think this is a case where there are multiple items on the chain which
+are at the same time (0 delta).
++++
+
+watchdoginsert.c:52
+Interrupt Synchronization
+This is when a higher priority interrupt inserts a timer while a lower
+priority interrupt is inserting one.
++++
+
+watchdogremove.c:41
+Interrupt Synchronization
+Remove a watchdog while it is being inserted.
++++
+
+watchdogremove.c:64
+Interrupt Synchronization
+Remove a watchdog while it is being removed.
++++
+
+watchdogreportchain.c:47
+Simple Test Simple
+Need to call report with NULL name.
++++
+
+userextremoveset.c:34
+Simple Test Case
+Remove a user extension set with a context switch extension.  Add to
+existing extension test.
++++
+
+killinfo.c:211
+Simple Test Case
+Multiple threads interested but find high priority one first.
 +++
 
 killinfo.c:233
