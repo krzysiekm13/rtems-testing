@@ -34,7 +34,6 @@ period must expire while attempting to block
 
 watchdog.inl:129
 Interrupt Synchronization
-
 period expires while blocking (ratemontimeout.c:66)
 +++
 
@@ -64,24 +63,11 @@ Simple Test Case or Dead Code?
 This is the error path for a NULL message pointer.  This may not be able
 to be reached from the APIs and if so, should be conditionalized as DEBUG.
 If it can be reached from the APIs, then it is a simple test case.
-
-coremsgflushwait.c:65
-Dead Code?
-This appears to be dead code and the routine may be able to be removed.
-Verify this is the case and remove it.
 +++
 
 coremutex.inl:171
 Simple Test Case
 pri ceiling, acquire when pri = ceiling
-+++
-
-corespinlockwait.c:75
-Simple Test Case (or unreachable SuperCore)
-This is either a simple test case or a case where the SuperCore includes
-functionality which is not promoted out yet via an API.  If this is code
-which is not available via the API yet, then it should be conditionalized
-and disabled.
 +++
 
 coremutexsurrender.c:88
@@ -112,11 +98,6 @@ Simple Test Case
 need to flush a NOT counting semaphore
 +++
 
-regionextend.c:83
-Code Restructuring
-Rerun with my modifications
-+++
-
 regionresizesegment.c:83
 Simple Test Case
 need a test (9 instructions)
@@ -125,12 +106,6 @@ need a test (9 instructions)
 debug.c:63
 Simple Test Case
 need a test
-+++
-
-Simple Test Case
-The heap is corrupted.  The block's size does not match the next block's
-previous size backwards link.  This may make sense to add to the
-Heap Walk test.
 +++
 
 heapresizeblock.c:158
@@ -190,7 +165,6 @@ documented (not implemented) in sp40.  Fill up the driver table and
 register another driver.
 +++
 
-
 ioregisterdriver.c:71
 Simple Test Case
 documented (not implemented) in sp40.  Fill up the driver table and
@@ -209,19 +183,9 @@ Simple Test Case
 Successful but no tasks waiting
 +++
 
-corespinlockrelease.c:59
-Simple Test Case
-need a case for unlock when not holder
-+++
-
 corespinlockwait.c:69
 Simple Test Case
 need a case for not willing to wait
-+++
-
-corespinlockwait.c:76
-Simple Test Case
-need a case for a timeout
 +++
 
 dpmemcreate.c:87
@@ -242,21 +206,6 @@ sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 thread.inl:47
 Simple Test Case
 (sys state trickery) shutdown while in shutdown state
-+++
-
-threadcreateidle.c:59
-Simple Test Case
-This appears to be a case where the IDLE task stack size is explicitly
-configured to be less than the minimum stack size and has to be increased.
-It should be possible to make a minor configuration change to an existing
-test to cover this one.
-+++
-
-threadhandler.c:148
-Code Modification
-Given the current APIs, the switch cases with two arguments cannot be 
-executed.  Disable those as unused by any existing API and restructure
-switch to an if.
 +++
 
 threadget.c:88
@@ -296,45 +245,17 @@ A user extension must return an error for the create case of an Floating
 Point enabled task.  
 +++
 
-threadinitialize.c:231
-Simple Test Case
-Add case with user extension which fails to allocate memory on create
-+++
-
 threadinitialize.c:238
 Simple Test Case
 A user extension must return an error for the create case of an Floating
 Point enabled task.  
 +++
 
-threadhandler.c:163
-Code Modification
-See threadhandler.c:148.
-+++
-
-threadreset.c:61
+threadreset.c:63
 Simple Test Case
 This is a case where a task is restarted with its per task watchdog
 timer active. This probably can be hit by having a task do a long
 wake after and another thread restart it.
-+++
-
-threadresume.c:65
-Dead Code in Configuration
-This code can only be exercised from ITRON so all suspend with nesting
-count support should be disabled unless ITRON is enabled.  Do not
-write a test for it.  Just disable all related functionality on the
-ITRON enabled macro.
-+++
-
-threadresume.c:68
-Dead Code in Configuration
-See threadresume.c:65
-+++
-
-threadresume.c:71
-Dead Code in Configuration
-See threadresume.c:65
 +++
 
 threadstackallocate.c:61
@@ -372,16 +293,6 @@ I think! this is a case where we enqueue by priority with a thread
 priority that requires searching from last to first.  But there is
 already a thread priority on the chain.  This priority will go before
 any in the set.  So we search backwards and insert at the head.
-+++
-
-regionextend.c:75
-Simple Test Case, Possible Restructuring
-possibly dead code from switch, change to if's
-threadreset.c:63
-Simple Test Case
-This is a case where a task is restarted with its per task watchdog
-timer active. This probably can be hit by having a task do a long
-wake after and another thread restart it.
 +++
 
 corebarrierwait.c:64
@@ -539,12 +450,12 @@ Simple Test Case
 Multiple threads interested but find high priority one first.
 +++
 
-killinfo.c:233
+killinfo.c:244
 Simple Test Case
 signals to blocked/ready tasks with particular settings
 +++
 
-killinfo.c:325
+killinfo.c:336
 Simple Test Case
 This is an error case where we can't allocate another signinfo structure.
 +++
