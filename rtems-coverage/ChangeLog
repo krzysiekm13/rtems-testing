@@ -1,5 +1,9 @@
 2009-06-18	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* rtems-cvs-20090618.diff: New file.
+
+2009-06-18	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Update to eliminate covered areas and fix drifting
 	line numbers.
 
