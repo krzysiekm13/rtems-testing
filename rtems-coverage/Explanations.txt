@@ -1,3 +1,273 @@
+__assert.c:31
+Simple Test Case
+This is just not hit by any test.  Add another fatal error case.
++++
+
+apiext.c:61
+Code Unused by APIs?
+It appears that no current API uses a predriver hook.  If this analysis
+is correct, then conditionalize all support for the API predriver hook with
+FUNCTIONALITY_NOT_CURRENTLY_USED_BY_ANY_API.  Make a comment that it should
+be protected by conditionals on the APIs that depend on it.
++++
+
+apiext.c:81
+Code Unused by APIs?
+It appears that all current APIs implement the postdriver hook.  
+If this analysis is correct, then conditionalize the NULL check
+for the API predriver hook with FUNCTIONALITY_NOT_CURRENTLY_USED_BY_ANY_API.
+Make a comment that it should be protected by conditionals on the APIs
+that depend on it.
++++
+
+apiext.c:102
+Code Unused by APIs?
+It appears that all current APIs implement the postswitch hook.  
+If this analysis is correct, then conditionalize the NULL check
+for the API predriver hook with FUNCTIONALITY_NOT_CURRENTLY_USED_BY_ANY_API.
+Make a comment that it should be protected by conditionals on the APIs
+that depend on it.
++++
+
+chainsert.c:41
+Simple Test Case
+The protected chain insert is apparently not used.  Add a chain test which
+uses the rtems_chain_xxx api and use this call.
++++
+
+wkspace.c:46
+Simple Test Case
+There is no test case which forces memory to be zeroed out.  Many BSPs
+will hit this code but we need it to be for sure.
++++
+
+wkspace.c:56
+Simple Test Case (Fatal)
+This is a fatal error case where there is not enough workspace memory.
++++
+
+vfork.c:22
+Simple Test Case
+There is no test for this stub.
++++
+
+cancelrun.c:44
+Simple Test Case
+This is simply an untested normal use of pthread cancellation handlers.
++++
+
+setcancelstate.c:53
+Simple Test Case
+This is a missing error case.
++++
+
+/opt/rtems-4.10/lib/gcc/sparc-rtems4.10/4.4.0/../../../../sparc-rtems4.10/include/pthread.h:280
+Simple Test Case
+Really setcancelstate.c:65 and setcanceltype.c:65. Apparently we don't
+hit the end of this if which sets cancel = true.
+
+Could possibly share cancellation evaluatation code with setcanceltype.c
+and setcancelstate.c.
++++
+
+setcancelstate.c:69
+Simple Test Case
+This is actually two cases because of how the exit code it generated.
+
+One is really line 69.  We do not hit the cancellation requested but
+deferred case where we will need to run the handners.
+
+The other is a branch from line 50 for !oldstate.
+
+Could possibly share cancellation evaluatation code with setcanceltype.c.
++++
+
+setcanceltype.c:53
+Simple Test Case
+This is a missing error case.
++++
+
+setcanceltype.c:68
+Simple Test Case
+This is actually two cases because of how the exit code it generated.
+
+One is really line 68.  We do not hit the cancellation requested but
+deferred case where we will need to run the handners.
+
+The other is a branch from line 50 for !oldtype.
+
+Could possibly share cancellation evaluatation code with setcanceltype.c.
++++
+
+condwaitsupp.c:59
+Simple Test Case
+This code is either easy or impossible to hit.  The condition variable is
+associated with a mutex but it is not the one we are specifying.  Probably
+will require having two threads wait on the same condition variable but
+each uses a different mutex.
++++
+
+condget.c:44
+Simple Test Case
+I think this is running out of condition variables while using automatic
+allocation.
++++
+
+keycreate.c:80
+Simple Test Case
+Run out of memory while allocating key memory.
++++
+
+keycreate.c:82
+Simple Test Case
+Run out of memory while allocating key memory.
++++
+
+keyrundestructors.c:62
+Simple Test Case
+Restructure the code into 3 separate tests with continues and see which
+cases are really not hit. Then trigger the cases.
++++
+
+keyrundestructors.c:64
+Simple Test Case
+Probably Iterating over a NULL value.
++++
+
+mqueuecreatesupp.c:101
+Simple Test Case
+This is running out of message queues.
++++
+
+mqueue.inl:60
+Simple Test Case
+Really two cases.
+
+mqueuecreatesupp.c:119 is running out of memory allocating the name.
+
+mqueuecreatesupp.c:142 is failing the core message queue initialize.
+Probably running out of memory while allocating the buffer memory.
++++
+
+mqueuedeletesupp.c:57
+Simple Test Case
+This is a case of deleting a named message queue.
++++
+
+mqueuetimedreceive.c:71
+Simple Test Case or Restructure switch to if
+Given that this is 3 instructions, it is probably a missed test case.
++++
+
+mqueuetimedsend.c:71
+Simple Test Case or Restructure switch to if
+Given that this is 3 instructions, it is probably a missed test case.
++++
+
+mutexinit.c:104
+Restructure and Simple Test Case
+This should not be an assert.  Restructure and test both values and another
+error case.
++++
+
+priority.inl:35
+Simple Test Case
+Multiple cases.
+mutexinit.c:128 for a bad priority case.
+pthreadcreate.c:118 for a bad priority case.
+pthreadcreate.c:148 for a bad replenish period case.
+pthreadsetschedparam.c:48 for bad priority.
+
+Consider making this a real subroutine.
++++
+
+psignal.c:146
+?
+This appears to be a case of not exercising the loop fully.
++++
+
+pthread.inl:46
+Paranoid Code
+pthreadcreate.c:265 Put this code inside an ifdef DEBUG.  We cannot get 
+into this trouble -- nothing can touch this thread until we want them to.
++++
+
+pthreadcreate.c:130
+Simple Test Cases
+We apparently are not creating threads with all possible schedpolicy's.
+
+Similar code is in pthreadsetschedparam.c.  Perhaps shared code would
+make this easier to test.
++++
+
+pthreadsetschedparam.c:53
+Simple Test Case
+bad policy case
++++
+
+pthreadsetschedparam.c:70
+Simple Test Cases.
+We apparently are not creating threads with all possible schedpolicy's.
+
+Similar code is in pthreadcreate.c.  Perhaps shared code would
+make this easier to test.
++++
+
+mutexinit.c:144
+Simple Test Case
+This code is not initializing a specific type of mutex -- probably recursive.
++++
+
+mutexsetprioceiling.c:59
+Probably Simple Test Case
+This appears to be missing not passing in a bad id.
++++
+
+mutextimedlock.c:59
+Simple Test Case (or Restructure)
+Looks like another undertested timeout path.
++++
+
+mutexget.c:64
+Simple Test Case
+This looks like there are error paths due to the macro which are not 
+covered in both routines.
++++
+
+mutexget.c:76
+Simple Test Case
+This looks like there are error paths due to the macro which are not 
+covered in both routines.
+
+mutex lock with auto initialization of mutex
++++
+
+pthread.c:179
+Paranoid Code -- mark as debug
+You can't get to the thread/task create extension code if it isn't 
+class == 1. DEBUG
++++
+
+pthread.c:84
+Simple Test Case
+Need to set the sporadic budget to less then a clock tick.
++++
+
+pthread.c:98
+Simple Test Case
+Need to set the replenish period to less then a clock tick.
++++
+
+pthread.c:130
+Simple Test Case
+We are not hitting all the sporadic scheduler cases from POSIX.
++++
+
+pthread.c:131
+Simple Test Case
+We are not hitting all the sporadic scheduler cases from POSIX.
++++
+
 eventsurrender.c:81
 Interrupt Synchronization
 This is executed when events are sent to the currently executing thread
@@ -34,6 +304,7 @@ period must expire while attempting to block
 
 watchdog.inl:129
 Interrupt Synchronization
+
 period expires while blocking (ratemontimeout.c:66)
 +++
 
@@ -63,11 +334,36 @@ Simple Test Case or Dead Code?
 This is the error path for a NULL message pointer.  This may not be able
 to be reached from the APIs and if so, should be conditionalized as DEBUG.
 If it can be reached from the APIs, then it is a simple test case.
+
+coremsgflushwait.c:65
+Dead Code?
+This appears to be dead code and the routine may be able to be removed.
+Verify this is the case and remove it.
 +++
 
 coremutex.inl:171
 Simple Test Case
 pri ceiling, acquire when pri = ceiling
++++
+
+corespinlockwait.c:74
+Simple Test Case
+The spinlock is not available and the caller is not willing to wait.
+Requires a test of pthread_spin_trylock.
++++
+
+corespinlockwait.c:75
+Simple Test Case (or unreachable SuperCore)
+This is either a simple test case or a case where the SuperCore includes
+functionality which is not promoted out yet via an API.  If this is code
+which is not available via the API yet, then it should be conditionalized
+and disabled.
++++
+
+corespinlockrelease.c:59
+Simple Test Case
+Attempt to release a locked spinlock from a thread that is not the one
+which locked it.
 +++
 
 coremutexsurrender.c:88
@@ -98,6 +394,11 @@ Simple Test Case
 need to flush a NOT counting semaphore
 +++
 
+regionextend.c:83
+Code Restructuring
+Rerun with my modifications
++++
+
 regionresizesegment.c:83
 Simple Test Case
 need a test (9 instructions)
@@ -106,6 +407,14 @@ need a test (9 instructions)
 debug.c:63
 Simple Test Case
 need a test
++++
+
+heapXXX.c:0
+Simple Test Case
+The heap is corrupted.  The block's size does not match the next block's
+previous size backwards link.  This may make sense to add to the
+Heap Walk test.
+NOTE: Line number lost in edits.  Redo.
 +++
 
 heapresizeblock.c:158
@@ -165,6 +474,7 @@ documented (not implemented) in sp40.  Fill up the driver table and
 register another driver.
 +++
 
+
 ioregisterdriver.c:71
 Simple Test Case
 documented (not implemented) in sp40.  Fill up the driver table and
@@ -188,6 +498,11 @@ Simple Test Case
 need a case for not willing to wait
 +++
 
+corespinlockwait.c:76
+Simple Test Case
+need a case for a timeout
++++
+
 dpmemcreate.c:87
 Simple Test Case
 need invalid address of return id
@@ -206,6 +521,21 @@ sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 thread.inl:47
 Simple Test Case
 (sys state trickery) shutdown while in shutdown state
++++
+
+threadcreateidle.c:59
+Simple Test Case
+This appears to be a case where the IDLE task stack size is explicitly
+configured to be less than the minimum stack size and has to be increased.
+It should be possible to make a minor configuration change to an existing
+test to cover this one.
++++
+
+threadhandler.c:148
+Code Modification
+Given the current APIs, the switch cases with two arguments cannot be 
+executed.  Disable those as unused by any existing API and restructure
+switch to an if.
 +++
 
 threadget.c:88
@@ -245,17 +575,45 @@ A user extension must return an error for the create case of an Floating
 Point enabled task.  
 +++
 
+threadinitialize.c:231
+Simple Test Case
+Add case with user extension which fails to allocate memory on create
++++
+
 threadinitialize.c:238
 Simple Test Case
 A user extension must return an error for the create case of an Floating
 Point enabled task.  
 +++
 
-threadreset.c:63
+threadhandler.c:163
+Code Modification
+See threadhandler.c:148.
++++
+
+threadreset.c:61
 Simple Test Case
 This is a case where a task is restarted with its per task watchdog
 timer active. This probably can be hit by having a task do a long
 wake after and another thread restart it.
++++
+
+threadresume.c:65
+Dead Code in Configuration
+This code can only be exercised from ITRON so all suspend with nesting
+count support should be disabled unless ITRON is enabled.  Do not
+write a test for it.  Just disable all related functionality on the
+ITRON enabled macro.
++++
+
+threadresume.c:68
+Dead Code in Configuration
+See threadresume.c:65
++++
+
+threadresume.c:71
+Dead Code in Configuration
+See threadresume.c:65
 +++
 
 threadstackallocate.c:61
@@ -295,15 +653,25 @@ already a thread priority on the chain.  This priority will go before
 any in the set.  So we search backwards and insert at the head.
 +++
 
+regionextend.c:75
+Simple Test Case, Possible Restructuring
+possibly dead code from switch, change to if's
+threadreset.c:63
+Simple Test Case
+This is a case where a task is restarted with its per task watchdog
+timer active. This probably can be hit by having a task do a long
+wake after and another thread restart it.
++++
+
 corebarrierwait.c:64
 Simple Test Case
 This looks like a simple test case of being a automatically released 
 barrier and being the Nth task to block so tripping the automatic release.
 +++
 
-mutexget.c:76
-Simple Test Case (if correct)
-mutex lock with auto initialization of mutex
+prwlocktimedrdlock.c:89
+Simple Test Case
+Need to deal with timeout cases (past and future)
 +++
 
 prwlocktimedwrlock.c:89
@@ -314,21 +682,6 @@ Need to deal with timeout cases (past and future)
 prwlocktimedrdlock.c:90
 Simple Test Case
 Need to deal with timeout cases (past and future)
-+++
-
-pthreadcreate.c:130
-Simple Test Case
-bad scheduling policy in switch
-+++
-
-pthreadsetschedparam.c:53
-Simple Test Case
-bad policy case
-+++
-
-pthreadsetschedparam.c:70
-Simple Test Case
-SCHED_SPORADIC with bad replenish period
 +++
 
 chain.inl:300
@@ -445,20 +798,42 @@ Remove a user extension set with a context switch extension.  Add to
 existing extension test.
 +++
 
+killinfo.c:153
+Simple Test Case
+Yet another path through here.
++++
+
+killinfo.c:194
+Paranoid Code
+Disable except for DEBUG
++++
+
 killinfo.c:211
 Simple Test Case
 Multiple threads interested but find high priority one first.
 +++
 
-killinfo.c:244
+killinfo.c:220
+Paranoid Code
+Disable except for DEBUG
++++
+
+killinfo.c:233
 Simple Test Case
 signals to blocked/ready tasks with particular settings
 +++
 
-killinfo.c:336
+killinfo.c:244
+Simple Test Case
+Yet another path through here.
++++
+
+killinfo.c:325
 Simple Test Case
 This is an error case where we can't allocate another signinfo structure.
 +++
+
+
 
 timerinserthelper.c:45
 Interrupt Synchronization
