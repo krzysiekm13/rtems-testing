@@ -127,6 +127,7 @@ dated=${BSP}-`date +%Y%m%d-%H%M`
 rm -rf ${dated}
 mkdir ${dated}
 cp summary.txt report.txt sizes.txt annotated.dmp ${dated}
+cp ${COVBASE}/Explanations.txt.NotFound ${dated}
 tar cjf ${dated}.tar.bz2 ${dated}
 rm -rf ${dated}
 

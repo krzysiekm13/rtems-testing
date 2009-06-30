@@ -1,8 +1,3 @@
-__assert.c:31
-Simple Test Case
-This is just not hit by any test.  Add another fatal error case.
-+++
-
 apiext.c:61
 Code Unused by APIs?
 It appears that no current API uses a predriver hook.  If this analysis
@@ -29,7 +24,7 @@ Make a comment that it should be protected by conditionals on the APIs
 that depend on it.
 +++
 
-chainsert.c:41
+chaininsert.c:41
 Simple Test Case
 The protected chain insert is apparently not used.  Add a chain test which
 uses the rtems_chain_xxx api and use this call.
@@ -62,6 +57,21 @@ This is a missing error case.
 +++
 
 /opt/rtems-4.10/lib/gcc/sparc-rtems4.10/4.4.0/../../../../sparc-rtems4.10/include/pthread.h:280
+Simple Test Case
+Really setcancelstate.c:65 and setcanceltype.c:65. Apparently we don't
+hit the end of this if which sets cancel = true.
+
+Could possibly share cancellation evaluatation code with setcanceltype.c
+and setcancelstate.c.
++++
+
+psxtransschedparam.c:36
+Simple Test Case
+This appears to be that a bad policy is not passed in.  It may not be
+possible to get a bad policy through the checks in the wrapper routines.
+This will have to be verified.
++++
+/opt/rtems-4.10/lib/gcc/sparc-rtems4.10/4.4.0/../../../../sparc-rtems4.10/include/pthread.h:281
 Simple Test Case
 Really setcancelstate.c:65 and setcanceltype.c:65. Apparently we don't
 hit the end of this if which sets cancel = true.
@@ -164,53 +174,9 @@ Simple Test Case or Restructure switch to if
 Given that this is 3 instructions, it is probably a missed test case.
 +++
 
-mutexinit.c:104
-Restructure and Simple Test Case
-This should not be an assert.  Restructure and test both values and another
-error case.
-+++
-
-priority.inl:35
-Simple Test Case
-Multiple cases.
-mutexinit.c:128 for a bad priority case.
-pthreadcreate.c:118 for a bad priority case.
-pthreadcreate.c:148 for a bad replenish period case.
-pthreadsetschedparam.c:48 for bad priority.
-
-Consider making this a real subroutine.
-+++
-
-psignal.c:146
+psignal.c:148
 ?
 This appears to be a case of not exercising the loop fully.
-+++
-
-pthread.inl:46
-Paranoid Code
-pthreadcreate.c:265 Put this code inside an ifdef DEBUG.  We cannot get 
-into this trouble -- nothing can touch this thread until we want them to.
-+++
-
-pthreadcreate.c:130
-Simple Test Cases
-We apparently are not creating threads with all possible schedpolicy's.
-
-Similar code is in pthreadsetschedparam.c.  Perhaps shared code would
-make this easier to test.
-+++
-
-pthreadsetschedparam.c:53
-Simple Test Case
-bad policy case
-+++
-
-pthreadsetschedparam.c:70
-Simple Test Cases.
-We apparently are not creating threads with all possible schedpolicy's.
-
-Similar code is in pthreadcreate.c.  Perhaps shared code would
-make this easier to test.
 +++
 
 mutexinit.c:144
@@ -242,30 +208,28 @@ covered in both routines.
 mutex lock with auto initialization of mutex
 +++
 
-pthread.c:179
-Paranoid Code -- mark as debug
-You can't get to the thread/task create extension code if it isn't 
-class == 1. DEBUG
+pthread.c:83
+Simple Test Case
+This is a case of the sporadic scheduling budget being less than one clock
+tick in length.
 +++
 
-pthread.c:84
+pthread.c:97
 Simple Test Case
-Need to set the sporadic budget to less then a clock tick.
+This is a case of the sporadic scheduling replinish period being less
+than one clock tick in length.
 +++
 
-pthread.c:98
+pthread.c:129
 Simple Test Case
-Need to set the replenish period to less then a clock tick.
+This is a case of attempting to change the priority of a thread
+holding resources at the end of the sporadic server period.
 +++
 
 pthread.c:130
 Simple Test Case
-We are not hitting all the sporadic scheduler cases from POSIX.
-+++
-
-pthread.c:131
-Simple Test Case
-We are not hitting all the sporadic scheduler cases from POSIX.
+It looks like we don't have a good sporadic server test.  This is
+the normal case of changin priority.
 +++
 
 eventsurrender.c:81
@@ -346,18 +310,10 @@ Simple Test Case
 pri ceiling, acquire when pri = ceiling
 +++
 
-corespinlockwait.c:74
+corespinlockwait.c:69
 Simple Test Case
 The spinlock is not available and the caller is not willing to wait.
 Requires a test of pthread_spin_trylock.
-+++
-
-corespinlockwait.c:75
-Simple Test Case (or unreachable SuperCore)
-This is either a simple test case or a case where the SuperCore includes
-functionality which is not promoted out yet via an API.  If this is code
-which is not available via the API yet, then it should be conditionalized
-and disabled.
 +++
 
 corespinlockrelease.c:59
@@ -394,40 +350,14 @@ Simple Test Case
 need to flush a NOT counting semaphore
 +++
 
-regionextend.c:83
-Code Restructuring
-Rerun with my modifications
-+++
-
-regionresizesegment.c:83
-Simple Test Case
-need a test (9 instructions)
-+++
-
 debug.c:63
 Simple Test Case
 need a test
 +++
 
-heapXXX.c:0
-Simple Test Case
-The heap is corrupted.  The block's size does not match the next block's
-previous size backwards link.  This may make sense to add to the
-Heap Walk test.
-NOTE: Line number lost in edits.  Redo.
-+++
-
 heapresizeblock.c:158
 Simple Test Case
 looks like shrink block but so small the unused area gets freed
-+++
-
-objectextendinformation.c:226
-Simple Test Case
-I think this is a case of allocating objects in unlimited mode
-until you run out of memory.  Perhaps we are not running unlimited
-for the coverage runs.  Or maybe coverage has a limit on how many Ids
-it will create.
 +++
 
 objectshrinkinformation.c:101
@@ -461,6 +391,19 @@ This appears to be the exit path for all errors in this routine.  Obviously
 there are no tests for errors.
 +++
 
+heap.inl:243
+?
+This appears to be a path through the inlined routine _Heap_Align_up_uptr()
+that is not covered.  There is a conditional in the alignment computation 
+and one case is not covered.
++++
+
+heapallocatealigned.c:223
+Simple Test Case
+This looks like a case where the allocate aligned simply fails to get any
+memory.
++++
+
 heapgetinfo.c:70
 Simple Test Case
 The heap is corrupted.  The block's size does not match the next block's
@@ -468,6 +411,26 @@ previous size backwards link.  This may make sense to add to the
 Heap Walk test.
 +++
 
+heapresizeblock.c:144
+Simple Test Case
+Shrink a heap block with the resize.  The block after this one in memory
+must be free so the memory free by the shrinking will be merged with that
+already free block.
++++
+
+heapwalk.c:144
+Test Case
+We are not hitting the case for having an error at this place.  I would have
+thought that making do_dump 0 and running all the cases is enough.  Maybe the
+test does not do what I think and this is why this case is missed.
++++
+
+regionresizesegment.c:83
+Simple Test Case
+Apparently we do not have a test case where there is memory freed by the
+resize effort is sufficient to result in needing to look to see if we
+can unblock any tasks.
++++
 ioregisterdriver.c:61
 Simple Test Case
 documented (not implemented) in sp40.  Fill up the driver table and
@@ -493,16 +456,6 @@ Simple Test Case
 Successful but no tasks waiting
 +++
 
-corespinlockwait.c:69
-Simple Test Case
-need a case for not willing to wait
-+++
-
-corespinlockwait.c:76
-Simple Test Case
-need a case for a timeout
-+++
-
 dpmemcreate.c:87
 Simple Test Case
 need invalid address of return id
@@ -521,21 +474,6 @@ sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 thread.inl:47
 Simple Test Case
 (sys state trickery) shutdown while in shutdown state
-+++
-
-threadcreateidle.c:59
-Simple Test Case
-This appears to be a case where the IDLE task stack size is explicitly
-configured to be less than the minimum stack size and has to be increased.
-It should be possible to make a minor configuration change to an existing
-test to cover this one.
-+++
-
-threadhandler.c:148
-Code Modification
-Given the current APIs, the switch cases with two arguments cannot be 
-executed.  Disable those as unused by any existing API and restructure
-switch to an if.
 +++
 
 threadget.c:88
@@ -569,51 +507,9 @@ There must not be a thread/task created
 with THREAD_CPU_BUDGET_ALGORITHM_EXHAUST_TIMESLICE.
 +++
 
-threadinitialize.c:234
-Simple Test Case
-A user extension must return an error for the create case of an Floating
-Point enabled task.  
-+++
-
-threadinitialize.c:231
+threadinitialize.c:233
 Simple Test Case
 Add case with user extension which fails to allocate memory on create
-+++
-
-threadinitialize.c:238
-Simple Test Case
-A user extension must return an error for the create case of an Floating
-Point enabled task.  
-+++
-
-threadhandler.c:163
-Code Modification
-See threadhandler.c:148.
-+++
-
-threadreset.c:61
-Simple Test Case
-This is a case where a task is restarted with its per task watchdog
-timer active. This probably can be hit by having a task do a long
-wake after and another thread restart it.
-+++
-
-threadresume.c:65
-Dead Code in Configuration
-This code can only be exercised from ITRON so all suspend with nesting
-count support should be disabled unless ITRON is enabled.  Do not
-write a test for it.  Just disable all related functionality on the
-ITRON enabled macro.
-+++
-
-threadresume.c:68
-Dead Code in Configuration
-See threadresume.c:65
-+++
-
-threadresume.c:71
-Dead Code in Configuration
-See threadresume.c:65
 +++
 
 threadstackallocate.c:61
@@ -653,9 +549,6 @@ already a thread priority on the chain.  This priority will go before
 any in the set.  So we search backwards and insert at the head.
 +++
 
-regionextend.c:75
-Simple Test Case, Possible Restructuring
-possibly dead code from switch, change to if's
 threadreset.c:63
 Simple Test Case
 This is a case where a task is restarted with its per task watchdog
@@ -669,17 +562,7 @@ This looks like a simple test case of being a automatically released
 barrier and being the Nth task to block so tripping the automatic release.
 +++
 
-prwlocktimedrdlock.c:89
-Simple Test Case
-Need to deal with timeout cases (past and future)
-+++
-
 prwlocktimedwrlock.c:89
-Simple Test Case
-Need to deal with timeout cases (past and future)
-+++
-
-prwlocktimedrdlock.c:90
 Simple Test Case
 Need to deal with timeout cases (past and future)
 +++
@@ -798,42 +681,30 @@ Remove a user extension set with a context switch extension.  Add to
 existing extension test.
 +++
 
-killinfo.c:153
+userextthreadcreate.c:43
+Simple Test Case
+Task create user extension fails.
++++
+
+killinfo.c:152
 Simple Test Case
 Yet another path through here.
 +++
 
-killinfo.c:194
-Paranoid Code
-Disable except for DEBUG
-+++
-
-killinfo.c:211
+killinfo.c:212
 Simple Test Case
 Multiple threads interested but find high priority one first.
 +++
 
-killinfo.c:220
-Paranoid Code
-Disable except for DEBUG
-+++
-
-killinfo.c:233
-Simple Test Case
-signals to blocked/ready tasks with particular settings
-+++
-
-killinfo.c:244
+killinfo.c:247
 Simple Test Case
 Yet another path through here.
 +++
 
-killinfo.c:325
+killinfo.c:339
 Simple Test Case
 This is an error case where we can't allocate another signinfo structure.
 +++
-
-
 
 timerinserthelper.c:45
 Interrupt Synchronization
