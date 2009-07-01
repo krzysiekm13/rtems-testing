@@ -24,12 +24,6 @@ Make a comment that it should be protected by conditionals on the APIs
 that depend on it.
 +++
 
-chaininsert.c:41
-Simple Test Case
-The protected chain insert is apparently not used.  Add a chain test which
-uses the rtems_chain_xxx api and use this call.
-+++
-
 wkspace.c:46
 Simple Test Case
 There is no test case which forces memory to be zeroed out.  Many BSPs
@@ -562,11 +556,6 @@ This looks like a simple test case of being a automatically released
 barrier and being the Nth task to block so tripping the automatic release.
 +++
 
-prwlocktimedwrlock.c:89
-Simple Test Case
-Need to deal with timeout cases (past and future)
-+++
-
 chain.inl:300
 Simple Test Case or Minor Code Rework
 This inlined case appears multiple times.
@@ -632,22 +621,6 @@ Simple Test Case
 Will probably have to bypass the APIs but this is a divide by zero case.
 +++
 
-coretodmsecstoticks.c:23
-Simple Test Case
-TOD_MILLISECONDS_TO_TICKS is normally a macro.  Some test needs to undefine
-the macro so this is executed.  Probably a simple matter of adding this to
-an existing test in a place that does not impact a configuration table.
-One line and eliminate 40 bytes.
-+++
-
-coretodusectoticks.c:23
-Simple Test Case
-TOD_MICROSECONDS_TO_TICKS is normally a macro.  Some test needs to undefine
-the macro so this is executed.  Probably a simple matter of adding this to
-an existing test.   in a place that does not impact a configuration table.
-One line and eliminate 28 bytes.
-+++
-
 watchdogadjusttochain.c:42
 Simple Test Case?
 I think this is a case where there are multiple items on the chain which
@@ -668,11 +641,6 @@ Remove a watchdog while it is being inserted.
 watchdogremove.c:64
 Interrupt Synchronization
 Remove a watchdog while it is being removed.
-+++
-
-watchdogreportchain.c:47
-Simple Test Simple
-Need to call report with NULL name.
 +++
 
 userextremoveset.c:34
