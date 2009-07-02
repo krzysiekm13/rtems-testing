@@ -506,22 +506,6 @@ Simple Test Case
 Add case with user extension which fails to allocate memory on create
 +++
 
-threadstackallocate.c:61
-Simple Test Case
-We do not have a test for having a user provided stack allocator. This
-code is both the pass and fail to allocate case.
-
-NOTE: This code should probably be able to be disabled for Tiny/RTEMS.
-+++
-
-threadstackfree.c:58
-Simple Test Case
-We do not have a test for having a user provided stack allocator. This
-code is the deallocate path.
-
-NOTE: This code should probably be able to be disabled for Tiny/RTEMS.
-+++
-
 iterateoverthreads.c:42
 Simple Test Case
 Need to call iterate over threads in a test where there is an API configured
