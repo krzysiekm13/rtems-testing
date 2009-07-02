@@ -478,11 +478,11 @@ to any thread/task routine.
 +++
 
 threadinitialize.c:91
-Simple Test Case and Code Should be Optional for Tiny/RTEMS
-This is for the case where the BSP/application is configured to provide
-their own stack allocation routines.  But this code is rarely used so
-(1) there needs to be a test and (2) the code supporting this capability
-needs to be inside a conditional which can be disabled for Tiny/RTEMS.
+Simple Test Case
+This is for the case where the application uses the POSIX 
+thread stack address attribute.
+
+NOTE: Code Should be Configured on POSIX
 +++
 
 threadinitialize.c:148
