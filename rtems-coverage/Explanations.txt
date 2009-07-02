@@ -281,22 +281,11 @@ Simple Test Case
 need to create a semaphore that is RTEMS_PRIORITY_CEILING
 +++
 
-coremsgflushwait.c:65
-Dead Code?
-This appears to be dead code and the routine may be able to be removed.
-Verify this is the case and remove it.
-+++
-
 coremsgsubmit.c:179
 Simple Test Case or Dead Code?
 This is the error path for a NULL message pointer.  This may not be able
 to be reached from the APIs and if so, should be conditionalized as DEBUG.
 If it can be reached from the APIs, then it is a simple test case.
-
-coremsgflushwait.c:65
-Dead Code?
-This appears to be dead code and the routine may be able to be removed.
-Verify this is the case and remove it.
 +++
 
 coremutex.inl:171
@@ -383,13 +372,6 @@ pheapgetinfo.c:40
 Simple Test Case
 This appears to be the exit path for all errors in this routine.  Obviously
 there are no tests for errors.
-+++
-
-heap.inl:243
-?
-This appears to be a path through the inlined routine _Heap_Align_up_uptr()
-that is not covered.  There is a conditional in the alignment computation 
-and one case is not covered.
 +++
 
 heapallocatealigned.c:223

@@ -1,5 +1,9 @@
 2009-07-02	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: More clean up of covered cases.
+
+2009-07-02	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Correct explanation of threadinitialize.c:91. It is
 	really implementing POSIX feature to provide stack space NOT custom
 	stack allocator.
