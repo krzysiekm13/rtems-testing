@@ -1,3 +1,8 @@
+2009-07-03	Joel Sherrill <joel.sherrill@rtems.org>
+
+	* gcc/do_one: qemu is installed as pc386. Name of BSP to script does
+	not always match name of BSP to RTEMS.
+
 2009-05-09	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* qemu-support/pc386_fda.bz2: New file.

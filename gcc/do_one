@@ -55,6 +55,7 @@ verbose=no
 usage()
 {
 cat <<EOF
+do_one [options] CPU BSP
   -A - binutils, stage 1, C++, C/C++ multilib, Ada, RTEMS
   -T - run GCC and Ada tests
   -b - install binutils (from source or copy installed RPM contents)
@@ -184,6 +185,12 @@ if [ ${needBSP} = yes -a x${bsp} = x ] ; then
 fi
 
 TARGET=${cpu}-rtems${RTEMS_VERSION}
+
+if [ x${bsp} = xqemu ] ; then
+  BSP_BUILT=pc386
+else
+  BSP_BUILT=${bsp}
+fi
   
 ######### Consistency check installation of source
 
@@ -341,6 +348,7 @@ j_gdb()
       cd b-gdb-${cpu}
       (${GDBDIR}/configure --target=${GDBTARGET} \
         --enable-sim --enable-sim-hardware \
+        --disable-werror \
         --enable-timebase --enable-sim-trace  --prefix=$INSTALL && \
         make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-gdb.log 2>&1
       if [ $? -ne 0 ] ; then
@@ -546,14 +554,14 @@ j_gcc2()
      ada_multilib="--disable-multilib"
   fi
 
-#    CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${bsp}/lib/
+#    CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${BSP_BUILT}/lib/
 
   ${GCCDIR}/configure \
    ${GCC_EXTRA_ARGS} \
    --enable-threads=rtems  --with-gnu-as ${ada_multilib} \
    --enable-newlib-mb --enable-newlib-iconv \
    --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
-    CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${bsp}/lib/ \
+    CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${BSP_BUILT}/lib/ \
     --enable-version-specific-runtime-libs \
     --enable-languages=c,ada --target=$TARGET --prefix=$INSTALL &&
   make ${MAKEJOBS} &&
