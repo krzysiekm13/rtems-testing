@@ -1,21 +1,18 @@
-apiext.c:61
-Code Unused by APIs?
-It appears that no current API uses a predriver hook.  If this analysis
-is correct, then conditionalize all support for the API predriver hook with
-FUNCTIONALITY_NOT_CURRENTLY_USED_BY_ANY_API.  Make a comment that it should
-be protected by conditionals on the APIs that depend on it.
-+++
-
-apiext.c:81
-Code Unused by APIs?
+apiext.c:83
+Code unreachable
 It appears that all current APIs implement the postdriver hook.  
 If this analysis is correct, then conditionalize the NULL check
 for the API predriver hook with FUNCTIONALITY_NOT_CURRENTLY_USED_BY_ANY_API.
 Make a comment that it should be protected by conditionals on the APIs
 that depend on it.
+
+Internal - no extension
+Classic - yes
+POSIX -   yes
+ITRON -   yes
 +++
 
-apiext.c:102
+apiext.c:104
 Code Unused by APIs?
 It appears that all current APIs implement the postswitch hook.  
 If this analysis is correct, then conditionalize the NULL check
@@ -24,20 +21,9 @@ Make a comment that it should be protected by conditionals on the APIs
 that depend on it.
 +++
 
-wkspace.c:46
-Simple Test Case
-There is no test case which forces memory to be zeroed out.  Many BSPs
-will hit this code but we need it to be for sure.
-+++
-
 wkspace.c:56
 Simple Test Case (Fatal)
 This is a fatal error case where there is not enough workspace memory.
-+++
-
-vfork.c:22
-Simple Test Case
-There is no test for this stub.
 +++
 
 cancelrun.c:44
@@ -407,12 +393,12 @@ Apparently we do not have a test case where there is memory freed by the
 resize effort is sufficient to result in needing to look to see if we
 can unblock any tasks.
 +++
+
 ioregisterdriver.c:61
 Simple Test Case
 documented (not implemented) in sp40.  Fill up the driver table and
 register another driver.
 +++
-
 
 ioregisterdriver.c:71
 Simple Test Case

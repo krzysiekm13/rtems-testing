@@ -1,5 +1,10 @@
 2009-07-03	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: vfork test added. Workspace zero test added. No API
+	uses predriver_hook so code marked as unused by current APIs.
+
+2009-07-03	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Eliminate cases in sigwait() and sigtimedwait().
 
 2009-07-02	Joel Sherrill <joel.sherrill@OARcorp.com>
