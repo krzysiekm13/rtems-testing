@@ -646,14 +646,3 @@ We just removed the timer but the watchdog timer is being inserted by
 a higher priority interrupt.  We may be able to get this to happen
 with Classic API Timers.  But that is unclear.
 +++
-
-sigwait.c:43
-Simple Test Case
-This routine is implemented as a wrapper for sigtimedwait() and this is
-the error path.  We just need a simple error test case.
-+++
-
-sigtimedwait.c:42
-Simple Test Case
-This is an error case where no POSIX real-time signals are set. (I think)
-+++
