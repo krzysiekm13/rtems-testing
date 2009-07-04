@@ -216,11 +216,6 @@ Simple Test Case
 period times out but thread is blocked on another period?
 +++
 
-taskinitusers.c:68
-Simple Test Case
-Errors which require overriding confdefs and/or multiple init tasks (2 cases?)
-+++
-
 ratemonperiod.c:310
 Interrupt Synchronization
 period must expire while attempting to block
@@ -286,12 +281,6 @@ which locks raises priority and then releases and lowers priority but this
 case sure looks like that.  Or it is a case where the thread's priority
 is equal to the ceiling and the branch is taken.  Hard to read SPARC assembly.
 I am leaning to the equal case.
-+++
-
-corerwlockrelease.c:53
-Simple Test Case
-This is a case where you are releasing an RWLock that is already released.
-So this should be a very simple test case.
 +++
 
 semflush.c:82
