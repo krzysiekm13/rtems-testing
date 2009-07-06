@@ -141,18 +141,16 @@ Simple Test Case (or Restructure)
 Looks like another undertested timeout path.
 +++
 
-mutexget.c:64
+mutexget.c:69
 Simple Test Case
-This looks like there are error paths due to the macro which are not 
-covered in both routines.
+This is using the automatic initializer PASS and FAIL from anything
+but pthread_mutex_lock.
 +++
 
-mutexget.c:76
+mutexget.c:83
 Simple Test Case
-This looks like there are error paths due to the macro which are not 
-covered in both routines.
-
-mutex lock with auto initialization of mutex
+This is using the automatic initializer PASS and FAIL from
+pthread_mutex_lock.
 +++
 
 pthread.c:83

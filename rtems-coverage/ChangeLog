@@ -1,5 +1,9 @@
 2009-07-06	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Clean up mutexget.c and corresponding explanations.
+
+2009-07-06	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Fixed psxsignal01 to hit POSIX signal from ISR
 	case.
 
