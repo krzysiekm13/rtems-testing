@@ -1,9 +1,4 @@
 
-wkspace.c:56
-Simple Test Case (Fatal)
-This is a fatal error case where there is not enough workspace memory.
-+++
-
 cancelrun.c:44
 Simple Test Case
 This is simply an untested normal use of pthread cancellation handlers.
@@ -137,7 +132,7 @@ psignal.c:148
 This appears to be a case of not exercising the loop fully.
 +++
 
-mutexinit.c:144
+mutexinit.c:165
 Simple Test Case
 This code is not initializing a specific type of mutex -- probably recursive.
 +++
@@ -240,13 +235,6 @@ timer must be inserted by an ISR while we are inserting it
 semcreate.c:163
 Simple Test Case
 need to create a semaphore that is RTEMS_PRIORITY_CEILING
-+++
-
-coremsgsubmit.c:179
-Simple Test Case or Dead Code?
-This is the error path for a NULL message pointer.  This may not be able
-to be reached from the APIs and if so, should be conditionalized as DEBUG.
-If it can be reached from the APIs, then it is a simple test case.
 +++
 
 coremutex.inl:171
@@ -380,11 +368,6 @@ have explained them correctly.  The assembly is just hard to follow.
 ioregisterdriver.c:84
 Simple Test Case
 if reachable
-+++
-
-coremsgbroadcast.c:86
-Simple Test Case
-Successful but no tasks waiting
 +++
 
 dpmemcreate.c:87
