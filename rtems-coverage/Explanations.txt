@@ -467,11 +467,6 @@ get a case there _Chain_Get_unprotected returns NULL.  May be able to
 rework the loop to repeated call get until it gets a NULL.
 +++
 
-pthreadkill.c:69
-Simple Test Case
-psignal to running thread from ISR
-+++
-
 threadqenqueuepriority.c:139
 Interrupt Synchronization
 restart insertion search
