@@ -18,12 +18,6 @@ Could possibly share cancellation evaluatation code with setcanceltype.c
 and setcancelstate.c.
 +++
 
-psxtransschedparam.c:36
-Simple Test Case
-This appears to be that a bad policy is not passed in.  It may not be
-possible to get a bad policy through the checks in the wrapper routines.
-This will have to be verified.
-+++
 /opt/rtems-4.10/lib/gcc/sparc-rtems4.10/4.4.0/../../../../sparc-rtems4.10/include/pthread.h:281
 Simple Test Case
 Really setcancelstate.c:65 and setcanceltype.c:65. Apparently we don't

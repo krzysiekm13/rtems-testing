@@ -1,5 +1,10 @@
 2009-07-06	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: psxtransschedparam.c:36 eliminated by restructuring
+	switch into a series of if's.
+
+2009-07-06	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Cover a couple of more cases.
 
 2009-07-04	Joel Sherrill <joel.sherrill@OARcorp.com>
