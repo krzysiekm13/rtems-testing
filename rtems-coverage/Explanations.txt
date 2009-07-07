@@ -131,11 +131,6 @@ Simple Test Case
 This code is not initializing a specific type of mutex -- probably recursive.
 +++
 
-mutexsetprioceiling.c:59
-Probably Simple Test Case
-This appears to be missing not passing in a bad id.
-+++
-
 mutextimedlock.c:59
 Simple Test Case (or Restructure)
 Looks like another undertested timeout path.
@@ -222,6 +217,13 @@ Simple Test Case
 pri ceiling, acquire when pri = ceiling
 +++
 
+coremutexsurrender.c:188
+Simple Test Case
+There must not be a test of a priority ceiling mutex getting released
+which results in a thread being unblocked and the UNBLOCKED thread's
+priority being elevated.
++++
+
 corespinlockwait.c:69
 Simple Test Case
 The spinlock is not available and the caller is not willing to wait.
@@ -232,23 +234,6 @@ corespinlockrelease.c:59
 Simple Test Case
 Attempt to release a locked spinlock from a thread that is not the one
 which locked it.
-+++
-
-coremutexsurrender.c:88
-Simple Test Case or Code Restructuring
-This is a switch which has two cases marked as not able to be hit. This
-documentation needs to be verified and if true, restructured to represent
-this.  The cases that are not executed need to be turned into a
-conditionalized debug assertion.
-+++
-
-coremutexsurrender.c:178
-Simple Test Case
-I have trouble believing there is no simple priority ceiling mutex test
-which locks raises priority and then releases and lowers priority but this
-case sure looks like that.  Or it is a case where the thread's priority
-is equal to the ceiling and the branch is taken.  Hard to read SPARC assembly.
-I am leaning to the equal case.
 +++
 
 semflush.c:82

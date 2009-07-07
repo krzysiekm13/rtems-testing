@@ -1,5 +1,9 @@
 2009-07-07	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Restructured code to eliminate these cases.
+
+2009-07-07	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Eliminate mutexget.c automatic initialization
 	cases.
 
