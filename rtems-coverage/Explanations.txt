@@ -251,15 +251,6 @@ Simple Test Case
 looks like shrink block but so small the unused area gets freed
 +++
 
-objectshrinkinformation.c:101
-Talk To Chris
-This code needs to be explained by Chris and possibly restructured.
-I think this is possibly dead code where a branch case cannot actually
-be taken because it is redundant.  But more than than that, I am not
-100% sure the code is correct. I am unsure how the loop ensures that
-all objects within an allocation block are verified as being free.
-+++
-
 objectgetinfo.c:36
 Dead Code?
 This appears to be a case where a number which should be unsigned
