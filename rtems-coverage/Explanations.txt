@@ -260,14 +260,6 @@ be taken because it is redundant.  But more than than that, I am not
 all objects within an allocation block are verified as being free.
 +++
 
-objectidtoname.c:78
-Simple Test Case
-I find it hard to believe that this is not already covered but the code
-appears to be the exit path for the successful lookup of an id to return
-the object's name. Verify the lack of a test case and add one.  If there
-is a test case that would appear to cover this, investigate.
-+++
-
 objectgetinfo.c:36
 Dead Code?
 This appears to be a case where a number which should be unsigned
@@ -386,11 +378,6 @@ There must not be a thread/task created
 with THREAD_CPU_BUDGET_ALGORITHM_EXHAUST_TIMESLICE.
 +++
 
-threadinitialize.c:233
-Simple Test Case
-Add case with user extension which fails to allocate memory on create
-+++
-
 iterateoverthreads.c:42
 Simple Test Case
 Need to call iterate over threads in a test where there is an API configured
@@ -505,17 +492,6 @@ Remove a watchdog while it is being inserted.
 watchdogremove.c:64
 Interrupt Synchronization
 Remove a watchdog while it is being removed.
-+++
-
-userextremoveset.c:34
-Simple Test Case
-Remove a user extension set with a context switch extension.  Add to
-existing extension test.
-+++
-
-userextthreadcreate.c:43
-Simple Test Case
-Task create user extension fails.
 +++
 
 killinfo.c:152
