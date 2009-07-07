@@ -141,18 +141,6 @@ Simple Test Case (or Restructure)
 Looks like another undertested timeout path.
 +++
 
-mutexget.c:69
-Simple Test Case
-This is using the automatic initializer PASS and FAIL from anything
-but pthread_mutex_lock.
-+++
-
-mutexget.c:83
-Simple Test Case
-This is using the automatic initializer PASS and FAIL from
-pthread_mutex_lock.
-+++
-
 pthread.c:83
 Simple Test Case
 This is a case of the sporadic scheduling budget being less than one clock
