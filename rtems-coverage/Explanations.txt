@@ -207,11 +207,6 @@ Interrupt Synchronization
 timer must be inserted by an ISR while we are inserting it
 +++
 
-semcreate.c:163
-Simple Test Case
-need to create a semaphore that is RTEMS_PRIORITY_CEILING
-+++
-
 coremutex.inl:171
 Simple Test Case
 pri ceiling, acquire when pri = ceiling

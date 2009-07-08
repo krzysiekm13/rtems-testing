@@ -1,5 +1,9 @@
 2009-07-08	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: semcreate.c:163 eliminated by rework of semcreate.
+
+2009-07-08	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Add test cases for counting semaphore flush and
 	priority heap get information error cases.
 
