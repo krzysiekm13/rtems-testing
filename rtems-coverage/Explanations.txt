@@ -251,20 +251,6 @@ Simple Test Case
 looks like shrink block but so small the unused area gets freed
 +++
 
-objectgetinfo.c:36
-Dead Code?
-This appears to be a case where a number which should be unsigned
-(and maybe isn't) is being checked for being negative.  The method
-being called probably should be changed to return an unsigned int
-and the < 0 comparison removed.
-+++
-
-pheapgetinfo.c:40
-Simple Test Case
-This appears to be the exit path for all errors in this routine.  Obviously
-there are no tests for errors.
-+++
-
 heapallocatealigned.c:223
 Simple Test Case
 This looks like a case where the allocate aligned simply fails to get any
@@ -321,6 +307,12 @@ if reachable
 dpmemcreate.c:87
 Simple Test Case
 need invalid address of return id
++++
+
+pheapgetinfo.c:40
+Simple Test Case
+This appears to be the exit path for all errors in this routine.  Obviously
+there are no tests for errors.
 +++
 
 timerfireafter.c:76
@@ -388,13 +380,6 @@ I think! this is a case where we enqueue by priority with a thread
 priority that requires searching from last to first.  But there is
 already a thread priority on the chain.  This priority will go before
 any in the set.  So we search backwards and insert at the head.
-+++
-
-threadreset.c:63
-Simple Test Case
-This is a case where a task is restarted with its per task watchdog
-timer active. This probably can be hit by having a task do a long
-wake after and another thread restart it.
 +++
 
 corebarrierwait.c:64
