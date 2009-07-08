@@ -236,11 +236,6 @@ Attempt to release a locked spinlock from a thread that is not the one
 which locked it.
 +++
 
-semflush.c:82
-Simple Test Case
-need to flush a NOT counting semaphore
-+++
-
 debug.c:63
 Simple Test Case
 need a test
@@ -307,12 +302,6 @@ if reachable
 dpmemcreate.c:87
 Simple Test Case
 need invalid address of return id
-+++
-
-pheapgetinfo.c:40
-Simple Test Case
-This appears to be the exit path for all errors in this routine.  Obviously
-there are no tests for errors.
 +++
 
 timerfireafter.c:76
