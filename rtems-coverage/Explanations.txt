@@ -314,13 +314,6 @@ Simple Test Case
 (sys state trickery) shutdown while in shutdown state
 +++
 
-threadget.c:88
-Simple Test Case
-This will require adding a POSIX test where only Classic API tasks are
-configured and what should be the valid Id of a POSIX thread is passed
-to any thread/task routine.
-+++
-
 threadinitialize.c:91
 Simple Test Case
 This is for the case where the application uses the POSIX 
