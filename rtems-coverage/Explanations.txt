@@ -212,6 +212,11 @@ Simple Test Case
 pri ceiling, acquire when pri = ceiling
 +++
 
+coremutexseize.c:39
+Simple Test Case
+Fatal error to obtain mutex when in dispatching critical section.
++++
+
 coremutexsurrender.c:188
 Simple Test Case
 There must not be a test of a priority ceiling mutex getting released
@@ -370,12 +375,13 @@ Simple Test Case or Minor Code Rework
 This inlined case appears multiple times.
 
 _POSIX_signals_Clear_signals:71 chain get when empty
+_Watchdog_Adjust_to_chain may also have one.
 
-This is actually part of _Watchdog_Adjust_to_chain and it appears to be
+This is actually part of multiple paths and it appears to be
 dead because there is an explicit check for the chain being empty on the
-loop but the _Chain_Get_unprotected also checks for empty.  So we never
-get a case there _Chain_Get_unprotected returns NULL.  May be able to
-rework the loop to repeated call get until it gets a NULL.
+loop but a call to _Chain_Get_unprotected also checks for empty.  So we never
+get a case there _Chain_Get_unprotected returns NULL.  Can usually be 
+addressed by reworking the loop in some way.
 +++
 
 threadqenqueuepriority.c:139
@@ -402,7 +408,7 @@ normal path first and return.  Then fall into the unusual synchronization
 path.
 +++
 
-watchdogadjusttochain.c:44
+watchdogadjusttochain.c:42
 Simple Test Case
 I am pretty sure this is a case where we need to adjust the 
 chain forward multiple units but still end up with watchdogs

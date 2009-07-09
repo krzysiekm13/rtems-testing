@@ -1,5 +1,9 @@
 2009-07-09	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: More improvements.
+
+2009-07-09	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Rewrite explanation of watchdogadjusttochain.c:42.
 
 2009-07-09	Joel Sherrill <joel.sherrill@OARcorp.com>
