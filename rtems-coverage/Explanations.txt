@@ -402,10 +402,12 @@ normal path first and return.  Then fall into the unusual synchronization
 path.
 +++
 
-watchdogadjusttochain.c:42
-Simple Test Case?
-I think this is a case where there are multiple items on the chain which
-are at the same time (0 delta).
+watchdogadjusttochain.c:44
+Simple Test Case
+I am pretty sure this is a case where we need to adjust the 
+chain forward multiple units but still end up with watchdogs
+left on the chain at the end.  So things farther out in the future
+than we are adjusting.
 +++
 
 watchdoginsert.c:52
