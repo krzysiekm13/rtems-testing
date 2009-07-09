@@ -1,5 +1,11 @@
 2009-07-09	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Added sp59 to test path through
+	_Thread_queue_First_priority where the task's priority was in the
+	bottom 1/4 of the range.
+
+2009-07-09	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Timespec divide by zero covered by sp58.
 	spthreadq01 covers extracting a thread which is not blocked on a
 	thread queue. Rewrite explanation of threadqueuefirstpriority.c.

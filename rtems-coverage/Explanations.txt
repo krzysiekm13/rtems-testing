@@ -388,15 +388,6 @@ Simple Test Case
 need sp41 test cases with priority semaphore
 +++
 
-threadqfirstpriority.c:51
-Simple Test Case
-Ask for first priority on a thread queue with a task ONLY on the 4th
-priority chain.  This will require a test that has priorities in the
-lowest 1/4 of 256.  This should be able to be done by having a new
-Region test which has a single task of appropriate priority blocked
-on the Region when we attempt to delete it.
-+++
-
 threadqprocesstimeout.c:46
 Interrupt Synchronization
 This is processing a timeout on a thread that times out while it is in the
