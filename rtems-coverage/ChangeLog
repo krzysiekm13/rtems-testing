@@ -1,5 +1,11 @@
 2009-07-09	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Timespec divide by zero covered by sp58.
+	spthreadq01 covers extracting a thread which is not blocked on a
+	thread queue. Rewrite explanation of threadqueuefirstpriority.c.
+
+2009-07-09	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Cover last of threadget.c with added test case in
 	sp43.
 

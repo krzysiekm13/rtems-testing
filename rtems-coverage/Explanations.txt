@@ -388,22 +388,13 @@ Simple Test Case
 need sp41 test cases with priority semaphore
 +++
 
-threadqextractfifo.c:55
-Simple Test Case
-extract thread that isn't blocked on thread queue.  Probably requires
-bypassing APIs and going to SuperCode directly. Hard if API not bypassed.
-+++
-
-threadqextractpriority.c:64
-Simple Test Case
-extract thread that isn't blocked on thread queue.  Probably requires
-bypassing APIs and going to SuperCode directly. Hard if API not bypassed.
-+++
-
 threadqfirstpriority.c:51
 Simple Test Case
-Ask for first priority on a thread queue with no tasks.  May require
-bypassing APIs and going to SuperCode directly. Hard if API not bypassed.
+Ask for first priority on a thread queue with a task ONLY on the 4th
+priority chain.  This will require a test that has priorities in the
+lowest 1/4 of 256.  This should be able to be done by having a new
+Region test which has a single task of appropriate priority blocked
+on the Region when we attempt to delete it.
 +++
 
 threadqprocesstimeout.c:46
@@ -418,11 +409,6 @@ This is the return code from threadqprocesstimeout.c:46.  Perhaps
 restructuring this code will make it easier to combine these.  Hit the
 normal path first and return.  Then fall into the unusual synchronization
 path.
-+++
-
-timespecdivide.c:44
-Simple Test Case
-Will probably have to bypass the APIs but this is a divide by zero case.
 +++
 
 watchdogadjusttochain.c:42
