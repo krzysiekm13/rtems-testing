@@ -47,7 +47,7 @@ set_board_info isremote 0
 
 # wrapper script which handles the device tree
 set_board_info sim "qemu-rtems"
-set_board_info sim,options "-i"
+set_board_info sim,options ""
 
 # No support for signals on this target.
 set_board_info gdb,nosignals 1
