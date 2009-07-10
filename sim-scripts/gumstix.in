@@ -30,7 +30,7 @@ bspLimit()
 }
 
 bspGeneratesDeviceTree="yes"
-bspTreeFile=rtl22xx.conf
+bspTreeFile=gumstix.conf
 
 ### Generate the PSIM device tree based upon the type of application being run
 bspGenerateDeviceTree()
