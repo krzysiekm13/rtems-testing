@@ -233,6 +233,7 @@ if [ ${do_rtems_configure} = "yes" ] ; then
   ${RTEMSDIR}/configure NDEBUG=1 \
      RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
      RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
+     RTEMS_DO_NOT_UNROLL_THREADQ_ENQUEUE_PRIORITY=1 \
     --target=${TARGET} --enable-rtemsbsp=${BSP} \
     --enable-maintainer-mode \
     --disable-itron --enable-tests --disable-tcpip --disable-ada --disable-cxx \

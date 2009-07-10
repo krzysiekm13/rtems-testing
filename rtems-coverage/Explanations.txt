@@ -321,7 +321,7 @@ Simple Test Case
 
 threadinitialize.c:91
 Simple Test Case
-This is for the case where the application uses the POSIX 
+This is for the case where the application uses the POSIX
 thread stack address attribute.
 
 NOTE: Code Should be Configured on POSIX
@@ -349,24 +349,25 @@ Need to call iterate over threads in a test where there is an API configured
 which does not have threads.  Should be easy to add to sp54.
 +++
 
-threadqenqueuepriority.c:92
+threadqenqueuepriority.c:99
 Interrupt Synchronization
 This case is where we are iterating to enqueue a thread into a priority
 based thread queue but the thread we are looking at gets unblocked when
-we flash interrupts. 
+we flash interrupts.  It is NOT the thread we are unblocking.
+Forward Search case.
 +++
 
-threadqenqueuepriority.c:131
-Simple Test Case
-I think! this is a case where we enqueue by priority with a thread 
-priority that requires searching from last to first.  But there is
-already a thread priority on the chain.  This priority will go before
-any in the set.  So we search backwards and insert at the head.
+threadqenqueuepriority.c:146
+Interrupt Synchronization
+This case is where we are iterating to enqueue a thread into a priority
+based thread queue but the thread we are looking at gets unblocked when
+we flash interrupts.  It is NOT the thread we are unblocking.
+Reverse Search case.
 +++
 
 corebarrierwait.c:64
 Simple Test Case
-This looks like a simple test case of being a automatically released 
+This looks like a simple test case of being an automatically released
 barrier and being the Nth task to block so tripping the automatic release.
 +++
 
@@ -380,18 +381,8 @@ _Watchdog_Adjust_to_chain may also have one.
 This is actually part of multiple paths and it appears to be
 dead because there is an explicit check for the chain being empty on the
 loop but a call to _Chain_Get_unprotected also checks for empty.  So we never
-get a case there _Chain_Get_unprotected returns NULL.  Can usually be 
+get a case there _Chain_Get_unprotected returns NULL.  Can usually be
 addressed by reworking the loop in some way.
-+++
-
-threadqenqueuepriority.c:139
-Interrupt Synchronization
-restart insertion search
-+++
-
-threadqenqueuepriority.c:189
-Simple Test Case
-need sp41 test cases with priority semaphore
 +++
 
 threadqprocesstimeout.c:46
@@ -410,7 +401,7 @@ path.
 
 watchdogadjusttochain.c:42
 Simple Test Case
-I am pretty sure this is a case where we need to adjust the 
+I am pretty sure this is a case where we need to adjust the
 chain forward multiple units but still end up with watchdogs
 left on the chain at the end.  So things farther out in the future
 than we are adjusting.
