@@ -64,12 +64,6 @@ will require having two threads wait on the same condition variable but
 each uses a different mutex.
 +++
 
-condget.c:44
-Simple Test Case
-I think this is running out of condition variables while using automatic
-allocation.
-+++
-
 keycreate.c:80
 Simple Test Case
 Run out of memory while allocating key memory.
@@ -210,11 +204,6 @@ timer must be inserted by an ISR while we are inserting it
 coremutex.inl:171
 Simple Test Case
 pri ceiling, acquire when pri = ceiling
-+++
-
-coremutexseize.c:39
-Simple Test Case
-Fatal error to obtain mutex when in dispatching critical section.
 +++
 
 coremutexsurrender.c:188
