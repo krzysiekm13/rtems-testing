@@ -1,0 +1,77 @@
+#
+#  Script to test for various things we want in a BSP when it is
+#  submitted.
+#
+#  Test for:
+#    - presense of BSP_BOOTCARD_OPTIONS
+#    - XXX
+#
+
+if [ $# -ne 1 ] ; then
+  echo Usage: $0 BSPDIR
+  exit 1
+fi
+
+bspdir=${1}
+
+if [ ! -d ${bspdir} ] ; then
+  echo ${bspdir} is not a directory
+  exit 1
+fi
+
+cd ${bspdir}
+if [ $? -ne 0 ] ; then
+  echo Unable to cd to ${bspdir}
+  exit 1
+fi
+
+
+test_its_there()
+{
+  if [ $# -ne 2 ] ; then
+    echo Usage: $0 FILE pattern 
+  fi
+  grep ${2} ${1} >/dev/null
+  if [ $? -ne 0 ] ; then
+    echo ${2} is NOT in ${bspdir}/${1}
+  fi
+
+}
+
+test_its_NOT_there()
+{
+  if [ $# -ne 2 ] ; then
+    echo Usage: $0 FILE pattern 
+  fi
+  grep ${2} ${1} >/dev/null
+  if [ $? -eq 0 ] ; then
+    echo ${2} SHOULD NOT BE IN ${bspdir}/${1}
+  fi
+
+}
+
+test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
+test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
+
+# really need to make the copyright strings consistent in BSPs
+find . -name "*.[chS]" | while read f
+do
+  grep -i COPYRIGHT ${f} >/dev/null
+  if [ $? -ne 0 ] ; then
+    echo Copyright is NOT in ${bspdir}/${f}
+  fi
+done
+
+# We want CVS Id strings everywhere possible
+find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
+do
+  test_its_there ${f} "\$Id"
+done
+
+# We want CVS Id strings everywhere possible
+find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
+do
+  test_its_NOT_there ${f} printf
+  test_its_NOT_there ${f} puts
+done
+
