@@ -12,6 +12,7 @@
 #include "Explanations.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 namespace Coverage {
 
