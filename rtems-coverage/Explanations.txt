@@ -175,11 +175,6 @@ Interrupt Synchronization
 This is a timeout while blocking waiting for an event receive with timeout.
 +++
 
-ratemontimeout.c:61
-Simple Test Case
-period times out but thread is blocked on another period?
-+++
-
 ratemonperiod.c:310
 Interrupt Synchronization
 period must expire while attempting to block
@@ -211,18 +206,6 @@ Simple Test Case
 There must not be a test of a priority ceiling mutex getting released
 which results in a thread being unblocked and the UNBLOCKED thread's
 priority being elevated.
-+++
-
-corespinlockwait.c:69
-Simple Test Case
-The spinlock is not available and the caller is not willing to wait.
-Requires a test of pthread_spin_trylock.
-+++
-
-corespinlockrelease.c:59
-Simple Test Case
-Attempt to release a locked spinlock from a thread that is not the one
-which locked it.
 +++
 
 debug.c:63
@@ -288,11 +271,6 @@ Simple Test Case
 if reachable
 +++
 
-dpmemcreate.c:87
-Simple Test Case
-need invalid address of return id
-+++
-
 timerfireafter.c:76
 Interrupt Synchronization
 timer must be inserted or state altered by ISR
@@ -301,11 +279,6 @@ timer must be inserted or state altered by ISR
 thread.inl:230
 SHOULD BE COVERED
 sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
-+++
-
-thread.inl:47
-Simple Test Case
-(sys state trickery) shutdown while in shutdown state
 +++
 
 threadinitialize.c:91
@@ -326,24 +299,10 @@ with a fair (16-32?) number of user extensions configured and then
 create a thread with increasingly larger stack until this case is hit.
 +++
 
-threadinitialize.c:188
-Simple Test Case
-There must not be a thread/task created
-with THREAD_CPU_BUDGET_ALGORITHM_EXHAUST_TIMESLICE.
-+++
-
 iterateoverthreads.c:42
 Simple Test Case
 Need to call iterate over threads in a test where there is an API configured
 which does not have threads.  Should be easy to add to sp54.
-+++
-
-threadqenqueuepriority.c:99
-Interrupt Synchronization
-This case is where we are iterating to enqueue a thread into a priority
-based thread queue but the thread we are looking at gets unblocked when
-we flash interrupts.  It is NOT the thread we are unblocking.
-Forward Search case.
 +++
 
 threadqenqueuepriority.c:146
@@ -352,12 +311,6 @@ This case is where we are iterating to enqueue a thread into a priority
 based thread queue but the thread we are looking at gets unblocked when
 we flash interrupts.  It is NOT the thread we are unblocking.
 Reverse Search case.
-+++
-
-corebarrierwait.c:64
-Simple Test Case
-This looks like a simple test case of being an automatically released
-barrier and being the Nth task to block so tripping the automatic release.
 +++
 
 chain.inl:300
@@ -386,14 +339,6 @@ This is the return code from threadqprocesstimeout.c:46.  Perhaps
 restructuring this code will make it easier to combine these.  Hit the
 normal path first and return.  Then fall into the unusual synchronization
 path.
-+++
-
-watchdogadjusttochain.c:42
-Simple Test Case
-I am pretty sure this is a case where we need to adjust the
-chain forward multiple units but still end up with watchdogs
-left on the chain at the end.  So things farther out in the future
-than we are adjusting.
 +++
 
 watchdoginsert.c:52
