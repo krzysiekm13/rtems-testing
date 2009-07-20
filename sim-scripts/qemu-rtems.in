@@ -67,17 +67,4 @@ bspLimit()
   return ${limit}
 }
 
-bspGeneratesDeviceTree="yes"
-bspTreeFile=edb7312.conf
-
-### Generate the PSIM device tree based upon the type of application being run
-bspGenerateDeviceTree()
-{
-cat <<EOF
-cpu: arm720t
-mach: ep7312
-mem_bank: map=I,type=RW, addr=0x80000000, size=0x00100000
-mem_bank: map=M, type=RW, addr=0x00000000, size=0x1000000
-uart: mod=pipe, desc_in=/dev/null, desc_out=/dev/stdout
-EOF
-}
+bspGeneratesDeviceTree="no"
