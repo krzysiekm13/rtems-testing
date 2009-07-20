@@ -100,10 +100,10 @@ args=$*
 
 if [ ${interactive} = "yes" ] ; then
   defaultLimit=0
-fi
-
-if [ ! -d ${logdir} ] ; then
-  mkdir $logdir || fatal "could not create log directory ($logdir)"
+else
+  if [ ! -d ${logdir} ] ; then
+    mkdir $logdir || fatal "could not create log directory ($logdir)"
+  fi
 fi
 
 ### Set BSP defaults.  If BSP does not have default, it will override

@@ -1,5 +1,9 @@
 2009-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* gdb-sim-run.in: Do not create log if interactive.
+
+2009-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* qemu-rtems.in: Does not need a device tree file and was generating
 	edb7312.conf incorrectly.
 
