@@ -157,11 +157,6 @@ which results in a thread being unblocked and the UNBLOCKED thread's
 priority being elevated.
 +++
 
-debug.c:63
-Simple Test Case
-need a test
-+++
-
 heapresizeblock.c:158
 Simple Test Case
 looks like shrink block but so small the unused area gets freed
@@ -261,7 +256,7 @@ based thread queue but the thread we are looking at gets unblocked when
 we flash interrupts.  It is NOT the thread we are unblocking.
 Forward Search case.
 
-NOTE: Do not remove this from explanations.
+NOTE: Do not remove this from the explanations since the test can vary.
 +++
 
 threadqenqueuepriority.c:146

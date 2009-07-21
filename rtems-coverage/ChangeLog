@@ -1,5 +1,9 @@
 2009-07-21	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Remove debug.c
+
+2009-07-21	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Multiple updates based on changes from myself and
 	Santosh.
 
