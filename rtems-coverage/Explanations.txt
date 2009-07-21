@@ -114,27 +114,6 @@ It looks like we don't have a good sporadic server test.  This is
 the normal case of changin priority.
 +++
 
-eventsurrender.c:81
-Interrupt Synchronization
-This is executed when events are sent to the currently executing thread
-while it is in the process of blocking.  I think sp39 or sp41 relates to
-this but may not be hitting the correct combination of timed out or Any/All.
-
-NOTE: This is hit sometimes so maybe the tests need tuning a bit.
-+++
-
-eventsurrender.c:82
-Interrupt Synchronization
-This is somehow related to eventsurrender.c:81 but the range is
-disconnected and I do not see why with certainty.  This could be
-when a timeout occurs while we are blocking on an event receive.
-+++
-
-eventtimeout.c:78
-Interrupt Synchronization
-This is a timeout while blocking waiting for an event receive with timeout.
-+++
-
 timerreset.c:60
 Simple Test Case
 new error case
@@ -218,11 +197,6 @@ if reachable
 timerfireafter.c:76
 Interrupt Synchronization
 timer must be inserted or state altered by ISR
-+++
-
-thread.inl:230
-SHOULD BE COVERED
-sp39 should cover this .. timeout while blocking (eventtimeout.c:71)
 +++
 
 threadinitialize.c:91

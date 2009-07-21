@@ -1,5 +1,9 @@
 2009-07-21	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Event interrupt synchronization cases covered.
+
+2009-07-21	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Explanation improvements.
 	* gen_report: Add spintrcritical09 as one not to worry about completion.
 
