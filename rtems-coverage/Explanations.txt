@@ -4,64 +4,24 @@ Simple Test Case
 This is simply an untested normal use of pthread cancellation handlers.
 +++
 
-setcancelstate.c:53
+setcancelstate.c:50
 Simple Test Case
-This is a missing error case.
+A very simple test case where a NULL pointer to the oldstate is passed in.
 +++
 
-/opt/rtems-4.10/lib/gcc/sparc-rtems4.10/4.4.0/../../../../sparc-rtems4.10/include/pthread.h:280
+setcancelstate.c:65
 Simple Test Case
-Really setcancelstate.c:65 and setcanceltype.c:65. Apparently we don't
-hit the end of this if which sets cancel = true.
-
-Could possibly share cancellation evaluatation code with setcanceltype.c
-and setcancelstate.c.
-+++
-
-/opt/rtems-4.10/lib/gcc/sparc-rtems4.10/4.4.0/../../../../sparc-rtems4.10/include/pthread.h:281
-Simple Test Case
-Really setcancelstate.c:65 and setcanceltype.c:65. Apparently we don't
-hit the end of this if which sets cancel = true.
-
-Could possibly share cancellation evaluatation code with setcanceltype.c
-and setcancelstate.c.
-+++
-
-setcancelstate.c:69
-Simple Test Case
-This is actually two cases because of how the exit code it generated.
-
-One is really line 69.  We do not hit the cancellation requested but
-deferred case where we will need to run the handners.
-
 The other is a branch from line 50 for !oldstate.
-
-Could possibly share cancellation evaluatation code with setcanceltype.c.
 +++
 
-setcanceltype.c:53
+setcanceltype.c:50
 Simple Test Case
-This is a missing error case.
+This is a case of passing in a bad cancelation type.
 +++
 
-setcanceltype.c:68
+setcanceltype.c:64
 Simple Test Case
-This is actually two cases because of how the exit code it generated.
-
-One is really line 68.  We do not hit the cancellation requested but
-deferred case where we will need to run the handners.
-
-The other is a branch from line 50 for !oldtype.
-
-Could possibly share cancellation evaluatation code with setcanceltype.c.
-+++
-
-condwaitsupp.c:59
-Simple Test Case
-This code is either easy or impossible to hit.  The condition variable is
-associated with a mutex but it is not the one we are specifying.  Probably
-will require having two threads wait on the same condition variable but
-each uses a different mutex.
+The other is a branch from line 50 for bad type.
 +++
 
 keycreate.c:80
@@ -173,17 +133,6 @@ when a timeout occurs while we are blocking on an event receive.
 eventtimeout.c:78
 Interrupt Synchronization
 This is a timeout while blocking waiting for an event receive with timeout.
-+++
-
-ratemonperiod.c:310
-Interrupt Synchronization
-period must expire while attempting to block
-+++
-
-watchdog.inl:129
-Interrupt Synchronization
-
-period expires while blocking (ratemontimeout.c:66)
 +++
 
 timerreset.c:60
@@ -305,12 +254,24 @@ Need to call iterate over threads in a test where there is an API configured
 which does not have threads.  Should be easy to add to sp54.
 +++
 
+threadqenqueuepriority.c:99
+Interrupt Synchronization
+This case is where we are iterating to enqueue a thread into a priority
+based thread queue but the thread we are looking at gets unblocked when
+we flash interrupts.  It is NOT the thread we are unblocking.
+Forward Search case.
+
+NOTE: Do not remove this from explanations.
++++
+
 threadqenqueuepriority.c:146
 Interrupt Synchronization
 This case is where we are iterating to enqueue a thread into a priority
 based thread queue but the thread we are looking at gets unblocked when
 we flash interrupts.  It is NOT the thread we are unblocking.
 Reverse Search case.
+
+NOTE: Do not remove this from explanations.
 +++
 
 chain.inl:300
