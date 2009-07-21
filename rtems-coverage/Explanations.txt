@@ -285,16 +285,15 @@ addressed by reworking the loop in some way.
 
 threadqprocesstimeout.c:46
 Interrupt Synchronization
-This is processing a timeout on a thread that times out while it is in the
-process of blocking on a thread queue.
+This is processing a timeout on a thread (that is NOT the thread executing)
+that times out while another thread is in the process of blocking on
+a thread queue.
 +++
 
 threadqprocesstimeout.c:54
 Interrupt Synchronization
-This is the return code from threadqprocesstimeout.c:46.  Perhaps
-restructuring this code will make it easier to combine these.  Hit the
-normal path first and return.  Then fall into the unusual synchronization
-path.
+This is processing a timeout on a thread (that is the thread executing)
+that has also had its request satisfied while it is being enqueued.
 +++
 
 watchdoginsert.c:52

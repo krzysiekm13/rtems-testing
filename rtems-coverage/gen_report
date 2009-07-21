@@ -62,6 +62,7 @@ check_endof()
         *ppd*) ;;
         *fatal*) ;;
         *stackchk*) ;;
+        *spintrcritical09*) ;;
         *)
           grep "END OF" $f >/dev/null
           if [ $? -ne 0 ] ; then
