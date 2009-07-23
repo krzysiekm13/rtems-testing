@@ -1,29 +1,4 @@
 
-cancelrun.c:44
-Simple Test Case
-This is simply an untested normal use of pthread cancellation handlers.
-+++
-
-setcancelstate.c:50
-Simple Test Case
-A very simple test case where a NULL pointer to the oldstate is passed in.
-+++
-
-setcancelstate.c:65
-Simple Test Case
-The other is a branch from line 50 for !oldstate.
-+++
-
-setcanceltype.c:50
-Simple Test Case
-This is a case of passing in a bad cancelation type.
-+++
-
-setcanceltype.c:64
-Simple Test Case
-The other is a branch from line 50 for bad type.
-+++
-
 keycreate.c:80
 Simple Test Case
 Run out of memory while allocating key memory.
@@ -34,15 +9,14 @@ Simple Test Case
 Run out of memory while allocating key memory.
 +++
 
-keyrundestructors.c:62
-Simple Test Case
-Restructure the code into 3 separate tests with continues and see which
-cases are really not hit. Then trigger the cases.
-+++
-
 keyrundestructors.c:64
 Simple Test Case
-Probably Iterating over a NULL value.
+This is where a key is configured without a destructor.
++++
+
+keyrundestructors.c:68
+Simple Test Case
+This is where a key is configured and created that this thread is not using.
 +++
 
 mqueuecreatesupp.c:101
@@ -98,7 +72,7 @@ tick in length.
 
 pthread.c:97
 Simple Test Case
-This is a case of the sporadic scheduling replinish period being less
+This is a case of the sporadic scheduling replenish period being less
 than one clock tick in length.
 +++
 
@@ -217,10 +191,10 @@ with a fair (16-32?) number of user extensions configured and then
 create a thread with increasingly larger stack until this case is hit.
 +++
 
-iterateoverthreads.c:42
+iterateoverthreads.c:43
 Simple Test Case
 Need to call iterate over threads in a test where there is an API configured
-which does not have threads.  Should be easy to add to sp54.
+which does not have threads.  We may be able to add this to sp54.
 +++
 
 threadqenqueuepriority.c:99
@@ -259,9 +233,8 @@ addressed by reworking the loop in some way.
 
 threadqprocesstimeout.c:46
 Interrupt Synchronization
-This is processing a timeout on a thread (that is NOT the thread executing)
-that times out while another thread is in the process of blocking on
-a thread queue.
+This is a case there we are timing out a thread on the same thread
+queue that the currently executing thread is in the process of blocking on.
 +++
 
 threadqprocesstimeout.c:54
@@ -286,22 +259,31 @@ Interrupt Synchronization
 Remove a watchdog while it is being removed.
 +++
 
-killinfo.c:152
+killinfo.c:145
 Simple Test Case
-Yet another path through here.
+Probably a loop termination since the last line is 130.  I suspect
+this may involve have to iterate the list with multiple entries on it.
+Even worse, this appears to be ignoring the two to N chain.  We may
+want to consider revisiting the POSIX specificiation to see if a 
+FIFO is acceptable.  Otherwise, this code is going to have to
+get more complicated.  Maybe the logic in the loop needs to move
+to a subroutine.
 +++
 
-killinfo.c:212
+killinfo.c:203
 Simple Test Case
-Multiple threads interested but find high priority one first.
+A higher priority thread is interested so we need to take the branch
+to continue.  This is only a single instruction.
 +++
 
-killinfo.c:247
+killinfo.c:234
 Simple Test Case
-Yet another path through here.
+Multiple threads interested but find high priority one first.  This is
+a long section with multiple cases.  It will take multiple tests to do
+this.
 +++
 
-killinfo.c:339
+killinfo.c:328
 Simple Test Case
 This is an error case where we can't allocate another signinfo structure.
 +++
