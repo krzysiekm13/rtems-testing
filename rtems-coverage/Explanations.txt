@@ -85,17 +85,7 @@ holding resources at the end of the sporadic server period.
 pthread.c:130
 Simple Test Case
 It looks like we don't have a good sporadic server test.  This is
-the normal case of changin priority.
-+++
-
-timerreset.c:60
-Simple Test Case
-new error case
-+++
-
-timerserverfireafter.c:80
-Interrupt Synchronization
-timer must be inserted by an ISR while we are inserting it
+the normal case of changing priority.
 +++
 
 coremutex.inl:171
@@ -168,11 +158,6 @@ Simple Test Case
 if reachable
 +++
 
-timerfireafter.c:76
-Interrupt Synchronization
-timer must be inserted or state altered by ISR
-+++
-
 threadinitialize.c:91
 Simple Test Case
 This is for the case where the application uses the POSIX
@@ -195,26 +180,6 @@ iterateoverthreads.c:43
 Simple Test Case
 Need to call iterate over threads in a test where there is an API configured
 which does not have threads.  We may be able to add this to sp54.
-+++
-
-threadqenqueuepriority.c:99
-Interrupt Synchronization
-This case is where we are iterating to enqueue a thread into a priority
-based thread queue but the thread we are looking at gets unblocked when
-we flash interrupts.  It is NOT the thread we are unblocking.
-Forward Search case.
-
-NOTE: Do not remove this from the explanations since the test can vary.
-+++
-
-threadqenqueuepriority.c:146
-Interrupt Synchronization
-This case is where we are iterating to enqueue a thread into a priority
-based thread queue but the thread we are looking at gets unblocked when
-we flash interrupts.  It is NOT the thread we are unblocking.
-Reverse Search case.
-
-NOTE: Do not remove this from explanations.
 +++
 
 chain.inl:300
@@ -243,22 +208,6 @@ This is processing a timeout on a thread (that is the thread executing)
 that has also had its request satisfied while it is being enqueued.
 +++
 
-watchdoginsert.c:52
-Interrupt Synchronization
-This is when a higher priority interrupt inserts a timer while a lower
-priority interrupt is inserting one.
-+++
-
-watchdogremove.c:41
-Interrupt Synchronization
-Remove a watchdog while it is being inserted.
-+++
-
-watchdogremove.c:64
-Interrupt Synchronization
-Remove a watchdog while it is being removed.
-+++
-
 killinfo.c:145
 Simple Test Case
 Probably a loop termination since the last line is 130.  I suspect
@@ -285,12 +234,5 @@ this.
 
 killinfo.c:328
 Simple Test Case
-This is an error case where we can't allocate another signinfo structure.
-+++
-
-timerinserthelper.c:45
-Interrupt Synchronization
-We just removed the timer but the watchdog timer is being inserted by
-a higher priority interrupt.  We may be able to get this to happen
-with Classic API Timers.  But that is unclear.
+This is an error case where we can't allocate another siginfo structure.
 +++

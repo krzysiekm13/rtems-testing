@@ -1,5 +1,11 @@
 2009-07-23	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Eliminate more interrupt critical section cases.
+	* gen_report: Note which spintrcritical* tests cannot detect when they
+	hit the case and just run until killed.
+
+2009-07-23	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Remove cancellation cases and cleanup killinfo.c
 	explations.
 

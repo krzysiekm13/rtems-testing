@@ -62,7 +62,12 @@ check_endof()
         *ppd*) ;;
         *fatal*) ;;
         *stackchk*) ;;
+        # These do not know when they hit the case so run until killed.
+        *spintrcritical06*) ;;
+        *spintrcritical07*) ;;
         *spintrcritical09*) ;;
+        *spintrcritical13*) ;;
+        *spintrcritical14*) ;;
         *)
           grep "END OF" $f >/dev/null
           if [ $? -ne 0 ] ; then
@@ -94,7 +99,7 @@ check_fatal $? "cd ${BSP}-tests"
 
 ${NM} -g -n hello.exe >hello.num
 
-# Basic validity checking 
+# Basic validity checking
 tlow=`grep "T ${lowsym}$" hello.num | cut -d' ' -f1`
 if [ X${tlow} = X ] ; then
   echo "low symbol (${lowsym}) not found"
@@ -118,7 +123,7 @@ rm -f merged.cov report.txt
     -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
     -T ${TARGET} -e hello.exe -m merged.cov *.cov; \
   echo "====== 15 Largest Range Sizes ======" ; \
-  grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | tail -15 ; 
+  grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | tail -15 ;
   echo "=====================================" ) >summary.txt
 
 cat summary.txt
