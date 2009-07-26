@@ -24,6 +24,7 @@ USAGE=\
 	-v	  -- verbose
         -A        -- Execute all steps
         -B BSP    -- Specify BSP to test
+        -P        -- Disable POSIX API
         -m        -- Update and build covMerge
         -u        -- Do CVS update on RTEMS
         -c        -- Configure RTEMS
@@ -64,6 +65,7 @@ check_status()
 # parse arguments for these
 verbose="no"
 do_all="no"
+do_posix="yes"
 do_covmerge="no"
 do_rtems_update="no"
 do_rtems_configure="no"
@@ -73,13 +75,14 @@ do_run_tests="no"
 do_report="no"
 BSP="not_set"
 
-while getopts vB:mAucbCrR OPT
+while getopts vB:PmAucbCrR OPT
 do
     case "$OPT" in
         v) verbose="yes";;
         A) do_all="yes";;
         B) BSP="${OPTARG}";;
         m) do_covmerge="yes";;
+        P) do_posix="no";;
         u) do_rtems_update="yes";;
         c) do_rtems_configure="yes";;
         b) do_rtems_build="yes";;
@@ -94,6 +97,7 @@ done
 if [ ${do_all} = "yes" ] ; then
   do_all="yes"
   do_covmerge="yes"
+  do_posix="yes"
   do_rtems_update="yes"
   do_rtems_configure="yes"
   do_rtems_build="yes"
@@ -140,6 +144,7 @@ if [ ${verbose} = "yes" ] ; then
   echo "Target:             " ${TARGET}
   echo "do_all:             " ${do_all}
   echo "do_covmerge         " ${do_covmerge}
+  echo "do_posix:           " ${do_posix}
   echo "do_rtems_update:    " ${do_rtems_update}
   echo "do_rtems_configure: " ${do_rtems_configure}
   echo "do_rtems_build:     " ${do_rtems_build}
@@ -230,13 +235,20 @@ if [ ${do_rtems_configure} = "yes" ] ; then
   ################## BE CAREFUL ABOUT THIS CONFIGURE COMMAND.  IT IS
   ################## VERY SPECIFIC TO COVERAGE TESTING
   ################## 
+  if [ ${do_posix} = "yes" ] ; then
+    posix_en=en
+  else
+    posix_en=dis
+  fi
+
   ${RTEMSDIR}/configure NDEBUG=1 \
      RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
      RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
      RTEMS_DO_NOT_UNROLL_THREADQ_ENQUEUE_PRIORITY=1 \
     --target=${TARGET} --enable-rtemsbsp=${BSP} \
     --enable-maintainer-mode \
-    --disable-itron --enable-tests --disable-tcpip --disable-ada --disable-cxx \
+    --disable-itron --${posix_en}able-posix --enable-tests \
+    --disable-tcpip --disable-ada --disable-cxx \
     --prefix=${BASE}/coverage/install >c.log 2>&1
     check_status $? "configuring RTEMS for ${BSP}"
 else

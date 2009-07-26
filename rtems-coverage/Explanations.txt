@@ -176,6 +176,12 @@ with a fair (16-32?) number of user extensions configured and then
 create a thread with increasingly larger stack until this case is hit.
 +++
 
+threadqenqueuepriority.c:134
+Simple Test Case
+Looks like a reintroduced case where we need more threads enqueued on
+a priority thread queue.
++++
+
 iterateoverthreads.c:43
 Simple Test Case
 Need to call iterate over threads in a test where there is an API configured
@@ -184,10 +190,10 @@ which does not have threads.  We may be able to add this to sp54.
 
 chain.inl:300
 Simple Test Case or Minor Code Rework
-This inlined case appears multiple times.
+This inlined case has appeared multiple times but this last one appears 
+to be code in the following which probably needs rework.
 
 _POSIX_signals_Clear_signals:71 chain get when empty
-_Watchdog_Adjust_to_chain may also have one.
 
 This is actually part of multiple paths and it appears to be
 dead because there is an explicit check for the chain being empty on the
@@ -208,31 +214,15 @@ This is processing a timeout on a thread (that is the thread executing)
 that has also had its request satisfied while it is being enqueued.
 +++
 
-killinfo.c:145
+killinfo.c:157
 Simple Test Case
-Probably a loop termination since the last line is 130.  I suspect
-this may involve have to iterate the list with multiple entries on it.
-Even worse, this appears to be ignoring the two to N chain.  We may
-want to consider revisiting the POSIX specificiation to see if a 
-FIFO is acceptable.  Otherwise, this code is going to have to
-get more complicated.  Maybe the logic in the loop needs to move
-to a subroutine.
+This is a weird case where a thread is on the sigwait list waiting
+for one signal.  We send another that it hasn't blocked.  This will
+be easy with a dedicated test.
 +++
 
-killinfo.c:203
-Simple Test Case
-A higher priority thread is interested so we need to take the branch
-to continue.  This is only a single instruction.
-+++
-
-killinfo.c:234
-Simple Test Case
-Multiple threads interested but find high priority one first.  This is
-a long section with multiple cases.  It will take multiple tests to do
-this.
-+++
-
-killinfo.c:328
+killinfo.c:336
 Simple Test Case
 This is an error case where we can't allocate another siginfo structure.
+I suspect this will be easier with a dedicated test.
 +++
