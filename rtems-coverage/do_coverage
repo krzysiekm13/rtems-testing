@@ -21,20 +21,23 @@ progname=${0##*/}        # fast basename hack for ksh, bash
 
 USAGE=\
 "usage: $progname [ -opts ]
-	-v	  -- verbose
-        -A        -- Execute all steps
+	-v	  -- verbose (default=no)
+        -A        -- Execute all steps (default=no)
         -B BSP    -- Specify BSP to test
-        -P        -- Disable POSIX API
-        -m        -- Update and build covMerge
-        -u        -- Do CVS update on RTEMS
-        -c        -- Configure RTEMS
-        -b        -- Build RTEMS
-        -C        -- copy tests from build to test execution point
-        -r        -- run the tests
-        -R        -- generate a report
+        -P        -- Enable POSIX API (default=yes)
+        -m        -- Update and build covMerge (default=no)
+        -u        -- Do CVS update on RTEMS (default=no)
+        -c        -- Configure RTEMS (default=no)
+        -b        -- Build RTEMS (default=no)
+        -C        -- copy tests from build to test execution point (default=no)
+        -r        -- run the tests (default=no)
+        -R        -- generate a report (default=no)
 
-NOTE: There are currently NO checks at each step to determine if the previous
-      steps were performed!!!
+Notes:  + There are currently NO checks at each step to determine if
+          the previous steps were performed!!!
+        + Use of each option toggles the setting.  For example, \"-v -v -A -u\"
+          results in verbose=no and all steps done except CVS update on RTEMS.
+       
 "
 
 #   log an error to stderr
@@ -44,8 +47,8 @@ prerr()
 }
 
 fatal() {
-    [ "$1" ] && prerr $*
     prerr "$USAGE"
+    [ "$1" ] && (prerr ; prerr $*);
     exit 1
 }
 
@@ -62,6 +65,14 @@ check_status()
   fi
 }
 
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
 # parse arguments for these
 verbose="no"
 do_all="no"
@@ -78,33 +89,30 @@ BSP="not_set"
 while getopts vB:PmAucbCrR OPT
 do
     case "$OPT" in
-        v) verbose="yes";;
-        A) do_all="yes";;
+        A)
+          do_all="yes"
+          do_covmerge="yes"
+          do_posix="yes"
+          do_rtems_update="yes"
+          do_rtems_configure="yes"
+          do_rtems_build="yes"
+          do_copy_tests="yes"
+          do_run_tests="yes"
+          do_report="yes"
+          ;;
         B) BSP="${OPTARG}";;
-        m) do_covmerge="yes";;
-        P) do_posix="no";;
-        u) do_rtems_update="yes";;
-        c) do_rtems_configure="yes";;
-        b) do_rtems_build="yes";;
-        C) do_copy_tests="yes";;
-        r) do_run_tests="yes";;
-        R) do_report="yes";;
+        v) verbose=`toggle ${verbose}` ;;
+        m) do_covmerge=`toggle ${do_covmerge}` ;;
+        P) do_posix=`toggle ${do_posix}` ;;
+        u) do_rtems_update=`toggle ${do_rtems_update}` ;;
+        c) do_rtems_configure=`toggle ${do_rtems_configure}` ;;
+        b) do_rtems_build=`toggle ${do_rtems_build}` ;;
+        C) do_copy_tests=`toggle ${do_copy_tests}` ;;
+        r) do_run_tests=`toggle ${do_run_tests}` ;;
+        R) do_report=`toggle ${do_report}` ;;
         *) fatal;;
     esac
 done
-
-#  If do_all was requested, then force the flags to yes
-if [ ${do_all} = "yes" ] ; then
-  do_all="yes"
-  do_covmerge="yes"
-  do_posix="yes"
-  do_rtems_update="yes"
-  do_rtems_configure="yes"
-  do_rtems_build="yes"
-  do_copy_tests="yes"
-  do_run_tests="yes"
-  do_report="yes"
-fi
 
 #  If we are to update or configure RTEMS, then we need to clean the
 #  RTEMS build tree up.
