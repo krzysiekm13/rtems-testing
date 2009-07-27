@@ -234,6 +234,8 @@ fi
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
   echo "Configuring RTEMS..."
+  rm -rf ${BASEDIR}/b-${BSP}/
+  mkdir ${BASEDIR}/b-${BSP}/
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 

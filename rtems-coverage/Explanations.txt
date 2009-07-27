@@ -39,16 +39,6 @@ Simple Test Case
 This is a case of deleting a named message queue.
 +++
 
-mqueuetimedreceive.c:71
-Simple Test Case or Restructure switch to if
-Given that this is 3 instructions, it is probably a missed test case.
-+++
-
-mqueuetimedsend.c:71
-Simple Test Case or Restructure switch to if
-Given that this is 3 instructions, it is probably a missed test case.
-+++
-
 psignal.c:148
 ?
 This appears to be a case of not exercising the loop fully.
@@ -57,11 +47,6 @@ This appears to be a case of not exercising the loop fully.
 mutexinit.c:165
 Simple Test Case
 This code is not initializing a specific type of mutex -- probably recursive.
-+++
-
-mutextimedlock.c:59
-Simple Test Case (or Restructure)
-Looks like another undertested timeout path.
 +++
 
 pthread.c:83
@@ -139,25 +124,6 @@ resize effort is sufficient to result in needing to look to see if we
 can unblock any tasks.
 +++
 
-ioregisterdriver.c:61
-Simple Test Case
-documented (not implemented) in sp40.  Fill up the driver table and
-register another driver.
-+++
-
-ioregisterdriver.c:71
-Simple Test Case
-documented (not implemented) in sp40.  Fill up the driver table and
-register another driver.  All of the cases in this file are probably
-related and will take attention when working on them to be sure I
-have explained them correctly.  The assembly is just hard to follow.
-+++
-
-ioregisterdriver.c:84
-Simple Test Case
-if reachable
-+++
-
 threadinitialize.c:91
 Simple Test Case
 This is for the case where the application uses the POSIX
@@ -174,18 +140,6 @@ occur during the create case of an Floating Point enabled task.
 Since the stack is allocated first, it should be possible to have a test
 with a fair (16-32?) number of user extensions configured and then
 create a thread with increasingly larger stack until this case is hit.
-+++
-
-threadqenqueuepriority.c:134
-Simple Test Case
-Looks like a reintroduced case where we need more threads enqueued on
-a priority thread queue.
-+++
-
-iterateoverthreads.c:43
-Simple Test Case
-Need to call iterate over threads in a test where there is an API configured
-which does not have threads.  We may be able to add this to sp54.
 +++
 
 chain.inl:300
@@ -214,11 +168,19 @@ This is processing a timeout on a thread (that is the thread executing)
 that has also had its request satisfied while it is being enqueued.
 +++
 
-killinfo.c:157
+killinfo.c:145
 Simple Test Case
 This is a weird case where a thread is on the sigwait list waiting
 for one signal.  We send another that it hasn't blocked.  This will
 be easy with a dedicated test.
+
+Line number has moved.  Hopefully this is the case.  Analyze before
+writing code.
++++
+
+chain.inl:111
+Simple Test Case
+See killinfo.c case above.
 +++
 
 killinfo.c:336

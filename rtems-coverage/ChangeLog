@@ -1,3 +1,10 @@
+2009-07-27	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Explanations.txt: Update for recent test additions.
+	* do_coverage: Remove build directory before configuring.
+	* rtems-cvs-20090727.diff: New file.  Reflects configuring with
+	POSIX disabled.
+
 2009-07-26	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_coverage: Change arguments so that they toggle settings. This
