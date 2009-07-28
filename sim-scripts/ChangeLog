@@ -1,3 +1,7 @@
+2009-07-28	Xi Yang <hiyangxi@gmail.com>
+
+	* edb7312.in: Add shutdown device support.
+
 2009-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in: Do not create log if interactive.
