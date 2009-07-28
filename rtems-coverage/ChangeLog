@@ -1,3 +1,8 @@
+2009-07-28	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* CoverageReaderSkyeye.cc: Fix comment.
+	* do_coverage: Add EXTRA_ARGS for RTEMS configure.
+
 2009-07-27	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Explanations.txt: Update for recent test additions.

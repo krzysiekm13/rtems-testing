@@ -6,8 +6,7 @@
  *  @brief CoverageReaderSkyeye Implementation
  *
  *  This file contains the implementation of the functions supporting
- *  XXX
- *
+ *  reading the Skyeye coverage data files.
  */
 
 #include "CoverageReaderSkyeye.h"
@@ -33,10 +32,10 @@ namespace Coverage {
   )
   {
     FILE          *coverageFile;
-    int            baseAddress;
-    int            length;
+    uintptr_t      baseAddress;
+    uintptr_t      length;
     int            status;
-    int            i;
+    uintptr_t      i;
     uint8_t        cover;
     prof_header_t  header;
 
@@ -67,13 +66,24 @@ namespace Coverage {
     baseAddress = header.prof_start;
     length      = header.prof_end - header.prof_start;
     
+    fprintf( 
+      stderr,
+      "%s: 0x%08x 0x%08x 0x%08lx/%ld\n", 
+      file,
+      header.prof_start,
+      header.prof_end,
+      (unsigned long) length,
+      (unsigned long) length
+    );
+      
     for ( i=0 ; i<length ; i += 8 ) {
       status = fread( &cover, sizeof(uint8_t), 1, coverageFile );
       if ( status != 1 ) {
         fprintf(
 	  stderr,
-	  "CoverageReaderSkyeye::ProcessFile - breaking after %d\n",
-	  i
+	  "CoverageReaderSkyeye::ProcessFile - breaking after 0x%08x in %s\n",
+	  i,
+          file
         );
         break;
       }

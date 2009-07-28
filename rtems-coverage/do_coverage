@@ -135,9 +135,10 @@ case ${BSP} in
     CPU=sparc
     COVERAGE_FORMAT=TSIM
     ;;
-  edb7312|rtl22xx)
+  edb7312|rtl22xx|gumstix)
     CPU=arm
     COVERAGE_FORMAT=Skyeye
+    RTEMS_EXTRA_ARGS="ON_SKYEYE=1"
     ;;
   *)
     fatal "Unsupported BSP (${BSP}) for coverage analysis."
@@ -252,15 +253,16 @@ if [ ${do_rtems_configure} = "yes" ] ; then
   fi
 
   ${RTEMSDIR}/configure NDEBUG=1 \
-     RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
-     RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
-     RTEMS_DO_NOT_UNROLL_THREADQ_ENQUEUE_PRIORITY=1 \
+    RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
+    RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
+    RTEMS_DO_NOT_UNROLL_THREADQ_ENQUEUE_PRIORITY=1 \
+    ${RTEMS_EXTRA_ARGS} \
     --target=${TARGET} --enable-rtemsbsp=${BSP} \
     --enable-maintainer-mode \
     --disable-itron --${posix_en}able-posix --enable-tests \
     --disable-tcpip --disable-ada --disable-cxx \
     --prefix=${BASE}/coverage/install >c.log 2>&1
-    check_status $? "configuring RTEMS for ${BSP}"
+  check_status $? "configuring RTEMS for ${BSP}"
 else
   echo "Skipping Configuring RTEMS ..."
 fi
