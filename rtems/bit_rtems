@@ -1,12 +1,8 @@
 #! /bin/sh -x
 #
-#  Simple shell script to configure and build rtems
+#  Shell script to configure and build rtems
 #
 #  build-${CPU}-rtems is created as the build tree
-#
-#  Recommended prefix for various OS's:
-#     Linux:    /usr/local/rtems
-#     Solaris:  /opt/gnu/rtems
 #
 #  $Id$
 #
@@ -118,25 +114,20 @@ if [ x${BSP_TO_TEST} != x ] ; then
          ENABLE_BSP="--enable-rtemsbsp=psim"
          ## ENABLE_BSP="${ENABLE_BSP} BSP_DIRTY_MEMORY=1"
          ENABLE_BSP="${ENABLE_BSP} CLOCK_DRIVER_USE_FAST_IDLE=0"
-         BSP_TO_TEST=psim
          ;;
-      bf537Stamp)
-         ENABLE_BSP="--enable-rtemsbsp=bf537Stamp BFIN_ON_SKYEYE=1"
-         BSP_TO_TEST=bf537Stamp
-         ;;
-      eZKit533)
-         ENABLE_BSP="--enable-rtemsbsp=eZKit533 BFIN_ON_SKYEYE=1"
-         BSP_TO_TEST=eZKit533
+      bf537Stamp) ENABLE_BSP="--enable-rtemsbsp=bf537Stamp BFIN_ON_SKYEYE=1" ;;
+      eZKit533)   ENABLE_BSP="--enable-rtemsbsp=eZKit533 BFIN_ON_SKYEYE=1"   ;;
+      csb637)
+         ENABLE_BSP="--enable-rtemsbsp=csb637 ENABLE_LCD=1"
+         ENABLE_BSP="${ENABLE_BSP} ENABLE_LCD_MIRRORING=1"
          ;;
       qemu)
          ENABLE_BSP="--enable-rtemsbsp=pc386 USE_COM1_AS_CONSOLE=1"
+         # ENABLE_BSP="${ENABLE_BSP} IDE_USE_SECONDARY_INTERFACE=1"
          BSP_TO_TEST=pc386
          ;;
-      pc386)
-         ENABLE_BSP="--enable-rtemsbsp=pc386 BSP_VIDEO_80x50=1"
-         BSP_TO_TEST=pc386
-         ;;
-      *) ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
+      pc386) ENABLE_BSP="--enable-rtemsbsp=pc386 BSP_VIDEO_80x50=1" ;;
+      *)     ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
     esac
 
   else
@@ -512,16 +503,20 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     mkdir ${testdir}
     check_fatal $? "failed to mkdir test directory for ${BSP_TO_TEST}."
     cp `find . -name "*.ralf"` ${testdir}
+
     case ${BSP_TO_TEST} in
-      jmr3904|psim|sis|posix)
-        cp `find ${searchtestdir} -name "runtest"` ${testdir}
-        runner=./runtest
-        ;;
-      edb7312)  runner="runskyeye -b edb7312" ;;
-      rtl22xx)  runner="runskyeye -b rtl22xx" ;;
-      erc32)    runner=runerc32 ;;
-      leon2)    runner=runleon  ;;
-      leon3)    runner=runleon3 ;;
+      jmr3904)  running=jmr3904 ;;
+      psim)     running=psim ;;
+      posix)    running="" ;;
+      # ARM
+      edb7312)  runner=edb7312 ;;
+      #gumstix)  runner=gumstix ;;
+      rtl22xx)  runner=rtl22xx ;;
+      # SPARC
+      erc32)    runner=erc32 ;;
+      leon2)    runner=leon  ;;
+      leon3)    runner=leon3 ;;
+      sis)      running=sis ;;
       *) ;;
     esac
 
