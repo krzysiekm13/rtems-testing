@@ -359,7 +359,7 @@ do
     *-node1*)
       warn "Running both nodes associated with ${toRun}"
       ;;
-    minimum*)
+    minimum*|pppd*)
       warn "Skipping ${toRun}; it locks up or takes a VERY long time to run"
       continue
       ;;
