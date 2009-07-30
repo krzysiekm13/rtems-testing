@@ -74,7 +74,7 @@ case $1 in
     CPU=i386
     BSP=pc386
     DEJABSP=qemu
-    BSP_SIM=runqemu
+    BSP_SIM=qemu-rtems
     ;;
   *)
     echo UNKNOWN BSP

@@ -467,7 +467,7 @@ j_rtems()
     qemu|pc386)
       ENABLE_BSP="--enable-rtemsbsp=pc386"
       ENABLE_BSP="${ENABLE_BSP} USE_COM1_AS_CONSOLE=1"
-      ENABLE_BSP="${ENABLE_BSP} BSP_PRESS_KEY_FOR_RESET=1"
+      ENABLE_BSP="${ENABLE_BSP} BSP_PRESS_KEY_FOR_RESET=0"
       ;;
     *)
       ENABLE_BSP="--enable-rtemsbsp=${bspArg}"

@@ -55,6 +55,10 @@ update_gcc()
   cd ${GCCDIR}
   if [ -d .svn ] ; then
     ./contrib/gcc_update
+    if [ $? -ne 0 ] ; then
+      echo "Update of GCC Failed."
+      exit 1 
+    fi
   fi
 }
 

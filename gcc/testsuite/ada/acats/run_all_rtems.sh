@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 # Run ACATS with the GNU Ada compiler
 
 # The following functions are to be customized if you run in cross
@@ -75,8 +75,9 @@ fi
 # cat RTEMS_SETTINGS
 # exit 0
 
+echo ${dir}/RTEMS_SETTINGS
 # This should set everything we need to run the tests and build init.o
-. RTEMS_SETTINGS
+. ${dir}/RTEMS_SETTINGS
 # End of customization section.
 
 display_noeol () {

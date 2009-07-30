@@ -1,0 +1,10 @@
+2009-07-30	Joel Sherrill <joel.sherrill@rtems.org>
+
+	* do_one: Set parameters for qemu.
+	* rundeja: Correct script name for qemu (now qemu-rtems).
+	* test_driver: Abort if gcc_update fails.
+	* testsuite/ada/acats/Makefile.rtems: Correct script invocations
+	to reflect new sim-scripts.
+	* testsuite/ada/acats/run_all_rtems.sh: Use full path to RTEMS_SETTINGS.
+	* ChangeLog: New file.
+
