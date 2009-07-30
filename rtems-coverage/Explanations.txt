@@ -1,24 +1,4 @@
 
-keycreate.c:80
-Simple Test Case
-Run out of memory while allocating key memory.
-+++
-
-keycreate.c:82
-Simple Test Case
-Run out of memory while allocating key memory.
-+++
-
-keyrundestructors.c:64
-Simple Test Case
-This is where a key is configured without a destructor.
-+++
-
-keyrundestructors.c:68
-Simple Test Case
-This is where a key is configured and created that this thread is not using.
-+++
-
 mqueuecreatesupp.c:101
 Simple Test Case
 This is running out of message queues.
@@ -112,22 +92,12 @@ thought that making do_dump 0 and running all the cases is enough.  Maybe the
 test does not do what I think and this is why this case is missed.
 +++
 
-threadinitialize.c:91
+threadinitialize.c:100
 Simple Test Case
 This is for the case where the application uses the POSIX
 thread stack address attribute.
 
 NOTE: Code Should be Configured on POSIX
-+++
-
-threadinitialize.c:148
-Medium Test Case
-The allocation of the user extension data area must fail.  The failure should
-occur during the create case of an Floating Point enabled task.
-
-Since the stack is allocated first, it should be possible to have a test
-with a fair (16-32?) number of user extensions configured and then
-create a thread with increasingly larger stack until this case is hit.
 +++
 
 chain.inl:300
