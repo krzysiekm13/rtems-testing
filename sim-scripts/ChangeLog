@@ -1,3 +1,7 @@
+2009-07-30	Joel Sherrill <joel.sherrill@rtems.org>
+
+	* qemu-rtems.in: Add check for exceptions.
+
 2009-07-29	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gdb-sim-run.in: Skip pppd.exe
