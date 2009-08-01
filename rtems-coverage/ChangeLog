@@ -1,3 +1,7 @@
+2009-08-01	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Explanations.txt: Update and enhance sporadic scheduler case.
+
 2009-07-31	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Explanations.txt: Account for reworking heapgetinfo.c and adding

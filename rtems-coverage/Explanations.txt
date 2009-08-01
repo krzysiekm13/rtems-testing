@@ -24,28 +24,17 @@ Simple Test Case
 This code is not initializing a specific type of mutex -- probably recursive.
 +++
 
-pthread.c:83
-Simple Test Case
-This is a case of the sporadic scheduling budget being less than one clock
-tick in length.
-+++
-
-pthread.c:97
-Simple Test Case
-This is a case of the sporadic scheduling replenish period being less
-than one clock tick in length.
-+++
-
 pthread.c:129
 Simple Test Case
 This is a case of attempting to change the priority of a thread
-holding resources at the end of the sporadic server period.
+whose priority is above that of the "high" priority it is supposed
+to have.  This is just a matter of having a thread at a high priority
+when its budget runs out.
 +++
 
 pthread.c:130
 Simple Test Case
-It looks like we don't have a good sporadic server test.  This is
-the normal case of changing priority.
+This is 1/2 of pthread.c:129.
 +++
 
 coremutex.inl:171
@@ -60,22 +49,10 @@ which results in a thread being unblocked and the UNBLOCKED thread's
 priority being elevated.
 +++
 
-heapresizeblock.c:158
-Simple Test Case
-looks like shrink block but so small the unused area gets freed
-+++
-
 heapallocatealigned.c:223
 Simple Test Case
 This looks like a case where the allocate aligned simply fails to get any
 memory.
-+++
-
-heapwalk.c:144
-Test Case
-We are not hitting the case for having an error at this place.  I would have
-thought that making do_dump 0 and running all the cases is enough.  Maybe the
-test does not do what I think and this is why this case is missed.
 +++
 
 threadinitialize.c:100
