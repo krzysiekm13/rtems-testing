@@ -24,7 +24,7 @@ Simple Test Case
 This code is not initializing a specific type of mutex -- probably recursive.
 +++
 
-pthread.c:129
+pthread.c:125
 Simple Test Case
 This is a case of attempting to change the priority of a thread
 whose priority is above that of the "high" priority it is supposed
@@ -32,9 +32,9 @@ to have.  This is just a matter of having a thread at a high priority
 when its budget runs out.
 +++
 
-pthread.c:130
+pthread.c:126
 Simple Test Case
-This is 1/2 of pthread.c:129.
+This is 1/2 of pthread.c:125.
 +++
 
 coremutex.inl:171

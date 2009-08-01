@@ -1,3 +1,7 @@
+2009-08-01	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Explanations.txt: Move pthread.c line numbers.
+
 2009-08-01	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Explanations.txt: Update and enhance sporadic scheduler case.
