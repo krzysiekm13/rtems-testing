@@ -71,20 +71,6 @@ This looks like a case where the allocate aligned simply fails to get any
 memory.
 +++
 
-heapgetinfo.c:70
-Simple Test Case
-The heap is corrupted.  The block's size does not match the next block's
-previous size backwards link.  This may make sense to add to the
-Heap Walk test.
-+++
-
-heapresizeblock.c:144
-Simple Test Case
-Shrink a heap block with the resize.  The block after this one in memory
-must be free so the memory free by the shrinking will be merged with that
-already free block.
-+++
-
 heapwalk.c:144
 Test Case
 We are not hitting the case for having an error at this place.  I would have
