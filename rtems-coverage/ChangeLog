@@ -1,3 +1,8 @@
+2009-08-03	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* ObjdumpProcessor.cc: On ARM, there are literal tables at the end of
+	methods. We need to avoid considering them not executed.
+
 2009-08-01	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Explanations.txt: Move pthread.c line numbers.

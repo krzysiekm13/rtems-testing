@@ -87,6 +87,11 @@ namespace Coverage {
     if ( !strcmp( &line[strlen(line)-7], "unknown") )
       return true;
     
+    // On ARM, there are literal tables at the end of methods.
+    // We need to avoid them.
+    if ( !strncmp( &line[strlen(line)-16], ".word", 5) )
+      return true;
+    
     // ASSUME: ARM dump uses nop instruction. Really "mov r0,r0"
     return false;
   }
