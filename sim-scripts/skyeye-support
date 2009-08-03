@@ -27,7 +27,9 @@ bspExited_ARM()
 {
   for pattern in  \
      "^Unhandled exception" \
-     "^SKYEYE:Error"
+     "^SKYEYE:Error" \
+     "^Bus write error," \
+     "^Bus read error,"
   do
     grep "${pattern}" ${logfile}
     if [ $? -eq 0 ] ; then
