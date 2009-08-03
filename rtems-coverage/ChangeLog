@@ -1,5 +1,10 @@
 2009-08-03	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* CoverageReaderSkyeye.cc, ObjdumpProcessor.cc: Now appears to work OK
+	on ARM with edb7312.
+
+2009-08-03	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* ObjdumpProcessor.cc: On ARM, there are literal tables at the end of
 	methods. We need to avoid considering them not executed.
 

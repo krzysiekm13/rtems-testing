@@ -89,6 +89,10 @@ namespace Coverage {
     
     // On ARM, there are literal tables at the end of methods.
     // We need to avoid them.
+    if ( !strncmp( &line[strlen(line)-10], ".byte", 5) )
+      return true;
+    if ( !strncmp( &line[strlen(line)-13], ".short", 6) )
+      return true;
     if ( !strncmp( &line[strlen(line)-16], ".word", 5) )
       return true;
     

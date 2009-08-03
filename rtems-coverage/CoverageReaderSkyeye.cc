@@ -13,6 +13,7 @@
 #include "CoverageMapBase.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #include "skyeye_header.h"
 
@@ -38,6 +39,21 @@ namespace Coverage {
     uintptr_t      i;
     uint8_t        cover;
     prof_header_t  header;
+    struct stat    statbuf;
+
+    /*
+     *  Verify it has a non-zero size
+     */
+    status = stat( file, &statbuf );
+    if ( status == -1 ) {
+      fprintf( stderr, "Unable to stat %s\n", file );
+      exit( -1 );
+    }
+
+    if ( statbuf.st_size == 0 ) {
+      fprintf( stderr, "%s is 0 bytes long\n", file );
+      exit( -1 );
+    }
 
     /*
      *  read the file and update the coverage map passed in
@@ -66,6 +82,7 @@ namespace Coverage {
     baseAddress = header.prof_start;
     length      = header.prof_end - header.prof_start;
     
+    #if 0
     fprintf( 
       stderr,
       "%s: 0x%08x 0x%08x 0x%08lx/%ld\n", 
@@ -75,6 +92,7 @@ namespace Coverage {
       (unsigned long) length,
       (unsigned long) length
     );
+    #endif
       
     for ( i=0 ; i<length ; i += 8 ) {
       status = fread( &cover, sizeof(uint8_t), 1, coverageFile );
