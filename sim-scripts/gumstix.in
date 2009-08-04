@@ -19,10 +19,14 @@ checkBSPFaults()
 bspLimit()
 {
   testname=$1
-  case ${tname} in
+  case ${testname} in
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
     *psxtime*) limit=180 ;;
+    *cpuuse*)  limit=180 ;;
+    *sp04*)    limit=360 ;;
+    *sp19*)    limit=180 ;;
+    *sp20*)    limit=180 ;;
     *)         limit=60 ;;
   esac
   return ${limit}
@@ -42,8 +46,10 @@ mem_bank: map=M, type=RW, addr=0xA0000000, size=0x4000000
 mem_bank: map=I, type=RW, addr=0xB0000000, size=0x100000
 mem_bank: map=I, type=RW, addr=0x40000000, size=0x4C000000
 shutdown_device: addr=0xb0000000, max_ins=${limit}0000000
+lcd:state=on,type=pxa,mod=gtk
 EOF
 if [ ${coverage} = yes ] ; then
-  echo "code_coverage: state=on, filename=${2}.cov, start=0xA0000000, end=0xA4000000"
+  # Only do coverage on first megabyte of code space
+  echo "code_coverage: state=on, filename=${2}.cov, start=0xA0000000, end=0xA0100000"
 fi
 }

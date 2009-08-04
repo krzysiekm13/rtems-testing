@@ -1,3 +1,8 @@
+2009-08-04	Xi Yang <hiyangxi@gmail.com>
+
+	* gumstix.in: Tinker with script to get more tests to run. Increase
+	time limits. Add LCD.
+
 2009-08-03	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* edb7312.in: Do not use maximum instructions yet.
