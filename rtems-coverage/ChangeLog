@@ -1,3 +1,7 @@
+2009-08-05	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* rtems-cvs-20090805.diff: New file.
+
 2009-08-03	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* CoverageReaderSkyeye.cc, ObjdumpProcessor.cc: Now appears to work OK
