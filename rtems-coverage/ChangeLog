@@ -1,5 +1,10 @@
 2009-08-05	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Explanations.txt: Update.
+	* rtems-cvs-20090805.diff: Replace.
+
+2009-08-05	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* rtems-cvs-20090805.diff: New file.
 
 2009-08-03	Joel Sherrill <joel.sherrill@OARcorp.com>

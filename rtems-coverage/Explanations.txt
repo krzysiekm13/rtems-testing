@@ -1,24 +1,3 @@
-
-mqueuecreatesupp.c:101
-Simple Test Case
-This is running out of message queues.
-+++
-
-mqueue.inl:60
-Simple Test Case
-Really two cases.
-
-mqueuecreatesupp.c:119 is running out of memory allocating the name.
-
-mqueuecreatesupp.c:142 is failing the core message queue initialize.
-Probably running out of memory while allocating the buffer memory.
-+++
-
-psignal.c:148
-?
-This appears to be a case of not exercising the loop fully.
-+++
-
 mutexinit.c:165
 Simple Test Case
 This code is not initializing a specific type of mutex -- probably recursive.
@@ -49,30 +28,10 @@ which results in a thread being unblocked and the UNBLOCKED thread's
 priority being elevated.
 +++
 
-heapallocatealigned.c:223
-Simple Test Case
-This looks like a case where the allocate aligned simply fails to get any
-memory.
-+++
-
 threadinitialize.c:100
 Simple Test Case
 This is for the case where the application uses the POSIX
 thread stack address attribute.
 
 NOTE: Code Should be Configured on POSIX
-+++
-
-chain.inl:300
-Simple Test Case or Minor Code Rework
-This inlined case has appeared multiple times but this last one appears 
-to be code in the following which probably needs rework.
-
-_POSIX_signals_Clear_signals:71 chain get when empty
-
-This is actually part of multiple paths and it appears to be
-dead because there is an explicit check for the chain being empty on the
-loop but a call to _Chain_Get_unprotected also checks for empty.  So we never
-get a case there _Chain_Get_unprotected returns NULL.  Can usually be
-addressed by reworking the loop in some way.
 +++
