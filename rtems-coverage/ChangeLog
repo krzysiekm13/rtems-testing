@@ -1,5 +1,9 @@
 2009-08-05	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* skyeye-1.2.8-rtems-20090805.diff: New file.
+
+2009-08-05	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* Explanations.txt: Update.
 	* rtems-cvs-20090805.diff: Replace.
 
