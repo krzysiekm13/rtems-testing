@@ -121,9 +121,28 @@ if [ x${BSP_TO_TEST} != x ] ; then
          ENABLE_BSP="--enable-rtemsbsp=csb637 ENABLE_LCD=1"
          ENABLE_BSP="${ENABLE_BSP} ENABLE_LCD_MIRRORING=1"
          ;;
+      gumstix)
+         ENABLE_BSP="--enable-rtemsbsp=gumstix ON_SKYEYE=1"
+         BSP_TO_TEST=gumstix
+         ;;
+      lm32_evr)
+         ENABLE_BSP="--enable-rtemsbsp=lm32_evr ON_SIMULATOR=1"
+         BSP_TO_TEST=lm32_evr
+         ;;
       qemu)
-         ENABLE_BSP="--enable-rtemsbsp=pc386 USE_COM1_AS_CONSOLE=1"
-         # ENABLE_BSP="${ENABLE_BSP} IDE_USE_SECONDARY_INTERFACE=1"
+         ENABLE_BSP="--enable-rtemsbsp=pc386"
+         ENABLE_BSP="${ENABLE_BSP} USE_COM1_AS_CONSOLE=1"
+         ENABLE_BSP="${ENABLE_BSP} BSP_PRESS_KEY_FOR_RESET=0"
+         BSP_TO_TEST=pc386
+         ;;
+      #pc386)
+      #   ENABLE_BSP="--enable-rtemsbsp=pc386"
+      #   ENABLE_BSP="${ENABLE_BSP} USE_COM1_AS_CONSOLE=1"
+      #   ENABLE_BSP="${ENABLE_BSP} IDE_USE_SECONDARY_INTERFACE=1"
+      #   ENABLE_BSP="${ENABLE_BSP} BSP_VIDEO_80x50=1"
+      #   BSP_TO_TEST=pc386
+      #   ;;
+      *) ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
          BSP_TO_TEST=pc386
          ;;
       pc386) ENABLE_BSP="--enable-rtemsbsp=pc386 BSP_VIDEO_80x50=1" ;;
@@ -254,7 +273,10 @@ if [ ${ENABLE_BSP_DIRTY_MEMORY} = yes ] ; then
 fi
 
 if [ ${ENABLE_RTEMS_TCPIP} = yes ] ; then
-  TCPIP_FLAG="--enable-networking"
+  case ${CPU} in
+    avr) TCPIP_FLAG="--disable-networking" ;;
+    *)   TCPIP_FLAG="--enable-networking" ;;
+  esac
 else
   TCPIP_FLAG="--disable-networking"
 fi
@@ -310,8 +332,8 @@ fi
 # Some CPUs do not have C++ support
 if [ ${ENABLE_RTEMS_CXX} = yes ] ; then
   case ${CPU} in
-    bfin|tic4x) ENABLE_RTEMS_CXX="--disable-cxx" ;;
-    *)          ENABLE_RTEMS_CXX="--enable-cxx" ;;
+    avr|bfin|tic4x) ENABLE_RTEMS_CXX="--disable-cxx" ;;
+    *)              ENABLE_RTEMS_CXX="--enable-cxx" ;;
   esac
 else
   ENABLE_RTEMS_CXX="--disable-cxx"
@@ -555,8 +577,32 @@ if [ ${do_install} = yes -a ${doing_bare_bsp} = no ] ; then
     case ${BSP_TO_TEST} in
       posix|bare*) ;;
       *)
-        # Build non-networked application level tests
-        for suite in examples class-examples
+        if [ -d ../examples-v2 ] ; then
+          SUITES=examples-v2
+        else 
+          echo "WARNING! examples-v2 not found"
+        fi
+
+        if [ -d ../class-examples ] ; then
+          SUITES=class-examples
+        else 
+          echo "WARNING! class-examples not found"
+        fi
+
+        if [ -d ../examples ] ; then
+          SUITES=examples
+        else 
+          echo "WARNING! examples not found"
+        fi
+
+        if [ ${ENABLE_RTEMS_TCPIP} = yes ] ; then
+          if [ -d ../network-demos ] ; then
+            SUITES="${SUITES} network-demos"
+          fi
+        fi
+
+        # Build application level tests that use "make"
+        for suite in examples-v2
         do
           cd ..
           cd ${suite}
@@ -586,25 +632,6 @@ if [ ${do_install} = yes -a ${doing_bare_bsp} = no ] ; then
              sh ./bit
           check_fatal $? "failed to build add on on ${BSP_TO_TEST}."
 
-
-        fi
-
-        if [ ${ENABLE_RTEMS_TCPIP} = yes ] ; then
-          suite=network-demos
-          cd ../network-demos
-          check_fatal $? "failed cd to network-demos."
-
-          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
-             ${MAKE} ${MAKE_DEBUG_ARG} clean
-          check_fatal $? "failed 1st clean ${suite} on ${BSP_TO_TEST}."
-
-          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
-             ${MAKE} ${MAKE_DEBUG_ARG} 
-          check_fatal $? "failed ${suite} on ${BSP_TO_TEST}."
-
-          RTEMS_MAKEFILE_PATH=${INSTALL_POINT}/${target}/${BSP_TO_TEST} \
-             ${MAKE} ${MAKE_DEBUG_ARG} clean
-          check_fatal $? "failed clean ${suite} on ${BSP_TO_TEST}."
         fi
 
         # now clean up the install image
