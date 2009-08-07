@@ -107,27 +107,22 @@ doing_bare_bsp=no
 if [ x${BSP_TO_TEST} != x ] ; then
  
   if [ `echo ${BSP_TO_TEST} | cut -d'-' -f1` != bare ]; then
+    ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}"
     case ${BSP_TO_TEST} in
       all) ;;
       multilib) ENABLE_BSP="--enable-multilib" ;;
-      psim)
-         ENABLE_BSP="--enable-rtemsbsp=psim"
-         ## ENABLE_BSP="${ENABLE_BSP} BSP_DIRTY_MEMORY=1"
-         ENABLE_BSP="${ENABLE_BSP} CLOCK_DRIVER_USE_FAST_IDLE=0"
-         ;;
-      bf537Stamp) ENABLE_BSP="--enable-rtemsbsp=bf537Stamp BFIN_ON_SKYEYE=1" ;;
-      eZKit533)   ENABLE_BSP="--enable-rtemsbsp=eZKit533 BFIN_ON_SKYEYE=1"   ;;
+      bf537Stamp) ENABLE_BSP="${ENABLE_BSP} BFIN_ON_SKYEYE=1" ;;
+      eZKit533)   ENABLE_BSP="${ENABLE_BSP} BFIN_ON_SKYEYE=1"   ;;
+      edb7312)    ENABLE_BSP="${ENABLE_BSP} ON_SKYEYE=1" ;;
+      gumstix)    ENABLE_BSP="${ENABLE_BSP} ON_SKYEYE=1" ;;
+      lm32_evr)   ENABLE_BSP="${ENABLE_BSP} ON_SIMULATOR=1" ;;
       csb637)
-         ENABLE_BSP="--enable-rtemsbsp=csb637 ENABLE_LCD=1"
+         ENABLE_BSP="${ENABLE_BSP} ENABLE_LCD=1"
          ENABLE_BSP="${ENABLE_BSP} ENABLE_LCD_MIRRORING=1"
          ;;
-      gumstix)
-         ENABLE_BSP="--enable-rtemsbsp=gumstix ON_SKYEYE=1"
-         BSP_TO_TEST=gumstix
-         ;;
-      lm32_evr)
-         ENABLE_BSP="--enable-rtemsbsp=lm32_evr ON_SIMULATOR=1"
-         BSP_TO_TEST=lm32_evr
+      psim)
+         ## ENABLE_BSP="${ENABLE_BSP} BSP_DIRTY_MEMORY=1"
+         ENABLE_BSP="${ENABLE_BSP} CLOCK_DRIVER_USE_FAST_IDLE=0"
          ;;
       qemu)
          ENABLE_BSP="--enable-rtemsbsp=pc386"
@@ -140,11 +135,7 @@ if [ x${BSP_TO_TEST} != x ] ; then
       #   ENABLE_BSP="${ENABLE_BSP} USE_COM1_AS_CONSOLE=1"
       #   ENABLE_BSP="${ENABLE_BSP} IDE_USE_SECONDARY_INTERFACE=1"
       #   ENABLE_BSP="${ENABLE_BSP} BSP_VIDEO_80x50=1"
-      #   BSP_TO_TEST=pc386
       #   ;;
-      *) ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
-         BSP_TO_TEST=pc386
-         ;;
       pc386) ENABLE_BSP="--enable-rtemsbsp=pc386 BSP_VIDEO_80x50=1" ;;
       *)     ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
     esac
@@ -532,7 +523,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
       posix)    running="" ;;
       # ARM
       edb7312)  runner=edb7312 ;;
-      #gumstix)  runner=gumstix ;;
+      gumstix)  runner=gumstix ;;
       rtl22xx)  runner=rtl22xx ;;
       # SPARC
       erc32)    runner=erc32 ;;

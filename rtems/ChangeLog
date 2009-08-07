@@ -1,5 +1,9 @@
 2009-08-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* bit_rtems: Tested on SPARC/sis. More clean up.
+
+2009-08-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* bit_rtems: Account for adding examples-v2.
 
 2009-07-28	Joel Sherrill <joel.sherrill@OARcorp.com>
