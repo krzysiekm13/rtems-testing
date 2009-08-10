@@ -64,13 +64,13 @@ leon2-skyeye: gdb-sim-run.in leon2-skyeye.in
 	./mkrun no SPARC sparc leon2-skyeye
 
 ### TSIM Simulator BSPs
-erc32: gdb-sim-run.in erc32.in
+erc32: gdb-sim-run.in erc32.in tsim-support
 	./mkrun no SPARC sparc erc32
 
-leon2: gdb-sim-run.in leon2.in
+leon2: gdb-sim-run.in leon2.in tsim-support
 	./mkrun no SPARC sparc leon2
 
-leon3: gdb-sim-run.in leon3.in
+leon3: gdb-sim-run.in leon3.in tsim-support
 	./mkrun no SPARC sparc leon3
 
 ### GDB Simulator BSPs

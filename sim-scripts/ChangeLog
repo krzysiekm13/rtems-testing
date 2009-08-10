@@ -1,3 +1,14 @@
+2009-08-10	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Makefile: Fix dependencies on tsim scripts.
+	* edb7312.in: Disable instruction limit until tuned. Only do coverage
+	on 1 MB of RAM.  Code is smaller than that and it is faster.
+	* gdb-sim-run.in: Clean up killing simulator to hopefully avoid
+	zero length coverage files.
+	* rtl22xx.in: Attempt to add coverage and shutdown device support.
+	* smdk2410.in: Add coverage and shutdown device support.
+	* tsim-support: Tune time limits.
+
 2009-08-04	Xi Yang <hiyangxi@gmail.com>
 
 	* gumstix.in: Tinker with script to get more tests to run. Increase

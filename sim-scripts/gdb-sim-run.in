@@ -153,6 +153,18 @@ test ${verbose} = "yes" && echo Using ${runBSP}
 type ${runBSP}
 check_status $? "Path appears to be broken (cannot find ${runBSP})"
 
+killpid()
+{
+  pid=$1
+  kill -2 $pid 2> /dev/null
+  if [ ${coverage} = "yes" ] ; then
+    sleep 1
+  else
+    usleep 1000
+  fi
+  kill -9 $pid 2> /dev/null
+}
+
 ## These are faults any BSP may generate.  They are common to RTEMS.
 checkGenericExits()
 {
@@ -177,9 +189,7 @@ checkGenericExits()
 	  kill -0 $pid 2> /dev/null
 	  running=$?
 	  if [ $running -eq 0 ] ; then
-	    kill -2 ${pid} 2>/dev/null  # SIGINT
-	    sleep 1
-	    kill -9 ${pid} 2>/dev/null
+            killpid ${pid}
           else
             return 1
           fi
@@ -260,9 +270,7 @@ runtest()
     running=$?
     if [ $running -eq 0 ] ; then
       if [ ${milliseconds} -ge ${millilimit} ]; then
-        kill -2 $pid 2> /dev/null
-        usleep 1000
-        kill -9 $pid 2> /dev/null
+        killpid ${pid}
         catLog ${logfile}
         echo "${testname} killed after running ${max_run_time} seconds"
         break
@@ -277,9 +285,7 @@ runtest()
       checkGenericExits ${logfile} #>/dev/null 2>&1
       genericExits=$?
       if [ ${bspFaults} -ne 0 -o ${genericExits} -ne 0 ] ; then
-        kill -2 $pid 2> /dev/null
-        usleep 1000
-        kill -9 ${pid} >/dev/null 2>&1
+        killpid ${pid}
         catLog ${logfile}
         echo Ran in ${milliseconds} milliseconds
       break
@@ -292,7 +298,6 @@ runtest()
     break
   fi
   done
-  kill -9 $pid >/dev/null 2>&1
 }
 
 if [ "X${args}" = "X" ] ; then
