@@ -1,5 +1,12 @@
 2009-08-12	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* do_coverage: Add support for the -E option which turns on
+	experimental coverage mode. This adds all code we do not have good
+	enough coverage on yet to include in the baseline case.
+	* rtems-cvs-20090812.diff: New file.
+
+2009-08-12	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* VERSIONS-COVERAGE, do_coverage, rtems-cvs-20090806.diff: Switch to
 	--enable-coverage and building rtems_coverage.o
 	* rtems-cvs-20090811.diff: New file.

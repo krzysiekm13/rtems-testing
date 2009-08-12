@@ -25,6 +25,7 @@ USAGE=\
         -A        -- Execute all steps (default=no)
         -B BSP    -- Specify BSP to test
         -P        -- Enable POSIX API (default=yes)
+        -E        -- Enable Experimental Coverage Area (default=no)
         -m        -- Update and build covMerge (default=no)
         -u        -- Do CVS update on RTEMS (default=no)
         -c        -- Configure RTEMS (default=no)
@@ -77,6 +78,7 @@ toggle()
 verbose="no"
 do_all="no"
 do_posix="yes"
+do_experimental="no"
 do_covmerge="no"
 do_rtems_update="no"
 do_rtems_configure="no"
@@ -86,7 +88,7 @@ do_run_tests="no"
 do_report="no"
 BSP="not_set"
 
-while getopts vB:PmAucbCrR OPT
+while getopts vB:PEmAucbCrR OPT
 do
     case "$OPT" in
         A)
@@ -104,6 +106,7 @@ do
         v) verbose=`toggle ${verbose}` ;;
         m) do_covmerge=`toggle ${do_covmerge}` ;;
         P) do_posix=`toggle ${do_posix}` ;;
+        E) do_experimental=`toggle ${do_experimental}` ;;
         u) do_rtems_update=`toggle ${do_rtems_update}` ;;
         c) do_rtems_configure=`toggle ${do_rtems_configure}` ;;
         b) do_rtems_build=`toggle ${do_rtems_build}` ;;
@@ -154,6 +157,7 @@ if [ ${verbose} = "yes" ] ; then
   echo "do_all:             " ${do_all}
   echo "do_covmerge         " ${do_covmerge}
   echo "do_posix:           " ${do_posix}
+  echo "do_experimental:    " ${do_experimental}
   echo "do_rtems_update:    " ${do_rtems_update}
   echo "do_rtems_configure: " ${do_rtems_configure}
   echo "do_rtems_build:     " ${do_rtems_build}
@@ -252,6 +256,12 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     posix_en=dis
   fi
 
+  if [ ${do_experimental} = "yes" ] ; then
+    EXPERIMENTAL_ARG="experimental"
+  else
+    EXPERIMENTAL_ARG="yes"
+  fi
+
   ${RTEMSDIR}/configure NDEBUG=1 \
     RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
     RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
@@ -259,7 +269,7 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     ${RTEMS_EXTRA_ARGS} \
     --target=${TARGET} --enable-rtemsbsp=${BSP} \
     --enable-maintainer-mode \
-    --enable-coverage \
+    --enable-coverage=${EXPERIMENTAL_ARG} \
     --disable-itron --${posix_en}able-posix --enable-tests \
     --disable-tcpip --disable-ada --disable-cxx \
     --prefix=${BASEDIR}/coverage/install >c.log 2>&1
