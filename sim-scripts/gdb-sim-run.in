@@ -232,6 +232,9 @@ runtest()
   testname=${1}
   testtype=${2}
   max_run_time=${3}
+
+  test ${verbose} == 'yes' && echo ${runBSP} `runARGS ${testname}`
+
   if [ ${max_run_time} -eq 0 ] ; then
     #echo run ${testname} forever
     ${runBSP} `runARGS ${testname}`

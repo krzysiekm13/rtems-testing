@@ -10,8 +10,9 @@ SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   gumstix rtl22xx smdk2410 leon2-skyeye
 TSIM_SCRIPTS=erc32 leon2 leon3
 QEMU_SCRIPTS=qemu-rtems
+OTHER_SCRIPTS=avrtest
 GENERATED_SCRIPTS=${GDBSIM_SCRIPTS} ${SKYEYE_SCRIPTS} \
-  ${TSIM_SCRIPTS} ${QEMU_SCRIPTS}
+  ${TSIM_SCRIPTS} ${QEMU_SCRIPTS} ${OTHER_SCRIPTS}
 
 COMPILED_PROGRAMS=usleep
 UNPROCESSED_SCRIPTS=nosim
@@ -94,6 +95,10 @@ sis sis-gdb: gdb-sim-run.in gdb-sim.in sis.in
 
 simsh simsh-gdb: gdb-sim-run.in gdb-sim.in simsh.in
 	./mkrun yes SuperH sh simsh
+
+## AVR Test (uses Simulavrxx)
+avrtest: gdb-sim-run.in avrtest.in
+	./mkrun no AVR avr avrtest
 
 clean:
 	rm -f ${GENERATED_SCRIPTS} ${COMPILED_PROGRAMS}

@@ -1,3 +1,9 @@
+2009-08-12	Josh Switnicki <josh.switnicki@utoronto.ca>
+
+	* .cvsignore, Makefile, gdb-sim-run.in: Add support for avrtest BSP
+	using simulavrxx.
+	* avrtest.in: New file.
+
 2009-08-10	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Makefile: Fix dependencies on tsim scripts.

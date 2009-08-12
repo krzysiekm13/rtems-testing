@@ -1,0 +1,29 @@
+#
+#  AVR/AVRTEST Support (uses simulavrxx)
+#
+#  $Id$ 
+#
+
+bspUsesGDBSimulator="no"
+runBSP=simulavr
+runARGS()
+{
+  echo "-d atmega128 -W0x52,/dev/stderr -Texit -f ${1}"
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  return ${limit}
+}
