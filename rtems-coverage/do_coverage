@@ -135,7 +135,7 @@ case ${BSP} in
     CPU=sparc
     COVERAGE_FORMAT=TSIM
     ;;
-  edb7312|rtl22xx|gumstix)
+  edb7312|rtl22xx|gumstix|smdk2410)
     CPU=arm
     COVERAGE_FORMAT=Skyeye
     RTEMS_EXTRA_ARGS="ON_SKYEYE=1"
@@ -175,7 +175,7 @@ if [ ! -d ${RTEMSDIR} ] ; then
   exit 1
 fi
 
-grep ENABLE_COVERAGE ${RTEMSDIR}/c/src/make/leaf.cfg >/dev/null
+grep _COVERAGE ${RTEMSDIR}/c/src/make/leaf.cfg >/dev/null
 if [ $? -ne 0 ] ; then
   echo "It doesn't look like you patched the RTEMS source for coverage."
   exit 1
@@ -259,9 +259,10 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     ${RTEMS_EXTRA_ARGS} \
     --target=${TARGET} --enable-rtemsbsp=${BSP} \
     --enable-maintainer-mode \
+    --enable-coverage \
     --disable-itron --${posix_en}able-posix --enable-tests \
     --disable-tcpip --disable-ada --disable-cxx \
-    --prefix=${BASE}/coverage/install >c.log 2>&1
+    --prefix=${BASEDIR}/coverage/install >c.log 2>&1
   check_status $? "configuring RTEMS for ${BSP}"
 else
   echo "Skipping Configuring RTEMS ..."

@@ -1,3 +1,9 @@
+2009-08-12	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* VERSIONS-COVERAGE, do_coverage, rtems-cvs-20090806.diff: Switch to
+	--enable-coverage and building rtems_coverage.o
+	* rtems-cvs-20090811.diff: New file.
+
 2009-08-06	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* rtems-cvs-20090806.diff: New file.

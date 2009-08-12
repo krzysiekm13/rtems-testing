@@ -14,9 +14,8 @@ LOGDIR=${BASEDIR}/log
 # NOTE: The highsym is still in libposix so needs to be analyzed
 #       as well. :( We really need the first symbol AFTER it but
 #       things are not setup to make that reliable.
-lowsym=rtems_build_id
-#highsym=sysconf 
-highsym=end_of_profiling 
+lowsym=start_coverage
+highsym=end_coverage
 
 # Calculated
 SCRIPTDIR=${BASEDIR}/gcc-testing

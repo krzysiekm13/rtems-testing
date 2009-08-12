@@ -1,11 +1,27 @@
 ? cpukit/score/src/he1.diff
+Index: cpukit/libcsupport/Makefile.am
+===================================================================
+RCS file: /usr1/CVS/rtems/cpukit/libcsupport/Makefile.am,v
+retrieving revision 1.105
+diff -u -r1.105 Makefile.am
+--- cpukit/libcsupport/Makefile.am	6 Aug 2009 20:37:32 -0000	1.105
++++ cpukit/libcsupport/Makefile.am	6 Aug 2009 22:23:14 -0000
+@@ -113,6 +113,8 @@
+     $(BSD_LIBC_C_FILES) $(BASE_FS_C_FILES) $(MALLOC_C_FILES) \
+     $(ERROR_C_FILES) $(ASSOCIATION_C_FILES)
+ 
++libcsupport_a_SOURCES += src/end_profile.c
++
+ if UNIX
+ libcsupport_a_SOURCES += src/unixlibc.c src/unixlibc_io.c src/hosterr.c
+ else
 Index: cpukit/posix/Makefile.am
 ===================================================================
 RCS file: /usr1/CVS/rtems/cpukit/posix/Makefile.am,v
 retrieving revision 1.67
 diff -u -r1.67 Makefile.am
 --- cpukit/posix/Makefile.am	6 Aug 2009 21:45:28 -0000	1.67
-+++ cpukit/posix/Makefile.am	6 Aug 2009 21:48:51 -0000
++++ cpukit/posix/Makefile.am	6 Aug 2009 22:23:14 -0000
 @@ -1,5 +1,5 @@
  ##
 -## $Id$
@@ -27,7 +43,7 @@ RCS file: /usr1/CVS/rtems/cpukit/rtems/Makefile.am,v
 retrieving revision 1.47
 diff -u -r1.47 Makefile.am
 --- cpukit/rtems/Makefile.am	6 Aug 2009 20:38:00 -0000	1.47
-+++ cpukit/rtems/Makefile.am	6 Aug 2009 21:48:51 -0000
++++ cpukit/rtems/Makefile.am	6 Aug 2009 22:23:14 -0000
 @@ -7,6 +7,7 @@
  
  AM_CPPFLAGS += -D__RTEMS_INSIDE__
@@ -42,7 +58,7 @@ RCS file: /usr1/CVS/rtems/cpukit/sapi/Makefile.am,v
 retrieving revision 1.37
 diff -u -r1.37 Makefile.am
 --- cpukit/sapi/Makefile.am	6 Aug 2009 20:38:24 -0000	1.37
-+++ cpukit/sapi/Makefile.am	6 Aug 2009 21:48:51 -0000
++++ cpukit/sapi/Makefile.am	6 Aug 2009 22:23:14 -0000
 @@ -21,6 +21,7 @@
  AM_CPPFLAGS += -D__RTEMS_INSIDE__
  
@@ -57,7 +73,7 @@ RCS file: /usr1/CVS/rtems/cpukit/score/Makefile.am,v
 retrieving revision 1.71
 diff -u -r1.71 Makefile.am
 --- cpukit/score/Makefile.am	6 Aug 2009 20:39:27 -0000	1.71
-+++ cpukit/score/Makefile.am	6 Aug 2009 21:48:51 -0000
++++ cpukit/score/Makefile.am	6 Aug 2009 22:23:14 -0000
 @@ -73,6 +73,7 @@
  
  AM_CPPFLAGS += -D__RTEMS_INSIDE__
@@ -72,7 +88,7 @@ RCS file: /usr1/CVS/rtems/c/src/make/leaf.cfg,v
 retrieving revision 1.11
 diff -u -r1.11 leaf.cfg
 --- c/src/make/leaf.cfg	15 Apr 2009 08:31:09 -0000	1.11
-+++ c/src/make/leaf.cfg	6 Aug 2009 21:48:51 -0000
++++ c/src/make/leaf.cfg	6 Aug 2009 22:23:14 -0000
 @@ -41,8 +41,9 @@
  # Create a RTEMS executable based on MANAGERS which was set in
  #  app's Makefile
@@ -119,7 +135,7 @@ RCS file: /usr1/CVS/rtems/c/src/make/target.cfg.in,v
 retrieving revision 1.7
 diff -u -r1.7 target.cfg.in
 --- c/src/make/target.cfg.in	4 Aug 2007 05:45:16 -0000	1.7
-+++ c/src/make/target.cfg.in	6 Aug 2009 21:48:51 -0000
++++ c/src/make/target.cfg.in	6 Aug 2009 22:23:14 -0000
 @@ -55,6 +55,7 @@
  # Create a RTEMS executable based on MANAGERS which was set in
  #  app's Makefile
@@ -136,7 +152,7 @@ RCS file: /usr1/CVS/rtems/make/leaf.cfg,v
 retrieving revision 1.24
 diff -u -r1.24 leaf.cfg
 --- make/leaf.cfg	15 Sep 2008 17:43:22 -0000	1.24
-+++ make/leaf.cfg	6 Aug 2009 21:48:51 -0000
++++ make/leaf.cfg	6 Aug 2009 22:23:14 -0000
 @@ -116,14 +116,28 @@
  
  DOWNEXT=.ralf
@@ -174,7 +190,7 @@ RCS file: /usr1/CVS/rtems/make/compilers/gcc-no_bsp.cfg,v
 retrieving revision 1.14
 diff -u -r1.14 gcc-no_bsp.cfg
 --- make/compilers/gcc-no_bsp.cfg	18 Sep 2008 17:33:55 -0000	1.14
-+++ make/compilers/gcc-no_bsp.cfg	6 Aug 2009 21:48:51 -0000
++++ make/compilers/gcc-no_bsp.cfg	6 Aug 2009 22:23:14 -0000
 @@ -201,8 +201,9 @@
  
  # Create a RTEMS executable based on MANAGERS which was set in app's Makefile
@@ -193,7 +209,7 @@ RCS file: /usr1/CVS/rtems/make/custom/edb7312.cfg,v
 retrieving revision 1.8
 diff -u -r1.8 edb7312.cfg
 --- make/custom/edb7312.cfg	6 Mar 2008 21:51:00 -0000	1.8
-+++ make/custom/edb7312.cfg	6 Aug 2009 21:48:51 -0000
++++ make/custom/edb7312.cfg	6 Aug 2009 22:23:14 -0000
 @@ -18,4 +18,6 @@
  CPU_CFLAGS = -mcpu=$(RTEMS_CPU_MODEL) -mstructure-size-boundary=8
  
@@ -208,7 +224,7 @@ RCS file: /usr1/CVS/rtems/make/custom/erc32.cfg,v
 retrieving revision 1.37
 diff -u -r1.37 erc32.cfg
 --- make/custom/erc32.cfg	1 Oct 2008 13:19:51 -0000	1.37
-+++ make/custom/erc32.cfg	6 Aug 2009 21:48:51 -0000
++++ make/custom/erc32.cfg	6 Aug 2009 22:23:14 -0000
 @@ -18,4 +18,6 @@
  CPU_CFLAGS = -mcpu=cypress
  
@@ -223,7 +239,7 @@ RCS file: /usr1/CVS/rtems/make/custom/gumstix.cfg,v
 retrieving revision 1.1
 diff -u -r1.1 gumstix.cfg
 --- make/custom/gumstix.cfg	4 Jun 2009 16:33:04 -0000	1.1
-+++ make/custom/gumstix.cfg	6 Aug 2009 21:48:51 -0000
++++ make/custom/gumstix.cfg	6 Aug 2009 22:23:14 -0000
 @@ -17,4 +17,6 @@
  CPU_CFLAGS = -mcpu=xscale -mstructure-size-boundary=8 
  
@@ -238,7 +254,7 @@ RCS file: /usr1/CVS/rtems/make/custom/leon2.cfg,v
 retrieving revision 1.14
 diff -u -r1.14 leon2.cfg
 --- make/custom/leon2.cfg	6 Mar 2008 21:51:01 -0000	1.14
-+++ make/custom/leon2.cfg	6 Aug 2009 21:48:51 -0000
++++ make/custom/leon2.cfg	6 Aug 2009 22:23:14 -0000
 @@ -16,4 +16,6 @@
  CPU_CFLAGS = -mcpu=cypress -msoft-float
  
@@ -253,7 +269,7 @@ RCS file: /usr1/CVS/rtems/make/custom/leon3.cfg,v
 retrieving revision 1.9
 diff -u -r1.9 leon3.cfg
 --- make/custom/leon3.cfg	6 Mar 2008 21:51:01 -0000	1.9
-+++ make/custom/leon3.cfg	6 Aug 2009 21:48:51 -0000
++++ make/custom/leon3.cfg	6 Aug 2009 22:23:14 -0000
 @@ -18,4 +18,6 @@
  CPU_CFLAGS = -mcpu=cypress -msoft-float
  
@@ -268,7 +284,7 @@ RCS file: /usr1/CVS/rtems/make/custom/rtl22xx.cfg,v
 retrieving revision 1.5
 diff -u -r1.5 rtl22xx.cfg
 --- make/custom/rtl22xx.cfg	6 Mar 2008 21:51:01 -0000	1.5
-+++ make/custom/rtl22xx.cfg	6 Aug 2009 21:48:51 -0000
++++ make/custom/rtl22xx.cfg	6 Aug 2009 22:23:14 -0000
 @@ -22,3 +22,5 @@
  # NOTE2: some level of -O may be actually required by inline assembler (at least
  # -O2 so far.
