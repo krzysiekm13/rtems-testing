@@ -7,7 +7,7 @@
 bspUsesGDBSimulator="no"
 bspSupportsGDBServerMode="yes"
 bspNeedsDos2Unix="yes"
-bspGeneratesGDBCommands="no"
+bspGeneratesGDBCommands="yes"
 
 if [ ${coverage} = "yes" ] ; then
   bspRunFatal="yes"
@@ -26,8 +26,10 @@ gdbServerARGS()
 
 bspGenerateGDBCommands()
 {
-  tar remote :12345
-  load
+cat <<EOF
+tar remote :12345
+load
+EOF
 }
 
 bspLimit()

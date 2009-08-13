@@ -1,5 +1,10 @@
 2009-08-13	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Makefile, gdb-sim-run.in, gdb-sim.in, mkrun, skyeye-support,
+	tsim-support: GDB now works with tsim and skyeye simulator BSPs.
+
+2009-08-13	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* ant5206.in, avrtest.in, bf537Stamp.in, csb337.in, csb350.in,
 	csb360.in, edb7312.in, ezkit533.in, gumstix.in, leon2-skyeye.in,
 	rtl22xx.in, skyeye-support, smdk2410.in: Move runARGS() and

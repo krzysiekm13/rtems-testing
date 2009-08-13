@@ -11,6 +11,8 @@
 
 trap "test_exit 1" 1 2 3 13 14 15
 
+inGDBScript=no
+
 test_exit()
 {
   exit_code=$1

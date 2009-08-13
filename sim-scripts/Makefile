@@ -13,7 +13,8 @@ OTHER_SCRIPTS=avrtest
 GENERATED_SCRIPTS=\
   ${GDBSIM_SCRIPTS} $(GDBSIM_SCRIPTS:%=%-gdb) \
   ${SKYEYE_SCRIPTS} $(SKYEYE_SCRIPTS:%=%-gdb) \
-  ${TSIM_SCRIPTS} ${QEMU_SCRIPTS} ${OTHER_SCRIPTS}
+  ${TSIM_SCRIPTS} $(TSIM_SCRIPTS:%=%-gdb) \
+  ${QEMU_SCRIPTS} ${OTHER_SCRIPTS}
 
 COMPILED_PROGRAMS=usleep
 UNPROCESSED_SCRIPTS=nosim
@@ -32,48 +33,48 @@ qemu-rtems: gdb-sim-run.in qemu-rtems.in
 	./mkrun no i386 i386 qemu-rtems
 
 ### Skyeye Simulator BSPs
-ant5206: gdb-sim-run.in ant5206.in
+ant5206: gdb-sim-run.in gdb-sim.in ant5206.in
 	./mkrun yes M68K-Coldfire m68k ant5206
 
-csb337: gdb-sim-run.in csb337.in
+csb337: gdb-sim-run.in gdb-sim.in csb337.in
 	./mkrun yes ARM arm csb337
 
-csb350: gdb-sim-run.in csb350.in
+csb350: gdb-sim-run.in gdb-sim.in csb350.in
 	./mkrun yes MIPS mips csb350
 
-csb360: gdb-sim-run.in csb360.in
+csb360: gdb-sim-run.in gdb-sim.in csb360.in
 	./mkrun yes M68K-Coldfire m68k csb360
 
-bf537Stamp: gdb-sim-run.in bf537Stamp.in
+bf537Stamp: gdb-sim-run.in gdb-sim.in bf537Stamp.in
 	./mkrun yes Blackfin bfin bf537Stamp
 
-edb7312: gdb-sim-run.in edb7312.in
+edb7312: gdb-sim-run.in gdb-sim.in edb7312.in
 	./mkrun yes ARM arm edb7312
 
-gumstix: gdb-sim-run.in gumstix.in
+gumstix: gdb-sim-run.in gdb-sim.in gumstix.in
 	./mkrun yes ARM arm gumstix
 
-rtl22xx: gdb-sim-run.in rtl22xx.in
+rtl22xx: gdb-sim-run.in gdb-sim.in rtl22xx.in
 	./mkrun yes ARM arm rtl22xx
 
-smdk2410: gdb-sim-run.in smdk2410.in
+smdk2410: gdb-sim-run.in gdb-sim.in smdk2410.in
 	./mkrun yes ARM arm smdk2410
 
-ezkit533: gdb-sim-run.in ezkit533.in
+ezkit533: gdb-sim-run.in gdb-sim.in ezkit533.in
 	./mkrun yes Blackfin bfin ezkit533
 
-leon2-skyeye: gdb-sim-run.in leon2-skyeye.in
+leon2-skyeye: gdb-sim-run.in gdb-sim.in leon2-skyeye.in
 	./mkrun yes SPARC sparc leon2-skyeye
 
 ### TSIM Simulator BSPs
-erc32: gdb-sim-run.in erc32.in tsim-support
-	./mkrun no SPARC sparc erc32
+erc32: gdb-sim-run.in gdb-sim.in erc32.in tsim-support
+	./mkrun yes SPARC sparc erc32
 
-leon2: gdb-sim-run.in leon2.in tsim-support
-	./mkrun no SPARC sparc leon2
+leon2: gdb-sim-run.in gdb-sim.in leon2.in tsim-support
+	./mkrun yes SPARC sparc leon2
 
-leon3: gdb-sim-run.in leon3.in tsim-support
-	./mkrun no SPARC sparc leon3
+leon3: gdb-sim-run.in gdb-sim.in leon3.in tsim-support
+	./mkrun yes SPARC sparc leon3
 
 ### GDB Simulator BSPs
 h8sim h8sim-gdb: gdb-sim-run.in gdb-sim.in h8sim.in

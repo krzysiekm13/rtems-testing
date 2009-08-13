@@ -27,7 +27,9 @@ if [ ${doGdb} = yes ] ; then
     sed -e "s/@CPU@/${CPU}/" \
 	-e "s/@CPU_TARGET@/${CPU_TARGET}/" \
 	-e "s/@BSP@/${BSP}/" \
-	-e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" >${GDB}
+	-e "/^##INSERT BSP SUPPORT HERE/r ${BSP}.in" | \
+    sed -e "/^##INSERT SKYEYE SUPPORT HERE/r skyeye-support" \
+        -e "/^##INSERT TSIM SUPPORT HERE/r tsim-support" >${GDB}
   chmod +x ${GDB}
 fi
 

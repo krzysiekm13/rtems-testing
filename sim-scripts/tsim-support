@@ -5,6 +5,9 @@
 #
 
 runBSP=tsim-${tsimName}
+bspUsesGDBSimulator="no"
+bspGeneratesGDBCommands="yes"
+bspSupportsGDBServerMode="yes"
 
 type ${runBSP} >/dev/null 2>&1
 if [ $? -ne 0 ] ; then
@@ -22,6 +25,19 @@ fi
 runARGS()
 {
   echo "-c ${bspTreeFile} ${1}"
+}
+
+gdbServerARGS()
+{
+  echo "-gdb"
+}
+
+bspGenerateGDBCommands()
+{
+cat <<EOF
+tar remote :1234
+load
+EOF
 }
 
 checkBSPFaults()
@@ -53,18 +69,19 @@ bspTreeFile=${tsimName}.conf
 
 bspGenerateDeviceTree()
 {
-  if [ ${coverage} = yes ] ; then
-    echo "coverage enable"
+  if [ ${inGDBScript} = no ] ; then
+    if [ ${coverage} = yes ] ; then
+      echo "coverage enable"
+    fi
+    if [ ${limit} -eq 0 ] ; then
+      echo "go ${tsimGoAddress}"
+    else
+      echo "go ${tsimGoAddress} ${limit} s"
+    fi
+    if [ ${coverage} = yes ] ; then
+      echo "coverage save ${2}.cov"
+      echo "shell sleep 1"           # give tsim time to actually write file
+    fi
+    echo "quit"
   fi
-  if [ ${limit} -eq 0 ] ; then
-    echo "go ${tsimGoAddress}"
-  else
-    echo "go ${tsimGoAddress} ${limit} s"
-  fi
-  if [ ${coverage} = yes ] ; then
-    echo "coverage save ${2}.cov"
-    echo "shell sleep 1"           # give tsim time to actually write file
-  fi
-  echo "quit"
-  
 }
