@@ -3,15 +3,16 @@
 #
 
 INSTALL_DIR=../bin
-GDBSIM_SCRIPTS=h8sim h8sim-gdb jmr3904 jmr3904-gdb \
-  m32csim m32csim-gdb m32rsim m32rsim-gdb psim psim-gdb \
-  sis sis-gdb simsh simsh-gdb
+GDBSIM_SCRIPTS=h8sim jmr3904 m32csim m32rsim psim sis simsh
 SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   gumstix rtl22xx smdk2410 leon2-skyeye
+
 TSIM_SCRIPTS=erc32 leon2 leon3
 QEMU_SCRIPTS=qemu-rtems
 OTHER_SCRIPTS=avrtest
-GENERATED_SCRIPTS=${GDBSIM_SCRIPTS} ${SKYEYE_SCRIPTS} \
+GENERATED_SCRIPTS=\
+  ${GDBSIM_SCRIPTS} $(GDBSIM_SCRIPTS:%=%-gdb) \
+  ${SKYEYE_SCRIPTS} $(SKYEYE_SCRIPTS:%=%-gdb) \
   ${TSIM_SCRIPTS} ${QEMU_SCRIPTS} ${OTHER_SCRIPTS}
 
 COMPILED_PROGRAMS=usleep
@@ -32,37 +33,37 @@ qemu-rtems: gdb-sim-run.in qemu-rtems.in
 
 ### Skyeye Simulator BSPs
 ant5206: gdb-sim-run.in ant5206.in
-	./mkrun no M68K-Coldfire m68k ant5206
+	./mkrun yes M68K-Coldfire m68k ant5206
 
 csb337: gdb-sim-run.in csb337.in
-	./mkrun no ARM arm csb337
+	./mkrun yes ARM arm csb337
 
 csb350: gdb-sim-run.in csb350.in
-	./mkrun no MIPS mips csb350
+	./mkrun yes MIPS mips csb350
 
 csb360: gdb-sim-run.in csb360.in
-	./mkrun no M68K-Coldfire m68k csb360
+	./mkrun yes M68K-Coldfire m68k csb360
 
 bf537Stamp: gdb-sim-run.in bf537Stamp.in
-	./mkrun no Blackfin bfin bf537Stamp
+	./mkrun yes Blackfin bfin bf537Stamp
 
 edb7312: gdb-sim-run.in edb7312.in
-	./mkrun no ARM arm edb7312
+	./mkrun yes ARM arm edb7312
 
 gumstix: gdb-sim-run.in gumstix.in
-	./mkrun no ARM arm gumstix
+	./mkrun yes ARM arm gumstix
 
 rtl22xx: gdb-sim-run.in rtl22xx.in
-	./mkrun no ARM arm rtl22xx
+	./mkrun yes ARM arm rtl22xx
 
 smdk2410: gdb-sim-run.in smdk2410.in
-	./mkrun no ARM arm smdk2410
+	./mkrun yes ARM arm smdk2410
 
 ezkit533: gdb-sim-run.in ezkit533.in
-	./mkrun no Blackfin bfin ezkit533
+	./mkrun yes Blackfin bfin ezkit533
 
 leon2-skyeye: gdb-sim-run.in leon2-skyeye.in
-	./mkrun no SPARC sparc leon2-skyeye
+	./mkrun yes SPARC sparc leon2-skyeye
 
 ### TSIM Simulator BSPs
 erc32: gdb-sim-run.in erc32.in tsim-support

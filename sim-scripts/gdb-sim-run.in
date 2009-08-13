@@ -26,15 +26,17 @@ USAGE=\
 	-c	   -- enabled coverage (default=no)
 	-C	   -- cat test output if not interactive (default=no)
 	-g	   -- generate device tree and exit (default=no)
+	-G	   -- put simulator in GDB server mode (default=no)
 	-i	   -- interactive (default=no time limit)
 	-s	   -- force System V IPC support (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
         -L dir     -- specify log directory (default is 'log')
 
-System V IPC and Coverage are not supported by all BSPs or simulators.
-
-When you generate a device tree and exit, remember to specify an executable.
-Otherwise, the script won't know what to generate it for.
+NOTES:
+  + System V IPC and Coverage are not supported by all BSPs or simulators.
+  + GDB Server mode is only supported by stand-along simulators.
+  + When you generate a device tree and exit, remember to specify an
+    executable.  Otherwise, the script won't know what to generate it for.
 "
 
 #   log an error to stderr
@@ -74,17 +76,19 @@ coverage="no"
 verbose="no"
 defaultLimit="not_set"
 interactive="no"
+gdb_server_mode="no"
 use_sysv_ipc="no"
 generate_tree_and_exit="no"
 logdir="log"
 
-while getopts "vcCgil:L:s" OPT
+while getopts "vcCgGil:L:s" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
    c) coverage="yes";;
    C) doCatOutput="yes";;
    g) generate_tree_and_exit="yes" ;;
+   G) gdb_server_mode="yes" ;;
    i) interactive="yes";;
    l) defaultLimit="$OPTARG";;
    L) loggir="$OPTARG";;
@@ -117,6 +121,7 @@ bspSupportsSystemVIPC="no"
 bspUsesGDBSimulator="yes"
 bspNeedsDos2Unix="no"
 bspSimTrustedToExit="no"
+bspSupportsGDBServerMode="no"
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -339,6 +344,12 @@ do
       cat ${bspTreeFile}
       echo "=================================================="
     fi
+  fi
+
+  if [ ${bspSupportsGDBServerMode} = "yes" -a ${gdb_server_mode} = "yes" ];then
+    test ${verbose} == 'yes' && echo ${runBSP} `runARGS ${toRun}`
+    ${runBSP} `gdbServerARGS ${toRun}`
+    exit 0
   fi
 
   if [ ${interactive} = "yes" ] ; then

@@ -5,11 +5,20 @@
 #
 
 bspUsesGDBSimulator="no"
+bspSupportsGDBServerMode="yes"
 bspNeedsDos2Unix="yes"
+bspGeneratesGDBCommands="no"
+
 if [ ${coverage} = "yes" ] ; then
   bspRunFatal="yes"
 fi
 runBSP=skyeye
+
+bspGenerateGDBCommands()
+{
+  tar remote :12345
+  load
+}
 
 bspLimit()
 {

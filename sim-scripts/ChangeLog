@@ -1,3 +1,10 @@
+2009-08-13	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* .cvsignore, Makefile, edb7312.in, gdb-sim-run.in, skyeye-support: Add
+	support for invoking a simulator external to gdb in gdb server mode.
+	Have the gdb commands generated to include attaching to that server
+	instance.
+
 2009-08-12	Josh Switnicki <josh.switnicki@utoronto.ca>
 
 	* .cvsignore, Makefile, gdb-sim-run.in: Add support for avrtest BSP

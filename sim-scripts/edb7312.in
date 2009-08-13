@@ -10,6 +10,11 @@ runARGS()
   echo "-c ${bspTreeFile} -e ${1}"
 }
 
+gdbServerARGS()
+{
+  echo "-c ${bspTreeFile} -d"
+}
+
 checkBSPFaults()
 {
   bspExited_ARM
