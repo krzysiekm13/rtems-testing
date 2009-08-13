@@ -8,11 +8,6 @@
 
 ##INSERT SKYEYE SUPPORT HERE
 
-runARGS()
-{
-  echo "-c ${bspTreeFile} -e ${1}"
-}
-
 checkBSPFaults()
 {
   bspExited_ARM

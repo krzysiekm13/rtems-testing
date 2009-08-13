@@ -5,15 +5,6 @@
 #
 
 ##INSERT SKYEYE SUPPORT HERE
-runARGS()
-{
-  echo "-c ${bspTreeFile} -e ${1}"
-}
-
-gdbServerARGS()
-{
-  echo "-c ${bspTreeFile} -d"
-}
 
 checkBSPFaults()
 {

@@ -14,6 +14,16 @@ if [ ${coverage} = "yes" ] ; then
 fi
 runBSP=skyeye
 
+runARGS()
+{
+  echo "-c ${bspTreeFile} -e ${1}"
+}
+
+gdbServerARGS()
+{
+  echo "-c ${bspTreeFile} -d"
+}
+
 bspGenerateGDBCommands()
 {
   tar remote :12345

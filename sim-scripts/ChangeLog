@@ -1,5 +1,13 @@
 2009-08-13	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* ant5206.in, avrtest.in, bf537Stamp.in, csb337.in, csb350.in,
+	csb360.in, edb7312.in, ezkit533.in, gumstix.in, leon2-skyeye.in,
+	rtl22xx.in, skyeye-support, smdk2410.in: Move runARGS() and
+	gdbServerARGS() implementations to skyeye-support. They are the same
+	for all skyeye configurations.
+
+2009-08-13	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* .cvsignore, Makefile, edb7312.in, gdb-sim-run.in, skyeye-support: Add
 	support for invoking a simulator external to gdb in gdb server mode.
 	Have the gdb commands generated to include attaching to that server

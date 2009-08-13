@@ -6,11 +6,6 @@
 
 ##INSERT SKYEYE SUPPORT HERE
 
-runARGS()
-{
-  echo "-c ${bspTreeFile} -e ${1}"
-}
-
 checkBSPFaults()
 {
   # XXX This may need adjusting.

@@ -6,6 +6,7 @@
 
 bspUsesGDBSimulator="no"
 runBSP=simulavr
+
 runARGS()
 {
   echo "-d atmega128 -W0x52,/dev/stderr -Texit -f ${1}"
