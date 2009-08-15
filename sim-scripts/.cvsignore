@@ -12,6 +12,7 @@ csb360-gdb
 edb7312
 edb7312-gdb
 erc32
+erc32-gdb
 ezkit533
 ezkit533-gdb
 gumstix
@@ -21,9 +22,11 @@ h8sim-gdb
 jmr3904
 jmr3904-gdb
 leon2
+leon2-gdb
 leon2-skyeye
 leon2-skyeye-gdb
 leon3
+leon3-gdb
 m32csim
 m32csim-gdb
 m32rsim

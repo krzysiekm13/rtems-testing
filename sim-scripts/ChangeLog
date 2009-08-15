@@ -1,3 +1,8 @@
+2009-08-15	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* .cvsignore: Add tsim gdb scripts.
+	* gdb-sim-run.in: termios.exe is interactive.  termios01 is not.
+
 2009-08-13	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Makefile, gdb-sim-run.in, gdb-sim.in, mkrun, skyeye-support,
