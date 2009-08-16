@@ -369,7 +369,7 @@ do
   ## If the test is known to be interactive or locks up and we are
   ## in batch mode, skip it.
   case ${toRun} in
-    monitor*|termios|fileio*|capture*)
+    monitor*|termios.*|fileio*|capture*)
         warn "Skipping ${toRun}; it is interactive"
         continue
         ;;
