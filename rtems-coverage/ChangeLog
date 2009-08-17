@@ -1,5 +1,12 @@
 2009-08-17	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* rtems-cvs-20090318.diff, rtems-cvs-20090327.diff,
+	rtems-cvs-20090421.diff, rtems-cvs-20090515.diff,
+	rtems-cvs-20090618.diff, rtems-cvs-20090727.diff,
+	rtems-cvs-20090805.diff: Removed.
+
+2009-08-17	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* rtems-cvs-20090817.diff: New file.
 	* rtems-cvs-20090811.diff, rtems-cvs-20090812.diff: Removed.
 
