@@ -1,12 +1,10 @@
-? log
-? cpukit/libmd/.md5.c.swp
 Index: configure.ac
 ===================================================================
 RCS file: /usr1/CVS/rtems/configure.ac,v
 retrieving revision 1.29
 diff -u -r1.29 configure.ac
 --- configure.ac	1 Jun 2008 05:07:57 -0000	1.29
-+++ configure.ac	12 Aug 2009 20:56:09 -0000
++++ configure.ac	17 Aug 2009 15:26:58 -0000
 @@ -26,6 +26,7 @@
  RTEMS_ENABLE_ITRON
  RTEMS_ENABLE_NETWORKING
@@ -20,7 +18,7 @@ Index: aclocal/enable-coverage.m4
 RCS file: aclocal/enable-coverage.m4
 diff -N aclocal/enable-coverage.m4
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ aclocal/enable-coverage.m4	12 Aug 2009 20:56:09 -0000
++++ aclocal/enable-coverage.m4	17 Aug 2009 15:26:58 -0000
 @@ -0,0 +1,15 @@
 +dnl $Id$
 +
@@ -43,7 +41,7 @@ RCS file: /usr1/CVS/rtems/c/src/make/Makefile.inc.in,v
 retrieving revision 1.11
 diff -u -r1.11 Makefile.inc.in
 --- c/src/make/Makefile.inc.in	18 Sep 2007 17:55:35 -0000	1.11
-+++ c/src/make/Makefile.inc.in	12 Aug 2009 20:56:10 -0000
++++ c/src/make/Makefile.inc.in	17 Aug 2009 15:27:19 -0000
 @@ -40,6 +40,7 @@
  RTEMS_HAS_POSIX_API = @RTEMS_HAS_POSIX_API@
  RTEMS_HAS_ITRON_API = @RTEMS_HAS_ITRON_API@
@@ -58,7 +56,7 @@ RCS file: /usr1/CVS/rtems/c/src/make/bsp.cfg.in,v
 retrieving revision 1.5
 diff -u -r1.5 bsp.cfg.in
 --- c/src/make/bsp.cfg.in	4 Aug 2007 05:45:16 -0000	1.5
-+++ c/src/make/bsp.cfg.in	12 Aug 2009 20:56:10 -0000
++++ c/src/make/bsp.cfg.in	17 Aug 2009 15:27:19 -0000
 @@ -26,6 +26,11 @@
  HAS_CPLUSPLUS = @HAS_CPLUSPLUS@
  
@@ -77,7 +75,7 @@ RCS file: /usr1/CVS/rtems/c/src/make/configure.ac,v
 retrieving revision 1.27
 diff -u -r1.27 configure.ac
 --- c/src/make/configure.ac	2 Aug 2007 14:59:41 -0000	1.27
-+++ c/src/make/configure.ac	12 Aug 2009 20:56:10 -0000
++++ c/src/make/configure.ac	17 Aug 2009 15:27:19 -0000
 @@ -23,6 +23,7 @@
  RTEMS_ENABLE_NETWORKING
  RTEMS_ENABLE_CXX
@@ -100,27 +98,25 @@ RCS file: /usr1/CVS/rtems/c/src/make/leaf.cfg,v
 retrieving revision 1.11
 diff -u -r1.11 leaf.cfg
 --- c/src/make/leaf.cfg	15 Apr 2009 08:31:09 -0000	1.11
-+++ c/src/make/leaf.cfg	12 Aug 2009 20:56:10 -0000
-@@ -41,8 +41,9 @@
++++ c/src/make/leaf.cfg	17 Aug 2009 15:27:20 -0000
+@@ -41,8 +41,10 @@
  # Create a RTEMS executable based on MANAGERS which was set in
  #  app's Makefile
  
 -MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
 -	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
-+## XXX Joel make conditional
-+## MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
-+## 	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
++ifneq ($(RTEMS_HAS_COVERAGE),yes)
++  MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
++ 	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
++endif
  
  # Allow user to override link commands (to build a prom image, perhaps)
  ifndef LINKCMDS
-@@ -55,14 +56,21 @@
+@@ -55,14 +57,18 @@
  
  DOWNEXT=.ralf
  
 +ifeq ($(RTEMS_HAS_COVERAGE),yes)
-+#  COV_ARGS=-Wl,--undefined=rtems_task_create \
-+#           -Wl,--whole-archive -lrtemscoverage -Wl,--no-whole-archive \
-+#           -Wl,--undefined=end_of_profiling
 +  COV_ARGS=$(PROJECT_RELEASE)/lib/rtems_coverage.o
 +endif
 +
@@ -143,7 +139,7 @@ RCS file: /usr1/CVS/rtems/c/src/make/target.cfg.in,v
 retrieving revision 1.7
 diff -u -r1.7 target.cfg.in
 --- c/src/make/target.cfg.in	4 Aug 2007 05:45:16 -0000	1.7
-+++ c/src/make/target.cfg.in	12 Aug 2009 20:56:10 -0000
++++ c/src/make/target.cfg.in	17 Aug 2009 15:27:20 -0000
 @@ -37,6 +37,7 @@
  RTEMS_HAS_NETWORKING = @RTEMS_HAS_NETWORKING@
  RTEMS_HAS_RDBG = no
@@ -157,17 +153,17 @@ diff -u -r1.7 target.cfg.in
  #  app's Makefile
  
 -MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
--	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
-+## XXX Joel make conditional
-+## MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
-+## 	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
- 
++ifneq ($(RTEMS_HAS_COVERAGE),yes)
++  MANAGERS_NOT_WANTED=$(filter-out $(MANAGERS) \
+ 	$(MANAGERS_REQUIRED), $(MANAGER_LIST))
+-
++endif
 Index: c/src/make/aclocal/enable-coverage.m4
 ===================================================================
 RCS file: c/src/make/aclocal/enable-coverage.m4
 diff -N c/src/make/aclocal/enable-coverage.m4
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ c/src/make/aclocal/enable-coverage.m4	12 Aug 2009 20:56:10 -0000
++++ c/src/make/aclocal/enable-coverage.m4	17 Aug 2009 15:27:20 -0000
 @@ -0,0 +1,15 @@
 +dnl $Id$
 +
@@ -190,7 +186,7 @@ RCS file: /usr1/CVS/rtems/cpukit/Makefile.am,v
 retrieving revision 1.89
 diff -u -r1.89 Makefile.am
 --- cpukit/Makefile.am	5 Aug 2009 19:37:54 -0000	1.89
-+++ cpukit/Makefile.am	12 Aug 2009 20:56:10 -0000
++++ cpukit/Makefile.am	17 Aug 2009 15:27:21 -0000
 @@ -16,6 +16,9 @@
  SUBDIRS += libmd
  SUBDIRS += libgnat
@@ -207,7 +203,7 @@ RCS file: /usr1/CVS/rtems/cpukit/configure.ac,v
 retrieving revision 1.163
 diff -u -r1.163 configure.ac
 --- cpukit/configure.ac	10 Jul 2009 20:32:48 -0000	1.163
-+++ cpukit/configure.ac	12 Aug 2009 20:56:10 -0000
++++ cpukit/configure.ac	17 Aug 2009 15:27:22 -0000
 @@ -18,6 +18,7 @@
  RTEMS_ENABLE_ITRON
  RTEMS_ENABLE_RTEMS_DEBUG
@@ -255,7 +251,7 @@ Index: cpukit/aclocal/enable-coverage.m4
 RCS file: cpukit/aclocal/enable-coverage.m4
 diff -N cpukit/aclocal/enable-coverage.m4
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ cpukit/aclocal/enable-coverage.m4	12 Aug 2009 20:56:10 -0000
++++ cpukit/aclocal/enable-coverage.m4	17 Aug 2009 15:27:22 -0000
 @@ -0,0 +1,15 @@
 +dnl $Id$
 +
@@ -277,7 +273,7 @@ Index: cpukit/wrapup-coverage/.cvsignore
 RCS file: cpukit/wrapup-coverage/.cvsignore
 diff -N cpukit/wrapup-coverage/.cvsignore
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ cpukit/wrapup-coverage/.cvsignore	12 Aug 2009 20:56:10 -0000
++++ cpukit/wrapup-coverage/.cvsignore	17 Aug 2009 15:27:25 -0000
 @@ -0,0 +1,2 @@
 +Makefile
 +Makefile.in
@@ -286,7 +282,7 @@ Index: cpukit/wrapup-coverage/Makefile.am
 RCS file: cpukit/wrapup-coverage/Makefile.am
 diff -N cpukit/wrapup-coverage/Makefile.am
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ cpukit/wrapup-coverage/Makefile.am	12 Aug 2009 20:56:10 -0000
++++ cpukit/wrapup-coverage/Makefile.am	17 Aug 2009 15:27:25 -0000
 @@ -0,0 +1,135 @@
 +##
 +## $Id$
@@ -428,7 +424,7 @@ Index: cpukit/wrapup-coverage/end_coverage.c
 RCS file: cpukit/wrapup-coverage/end_coverage.c
 diff -N cpukit/wrapup-coverage/end_coverage.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ cpukit/wrapup-coverage/end_coverage.c	12 Aug 2009 20:56:10 -0000
++++ cpukit/wrapup-coverage/end_coverage.c	17 Aug 2009 15:27:25 -0000
 @@ -0,0 +1,2 @@
 +void end_coverage(void){}
 +
@@ -437,7 +433,7 @@ Index: cpukit/wrapup-coverage/preinstall.am
 RCS file: cpukit/wrapup-coverage/preinstall.am
 diff -N cpukit/wrapup-coverage/preinstall.am
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ cpukit/wrapup-coverage/preinstall.am	12 Aug 2009 20:56:10 -0000
++++ cpukit/wrapup-coverage/preinstall.am	17 Aug 2009 15:27:25 -0000
 @@ -0,0 +1,24 @@
 +## Automatically generated by ampolish3 - Do not edit
 +
@@ -468,7 +464,7 @@ Index: cpukit/wrapup-coverage/start_coverage.c
 RCS file: cpukit/wrapup-coverage/start_coverage.c
 diff -N cpukit/wrapup-coverage/start_coverage.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ cpukit/wrapup-coverage/start_coverage.c	12 Aug 2009 20:56:10 -0000
++++ cpukit/wrapup-coverage/start_coverage.c	17 Aug 2009 15:27:25 -0000
 @@ -0,0 +1 @@
 +void start_coverage(void){}
 Index: make/leaf.cfg
@@ -477,15 +473,12 @@ RCS file: /usr1/CVS/rtems/make/leaf.cfg,v
 retrieving revision 1.24
 diff -u -r1.24 leaf.cfg
 --- make/leaf.cfg	15 Sep 2008 17:43:22 -0000	1.24
-+++ make/leaf.cfg	12 Aug 2009 20:56:10 -0000
-@@ -116,14 +116,21 @@
++++ make/leaf.cfg	17 Aug 2009 15:27:26 -0000
+@@ -116,14 +116,18 @@
  
  DOWNEXT=.ralf
  
 +ifeq ($(RTEMS_HAS_COVERAGE),yes)
-+  #COV_ARGS=-Wl,--undefined=rtems_task_create \
-+  #         -Wl,--whole-archive -lrtemscoverage -Wl,--no-whole-archive \
-+  #         -Wl,--undefined=end_of_profiling
 +  COV_ARGS=$(PROJECT_RELEASE)/lib/rtems_coverage.o
 +endif
 +
@@ -508,7 +501,7 @@ RCS file: /usr1/CVS/rtems/make/compilers/gcc-no_bsp.cfg,v
 retrieving revision 1.14
 diff -u -r1.14 gcc-no_bsp.cfg
 --- make/compilers/gcc-no_bsp.cfg	18 Sep 2008 17:33:55 -0000	1.14
-+++ make/compilers/gcc-no_bsp.cfg	12 Aug 2009 20:56:10 -0000
++++ make/compilers/gcc-no_bsp.cfg	17 Aug 2009 15:27:26 -0000
 @@ -201,8 +201,10 @@
  
  # Create a RTEMS executable based on MANAGERS which was set in app's Makefile
@@ -526,7 +519,7 @@ RCS file: /usr1/CVS/rtems/make/compilers/gcc-target-default.cfg,v
 retrieving revision 1.40
 diff -u -r1.40 gcc-target-default.cfg
 --- make/compilers/gcc-target-default.cfg	18 Sep 2008 17:33:55 -0000	1.40
-+++ make/compilers/gcc-target-default.cfg	12 Aug 2009 20:56:10 -0000
++++ make/compilers/gcc-target-default.cfg	17 Aug 2009 15:27:26 -0000
 @@ -192,3 +192,9 @@
  	$(LINK.c) $(CFLAGS) $(AM_CFLAGS) $(AM_LDFLAGS) \
  	  -qnolinkcmds -nostdlib -Wl,-r $(XLDFLAGS) -o $@ $^
@@ -543,26 +536,24 @@ RCS file: /usr1/CVS/rtems/make/custom/edb7312.cfg,v
 retrieving revision 1.8
 diff -u -r1.8 edb7312.cfg
 --- make/custom/edb7312.cfg	6 Mar 2008 21:51:00 -0000	1.8
-+++ make/custom/edb7312.cfg	12 Aug 2009 20:56:10 -0000
-@@ -16,6 +16,3 @@
- #  and (hopefully) optimize for it. 
- #
++++ make/custom/edb7312.cfg	17 Aug 2009 15:27:26 -0000
+@@ -18,4 +18,4 @@
  CPU_CFLAGS = -mcpu=$(RTEMS_CPU_MODEL) -mstructure-size-boundary=8
--
--# optimize flag: typically -O2
+ 
+ # optimize flag: typically -O2
 -CFLAGS_OPTIMIZE_V = -O2 -g
++CFLAGS_OPTIMIZE_V = -Os -g
 Index: make/custom/erc32.cfg
 ===================================================================
 RCS file: /usr1/CVS/rtems/make/custom/erc32.cfg,v
 retrieving revision 1.37
 diff -u -r1.37 erc32.cfg
 --- make/custom/erc32.cfg	1 Oct 2008 13:19:51 -0000	1.37
-+++ make/custom/erc32.cfg	12 Aug 2009 20:56:10 -0000
-@@ -17,5 +17,4 @@
- #  and (hopefully) optimize for it.
++++ make/custom/erc32.cfg	17 Aug 2009 15:27:26 -0000
+@@ -18,4 +18,4 @@
  CPU_CFLAGS = -mcpu=cypress
  
--# optimize flag: typically -O2
+ # optimize flag: typically -O2
 -CFLAGS_OPTIMIZE_V = -O2 -g
 +CFLAGS_OPTIMIZE_V = -Os -g
 Index: make/custom/gumstix.cfg
@@ -571,62 +562,58 @@ RCS file: /usr1/CVS/rtems/make/custom/gumstix.cfg,v
 retrieving revision 1.1
 diff -u -r1.1 gumstix.cfg
 --- make/custom/gumstix.cfg	4 Jun 2009 16:33:04 -0000	1.1
-+++ make/custom/gumstix.cfg	12 Aug 2009 20:56:10 -0000
-@@ -15,6 +15,3 @@
- #  This contains the compiler options necessary to select the CPU model
- #  and (hopefully) optimize for it. 
++++ make/custom/gumstix.cfg	17 Aug 2009 15:27:26 -0000
+@@ -17,4 +17,4 @@
  CPU_CFLAGS = -mcpu=xscale -mstructure-size-boundary=8 
--
--# optimize flag: typically -O2
+ 
+ # optimize flag: typically -O2
 -CFLAGS_OPTIMIZE_V = -O2 -g 
++CFLAGS_OPTIMIZE_V = -Os -g
 Index: make/custom/leon2.cfg
 ===================================================================
 RCS file: /usr1/CVS/rtems/make/custom/leon2.cfg,v
 retrieving revision 1.14
 diff -u -r1.14 leon2.cfg
 --- make/custom/leon2.cfg	6 Mar 2008 21:51:01 -0000	1.14
-+++ make/custom/leon2.cfg	12 Aug 2009 20:56:10 -0000
-@@ -14,6 +14,3 @@
- #  This contains the compiler options necessary to select the CPU model
- #  and (hopefully) optimize for it.
++++ make/custom/leon2.cfg	17 Aug 2009 15:27:26 -0000
+@@ -16,4 +16,4 @@
  CPU_CFLAGS = -mcpu=cypress -msoft-float
--
--# optimize flag: typically -O2
+ 
+ # optimize flag: typically -O2
 -CFLAGS_OPTIMIZE_V = -O2 -g
++CFLAGS_OPTIMIZE_V = -Os -g
 Index: make/custom/leon3.cfg
 ===================================================================
 RCS file: /usr1/CVS/rtems/make/custom/leon3.cfg,v
 retrieving revision 1.9
 diff -u -r1.9 leon3.cfg
 --- make/custom/leon3.cfg	6 Mar 2008 21:51:01 -0000	1.9
-+++ make/custom/leon3.cfg	12 Aug 2009 20:56:10 -0000
-@@ -16,6 +16,3 @@
- #  This contains the compiler options necessary to select the CPU model
- #  and (hopefully) optimize for it.
++++ make/custom/leon3.cfg	17 Aug 2009 15:27:26 -0000
+@@ -18,4 +18,4 @@
  CPU_CFLAGS = -mcpu=cypress -msoft-float
--
--# optimize flag: typically -O2
+ 
+ # optimize flag: typically -O2
 -CFLAGS_OPTIMIZE_V = -O2 -g
++CFLAGS_OPTIMIZE_V = -Os -g
 Index: make/custom/smdk2410.cfg
 ===================================================================
 RCS file: /usr1/CVS/rtems/make/custom/smdk2410.cfg,v
 retrieving revision 1.1
 diff -u -r1.1 smdk2410.cfg
 --- make/custom/smdk2410.cfg	6 May 2008 20:59:23 -0000	1.1
-+++ make/custom/smdk2410.cfg	12 Aug 2009 20:56:10 -0000
-@@ -15,6 +15,3 @@
- #  This contains the compiler options necessary to select the CPU model
- #  and (hopefully) optimize for it.
++++ make/custom/smdk2410.cfg	17 Aug 2009 15:27:26 -0000
+@@ -17,4 +17,4 @@
  CPU_CFLAGS = -mcpu=arm920t -DCPU_S3C2410 -mstructure-size-boundary=32
--
--# optimize flag: typically -O2
+ 
+ # optimize flag: typically -O2
 -CFLAGS_OPTIMIZE_V = -O2 -g
++CFLAGS_OPTIMIZE_V = -Os -g
 Index: testsuites/aclocal/enable-coverage.m4
 ===================================================================
 RCS file: testsuites/aclocal/enable-coverage.m4
 diff -N testsuites/aclocal/enable-coverage.m4
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ testsuites/aclocal/enable-coverage.m4	12 Aug 2009 20:56:10 -0000
++++ testsuites/aclocal/enable-coverage.m4	17 Aug 2009 15:27:26 -0000
 @@ -0,0 +1,15 @@
 +dnl $Id$
 +
@@ -649,7 +636,7 @@ RCS file: /usr1/CVS/rtems/testsuites/itrontests/configure.ac,v
 retrieving revision 1.19
 diff -u -r1.19 configure.ac
 --- testsuites/itrontests/configure.ac	2 Dec 2006 06:05:03 -0000	1.19
-+++ testsuites/itrontests/configure.ac	12 Aug 2009 20:56:10 -0000
++++ testsuites/itrontests/configure.ac	17 Aug 2009 15:27:26 -0000
 @@ -12,7 +12,6 @@
  AM_INIT_AUTOMAKE([no-define foreign 1.10])
  AM_MAINTAINER_MODE
@@ -670,10 +657,10 @@ diff -u -r1.19 configure.ac
 Index: testsuites/libtests/configure.ac
 ===================================================================
 RCS file: /usr1/CVS/rtems/testsuites/libtests/configure.ac,v
-retrieving revision 1.22
-diff -u -r1.22 configure.ac
---- testsuites/libtests/configure.ac	5 Aug 2009 19:36:57 -0000	1.22
-+++ testsuites/libtests/configure.ac	12 Aug 2009 20:56:10 -0000
+retrieving revision 1.23
+diff -u -r1.23 configure.ac
+--- testsuites/libtests/configure.ac	15 Aug 2009 17:54:48 -0000	1.23
++++ testsuites/libtests/configure.ac	17 Aug 2009 15:27:26 -0000
 @@ -28,9 +28,11 @@
  RTEMS_CHECK_CUSTOM_BSP(RTEMS_BSP)
  RTEMS_CHECK_CXX(RTEMS_BSP)
@@ -693,7 +680,7 @@ RCS file: /usr1/CVS/rtems/testsuites/mptests/configure.ac,v
 retrieving revision 1.21
 diff -u -r1.21 configure.ac
 --- testsuites/mptests/configure.ac	2 Dec 2006 06:05:19 -0000	1.21
-+++ testsuites/mptests/configure.ac	12 Aug 2009 20:56:10 -0000
++++ testsuites/mptests/configure.ac	17 Aug 2009 15:27:27 -0000
 @@ -31,6 +31,9 @@
  AC_ARG_VAR([MAX_LONG_TEST_DURATION],
  [The longest length of time a "long running" test should run])
@@ -710,7 +697,7 @@ RCS file: /usr1/CVS/rtems/testsuites/psxtests/configure.ac,v
 retrieving revision 1.48
 diff -u -r1.48 configure.ac
 --- testsuites/psxtests/configure.ac	7 Aug 2009 00:42:47 -0000	1.48
-+++ testsuites/psxtests/configure.ac	12 Aug 2009 20:56:10 -0000
++++ testsuites/psxtests/configure.ac	17 Aug 2009 15:27:28 -0000
 @@ -24,6 +24,9 @@
  
  AM_CONDITIONAL([HAS_NETWORKING],[test "$HAS_NETWORKING" = "yes"])
@@ -727,7 +714,7 @@ RCS file: /usr1/CVS/rtems/testsuites/samples/configure.ac,v
 retrieving revision 1.29
 diff -u -r1.29 configure.ac
 --- testsuites/samples/configure.ac	17 Aug 2007 01:07:10 -0000	1.29
-+++ testsuites/samples/configure.ac	12 Aug 2009 20:56:10 -0000
++++ testsuites/samples/configure.ac	17 Aug 2009 15:27:29 -0000
 @@ -58,6 +58,9 @@
  #FIXME: We should use a feature based check
  AM_CONDITIONAL(LIBCHIP,[test "$RTEMS_BSP_FAMILY" != "posix"])
@@ -744,7 +731,7 @@ RCS file: /usr1/CVS/rtems/testsuites/sptests/configure.ac,v
 retrieving revision 1.80
 diff -u -r1.80 configure.ac
 --- testsuites/sptests/configure.ac	12 Aug 2009 13:09:36 -0000	1.80
-+++ testsuites/sptests/configure.ac	12 Aug 2009 20:56:10 -0000
++++ testsuites/sptests/configure.ac	17 Aug 2009 15:27:29 -0000
 @@ -1,6 +1,6 @@
  ## Process this file with autoconf to produce a configure script.
  ## 
@@ -769,7 +756,7 @@ RCS file: /usr1/CVS/rtems/testsuites/tmitrontests/configure.ac,v
 retrieving revision 1.20
 diff -u -r1.20 configure.ac
 --- testsuites/tmitrontests/configure.ac	2 Dec 2006 06:05:51 -0000	1.20
-+++ testsuites/tmitrontests/configure.ac	12 Aug 2009 20:56:10 -0000
++++ testsuites/tmitrontests/configure.ac	17 Aug 2009 15:27:32 -0000
 @@ -23,6 +23,9 @@
  
  RTEMS_CHECK_CUSTOM_BSP(RTEMS_BSP)
@@ -786,7 +773,7 @@ RCS file: /usr1/CVS/rtems/testsuites/tmtests/configure.ac,v
 retrieving revision 1.20
 diff -u -r1.20 configure.ac
 --- testsuites/tmtests/configure.ac	2 Dec 2006 06:05:59 -0000	1.20
-+++ testsuites/tmtests/configure.ac	12 Aug 2009 20:56:10 -0000
++++ testsuites/tmtests/configure.ac	17 Aug 2009 15:27:32 -0000
 @@ -24,6 +24,9 @@
  
  RTEMS_CHECK_CUSTOM_BSP(RTEMS_BSP)
