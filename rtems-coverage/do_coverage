@@ -21,11 +21,12 @@ progname=${0##*/}        # fast basename hack for ksh, bash
 
 USAGE=\
 "usage: $progname [ -opts ]
-	-v	  -- verbose (default=no)
+        -v        -- verbose (default=no)
         -A        -- Execute all steps (default=no)
         -B BSP    -- Specify BSP to test
         -P        -- Enable POSIX API (default=yes)
         -E        -- Enable Experimental Coverage Area (default=no)
+        -S        -- Optimize for size (default=no)
         -m        -- Update and build covMerge (default=no)
         -u        -- Do CVS update on RTEMS (default=no)
         -c        -- Configure RTEMS (default=no)
@@ -79,6 +80,7 @@ verbose="no"
 do_all="no"
 do_posix="yes"
 do_experimental="no"
+do_optimize_size="no"
 do_covmerge="no"
 do_rtems_update="no"
 do_rtems_configure="no"
@@ -88,7 +90,7 @@ do_run_tests="no"
 do_report="no"
 BSP="not_set"
 
-while getopts vB:PEmAucbCrR OPT
+while getopts vB:PESmAucbCrR OPT
 do
     case "$OPT" in
         A)
@@ -107,6 +109,7 @@ do
         m) do_covmerge=`toggle ${do_covmerge}` ;;
         P) do_posix=`toggle ${do_posix}` ;;
         E) do_experimental=`toggle ${do_experimental}` ;;
+        S) do_optimize_size=`toggle ${do_optimize_size}` ;;
         u) do_rtems_update=`toggle ${do_rtems_update}` ;;
         c) do_rtems_configure=`toggle ${do_rtems_configure}` ;;
         b) do_rtems_build=`toggle ${do_rtems_build}` ;;
@@ -151,13 +154,15 @@ esac
 TARGET=${CPU}-rtems${RTEMS_VERSION}
 
 ##### VERBOSE
-if [ ${verbose} = "yes" ] ; then
+print_verbose()
+{
   echo "BSP:                " ${bsp}
   echo "Target:             " ${TARGET}
   echo "do_all:             " ${do_all}
   echo "do_covmerge         " ${do_covmerge}
   echo "do_posix:           " ${do_posix}
   echo "do_experimental:    " ${do_experimental}
+  echo "do_optimize_size:   " ${do_optimize_size}
   echo "do_rtems_update:    " ${do_rtems_update}
   echo "do_rtems_configure: " ${do_rtems_configure}
   echo "do_rtems_build:     " ${do_rtems_build}
@@ -165,6 +170,10 @@ if [ ${verbose} = "yes" ] ; then
   echo "do_run_tests:       " ${do_run_tests}
   echo "do_report:          " ${do_report}
   echo "Clean Before:       " ${do_clean}
+}
+
+if [ ${verbose} = "yes" ] ; then
+  print_verbose
 fi
 
 # Basic error checking and sanity checking on the directory structure
@@ -188,7 +197,13 @@ fi
 type ${TARGET}-gcc
 check_status $? "Path appears to be broken"
 
-echo "Testing ${TARGET}/${BSP}"
+if [ ${do_optimize_size} = yes ] ; then
+ c_opt=-Os
+else
+ c_opt=-O2
+fi
+
+echo "Testing ${TARGET}/${BSP} at optimization (${c_opt})"
 
 # Now we are ready to start doing real work
 start=`date`
@@ -235,6 +250,22 @@ if [ ${do_rtems_update} = "yes" ] ; then
 else
   echo "Skipping Updating RTEMS ..."
 fi
+
+# Now let's patch the make/custom file
+custom=${RTEMSDIR}/make/custom/${BSP}.cfg
+if [ ! -r ${custom} ] ; then
+  echo "Unable to read ${custom}"
+  exit 1
+fi
+
+grep "^CFLAGS_OPTIMIZE_V.*=.*-O[2s]" ${custom} >/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Unable to file CFLAGS_OPTIMIZE_V in ${custom}"
+  exit 1
+fi
+
+sed -e "s/-O[2s]/${c_opt}/" <${custom} >XXX
+mv XXX ${custom}
 
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
@@ -298,6 +329,17 @@ if [ ${do_copy_tests} = "yes" ] ; then
   # clean destination
   rm -rf ${BASEDIR}/${BSP}-tests/*
   check_status $? "clean test directory"
+  # Generate the configuration settings file
+  ( \
+    echo "#"
+    echo "#  Settings for this coverage test run"
+    echo "#"
+    echo 
+    echo "Compiler version:   " `${TARGET}-gcc --version  | grep gcc`
+    echo "Optimization flag   " ${c_opt}
+    print_verbose
+  ) > ${BASEDIR}/${BSP}-tests/configuration.txt
+
   rm -f *.exe *.cov *.tmp
   rm -rf log
   rm -f annotated.dmp hello.num report

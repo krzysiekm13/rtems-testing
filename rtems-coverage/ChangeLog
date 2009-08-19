@@ -1,3 +1,11 @@
+2009-08-19	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage, gen_report: Now modify the optimization flag from the
+	script so the make/custom file is not part of the patch. Also include
+	a configuration.txt file in the tarball to capture information.
+	* rtems-cvs-20090819.diff: New file.
+	* rtems-cvs-20090817.diff: Removed.
+
 2009-08-17	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* rtems-cvs-20090318.diff, rtems-cvs-20090327.diff,
