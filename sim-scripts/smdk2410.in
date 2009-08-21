@@ -15,13 +15,21 @@ checkBSPFaults()
 bspLimit()
 {
   testname=$1
-  case ${tname} in
+  case ${testname} in
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
-    *psxtime*) limit=180 ;;
+    *intrcrit*) limit=120 ;;
+    *psxfile01*) limit=90 ;;
+    *psxsignal02*) limit=240 ;;
+    *psxstat*) limit=120 ;;
+    *psxtime*) limit=600 ;;
+    *sp01*)    limit=180 ;;
+    *sp12*)    limit=180 ;;
+    *sp24*)    limit=150 ;;
+    *sp39*)    limit=330 ;;  # run was 4m45s
     *)         limit=60 ;;
   esac
-  return ${limit}
+  echo ${limit}
 }
 
 bspGeneratesDeviceTree="yes"

@@ -15,13 +15,13 @@ checkBSPFaults()
 bspLimit()
 {
   testname=$1
-  case ${tname} in
+  case ${testname} in
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
     *psxtime*) limit=180 ;;
     *)         limit=60 ;;
   esac
-  return ${limit}
+  echo ${limit}
 }
 
 bspGeneratesDeviceTree="yes"

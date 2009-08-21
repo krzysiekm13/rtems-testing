@@ -25,7 +25,7 @@ bspLimit()
     *sp20*)    limit=180 ;;
     *)         limit=60 ;;
   esac
-  return ${limit}
+  echo ${limit}
 }
 
 bspGeneratesDeviceTree="yes"
@@ -41,7 +41,8 @@ mem_bank: map=M, type=RW, addr=0x5c000000, size=0x100000
 mem_bank: map=M, type=RW, addr=0xA0000000, size=0x4000000
 mem_bank: map=I, type=RW, addr=0xB0000000, size=0x100000
 mem_bank: map=I, type=RW, addr=0x40000000, size=0x4C000000
-shutdown_device: addr=0xb0000000, max_ins=${limit}0000000
+#shutdown_device: addr=0xb0000000, max_ins=${limit}0000000
+shutdown_device: addr=0xb0000000, max_ins=0
 lcd:state=on,type=pxa,mod=gtk
 EOF
 if [ ${coverage} = yes ] ; then

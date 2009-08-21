@@ -328,8 +328,7 @@ do
   esac
   # calculate the limit in case it is used by the simulator script
   if [ ${defaultLimit} = "not_set" ] ; then
-    bspLimit ${toRun}
-    limit=$?
+    limit=`bspLimit ${toRun}`
   else
     limit=${defaultLimit}
   fi

@@ -31,7 +31,7 @@ bspLimit()
     *psxtime*) limit=180 ;;
     *)         limit=60 ;;
   esac
-  return ${limit}
+  echo ${limit}
 }
 
 bspGeneratesGDBCommands="yes"

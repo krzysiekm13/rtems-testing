@@ -53,14 +53,14 @@ bspLimit()
     *fatal*)   limit=1 ;;
     *psxtime*) 
        case ${tsimName} in
-         leon) limit=240 ;;  # ran in 200 seconds on idle england
+         leon)  limit=240 ;;  # ran in 200 seconds on idle england
          leon3) limit=240 ;;  # ran in 200 seconds on idle england
          *)     limit=180 ;;
        esac
        ;;
     *)         limit=60 ;;
   esac
-  return ${limit}
+  echo ${limit}
 }
 
 bspSimTrustedToExit="yes"
