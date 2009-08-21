@@ -1,5 +1,11 @@
 2009-08-21	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* gdb-sim-run.in, gdb-sim.in, gumstix.in: Make graphics and network
+	interfaces potentially available on all simulator scripts. Add
+	configuration for network to gumstix.
+
+2009-08-21	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* ant5206.in, avrtest.in, bf537Stamp.in, csb337.in, csb350.in,
 	csb360.in, ezkit533.in, gdb-sim-run.in, gumstix.in, h8sim.in,
 	jmr3904.in, m32csim.in, m32rsim.in, psim.in, qemu-rtems.in,

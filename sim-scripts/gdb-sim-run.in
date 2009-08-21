@@ -28,6 +28,8 @@ USAGE=\
 	-c	   -- enabled coverage (default=no)
 	-C	   -- cat test output if not interactive (default=no)
 	-g	   -- generate device tree and exit (default=no)
+	-D	   -- enable use of display adapter (default=no)
+	-N	   -- enable use of network adapter (default=no)
 	-G	   -- put simulator in GDB server mode (default=no)
 	-i	   -- interactive (default=no time limit)
 	-s	   -- force System V IPC support (default=no)
@@ -82,15 +84,19 @@ gdb_server_mode="no"
 use_sysv_ipc="no"
 generate_tree_and_exit="no"
 logdir="log"
+enable_display_adapter="no"
+enable_network="no"
 
-while getopts "vcCgGil:L:s" OPT
+while getopts "vcCgGil:L:DsN" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
    c) coverage="yes";;
    C) doCatOutput="yes";;
+   D) enable_display_adapter="yes";;
    g) generate_tree_and_exit="yes" ;;
    G) gdb_server_mode="yes" ;;
+   N) enable_network="yes" ;;
    i) interactive="yes";;
    l) defaultLimit="$OPTARG";;
    L) loggir="$OPTARG";;
@@ -124,6 +130,8 @@ bspUsesGDBSimulator="yes"
 bspNeedsDos2Unix="no"
 bspSimTrustedToExit="no"
 bspSupportsGDBServerMode="no"
+bspSupportsDisplayAdapter="no"
+bspSupportsNIC="no"
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -147,6 +155,16 @@ runBSP=${defaultRUN}
 
 if [ ${bspSupportsSystemVIPC} = "no" -a ${use_sysv_ipc} = "yes"  ]; then
   echo "Simulator does not support System V IPC."
+  exit 1
+fi
+
+if [ ${bspSupportsNIC} = "no" -a ${enable_network} = "yes"  ]; then
+  echo "Simulator does not support a Network Interface Controller."
+  exit 1
+fi
+if [ ${bspSupportsDisplayAdapter} = "no" -a \
+     ${enable_display_adapter} = "yes"  ]; then
+  echo "Simulator does not support Graphics Display Adapter."
   exit 1
 fi
 

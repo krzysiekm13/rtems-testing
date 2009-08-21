@@ -93,6 +93,8 @@ args=$*
 ### Set BSP defaults.  If BSP does not have default, it will override
 bspGeneratesGDBCommands="no"
 bspGeneratesDeviceTree="no"
+bspSupportsLCD="no"
+bspSupportsTCPIP="no"
 
 ###################################################################
 ###################################################################
