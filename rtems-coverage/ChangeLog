@@ -1,3 +1,7 @@
+2009-08-21	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage: Put temporary file in /tmp.
+
 2009-08-19	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage, gen_report: Now modify the optimization flag from the

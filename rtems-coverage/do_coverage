@@ -264,8 +264,8 @@ if [ $? -ne 0 ] ; then
   exit 1
 fi
 
-sed -e "s/-O[2s]/${c_opt}/" <${custom} >XXX
-mv XXX ${custom}
+sed -e "s/-O[2s]/${c_opt}/" <${custom} >/tmp/XXX
+mv /tmp/XXX ${custom}
 
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
