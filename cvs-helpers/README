@@ -1,0 +1,23 @@
+#
+#  $Id$
+#
+
+This directory contains helpers for dealing with the RTEMS CVS Repository
+during maintenance activities.
+
+commit-with-changelog-diff
+  This utility is used when a patch is submitted with a diff that includes
+  the ChangeLog entry prepended to the ChangeLog.  This diffs the ChangeLog
+  and extracts the added Log entry.  Then it commits all files from the
+  current directory using that ChangeLog entry. 
+cvscommit
+  This utility takes a message on the command line and uses mkChangeLogList
+  to properly format it.  It then allows you the option to edit it and
+  commit files from the current directory using that Log entry.
+mkChangeLogList
+  This utility formats a ChangeLog entry using a message from the
+  command line.  It uses the user information from /etc/passwd by 
+  default but can be told to use another user's information or
+  an explicit name and email address.
+prepend
+  This is used to prepend a file to the ChangeLog.
