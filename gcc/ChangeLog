@@ -1,3 +1,7 @@
+2009-09-01	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_one: Use ON_SKYEYE=1 on BSPs that are tested on Skyeye.
+
 2009-07-30	Joel Sherrill <joel.sherrill@rtems.org>
 
 	* do_one: Set parameters for qemu.
