@@ -37,7 +37,7 @@ if [ $# -ne 0 ] ; then
   CPUS=$*
 else
   # leave out nios2 tic4x
-  CPUS="arm avr bfin h8300 i386 m32c m32r m68k mips powerpc sh sparc"
+  CPUS="arm avr bfin h8300 i386 lm32 m32c m32r m68k mips powerpc sh sparc"
 fi
 
 # we collect the ticker executables for users to try out
@@ -68,6 +68,7 @@ do
       h8300)   ALL_BSPS="h8sim" ;;
       i386)    ALL_BSPS="i386ex pc386 pc386dx pc486 pc586 pc686"
                ALL_BSPS="${ALL_BSPS} ts_386ex" ;;
+      lm32)    ALL_BSPS="lm32_evr" ;;
       m32c)    ALL_BSPS="m32csim" ;;
       m32r)    ALL_BSPS="m32rsim" ;;
       m68k)    ALL_BSPS="gen68360 gen68360_040 mvme136 mvme147 mvme147s"

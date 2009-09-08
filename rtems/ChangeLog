@@ -1,3 +1,8 @@
+2009-09-08	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* bit_all: Add lm32 to list of all.
+	* bit_rtems: Add m32c/m32r to list of targets without C++ support.
+
 2009-08-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* bit_rtems: Tested on SPARC/sis. More clean up.
