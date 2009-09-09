@@ -12,7 +12,7 @@ bspNeedsDos2Unix="yes"
 
 runARGS()
 {
-  echo "-nographic -M at697 -kernel "
+  echo "-nographic -M at697 -kernel ${1}"
 }
 
 checkBSPFaults()

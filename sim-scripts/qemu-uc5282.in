@@ -12,7 +12,7 @@ bspNeedsDos2Unix="yes"
 
 runARGS()
 {
-  echo "-M uc5282 -nographic -kernel"
+  echo "-M uc5282 -nographic -kernel ${1}"
 }
 
 checkBSPFaults()

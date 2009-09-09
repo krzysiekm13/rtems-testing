@@ -1,5 +1,9 @@
 2009-09-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* qemu-leon2.in, qemu-uc5282.in: Add test name.
+
+2009-09-09	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore, Makefile: Add initial version of Qemu uc5282 and LEON2
 	scripts.
 	* qemu-leon2.in, qemu-uc5282.in: New files.
