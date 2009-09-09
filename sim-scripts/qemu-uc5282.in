@@ -1,0 +1,35 @@
+#
+#  m68k/uc5282 Qemu Support 
+#
+#  $Id$
+#
+
+bspUsesGDBSimulator="no"
+# bspGeneratesGDBCommands="yes"
+# bspSupportsGDBServerMode="yes"
+runBSP=qemu-system-m68k
+bspNeedsDos2Unix="yes"
+
+runARGS()
+{
+  echo "-M uc5282 -nographic -kernel"
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  echo ${limit}
+}
+
+bspGeneratesDeviceTree="no"

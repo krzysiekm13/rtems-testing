@@ -33,7 +33,9 @@ m32rsim
 m32rsim-gdb
 psim
 psim-gdb
+qemu-leon2
 qemu-rtems
+qemu-uc5282
 rtl22xx
 rtl22xx-gdb
 simsh

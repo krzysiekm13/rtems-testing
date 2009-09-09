@@ -8,7 +8,7 @@ SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   gumstix rtl22xx smdk2410 leon2-skyeye
 
 TSIM_SCRIPTS=erc32 leon2 leon3
-QEMU_SCRIPTS=qemu-rtems
+QEMU_SCRIPTS=qemu-rtems qemu-leon2 qemu-uc5282
 OTHER_SCRIPTS=avrtest
 GENERATED_SCRIPTS=\
   ${GDBSIM_SCRIPTS} $(GDBSIM_SCRIPTS:%=%-gdb) \
@@ -31,6 +31,12 @@ usleep: usleep.c
 ### QEMU BSPs
 qemu-rtems: gdb-sim-run.in qemu-rtems.in
 	./mkrun no i386 i386 qemu-rtems
+
+qemu-leon2: gdb-sim-run.in qemu-leon2.in
+	./mkrun no SPARC sparc qemu-leon2
+
+qemu-uc5282: gdb-sim-run.in qemu-uc5282.in
+	./mkrun no M68K-Coldfire m68k qemu-uc5282
 
 ### Skyeye Simulator BSPs
 ant5206: gdb-sim-run.in gdb-sim.in ant5206.in
