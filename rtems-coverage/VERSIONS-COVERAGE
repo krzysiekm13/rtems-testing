@@ -2,8 +2,16 @@
 BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
+case ${RTEMS_VERSION} in
+  4.8)  RTEMSDIR=${BASEDIR}/rtems-48 ;;
+  4.9)  RTEMSDIR=${BASEDIR}/rtems-49 ;;
+  4.10) RTEMSDIR=${BASEDIR}/rtems ;;
+  *)
+    echo "ERROR -- UNKNOWN RTEMS VERSION ${RTEMS_VERSION}"
+    exit 1
+    ;;
+esac
 
-RTEMSDIR=${BASEDIR}/rtems
 LOGDIR=${BASEDIR}/log
 
 # These symbols mark the range of the code block we are analyzing.

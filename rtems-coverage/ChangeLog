@@ -1,3 +1,9 @@
+2009-09-09	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* VERSIONS-COVERAGE: Add support for running coverage on 4.8 and 4.9.
+	This was used to produce baseline data for comparison purposes.
+	* rtems-48-20090909.diff, rtems-49-20090909.diff: New files.
+
 2009-08-21	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Put temporary file in /tmp.
