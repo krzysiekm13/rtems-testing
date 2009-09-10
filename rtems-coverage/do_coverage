@@ -151,7 +151,11 @@ case ${BSP} in
     ;;
 esac
 
-TARGET=${CPU}-rtems${RTEMS_VERSION}
+if [ ${RTEMS_VERSION} = 4.6 ] ; then
+  TARGET=${CPU}-rtems
+else
+  TARGET=${CPU}-rtems${RTEMS_VERSION}
+fi
 
 ##### VERBOSE
 print_verbose()

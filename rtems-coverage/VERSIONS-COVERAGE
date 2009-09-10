@@ -1,8 +1,10 @@
 # USE FULL PATHS!!!
 BASEDIR=${HOME}/test-gcc
 
-RTEMS_VERSION=4.10
+RTEMS_VERSION=4.6
 case ${RTEMS_VERSION} in
+  4.6)  RTEMSDIR=${BASEDIR}/rtems-46 ;;
+  4.7)  RTEMSDIR=${BASEDIR}/rtems-47 ;;
   4.8)  RTEMSDIR=${BASEDIR}/rtems-48 ;;
   4.9)  RTEMSDIR=${BASEDIR}/rtems-49 ;;
   4.10) RTEMSDIR=${BASEDIR}/rtems ;;
