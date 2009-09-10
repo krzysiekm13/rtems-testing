@@ -68,7 +68,7 @@ do
   test_its_there ${f} "\$Id"
 done
 
-# We want CVS Id strings everywhere possible
+# We do not want printf or puts in a BSP
 find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
 do
   test_its_NOT_there ${f} printf
