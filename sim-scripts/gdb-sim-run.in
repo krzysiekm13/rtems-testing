@@ -258,6 +258,9 @@ runtest()
   testtype=${2}
   max_run_time=${3}
 
+  # Just in case the simulator aborts and messes up the terminal
+  trap "stty sane" SIGABRT return
+
   test ${verbose} == 'yes' && echo ${runBSP} `runARGS ${testname}`
 
   if [ ${max_run_time} -eq 0 ] ; then

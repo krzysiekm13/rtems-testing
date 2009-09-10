@@ -1,3 +1,8 @@
+2009-09-10	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in: Add stty sane if simulator aborts.
+	* qemu-uc5282.in: psxtime takes a long time.
+
 2009-09-09	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemu-leon2.in, qemu-uc5282.in: Add test name.
