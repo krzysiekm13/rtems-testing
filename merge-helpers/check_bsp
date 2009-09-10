@@ -33,27 +33,33 @@ test_its_there()
   fi
   grep ${2} ${1} >/dev/null
   if [ $? -ne 0 ] ; then
-    echo ${2} is NOT in ${bspdir}/${1}
+    echo NOT in ${bspdir}/${1}
   fi
 
 }
 
 test_its_NOT_there()
 {
-  if [ $# -ne 2 ] ; then
+  if [ $# -lt 2 ] ; then
     echo Usage: $0 FILE pattern 
   fi
-  grep ${2} ${1} >/dev/null
+  FILE=$1
+  shift
+  grep "${*}" ${FILE} >/dev/null
   if [ $? -eq 0 ] ; then
-    echo ${2} SHOULD NOT BE IN ${bspdir}/${1}
+    echo SHOULD NOT BE IN ${bspdir}/${FILE}
   fi
 
 }
 
-test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
-test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
+if [ -r configure.ac ] ; then
+  echo "=== Checking for options in BSP configure.ac"
+  test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
+  test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
+fi
 
 # really need to make the copyright strings consistent in BSPs
+echo "=== Checking for copyright notices"
 find . -name "*.[chS]" | while read f
 do
   grep -i COPYRIGHT ${f} >/dev/null
@@ -63,15 +69,31 @@ do
 done
 
 # We want CVS Id strings everywhere possible
+echo "=== Checking for CVS Id strings"
 find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
 do
   test_its_there ${f} "\$Id"
 done
 
-# We do not want printf or puts in a BSP
+# We do not want printf in a BSP
+echo "=== Checking for printf"
 find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
 do
   test_its_NOT_there ${f} printf
+done
+
+# We do not want puts in a BSP
+echo "=== Checking for puts"
+find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
+do
   test_its_NOT_there ${f} puts
 done
 
+# We do not want the reformatted license notice
+echo "=== Checking for reformatted RTEMS license notices"
+find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
+do
+  test_its_NOT_there ${f} "this file may be found in the file"
+done
+
+exit 0
