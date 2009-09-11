@@ -11,9 +11,7 @@ fix_usercfg()
   posix_f=$3
   cxx_f=$4
   itron_f=$5
-  rdbg_f=$6
-  mp_f=$7
-  inlines_f=$7
+  mp_f=$6
 
   cp user.cfg user.cfg.back
 
@@ -22,9 +20,7 @@ fix_usercfg()
       -e "s/ENABLE_RTEMS_POSIX=.*$/ENABLE_RTEMS_POSIX=${posix_f}/" \
       -e "s/ENABLE_RTEMS_CXX=.*$/ENABLE_RTEMS_CXX=${cxx_f}/" \
       -e "s/ENABLE_RTEMS_ITRON=.*$/ENABLE_RTEMS_ITRON=${itron_f}/" \
-      -e "s/ENABLE_RTEMS_RDBG=.*$/ENABLE_RTEMS_RDBG=${rdbg_f}/" \
       -e "s/ENABLE_RTEMS_MP=.*$/ENABLE_RTEMS_MP=${mp_f}/" \
-      -e "s/DISABLE_INLINES=.*$/DISABLE_INLINES=${inlines_f}/" \
    <user.cfg.back >user.cfg
 }
 
@@ -40,11 +36,10 @@ start=`date`
 for test_l in samples ; do   # note yes is left out
 for tcpip_l in no yes ; do
 for posix_l in no yes ; do
-for itron_l in no yes ; do
 for cxx_l in no yes ; do
-for rdbg_l in no yes ; do
+for itron_l in no ; do       # note yes is left out
 for mp_l in no yes ; do
-  fix_usercfg $test_l $tcpip_l $posix_l $cxx_l $itron_l $rdbg_l $mp_l $inlines_l
+  fix_usercfg $test_l $tcpip_l $posix_l $cxx_l $itron_l $mp_l
   echo
   echo ===============================================
   echo
@@ -53,13 +48,12 @@ for mp_l in no yes ; do
   echo
   outf="log/ALLCONFS-${target}-${bsp}"
   outf="${outf}-${test_l}_tests-${tcpip_l}net-${posix_l}posix"
-  outf="${outf}-${itron_l}itron-${cxx_l}cxx-${rdbg_l}rdbg"
+  outf="${outf}-${itron_l}itron-${cxx_l}cxx"
   outf="${outf}-${mp_l}mp"
   outf=`echo ${outf} | sed -e 's/yes//g'`
   echo "./bit_rtems ${target} ${bsp} >${outf} 2>&1"
   ./bit_rtems ${target} ${bsp} >${outf} 2>&1
 done # mp
-done # rdbg
 done # cxx
 done # itron
 done # posix
