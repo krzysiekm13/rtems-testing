@@ -1,3 +1,7 @@
+2009-09-14	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Makefile: Add more files.
+
 2009-08-26	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ChangeLog, README, commit-with-changelog-diff: New files.
