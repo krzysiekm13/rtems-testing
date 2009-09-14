@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-#  Simple script to help automate coverage testing
+#  Script to perform coverage testing
 # 
 #  $Id$
 
@@ -25,7 +25,7 @@ USAGE=\
         -A        -- Execute all steps (default=no)
         -B BSP    -- Specify BSP to test
         -P        -- Enable POSIX API (default=yes)
-        -E        -- Enable Experimental Coverage Area (default=no)
+        -D        -- Enable Developmental Coverage (default=no)
         -S        -- Optimize for size (default=no)
         -m        -- Update and build covMerge (default=no)
         -u        -- Do CVS update on RTEMS (default=no)
@@ -79,7 +79,7 @@ toggle()
 verbose="no"
 do_all="no"
 do_posix="yes"
-do_experimental="no"
+do_developmental="no"
 do_optimize_size="no"
 do_covmerge="no"
 do_rtems_update="no"
@@ -90,7 +90,7 @@ do_run_tests="no"
 do_report="no"
 BSP="not_set"
 
-while getopts vB:PESmAucbCrR OPT
+while getopts vB:PDSmAucbCrR OPT
 do
     case "$OPT" in
         A)
@@ -108,7 +108,7 @@ do
         v) verbose=`toggle ${verbose}` ;;
         m) do_covmerge=`toggle ${do_covmerge}` ;;
         P) do_posix=`toggle ${do_posix}` ;;
-        E) do_experimental=`toggle ${do_experimental}` ;;
+        D) do_developmental=`toggle ${do_developmental}` ;;
         S) do_optimize_size=`toggle ${do_optimize_size}` ;;
         u) do_rtems_update=`toggle ${do_rtems_update}` ;;
         c) do_rtems_configure=`toggle ${do_rtems_configure}` ;;
@@ -165,7 +165,7 @@ print_verbose()
   echo "do_all:             " ${do_all}
   echo "do_covmerge         " ${do_covmerge}
   echo "do_posix:           " ${do_posix}
-  echo "do_experimental:    " ${do_experimental}
+  echo "do_developmental:   " ${do_developmental}
   echo "do_optimize_size:   " ${do_optimize_size}
   echo "do_rtems_update:    " ${do_rtems_update}
   echo "do_rtems_configure: " ${do_rtems_configure}
@@ -201,13 +201,89 @@ fi
 type ${TARGET}-gcc
 check_status $? "Path appears to be broken"
 
+# Start real action
+NM=${TARGET}-nm
+type ${NM}
+check_status $? "Cannot find ${NM} on PATH"
+
 if [ ${do_optimize_size} = yes ] ; then
  c_opt=-Os
 else
  c_opt=-O2
 fi
 
+EXTENSION=${c_opt}
+if [ ${do_posix} = yes ] ; then
+  EXTENSION=${EXTENSION}P
+else
+  EXTENSION=${EXTENSION}p
+fi
+
+if [ ${do_developmental} = yes ] ; then
+  EXTENSION=${EXTENSION}D
+else
+  EXTENSION=${EXTENSION}d
+fi
+
 echo "Testing ${TARGET}/${BSP} at optimization (${c_opt})"
+
+# generate the coverage report set
+generate_report()
+{
+  if [ $# -ne 3 ] ; then
+    echo Usage: ${0} TARGET BSP COVERAGE_FORMAT
+    exit 1
+  fi
+
+  TARGET=${1}
+  BSP=${2}
+  COVERAGE_FORMAT=${3}
+
+  cd ${BASEDIR}/${BSP}-tests/
+  check_status $? "cd ${BSP}-tests"
+
+  ${NM} -g -n hello.exe >hello.num
+
+  # Basic validity checking
+  tlow=`grep "T ${lowsym}$" hello.num | cut -d' ' -f1`
+  if [ X${tlow} = X ] ; then
+    echo "low symbol (${lowsym}) not found"
+  fi
+  thigh=`grep "T ${highsym}$" hello.num | cut -d' ' -f1`
+  if [ X${thigh} = X ] ; then
+    echo "high symbol (${highsym}) not found"
+  fi
+
+  if [ X${tlow} = X -o X${thigh} = X ] ; then
+    echo "Did you patch RTEMS for coverage testing?"
+    exit 1
+  fi
+
+  rm -f merged.cov report.txt
+
+  ( \
+    check_endof; \
+    ${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report.txt \
+      -s sizes.txt \
+      -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
+      -T ${TARGET} -e hello.exe -m merged.cov *.cov; \
+    echo "====== 15 Largest Range Sizes ======" ; \
+    grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | tail -15 ;
+    echo "=====================================" ) >summary.txt
+
+  cat summary.txt
+
+  # Now create the archive of information
+  dated=${BSP}-`date +%Y%m%d-%H%M${EXTENSION}`
+  rm -rf ${dated}
+  mkdir ${dated}
+  cp summary.txt report.txt sizes.txt configuration.txt \
+     annotated.dmp hello.num ${dated}
+  cp ${COVBASE}/Explanations.txt.NotFound ${dated}
+  echo "Results saved in ${dated}.tar.bz2"
+  tar cjf ${dated}.tar.bz2 ${dated}
+  rm -rf ${dated}
+}
 
 # Now we are ready to start doing real work
 start=`date`
@@ -291,7 +367,7 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     posix_en=dis
   fi
 
-  if [ ${do_experimental} = "yes" ] ; then
+  if [ ${do_developmental} = "yes" ] ; then
     EXPERIMENTAL_ARG="experimental"
   else
     EXPERIMENTAL_ARG="yes"
@@ -374,7 +450,7 @@ if [ ${do_report} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  ${COVBASE}/gen_report ${TARGET} ${BSP} ${COVERAGE_FORMAT}
+  generate_report ${TARGET} ${BSP} ${COVERAGE_FORMAT}
 else
   echo "Skipping Generating report..."
 fi

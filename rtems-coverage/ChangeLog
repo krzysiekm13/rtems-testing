@@ -1,5 +1,11 @@
 2009-09-14	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* do_coverage: Merge gen_report into do_coverage. Also add extension to
+	results tarball to indicate contents.
+	* gen_report: Removed.
+
+2009-09-14	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* VERSIONS-COVERAGE: Test head.
 
 2009-09-09	Joel Sherrill <joel.sherrill@OARcorp.com>
