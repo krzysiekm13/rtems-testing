@@ -132,6 +132,7 @@ bspSimTrustedToExit="no"
 bspSupportsGDBServerMode="no"
 bspSupportsDisplayAdapter="no"
 bspSupportsNIC="no"
+bspNeedsSttySane="yes"
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -259,7 +260,7 @@ runtest()
   max_run_time=${3}
 
   # Just in case the simulator aborts and messes up the terminal
-  trap "stty sane" SIGABRT return
+  trap "test ${bspNeedsSttySane} = yes && stty sane" SIGABRT return
 
   test ${verbose} == 'yes' && echo ${runBSP} `runARGS ${testname}`
 

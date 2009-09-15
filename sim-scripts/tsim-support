@@ -8,6 +8,7 @@ runBSP=tsim-${tsimName}
 bspUsesGDBSimulator="no"
 bspGeneratesGDBCommands="yes"
 bspSupportsGDBServerMode="yes"
+bspNeedsSttySane="no"
 
 type ${runBSP} >/dev/null 2>&1
 if [ $? -ne 0 ] ; then

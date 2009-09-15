@@ -1,3 +1,7 @@
+2009-09-15	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* gdb-sim-run.in, tsim-support: tsim does not like stty sane.
+
 2009-09-10	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile: Add script to check for END OF test messages.
