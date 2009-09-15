@@ -134,6 +134,15 @@ b __assert
 printf "Use run to start the RTEMS application\\n"
 EOF
 
+### Now source the rtems gdb
+vfile=`dirname $0`/rtems-gdb-macros-${v}
+if [ ! -r ${vfile} ] ; then
+  echo WARNING!!! RTEMS GDB Macro files not found
+else
+  echo "source ${vfile}" >>@BSP@-cmds
+fi
+
+
 ${GDB} --command=@BSP@-cmds $*
 
 if [ ${bspGeneratesDeviceTree} = "yes" ] ; then

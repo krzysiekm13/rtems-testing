@@ -1,3 +1,10 @@
+2009-09-15	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Makefile, gdb-sim.in: Add RTEMS GDB macro packages as they exist
+	today. This provides a baseline which can be used to improve them.
+	* rtems-gdb-macros-4.10, rtems-gdb-macros-4.7, rtems-gdb-macros-4.8,
+	rtems-gdb-macros-4.9: New files.
+
 2009-09-15	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gdb-sim-run.in, tsim-support: tsim does not like stty sane.
