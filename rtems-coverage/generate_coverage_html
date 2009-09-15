@@ -1,0 +1,122 @@
+#! /bin/sh
+#
+#  Combine the various reports into a single html file
+#
+#  $Id$
+#
+
+vfile=`dirname $0`/VERSIONS-COVERAGE
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS-COVERAGE file not found
+  exit 1
+fi
+
+source ${vfile}
+
+if [ ! -d ${BASEDIR} ] ; then
+  echo Have you set the BASEDIR in VERSIONS correctly?
+  exit 1
+fi
+
+progname=${0##*/}        # fast basename hack for ksh, bash
+
+if [ $# -ne 1 ] ; then
+  echo Usage: $0 directory
+  exit 1
+fi
+
+if [ ! -d ${1} ] ; then
+  echo ${1} is not a directory
+  exit 1
+fi
+
+print_doc_top()
+{
+cat <<EOF
+<HTML>
+<HEAD>
+<TITLE>RTEMS Coverage Reports</TITLE>
+<meta http-equiv="Content-Language" content="English" />
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+<link rel="stylesheet" type="text/css" href="rtems/style.css" media="screen" />
+</HEAD>
+<body>
+<div class="heading">RTEMS Coverage Results
+EOF
+echo "<div class=\"datetime\">"`date`"</div>"
+cat <<EOF
+</div>
+<table class="stats-table" $cellspacing="1" cellpadding="2">
+EOF
+}
+
+print_doc_bottom()
+{
+cat <<EOF
+</table>
+</body>
+EOF
+}
+
+print_heading()
+{
+  echo "<th>"${*}"</th>"
+}
+
+doit()
+{
+  print_doc_top
+
+  # now cat rows
+  for bsp in ${BSPs} 
+  do
+    cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
+          sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
+    echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
+    echo "<tr class=\"stats-table-target\"><td colspan=\"11\"> <strong>" \
+          ${cpu}/${bsp} "</strong></td></tr>"
+    echo "<tr class=\"stats-table-top\">"
+    ### generate header
+    print_heading Day
+    print_heading Time
+    print_heading Optimization
+    print_heading POSIX Enabled
+    print_heading Developmental Enabled
+    print_heading Uncovered Ranges
+    print_heading Uncovered Percentage
+    print_heading Covered Percentage
+    print_heading Uncovered Bytes
+    print_heading Total Bytes
+    print_heading Results
+
+    #cat ${bsp}-*-*-*/row.html | sed -e 's/<TD>/<TD><CENTER>/g' \
+    #   -e 's/<\/TD>/<\/CENTER><\/TD>/g'
+
+    cat ${bsp}-*-*-*/row.html | sed -e 's/<TR>/<tr class="stats-table-row">/g' \
+       -e 's/<TD>/<td align="center">/g'
+  done
+  print_doc_bottom
+}
+
+cd $1
+
+if [ `ls -1 *.tar.bz2 2>/dev/null | wc -l` -eq 0 ]; then
+  echo "No tarballs.  Is $1 really a coverage publishing directory?"
+  exit 1
+fi
+
+for i in *.tar.bz2
+do
+  tar xjf $i
+done
+
+if [ ! -d rtems ] ; then
+  mkdir rtems
+fi
+
+cp ${COVBASE}/style.css rtems/style.css
+
+BSPs=`find * -maxdepth 1 -type d | cut -d'-' -f1 | uniq | grep -v rtems`
+
+doit >index.html
+exit 0

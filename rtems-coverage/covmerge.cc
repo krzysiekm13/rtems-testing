@@ -622,9 +622,10 @@ int main(
 
     percentage = (double) notExecuted;
     percentage /= (double) (highAddress - lowAddress);
+    percentage *= 100.0;
     printf( "Bytes Analyzed          : %d\n", highAddress - lowAddress );
     printf( "Bytes Not Executed      : %d\n", notExecuted );
-    printf( "Percentage Executed     : %5.4g\n", 1.00 - percentage  );
+    printf( "Percentage Executed     : %5.4g\n", 100.0 - percentage  );
     printf( "Percentage Not Executed : %5.4g\n", percentage  );
   }
 

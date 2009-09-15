@@ -1,5 +1,12 @@
 2009-09-15	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* covmerge.cc: Percentages are 0-100 not 0-1.
+	* do_coverage: Rerun when coverage file has zero length.
+	Generate row.html for web report.
+	* generate_coverage_html, style.css: New files.
+
+2009-09-15	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* do_coverage: Reorder info in tarball name and fix typo where BSP did
 	not get printed in summary.
 

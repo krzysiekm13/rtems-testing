@@ -225,7 +225,37 @@ else
   EXTENSION=${EXTENSION}d
 fi
 
+day=`date +%Y%m%d`
+hour=`date +%H`
+minute=`date +%M`
+results_dir=${BSP}${EXTENSION}-${day}-${hour}${minute}
+
 echo "Testing ${TARGET}/${BSP} at optimization (${c_opt})"
+
+# print a data element in table
+print_element()
+{
+  echo "  <TD>"${*}"</TD>"
+}
+
+# generate table row of results in html
+generate_html()
+{
+  echo "<TR>"
+    print_element ${day}
+    print_element ${hour}:${minute}
+    print_element ${c_opt}
+    print_element ${do_posix}
+    print_element ${do_developmental}
+    print_element `grep "uncovered range" summary.txt | cut -d ' ' -f1`
+    print_element `grep "age Not Exec" summary.txt | cut -d ':' -f2`
+    print_element `grep "age Exec" summary.txt | cut -d ':' -f2`
+    print_element `grep "Bytes Not Exec" summary.txt | cut -d ':' -f2`
+    print_element `grep "Bytes Analyzed" summary.txt | cut -d ':' -f2`
+    print_element "<A HREF=\"${results_dir}\">untarred</A> " \
+                  "<A HREF=\"${results_dir}.tar.bz2\">tarball</A> "
+  echo "</TR>"
+}
 
 # generate the coverage report set
 generate_report()
@@ -267,22 +297,25 @@ generate_report()
       -s sizes.txt \
       -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
       -T ${TARGET} -e hello.exe -m merged.cov *.cov; \
-    echo "====== 15 Largest Range Sizes ======" ; \
-    grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | tail -15 ;
+    echo "====== Largest Range Sizes (Size and Count)======" ; \
+    grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | \
+       tail -15 | sed -e 's/ *\([0-9]*\) *\([0-9]*\)/\2 \1/' | sort -n -r | \
+       while read l; do printf "%6d %6d\n" $l; done ; \
     echo "=====================================" ) >summary.txt
+
+  generate_html >row.html
 
   cat summary.txt
 
   # Now create the archive of information
-  dated=${BSP}${EXTENSION}-`date +%Y%m%d-%H%M$`
-  rm -rf ${dated}
-  mkdir ${dated}
+  rm -rf ${results_dir}
+  mkdir ${results_dir}
   cp summary.txt report.txt sizes.txt configuration.txt \
-     annotated.dmp hello.num ${dated}
-  cp ${COVBASE}/Explanations.txt.NotFound ${dated}
-  echo "Results saved in ${dated}.tar.bz2"
-  tar cjf ${dated}.tar.bz2 ${dated}
-  rm -rf ${dated}
+     annotated.dmp hello.num row.html ${results_dir}
+  cp ${COVBASE}/Explanations.txt.NotFound ${results_dir}
+  echo "Results saved in ${results_dir}.tar.bz2"
+  tar cjf ${results_dir}.tar.bz2 ${results_dir}
+  rm -rf ${results_dir}
 }
 
 # Now we are ready to start doing real work
@@ -439,6 +472,20 @@ if [ ${do_run_tests} = "yes" ] ; then
   check_status $? "cd ${BSP}-tests"
 
   time ${RUNNER} -c *.exe
+
+  # some simulators sometimes produce an empty coverage file.  Fix that.
+  while [ `wc -c *.cov| grep ^0 | wc -l` -ne 0 ]
+  do
+    for f in *.cov
+    do
+      sz=`wc -c $f | cut -d' ' -f1`
+      if [ ${sz} -eq 0 ] ; then
+	exe=`echo ${f} | sed -e 's/\.cov$//'`
+	echo "Rerunning ${exe}"
+	${RUNNER} -c ${exe}
+      fi
+    done
+  done
 else
   echo "Skipping Running tests..."
 fi
