@@ -160,7 +160,7 @@ fi
 ##### VERBOSE
 print_verbose()
 {
-  echo "BSP:                " ${bsp}
+  echo "BSP:                " ${BSP}
   echo "Target:             " ${TARGET}
   echo "do_all:             " ${do_all}
   echo "do_covmerge         " ${do_covmerge}
@@ -274,7 +274,7 @@ generate_report()
   cat summary.txt
 
   # Now create the archive of information
-  dated=${BSP}-`date +%Y%m%d-%H%M${EXTENSION}`
+  dated=${BSP}${EXTENSION}-`date +%Y%m%d-%H%M$`
   rm -rf ${dated}
   mkdir ${dated}
   cp summary.txt report.txt sizes.txt configuration.txt \

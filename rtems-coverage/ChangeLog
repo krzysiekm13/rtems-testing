@@ -1,3 +1,8 @@
+2009-09-15	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage: Reorder info in tarball name and fix typo where BSP did
+	not get printed in summary.
+
 2009-09-14	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Merge gen_report into do_coverage. Also add extension to
