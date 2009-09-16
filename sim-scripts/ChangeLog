@@ -1,3 +1,10 @@
+2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* gdb-sim-run.in: Rerun when coverage enabled and a zero-length
+	coverage file is produced.
+	* gdb-sim.in: Spacing.
+	* skyeye-support: Disable stty sane on abort.
+
 2009-09-15	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile, gdb-sim.in: Add RTEMS GDB macro packages as they exist

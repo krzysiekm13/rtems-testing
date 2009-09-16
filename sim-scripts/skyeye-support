@@ -8,6 +8,7 @@ bspUsesGDBSimulator="no"
 bspSupportsGDBServerMode="yes"
 bspNeedsDos2Unix="yes"
 bspGeneratesGDBCommands="yes"
+bspNeedsSttySane="no"
 
 if [ ${coverage} = "yes" ] ; then
   bspRunFatal="yes"

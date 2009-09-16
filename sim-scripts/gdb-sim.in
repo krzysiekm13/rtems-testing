@@ -142,7 +142,6 @@ else
   echo "source ${vfile}" >>@BSP@-cmds
 fi
 
-
 ${GDB} --command=@BSP@-cmds $*
 
 if [ ${bspGeneratesDeviceTree} = "yes" ] ; then

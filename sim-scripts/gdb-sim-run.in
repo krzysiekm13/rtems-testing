@@ -410,6 +410,13 @@ do
   test ${verbose} = "yes" && \
     echo BACKGROUND runtest ${toRun} ${testtype} ${limit}
   runtest ${toRun} ${testtype} ${limit}
+  # some simulators do not always write a coverage file with non-zero length
+  # If we see this, try again
+  while [ ${coverage} = "yes" -a ! -s ${toRun}.cov ]
+  do
+    echo Rerunning ${toRun} due to zero length coverage file
+    runtest ${toRun} ${testtype} ${limit}
+  done
 
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
     rm -f ${bspTreeFile}
