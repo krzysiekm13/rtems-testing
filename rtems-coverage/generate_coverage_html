@@ -92,7 +92,10 @@ doit()
     #cat ${bsp}-*-*-*/row.html | sed -e 's/<TD>/<TD><CENTER>/g' \
     #   -e 's/<\/TD>/<\/CENTER><\/TD>/g'
 
-    ls -1 ${bsp}-*-*-*/row.html | sort -t - -k 1,2 -k 3,4n | xargs -e cat | \
+    # 1   2      3      4
+    #bsp-opt-yyyymmdd-hhmm.tar.bz2
+    # sort 1,2 alphabetically, sort 3,4 reverse "version"
+    ls -1 ${bsp}-*-*-*/row.html | sort -t -  -k 1,2 -k 3,4Vr | xargs -e cat | \
        sed \
         -e 's/<TD>\(20[0-9][0-9]\)\([0-1][0-9]\)\([0-9][0-9]\)/<TD>\1-\2-\3/' \
         -e 's/<TR>/<tr class="stats-table-row">/g' \
@@ -110,7 +113,10 @@ fi
 
 for i in *.tar.bz2
 do
-  tar xjf $i
+  dir=`echo $i | sed -e 's/.tar.bz2$//'`
+  if [ ! -d ${dir} ] ; then
+    tar xjf $i
+  fi
 done
 
 if [ ! -d rtems ] ; then
