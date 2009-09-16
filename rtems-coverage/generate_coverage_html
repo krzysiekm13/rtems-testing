@@ -92,8 +92,9 @@ doit()
     #cat ${bsp}-*-*-*/row.html | sed -e 's/<TD>/<TD><CENTER>/g' \
     #   -e 's/<\/TD>/<\/CENTER><\/TD>/g'
 
-    cat ${bsp}-*-*-*/row.html | sed -e 's/<TR>/<tr class="stats-table-row">/g' \
-       -e 's/<TD>/<td align="center">/g'
+    ls -1 ${bsp}-*-*-*/row.html | sort -t - -k 1,2 -k 3,4n | xargs -e cat | \
+       sed -e 's/<TR>/<tr class="stats-table-row">/g' \
+           -e 's/<TD>/<td align="center">/g'
   done
   print_doc_bottom
 }
