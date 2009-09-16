@@ -1,3 +1,7 @@
+2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* generate_coverage_html: Turn YYYYMMDD into YYYY-MM-DD.
+
 2009-09-15	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* generate_coverage_html: Fine tune sorting keys.
