@@ -1,0 +1,162 @@
+#! /bin/bash
+#
+#  Script to help running coverage from cron
+#
+#  $Id$
+#
+
+vfile=`dirname $0`/VERSIONS-COVERAGE
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS-COVERAGE file not found
+  exit 1
+fi
+
+source ${vfile}
+
+if [ ! -d ${BASEDIR} ] ; then
+  echo Have you set the BASEDIR in VERSIONS correctly?
+  exit 1
+fi
+
+progname=${0##*/}        # fast basename hack for ksh, bash
+
+USAGE=\
+"usage: $progname [ -v ] cmd [ more cmds]
+	-v	   -- verbose
+
+where cmds are:
+  update          - to update the RTEMS and Test Support source
+  BSP_TESTSET     - to perform TESTSET on BSP
+                    TESTSET may be baseline, O2, or Os
+"
+
+#   log an error to stderr
+prerr()
+{
+    echo "$*" >&2
+}
+
+fatal() {
+    prerr "$USAGE"
+    [ "$1" ] && (prerr ; prerr $*);
+    exit 1
+}
+
+warn() {
+    [ "$1" ] && prerr $*
+}
+
+check_status()
+{
+  if [ $1 -ne 0 ] ; then
+    shift 
+    echo "FAILED: " "$*" >&2
+    exit 1
+  fi
+}
+
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
+
+do_one()
+{
+  time ${COVBASE}/do_coverage -A -u -m ${*}
+  mv *-tests/*tar.bz2 ${RESULTSDIR}
+  cp ${BASEDIR}/covrun-results/* ${FTPDIR}
+  ${COVBASE}/generate_coverage_html ${FTPDIR}
+  rm -rf b-* *-tests
+}
+
+validate_bsp()
+{
+  case ${1} in
+    edb7312|gumstix|smdk2410)    ;; # ARM
+    erc32|leon2|leon3)           ;; # SPARC
+    *)
+      echo "ERROR - does BSP (${bsp}) really exist and support coverage?"
+      exit 1
+  esac
+}
+
+verbose="no"
+
+while getopts v OPT
+do
+
+    case "$OPT" in
+      v) verbose=`toggle ${verbose}` ;;
+      *) fatal;;
+    esac
+done
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+args=$*
+
+if [ $# -eq 0 ] ; then
+  echo "No actions requested"
+  exit 0
+fi
+
+for cmd in $*
+do
+  case ${cmd} in
+    update)                      ;; # general commands
+    *_Os|*_O2|_baseline)            # one BSP at specific -Ox level
+      bsp=`echo $cmd | sed -e 's/_.*$//'`
+      validate_bsp ${bsp}
+      ;;
+    *)
+      echo "Unknown command (${cmd})"
+      exit 1
+      ;;
+  esac
+done
+
+START=`date`
+
+cd ${BASEDIR}
+
+RESULTSDIR=${BASEDIR}/covrun-results
+test -d ${RESULTSDIR} || mkdir -p ${RESULTSDIR}
+for cmd in $*
+do
+  case ${cmd} in
+    update) 
+      time ${COVBASE}/do_coverage -u -m -B erc32
+      ;;
+    *_O[s2])
+      bsp=`echo $cmd | sed -e 's/_O.$//'`
+      Olevel=`echo $cmd | sed -e 's/.*_O\(.\)$/\1/'`
+      case ${Olevel} in
+        2)    do_one -B ${bsp} ;;
+        [sS]) do_one -S -B ${bsp} ;;
+        *)    echo ERROR unknown optimization level ; exit 1 ;;
+      esac
+      ;;
+    *_baseline) 
+      bsp=`echo $cmd | sed -e 's/_baseline$//'`
+      do_one -S -B ${bsp}         # -Os / POSIX enabled  / regression
+      do_one -B ${bsp}            # -O2 / POSIX enabled  / regression
+      do_one -S -P -B ${bsp}      # -Os / POSIX disabled / regression
+      do_one -S -D -B ${bsp}      # -Os / POSIX enabled  / developmental
+      ;;
+    *)
+      echo "Unknown command (${cmd})"
+      exit 1
+      ;;
+  esac
+done
+
+STOP=`date`
+echo "STARTED AT: " ${START}
+echo "STOPPED AT: " ${STOP}
+
+exit 0

@@ -39,13 +39,23 @@ cat <<EOF
 <meta http-equiv="Content-Language" content="English" />
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 <link rel="stylesheet" type="text/css" href="rtems/style.css" media="screen" />
-</HEAD>
-<body>
 <div class="heading">RTEMS Coverage Results
 EOF
 echo "<div class=\"datetime\">"`date`"</div>"
-cat <<EOF
+cat << EOF
+<div class="info">For more information on coverage analysis in general
+visit
+<a href="http://www.rtems.org/wiki/index.php/Coverage_Analysis_Theory">
+Coverage Analysis Theory</a>.  For information on how the RTEMS Project
+views coverage analysis, visit
+<a href="http://www.rtems.org/wiki/index.php/RTEMS_Coverage_Analysis">
+RTEMS Coverage Testing</a>.
 </div>
+</div>
+</HEAD>
+<body>
+<br>
+<br>
 <table class="stats-table" $cellspacing="1" cellpadding="2">
 EOF
 }

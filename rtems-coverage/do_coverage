@@ -75,6 +75,7 @@ toggle()
     *)   fatal "Unknown value to toggle ($1)" ;;
   esac
 }
+
 # parse arguments for these
 verbose="no"
 do_all="no"
@@ -472,20 +473,6 @@ if [ ${do_run_tests} = "yes" ] ; then
   check_status $? "cd ${BSP}-tests"
 
   time ${RUNNER} -c *.exe
-
-  # some simulators sometimes produce an empty coverage file.  Fix that.
-  while [ `wc -c *.cov| grep ^0 | wc -l` -ne 0 ]
-  do
-    for f in *.cov
-    do
-      sz=`wc -c $f | cut -d' ' -f1`
-      if [ ${sz} -eq 0 ] ; then
-	exe=`echo ${f} | sed -e 's/\.cov$//'`
-	echo "Rerunning ${exe}"
-	${RUNNER} -c ${exe}
-      fi
-    done
-  done
 else
   echo "Skipping Running tests..."
 fi

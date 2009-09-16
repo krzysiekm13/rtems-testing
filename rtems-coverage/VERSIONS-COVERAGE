@@ -16,6 +16,9 @@ esac
 
 LOGDIR=${BASEDIR}/log
 
+# for publishing results
+FTPDIR=/home/ftp/pub/rtems/people/joel/coverage/
+
 # These symbols mark the range of the code block we are analyzing.
 # If the structure of the linked executable changes, then we need
 # to change these.  This COULD change if you switch BSPs.  We don't
