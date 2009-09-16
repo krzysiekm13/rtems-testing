@@ -111,11 +111,10 @@ if [ `ls -1 *.tar.bz2 2>/dev/null | wc -l` -eq 0 ]; then
   exit 1
 fi
 
-for i in *.tar.bz2
+for d in `ls -1 *.tar.bz2 | sed -e 's/.tar.bz2$//'`
 do
-  dir=`echo $i | sed -e 's/.tar.bz2$//'`
-  if [ ! -d ${dir} ] ; then
-    tar xjf $i
+  if [ ! -d ${d} ] ; then
+    tar xjf ${d}.tar.bz2
   fi
 done
 

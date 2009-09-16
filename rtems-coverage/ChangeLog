@@ -1,5 +1,9 @@
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* generate_coverage_html: Speed up loop that does untar.
+
+2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* generate_coverage_html: Modify sort order.
 
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
