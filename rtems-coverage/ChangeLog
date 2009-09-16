@@ -1,5 +1,9 @@
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* do_coverage: Improve comments. Formatting.
+
+2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* VERSIONS-COVERAGE: Add FTPDIR
 	* do_coverage: Remove logic to re-run test when coverage file has
 	zero length.  Skyeye seems to spuriously do this.

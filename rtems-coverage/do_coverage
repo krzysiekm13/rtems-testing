@@ -1,8 +1,11 @@
 #! /bin/sh
 #
-#  Script to perform coverage testing
-# 
+#  Script to perform a single coverage test run on a single BSP
+#  in a specific configuration.  This script automates all steps
+#  of building RTEMS, running the tests, and generating the reports.
+#
 #  $Id$
+#
 
 vfile=`dirname $0`/VERSIONS-COVERAGE
 if [ ! -r ${vfile} ] ; then
@@ -39,7 +42,7 @@ Notes:  + There are currently NO checks at each step to determine if
           the previous steps were performed!!!
         + Use of each option toggles the setting.  For example, \"-v -v -A -u\"
           results in verbose=no and all steps done except CVS update on RTEMS.
-       
+
 "
 
 #   log an error to stderr
@@ -61,7 +64,7 @@ warn() {
 check_status()
 {
   if [ $1 -ne 0 ] ; then
-    shift 
+    shift
     echo "FAILED: " "$*" >&2
     exit 1
   fi
@@ -129,9 +132,9 @@ if [ ${do_rtems_update} = "yes" -o \
   do_clean="yes"
 fi
 
-# allow bsp override 
+# allow bsp override
 if [ ${BSP} == "not_set" ] ; then
-  fatal "No BSP selected" 
+  fatal "No BSP selected"
 fi
 
 # For most BSPs, there is a script with the same name as the BSP.
@@ -389,12 +392,12 @@ if [ ${do_rtems_configure} = "yes" ] ; then
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
-  ################## 
+  ##################
   ################## WARNING!!!!!!
-  ################## 
+  ##################
   ################## BE CAREFUL ABOUT THIS CONFIGURE COMMAND.  IT IS
   ################## VERY SPECIFIC TO COVERAGE TESTING
-  ################## 
+  ##################
   if [ ${do_posix} = "yes" ] ; then
     posix_en=en
   else
@@ -448,7 +451,7 @@ if [ ${do_copy_tests} = "yes" ] ; then
     echo "#"
     echo "#  Settings for this coverage test run"
     echo "#"
-    echo 
+    echo
     echo "Compiler version:   " `${TARGET}-gcc --version  | grep gcc`
     echo "Optimization flag   " ${c_opt}
     print_verbose
