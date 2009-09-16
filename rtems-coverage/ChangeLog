@@ -1,5 +1,10 @@
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* VERSIONS-COVERAGE, generate_coverage_html: Sort by CPU/BSP not just
+	BSP.
+
+2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* generate_coverage_html: Speed up loop that does untar.
 
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
