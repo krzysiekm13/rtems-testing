@@ -40,27 +40,36 @@ a:active {
     font-size: 1.5em;
     height: 140px;
     padding-top: 20px;
-    padding-left: 200px;
-    text-align: center;
-    width: 40%;
+    padding-left: 300px;
+}
+
+.heading-title {
+    text-align:  center;
+    color: rgb(0,0,0);
+    font-size: 0.9em;
+    font-weight: bold;
+    padding-top: 5px;
+    padding-left: 0px;
+    text-align:  center;
+    width: 100%;
 }
 
 .datetime {
     color: rgb(55,55,55);
     font-size: 0.8em;
     padding-top: 5px;
-    padding-left: 100px;
-    text-align: center;
-    width: 70%;
+    padding-left: 0px;
+    text-align:  center;
+    width: 100%;
 }
 
 .info {
     color: rgb(55,55,55);
     font-size: 0.6em;
     padding-top: 5px;
-    padding-left: 100px;
-    text-align: center;
-    width: 70%;
+    padding-left: 00px;
+    text-align:  center;
+    width: 100%;
 }
 
 .stats-table {

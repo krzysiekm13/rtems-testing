@@ -1,5 +1,10 @@
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* generate_coverage_html, style.css: Tinker with CSS so it works on
+	FF3, IE8, and Konqueror.
+
+2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* do_coverage: Improve comments. Formatting.
 
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>

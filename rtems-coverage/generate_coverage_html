@@ -39,7 +39,8 @@ cat <<EOF
 <meta http-equiv="Content-Language" content="English" />
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 <link rel="stylesheet" type="text/css" href="rtems/style.css" media="screen" />
-<div class="heading">RTEMS Coverage Results
+<div class="heading">
+<div class="heading-title">RTEMS Coverage Results</div>
 EOF
 echo "<div class=\"datetime\">"`date`"</div>"
 cat << EOF
