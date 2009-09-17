@@ -94,6 +94,7 @@ doit()
     print_heading POSIX Enabled
     print_heading Developmental Enabled
     print_heading Uncovered Ranges
+    # skip Uncovered Percentage
     print_heading Covered Percentage
     print_heading Uncovered Bytes
     print_heading Total Bytes
