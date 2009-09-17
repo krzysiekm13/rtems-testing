@@ -84,7 +84,7 @@ doit()
     cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
           sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
     echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
-    echo "<tr class=\"stats-table-target\"><td colspan=\"11\"> <strong>" \
+    echo "<tr class=\"stats-table-target\"><td colspan=\"10\"> <strong>" \
           ${cpu}/${bsp} "</strong></td></tr>"
     echo "<tr class=\"stats-table-top\">"
     ### generate header
@@ -94,7 +94,6 @@ doit()
     print_heading POSIX Enabled
     print_heading Developmental Enabled
     print_heading Uncovered Ranges
-    print_heading Uncovered Percentage
     print_heading Covered Percentage
     print_heading Uncovered Bytes
     print_heading Total Bytes
@@ -106,11 +105,18 @@ doit()
     # 1   2      3      4
     #bsp-opt-yyyymmdd-hhmm.tar.bz2
     # sort 1,2 alphabetically, sort 3,4 reverse "version"
-    ls -1 ${bsp}-*-*-*/row.html | sort -t -  -k 1,2 -k 3,4Vr | xargs -e cat | \
-       sed \
-        -e 's/<TD>\(20[0-9][0-9]\)\([0-1][0-9]\)\([0-9][0-9]\)/<TD>\1-\2-\3/' \
-        -e 's/<TR>/<tr class="stats-table-row">/g' \
-        -e 's/<TD>/<td align="center">/g'
+    ls -1 ${bsp}-*-*-*/row.html | sort -t -  -k 1,2 -k 3,4Vr | while read row
+    do
+     sed \
+      -e '2,2s/<TD>\(20[0-9][0-9]\)\([0-1][0-9]\)\([0-9][0-9]\)/<TD>\1-\2-\3/' \
+      -e '1,1s/<TR>/<tr class="stats-table-row">/' \
+      -e '7,7s/<TD>0/<td class="stats-target-good">0/' \
+      -e '9,9s/<TD>100/<td class="stats-target-good">100/' \
+      -e '10,10s/<TD>0/<td class="stats-target-good">0/' \
+      -e 's/<TD>/<td align="center">/' \
+      -e '8d' \
+      <$row
+    done
   done
   print_doc_bottom
 }

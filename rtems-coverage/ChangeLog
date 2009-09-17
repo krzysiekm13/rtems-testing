@@ -1,3 +1,8 @@
+2009-09-17	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* generate_coverage_html: Drop uncovered percentage column. Mark 100%
+	numbers as green.
+
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* generate_coverage_html, style.css: Tinker with CSS so it works on
