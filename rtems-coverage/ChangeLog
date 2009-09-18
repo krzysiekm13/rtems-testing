@@ -1,5 +1,14 @@
 2009-09-18	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* .cvsignore, Makefile: Add initial support for the Trace Converter
+	utility. It will convert from Trace files to the RTEMS Common
+	Coverage Map format. Next step is to add class to read Qemu trace
+	file format.
+	* TraceFactory.cc, TraceFactory.h, TraceReaderBase.cc,
+	TraceReaderBase.h, trace_converter.cc: New files.
+
+2009-09-18	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* CoverageFactory.cc, CoverageFactory.h, CoverageReaderSkyeye.cc,
 	Makefile, covmerge.cc: Add initial support for RTEMS Common Coverage
 	Map format. Next step is to add utility to convert qemu trace files

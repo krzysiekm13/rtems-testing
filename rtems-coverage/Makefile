@@ -3,15 +3,20 @@
 #
 
 CXXFLAGS=-g -Wall -O2
-PROGRAMS=covmerge
-COVMERGE_OBJS= covmerge.o CoverageMap.o CoverageMapBase.o \
-  CoverageRanges.o \
+PROGRAMS=covmerge trace_converter
+SHARED_OBJS=CoverageMap.o CoverageMapBase.o \
   CoverageFactory.o \
   CoverageReaderBase.o CoverageReaderRTEMS.o \
   CoverageReaderSkyeye.o CoverageReaderTSIM.o \
   CoverageWriterBase.o CoverageWriterRTEMS.o \
-  CoverageWriterSkyeye.o CoverageWriterTSIM.o \
+  CoverageWriterSkyeye.o CoverageWriterTSIM.o
+
+COVMERGE_OBJS= covmerge.o $(SHARED_OBJS) \
+  CoverageRanges.o \
   Explanations.o ObjdumpProcessor.o Toolnames.o
+
+TRACE_CONVERTER_OBJS=trace_converter.o $(SHARED_OBJS) \
+  TraceReaderBase.o TraceFactory.o
 
 all: $(PROGRAMS)
 
@@ -19,6 +24,12 @@ covmerge: $(COVMERGE_OBJS)
 	$(CXX) -o $(@) $(COVMERGE_OBJS)
 
 covmerge.o: covmerge.cc CoverageMap.h CoverageFactory.h
+
+trace_converter: $(TRACE_CONVERTER_OBJS)
+	$(CXX) -o $(@) $(TRACE_CONVERTER_OBJS)
+
+trace_converter.o: trace_converter.cc CoverageMap.h CoverageFactory.h \
+       TraceFactory.h
 
 CoverageFactory.o: CoverageFactory.cc CoverageFactory.h CoverageReaderBase.h \
   CoverageReaderNops.h CoverageReaderSkyeye.h CoverageReaderTSIM.h  \
