@@ -1,5 +1,10 @@
 2009-09-18	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* do_coverage: Add ON_SKYEYE
+	* run_coverage: Try to detect when errors happen.
+
+2009-09-18	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* .cvsignore, Makefile: Add initial support for the Trace Converter
 	utility. It will convert from Trace files to the RTEMS Common
 	Coverage Map format. Next step is to add class to read Qemu trace

@@ -67,9 +67,11 @@ toggle()
 do_one()
 {
   time ${COVBASE}/do_coverage -A -u -m ${*}
-  mv *-tests/*tar.bz2 ${RESULTSDIR}
-  cp ${BASEDIR}/covrun-results/* ${FTPDIR}
-  ${COVBASE}/generate_coverage_html ${FTPDIR}
+  if [ $? -eq 0 ] ; then
+    mv *-tests/*tar.bz2 ${RESULTSDIR}
+    cp ${BASEDIR}/covrun-results/* ${FTPDIR}
+    ${COVBASE}/generate_coverage_html ${FTPDIR}
+  fi
   rm -rf b-* *-tests
 }
 
@@ -109,7 +111,7 @@ for cmd in $*
 do
   case ${cmd} in
     update)                      ;; # general commands
-    *_Os|*_O2|_baseline)            # one BSP at specific -Ox level
+    *_Os|*_O2|*_baseline)            # one BSP at specific -Ox level
       bsp=`echo $cmd | sed -e 's/_.*$//'`
       validate_bsp ${bsp}
       ;;

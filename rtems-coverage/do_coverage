@@ -410,6 +410,11 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     EXPERIMENTAL_ARG="yes"
   fi
 
+  case ${BSP} in
+    edb7312|gumstix|smdk2410) BSP_ARGS="ON_SKYEYE=1" ;;
+    *)                        ;;
+  esac
+
   ${RTEMSDIR}/configure NDEBUG=1 \
     RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
     RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
