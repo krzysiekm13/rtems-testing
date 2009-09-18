@@ -7,8 +7,10 @@ PROGRAMS=covmerge
 COVMERGE_OBJS= covmerge.o CoverageMap.o CoverageMapBase.o \
   CoverageRanges.o \
   CoverageFactory.o \
-  CoverageReaderBase.o CoverageReaderSkyeye.o CoverageReaderTSIM.o \
-  CoverageWriterBase.o CoverageWriterSkyeye.o CoverageWriterTSIM.o \
+  CoverageReaderBase.o CoverageReaderRTEMS.o \
+  CoverageReaderSkyeye.o CoverageReaderTSIM.o \
+  CoverageWriterBase.o CoverageWriterRTEMS.o \
+  CoverageWriterSkyeye.o CoverageWriterTSIM.o \
   Explanations.o ObjdumpProcessor.o Toolnames.o
 
 all: $(PROGRAMS)

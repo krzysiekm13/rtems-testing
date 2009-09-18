@@ -16,8 +16,9 @@
 namespace Coverage {
 
   typedef enum {
-    COVERAGE_FORMAT_TSIM,
-    COVERAGE_FORMAT_SKYEYE
+    COVERAGE_FORMAT_RTEMS,
+    COVERAGE_FORMAT_SKYEYE,
+    COVERAGE_FORMAT_TSIM
   } CoverageFormats_t;
 
   CoverageFormats_t CoverageFormatToEnum(

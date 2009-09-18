@@ -13,6 +13,8 @@
 
 #include "CoverageFactory.h"
 
+#include "CoverageReaderRTEMS.h"
+#include "CoverageWriterRTEMS.h"
 #include "CoverageReaderSkyeye.h"
 #include "CoverageWriterSkyeye.h"
 #include "CoverageReaderTSIM.h"
@@ -26,16 +28,19 @@ Coverage::CoverageFormats_t Coverage::CoverageFormatToEnum(
   const char *format
 )
 {
-  if ( !strcmp(format, "TSIM") )
-    return COVERAGE_FORMAT_TSIM;
+  if ( !strcmp(format, "RTEMS") )
+    return COVERAGE_FORMAT_SKYEYE;
 
   if ( !strcmp(format, "Skyeye") )
     return COVERAGE_FORMAT_SKYEYE;
 
+  if ( !strcmp(format, "TSIM") )
+    return COVERAGE_FORMAT_TSIM;
+
   fprintf(
     stderr,
     "%s is unknown coverage format\n"
-    "Supported formats: TSIM and Skyeye\n",
+    "Supported formats: RTEMS, TSIM, and Skyeye\n",
     format
   );
   exit( 1 );
@@ -46,10 +51,12 @@ Coverage::CoverageReaderBase *Coverage::CreateCoverageReader(
 )
 {
   switch (format) {
-    case COVERAGE_FORMAT_TSIM:
-      return new Coverage::CoverageReaderTSIM();
+    case COVERAGE_FORMAT_RTEMS:
+      return new Coverage::CoverageReaderRTEMS();
     case COVERAGE_FORMAT_SKYEYE:
       return new Coverage::CoverageReaderSkyeye();
+    case COVERAGE_FORMAT_TSIM:
+      return new Coverage::CoverageReaderTSIM();
     default:
       break;
   }
@@ -61,10 +68,12 @@ Coverage::CoverageWriterBase *Coverage::CreateCoverageWriter(
 )
 {
   switch (format) {
-    case COVERAGE_FORMAT_TSIM:
-      return new Coverage::CoverageWriterTSIM();
+    case COVERAGE_FORMAT_RTEMS:
+      return new Coverage::CoverageWriterRTEMS();
     case COVERAGE_FORMAT_SKYEYE:
       return new Coverage::CoverageWriterSkyeye();
+    case COVERAGE_FORMAT_TSIM:
+      return new Coverage::CoverageWriterTSIM();
     default:
       break;
   }

@@ -2,44 +2,44 @@
  *  $Id$
  */
 
-/*! @file CoverageReaderSkyeye.cc
- *  @brief CoverageReaderSkyeye Implementation
+/*! @file CoverageReaderRTEMS.cc
+ *  @brief CoverageReaderRTEMS Implementation
  *
  *  This file contains the implementation of the functions supporting
- *  reading the Skyeye coverage data files.
+ *  reading the RTEMS coverage data files.
  */
 
-#include "CoverageReaderSkyeye.h"
+#include "CoverageReaderRTEMS.h"
 #include "CoverageMapBase.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 
-#include "skyeye_header.h"
+#include "rtemscov_header.h"
 
 namespace Coverage {
 
-  CoverageReaderSkyeye::CoverageReaderSkyeye()
+  CoverageReaderRTEMS::CoverageReaderRTEMS()
   {
   }
 
-  CoverageReaderSkyeye::~CoverageReaderSkyeye()
+  CoverageReaderRTEMS::~CoverageReaderRTEMS()
   {
   }
 
-  bool CoverageReaderSkyeye::ProcessFile(
+  bool CoverageReaderRTEMS::ProcessFile(
     const char      *file,
     CoverageMapBase *coverage
   )
   {
-    FILE          *coverageFile;
-    uintptr_t      baseAddress;
-    uintptr_t      length;
-    int            status;
-    uintptr_t      i;
-    uint8_t        cover;
-    prof_header_t  header;
-    struct stat    statbuf;
+    FILE                        *coverageFile;
+    uintptr_t                    baseAddress;
+    uintptr_t                    length;
+    int                          status;
+    uintptr_t                    i;
+    uint8_t                      cover;
+    rtems_coverage_map_header_t  header;
+    struct stat                  statbuf;
 
     /*
      *  Verify it has a non-zero size
@@ -62,7 +62,7 @@ namespace Coverage {
     if ( !coverageFile ) {
       fprintf(
         stderr,
-        "CoverageReaderSkyeye::ProcessFile - unable to open %s\n",
+        "CoverageReaderRTEMS::ProcessFile - unable to open %s\n",
         file
       );
       exit(-1);
@@ -72,35 +72,35 @@ namespace Coverage {
     if ( status != 1 ) {
       fprintf(
         stderr,
-        "CoverageReaderSkyeye::ProcessFile - unable to read header "
+        "CoverageReaderRTEMS::ProcessFile - unable to read header "
            "from %s\n",
         file
       );
       exit(-1);
     }
 
-    baseAddress = header.prof_start;
-    length      = header.prof_end - header.prof_start;
+    baseAddress = header.start;
+    length      = header.end - header.start;
     
     #if 0
     fprintf( 
       stderr,
       "%s: 0x%08x 0x%08x 0x%08lx/%ld\n", 
       file,
-      header.prof_start,
-      header.prof_end,
+      header.start,
+      header.end,
       (unsigned long) length,
       (unsigned long) length
     );
     #endif
       
-    for ( i=0 ; i<length ; i += 8 ) {
+    for ( i=0 ; i<length ; i++ ) {
       status = fread( &cover, sizeof(uint8_t), 1, coverageFile );
       if ( status != 1 ) {
         fprintf(
-	  stderr,
-	  "CoverageReaderSkyeye::ProcessFile - breaking after 0x%08x in %s\n",
-	  (unsigned int) i,
+          stderr,
+          "CoverageReaderRTEMS::ProcessFile - breaking after 0x%08x in %s\n",
+          (unsigned int) i,
           file
         );
         break;
@@ -108,15 +108,6 @@ namespace Coverage {
 
       if ( cover & 0x01 ) {
         coverage->setWasExecuted( baseAddress + i );
-        coverage->setWasExecuted( baseAddress + i + 1 );
-        coverage->setWasExecuted( baseAddress + i + 2 );
-        coverage->setWasExecuted( baseAddress + i + 3 );
-      }
-      if ( cover & 0x10 ) {
-        coverage->setWasExecuted( baseAddress + i + 4 );
-        coverage->setWasExecuted( baseAddress + i + 5 );
-        coverage->setWasExecuted( baseAddress + i + 6 );
-        coverage->setWasExecuted( baseAddress + i + 7 );
       }
     }
 

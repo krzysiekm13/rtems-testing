@@ -1,3 +1,13 @@
+2009-09-18	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* CoverageFactory.cc, CoverageFactory.h, CoverageReaderSkyeye.cc,
+	Makefile, covmerge.cc: Add initial support for RTEMS Common Coverage
+	Map format. Next step is to add utility to convert qemu trace files
+	into this format.
+	* CoverageReaderRTEMS.cc, CoverageReaderRTEMS.h,
+	CoverageWriterRTEMS.cc, CoverageWriterRTEMS.h, rtemscov_header.h:
+	New files.
+
 2009-09-17	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* generate_coverage_html: Add comment about skipped field.
