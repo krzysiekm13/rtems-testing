@@ -76,9 +76,9 @@ bspLimit()
 {
   testname=$1
   case ${tname} in
+    *base_sp*) limit=5 ;;
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
-    *psxtime0*)limit=60 ;;
     *psxtime*) limit=180 ;;
     *)         limit=60 ;;
   esac

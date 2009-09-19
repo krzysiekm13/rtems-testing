@@ -1,3 +1,7 @@
+2009-09-19	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* qemu-rtems.in: Adjust time for psxtime*
+
 2009-09-18	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in, qemu-rtems.in, skyeye-support: Add support for
