@@ -133,6 +133,8 @@ bspSupportsGDBServerMode="no"
 bspSupportsDisplayAdapter="no"
 bspSupportsNIC="no"
 bspNeedsSttySane="yes"
+bspNeedsTraceConversion="no"
+bspWritesZeroCoverage="no"
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -410,13 +412,26 @@ do
   test ${verbose} = "yes" && \
     echo BACKGROUND runtest ${toRun} ${testtype} ${limit}
   runtest ${toRun} ${testtype} ${limit}
-  # some simulators do not always write a coverage file with non-zero length
-  # If we see this, try again
-  while [ ${coverage} = "yes" -a ! -s ${toRun}.cov ]
-  do
-    echo Rerunning ${toRun} due to zero length coverage file
-    runtest ${toRun} ${testtype} ${limit}
-  done
+  if [ ${coverage} = "yes" ] ; then
+
+    # some simulators do not always write a coverage file with non-zero length
+    # If we see this, try again
+    if [ ${bspWritesZeroCoverage} = "yes" ] ; then
+      while [ ${coverage} = "yes" -a ! -s ${toRun}.cov ]
+      do
+        echo Rerunning ${toRun} due to zero length coverage file
+        runtest ${toRun} ${testtype} ${limit}
+      done
+    fi
+
+    # some BSPs produce trace oriented files which need to be converted
+    # to object coverage maps
+    if [ ${bspNeedsTraceConversion} = "yes" ] ; then
+      convertTraceToCoverageMap ${toRun}
+    fi
+
+  fi
+
 
   if [ ${bspGeneratesDeviceTree} = "yes" ] ; then
     rm -f ${bspTreeFile}

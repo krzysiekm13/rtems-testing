@@ -1,3 +1,9 @@
+2009-09-18	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in, qemu-rtems.in, skyeye-support: Add support for
+	running coverage/trace on qemu/x86. Fine tune other details to
+	support this.
+
 2009-09-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gdb-sim-run.in: Rerun when coverage enabled and a zero-length

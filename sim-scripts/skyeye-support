@@ -9,6 +9,8 @@ bspSupportsGDBServerMode="yes"
 bspNeedsDos2Unix="yes"
 bspGeneratesGDBCommands="yes"
 bspNeedsSttySane="no"
+# sometimes the .cov file has a zero length
+bspWritesZeroCoverage="yes"
 
 if [ ${coverage} = "yes" ] ; then
   bspRunFatal="yes"

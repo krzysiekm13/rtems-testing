@@ -5,8 +5,12 @@
 #
 
 bspUsesGDBSimulator="no"
-runBSP=qemu
+runBSP=${HOME}/qemu-coverage/install/bin/qemu
+if [ ! -r ${runBSP} ] ; then
+  runBSP=qemu
+fi
 bspNeedsDos2Unix="yes"
+bspNeedsTraceConversion="yes"
 
 # Set the defaults based upon arguments given and do some error checking
 if [ X${QEMUDIR} == X ] ; then
@@ -46,7 +50,10 @@ runARGS()
   fi
   cp ${1} ${hd0Dir}/test.exe
 
-  echo "-m 8 -boot a -fda ${fd0Image} -hda fat:${hd0Dir} \
+  if [ ${coverage} = yes ] ; then
+     COVERAGE_ARG="-trace ${1}.tra"
+  fi
+  echo "-m 8 -boot a -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
          -monitor null -nographic -serial stdio --no-reboot"
 }
 
@@ -71,10 +78,16 @@ bspLimit()
   case ${tname} in
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
+    *psxtime0*)limit=60 ;;
     *psxtime*) limit=180 ;;
     *)         limit=60 ;;
   esac
   echo ${limit}
 }
 
+convertTraceToCoverageMap()
+{
+ trace_converter -l 100000 -h 200000 -f QEMU ${1}.tra ${1}.cov 
+
+}
 bspGeneratesDeviceTree="no"
