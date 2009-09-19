@@ -1,3 +1,7 @@
+2009-09-18	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* check_endof: Improve to only pay attention to .exe and .ralf files.
+
 2009-09-11	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* bit_all_confs: Update script.
