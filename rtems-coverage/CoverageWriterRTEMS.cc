@@ -58,8 +58,8 @@ namespace Coverage {
     memset( &header, 0, sizeof(header) );
     header.ver           = 0x1;
     header.header_length = sizeof(header);
-    header.start    = lowAddress;
-    header.end      = highAddress;
+    header.start         = lowAddress;
+    header.end           = highAddress;
     strcpy( header.desc, "RTEMS Coverage Data" );
 
     status = fwrite(&header, 1, sizeof(header), coverageFile);

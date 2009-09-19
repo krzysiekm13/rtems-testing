@@ -121,7 +121,7 @@ void FindSourceForAddresses(void)
   /*
    *  Find all the unexecuted addresses and add them to the range.
    */
-  for ( a=lowAddress ; a < highAddress ; a+=4 ) {
+  for ( a=lowAddress ; a < highAddress ; a++ ) {
     if ( !CoverageMap->wasExecuted( a ) ) {
       la = a;
       for (ha=a+1 ; ha<=highAddress && !CoverageMap->wasExecuted(ha) ; ha++ )

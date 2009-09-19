@@ -141,6 +141,13 @@ fi
 RUNNER=${BSP}
 
 case ${BSP} in
+  pc386)
+    CPU=i386
+    RUNNER=qemu-rtems
+    COVERAGE_FORMAT=RTEMS
+    RTEMS_EXTRA_ARGS="USE_COM1_AS_CONSOLE=1"
+    RTEMS_EXTRA_ARGS="${RTEMS_EXTRA_ARGS} BSP_PRESS_KEY_FOR_RESET=0"
+    ;; 
   erc32|leon2|leon3)
     CPU=sparc
     COVERAGE_FORMAT=TSIM
@@ -409,11 +416,6 @@ if [ ${do_rtems_configure} = "yes" ] ; then
   else
     EXPERIMENTAL_ARG="yes"
   fi
-
-  case ${BSP} in
-    edb7312|gumstix|smdk2410) BSP_ARGS="ON_SKYEYE=1" ;;
-    *)                        ;;
-  esac
 
   ${RTEMSDIR}/configure NDEBUG=1 \
     RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \

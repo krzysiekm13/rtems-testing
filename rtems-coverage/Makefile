@@ -3,7 +3,7 @@
 #
 
 CXXFLAGS=-g -Wall -O2
-PROGRAMS=covmerge trace_converter
+PROGRAMS=covmerge trace_converter qemu-dump-trace
 SHARED_OBJS=CoverageMap.o CoverageMapBase.o \
   CoverageFactory.o \
   CoverageReaderBase.o CoverageReaderRTEMS.o \
@@ -16,9 +16,19 @@ COVMERGE_OBJS= covmerge.o $(SHARED_OBJS) \
   Explanations.o ObjdumpProcessor.o Toolnames.o
 
 TRACE_CONVERTER_OBJS=trace_converter.o $(SHARED_OBJS) \
-  TraceReaderBase.o TraceFactory.o
+  TraceFactory.o \
+  TraceReaderBase.o TraceReaderQEMU.o
 
-all: $(PROGRAMS)
+all: $(PROGRAMS) ../bin/trace_converter ../bin/qemu-dump-trace
+
+../bin/trace_converter: trace_converter
+	cp trace_converter ../bin
+
+../bin/qemu-dump-trace: qemu-dump-trace
+	cp qemu-dump-trace ../bin
+
+qemu-dump-trace: qemu-dump-trace.c
+	$(CXX) -o $(@) qemu-dump-trace.c
 
 covmerge: $(COVMERGE_OBJS)
 	$(CXX) -o $(@) $(COVMERGE_OBJS)
@@ -32,7 +42,7 @@ trace_converter.o: trace_converter.cc CoverageMap.h CoverageFactory.h \
        TraceFactory.h
 
 CoverageFactory.o: CoverageFactory.cc CoverageFactory.h CoverageReaderBase.h \
-  CoverageReaderNops.h CoverageReaderSkyeye.h CoverageReaderTSIM.h  \
+  CoverageReaderSkyeye.h CoverageReaderTSIM.h  \
   CoverageWriterBase.h CoverageWriterSkyeye.h CoverageWriterTSIM.h 
 CoverageMap.o: CoverageMap.cc CoverageMap.h
 CoverageRanges.o: CoverageRanges.cc CoverageRanges.h
@@ -47,7 +57,6 @@ CoverageWriterTSIM.o: CoverageWriterTSIM.cc CoverageWriterTSIM.h
 Explanations.o: Explanations.cc Explanations.h
 ObjdumpProcessor.o: ObjdumpProcessor.cc ObjdumpProcessor.h
 Toolnames.o: Toolnames.cc Toolnames.h
-
 
 clean:
 	rm -rf $(PROGRAMS) *.o doxy html latex *.exe *~

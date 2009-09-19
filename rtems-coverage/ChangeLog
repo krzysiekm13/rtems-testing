@@ -1,3 +1,14 @@
+2009-09-18	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* .cvsignore, CoverageFactory.cc, CoverageReaderRTEMS.cc,
+	CoverageWriterRTEMS.cc, Makefile, ObjdumpProcessor.cc,
+	ObjdumpProcessor.h, Toolnames.cc, Toolnames.h, TraceFactory.cc,
+	covmerge.cc, do_coverage, trace_converter.cc: Add support for Qemu
+	targeting i386. Hopefully it did not break SPARC or ARM.
+	* TraceReaderQEMU.cc, TraceReaderQEMU.h, qemu-dump-trace.c,
+	qemu-traces.h: New files.
+	* CoverageReaderNops.cc, CoverageReaderNops.h: Removed.
+
 2009-09-18	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Add ON_SKYEYE

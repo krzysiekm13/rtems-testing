@@ -37,7 +37,8 @@ namespace Coverage {
        const char *line
      );
      bool isNop(
-       const char *line
+       const char *line,
+       int        &size
      );
 
   public:

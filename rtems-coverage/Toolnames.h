@@ -43,6 +43,11 @@ namespace Coverage {
     virtual ~Toolnames();
 
     /*!
+     *  This method returns the target name.
+     */
+    const char *getTarget( void );
+
+    /*!
      *  This method returns the program name for addr2line.
      */
     const char *getAddr2line( void );

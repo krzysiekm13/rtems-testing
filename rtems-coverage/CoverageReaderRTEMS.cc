@@ -106,7 +106,7 @@ namespace Coverage {
         break;
       }
 
-      if ( cover & 0x01 ) {
+      if ( cover ) {
         coverage->setWasExecuted( baseAddress + i );
       }
     }

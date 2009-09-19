@@ -29,7 +29,7 @@ Coverage::CoverageFormats_t Coverage::CoverageFormatToEnum(
 )
 {
   if ( !strcmp(format, "RTEMS") )
-    return COVERAGE_FORMAT_SKYEYE;
+    return COVERAGE_FORMAT_RTEMS;
 
   if ( !strcmp(format, "Skyeye") )
     return COVERAGE_FORMAT_SKYEYE;

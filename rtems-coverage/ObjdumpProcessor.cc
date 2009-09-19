@@ -24,6 +24,10 @@ namespace Coverage {
   public:
      ObjdumpLine()
      {
+       isInstruction = false;
+       isNop         = false;
+       nopSize       = 0;
+       address       = 0xffffffff;
      } 
 
      ~ObjdumpLine()
@@ -33,6 +37,7 @@ namespace Coverage {
      std::string line;
      bool        isInstruction;
      bool        isNop;
+     int         nopSize;
      uint32_t    address;
   };
 
@@ -75,28 +80,81 @@ namespace Coverage {
   }
 
   bool ObjdumpProcessor::isNop(
-    const char *line
+    const char *line,
+    int        &size
   )
   {
-    if ( !isInstruction(line) )
-      return false;
+    bool        isNop = false;
+    const char *target = Tools->getTarget();
 
+    if ( !isInstruction(line) ) {
+      size = 0;
+      return false;
+    }
+
+    // common patterns
+    if ( !strcmp( &line[strlen(line)-3], "nop") )
+      isNop = true;
+    
     if ( !strcmp( &line[strlen(line)-4], "nop ") )
-      return true;
+      isNop = true;
     
     if ( !strcmp( &line[strlen(line)-7], "unknown") )
-      return true;
+      isNop = true;
     
-    // On ARM, there are literal tables at the end of methods.
-    // We need to avoid them.
-    if ( !strncmp( &line[strlen(line)-10], ".byte", 5) )
-      return true;
-    if ( !strncmp( &line[strlen(line)-13], ".short", 6) )
-      return true;
-    if ( !strncmp( &line[strlen(line)-16], ".word", 5) )
-      return true;
+    if ( !strncmp( target, "sparc", 5 ) ) {
+      if ( isNop ) {
+        size = 1; 
+        return true;
+      }
+
+    } else if ( !strncmp( target, "i386", 4 ) ) {
+      if ( isNop ) {
+        size = 4; 
+        return true;
+      }
+      // i386 has some two and three byte nops
+      if ( !strncmp( &line[strlen(line)-14], "xchg   %ax,%ax", 14) ) {
+        size = 2;
+        return true;
+      }
+      if ( !strncmp( &line[strlen(line)-16], "xor    %eax,%eax", 16) ) {
+        size = 2;
+        return true;
+      }
+      if ( !strncmp( &line[strlen(line)-16], "xor    %ebx,%ebx", 16) ) {
+        size = 2;
+        return true;
+      }
+      if ( !strncmp( &line[strlen(line)-21], "lea    0x0(%esi),%esi", 21) ) {
+        size = 3;
+        return true;
+      }
+
+    } else if ( !strncmp( target, "arm", 3 ) ) {
+      if ( isNop ) {
+        size = 4; 
+        return true;
+      }
     
+      // On ARM, there are literal tables at the end of methods.
+      // We need to avoid them.
+      if ( !strncmp( &line[strlen(line)-10], ".byte", 5) ) {
+        size = 1;
+        return true;
+      }
+      if ( !strncmp( &line[strlen(line)-13], ".short", 6) ) {
+        size = 2;
+        return true;
+      }
+      if ( !strncmp( &line[strlen(line)-16], ".word", 5) ) {
+        size = 4;
+        return true;
+      }
+    }
+
     // ASSUME: ARM dump uses nop instruction. Really "mov r0,r0"
+    size = 0;
     return false;
   }
 
@@ -128,7 +186,11 @@ namespace Coverage {
 
     objdumpFile = fopen( "objdump.tmp", "r" );
     if ( !objdumpFile ) {
-      fprintf( stderr, "ObjdumpProcessor::ProcessFile - unable to open %s\n", "objdump.tmp" );
+      fprintf(
+        stderr,
+        "ObjdumpProcessor::ProcessFile - unable to open %s\n",
+        "objdump.tmp"
+      );
       exit(-1);
     }
 
@@ -161,14 +223,14 @@ namespace Coverage {
 	baseAddress = l;
         contents.address = baseAddress;
 
-        contents.isNop = isNop( buffer );
+        contents.isNop = isNop( buffer, contents.nopSize );
         if ( contents.isNop ) {
           // check the byte immediately before and after the nop
           // if either was executed, then mark NOP as executed. Otherwise,
           // we do not want to split the unexecuted range.
           if ( coverage->wasExecuted( baseAddress - 1 ) ||
-               coverage->wasExecuted( baseAddress + nopSize ) ) {
-            for ( i=0 ; i < nopSize ; i++ )
+               coverage->wasExecuted( baseAddress + contents.nopSize ) ) {
+            for ( i=0 ; i < contents.nopSize ; i++ )
 	      coverage->setWasExecuted( baseAddress + i );
           }
         }

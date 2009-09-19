@@ -189,8 +189,6 @@ int main(
 
   /*
    * Create writer
-   *
-   * NOTE: We only support one format currently.
    */
   CoverageWriter =
     Coverage::CreateCoverageWriter(Coverage::COVERAGE_FORMAT_RTEMS);

@@ -13,7 +13,7 @@
 
 #include "TraceFactory.h"
 
-// #include "TraceReaderQemu.h"
+#include "TraceReaderQEMU.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -25,6 +25,9 @@ namespace Coverage {
   )
   {
     if ( !strcmp(format, "QEMU") )
+      return TRACE_FORMAT_QEMU;
+
+    if ( !strcmp(format, "qemu") )
       return TRACE_FORMAT_QEMU;
 
     fprintf(
@@ -41,10 +44,8 @@ namespace Coverage {
   )
   {
     switch (format) {
-  #if 0
       case TRACE_FORMAT_QEMU:
-        return new Coverage::TraceReaderQemu();
-  #endif
+        return new Coverage::TraceReaderQEMU();
       default:
         break;
     }

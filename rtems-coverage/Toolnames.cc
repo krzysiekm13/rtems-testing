@@ -25,6 +25,8 @@ namespace Coverage {
     objdump   = target + "-objdump";
     if ( !strncmp( target_arg, "sparc", 5 ) ) {
       nopSize = 4;
+    } else if ( !strncmp( target_arg, "i386", 4 ) ) {
+      nopSize = 1;
     } else if ( !strncmp( target_arg, "arm", 3 ) ) {
       // This is right for ARM mode, not Thumb mode.
       nopSize = 4;
@@ -36,6 +38,11 @@ namespace Coverage {
 
   Toolnames::~Toolnames()
   {
+  }
+
+  const char *Toolnames::getTarget( void )
+  {
+    return target.c_str();
   }
 
   const char *Toolnames::getAddr2line()
