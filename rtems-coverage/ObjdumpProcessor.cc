@@ -110,7 +110,7 @@ namespace Coverage {
 
     } else if ( !strncmp( target, "i386", 4 ) ) {
       if ( isNop ) {
-        size = 4; 
+        size = 1; 
         return true;
       }
       // i386 has some two and three byte nops

@@ -1,3 +1,8 @@
+2009-09-19	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* ObjdumpProcessor.cc, run_coverage: Tidy up issues from run on
+	england.
+
 2009-09-18	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* .cvsignore, CoverageFactory.cc, CoverageReaderRTEMS.cc,

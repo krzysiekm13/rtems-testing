@@ -79,6 +79,7 @@ validate_bsp()
 {
   case ${1} in
     edb7312|gumstix|smdk2410)    ;; # ARM
+    pc386|qemu)                  ;; # i386
     erc32|leon2|leon3)           ;; # SPARC
     *)
       echo "ERROR - does BSP (${bsp}) really exist and support coverage?"
