@@ -148,9 +148,10 @@ genBSPList()
     while read bsp
     do
       cpu=`grep ^Target ${bsp}-*/configuration.txt | tail -1 | \
-        sed -e 's/^.*: *\([a-z]*\)-rtems.*$/\1/'`
+        sed -e 's/^.*://' -e 's/^.*: *\([a-z]*\)-rtems.*$/\1/'`
       echo ${cpu}/${bsp}
-    done | sort | cut -d'/' -f2
+    done | sort -t / -k 1 -k 2 | cut -d'/' -f2
+    # sort cpu,bsp alphabetically
 }
 
 #BSPs=`find * -maxdepth 1 -type d | cut -d'-' -f1 | uniq | grep -v rtems`

@@ -1,3 +1,7 @@
+2009-09-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* generate_coverage_html: Correct sorting order for BSPs.
+
 2009-09-19	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* ObjdumpProcessor.cc: Strip blanks off end of objdump lines. This is
