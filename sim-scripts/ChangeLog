@@ -1,3 +1,7 @@
+2009-09-20	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* qemu-rtems.in: cpuuse needs longer to run.
+
 2009-09-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemu-rtems.in: Fix minor bug keeping fatal error tests run

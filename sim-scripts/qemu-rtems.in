@@ -79,6 +79,7 @@ bspLimit()
     *stackchk*)limit=5 ;;
     *fatal*)   limit=5 ;;
     *psxtime*) limit=180 ;;
+    *cpuuse*)  limit=30 ;;
     *)         limit=60 ;;
   esac
   echo ${limit}
