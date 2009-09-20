@@ -1,3 +1,8 @@
+2009-09-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemu-rtems.in: Fix minor bug keeping fatal error tests run
+	completing.
+
 2009-09-19	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* qemu-rtems.in: Adjust time for psxtime*
