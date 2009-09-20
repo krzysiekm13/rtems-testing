@@ -1,5 +1,10 @@
 2009-09-19	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* ObjdumpProcessor.cc: Strip blanks off end of objdump lines. This is
+	causing issues with matching nops and parsing lines.
+
+2009-09-19	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* ObjdumpProcessor.cc, run_coverage: Tidy up issues from run on
 	england.
 

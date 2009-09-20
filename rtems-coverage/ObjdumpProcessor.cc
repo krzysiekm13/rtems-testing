@@ -96,9 +96,6 @@ namespace Coverage {
     if ( !strcmp( &line[strlen(line)-3], "nop") )
       isNop = true;
     
-    if ( !strcmp( &line[strlen(line)-4], "nop ") )
-      isNop = true;
-    
     if ( !strcmp( &line[strlen(line)-7], "unknown") )
       isNop = true;
     
@@ -172,7 +169,7 @@ namespace Coverage {
     /*
      * Generate the objdump
      */
-    sprintf( buffer, "%s -da --source %s >objdump.tmp",
+    sprintf( buffer, "%s -da --source %s | sed -e \'s/ *$//\' >objdump.tmp",
       Tools->getObjdump(), executable );
 
     if ( system( buffer ) ) {
