@@ -453,20 +453,6 @@ if [ ${do_copy_tests} = "yes" ] ; then
   # clean destination
   rm -rf ${BASEDIR}/${BSP}-tests/*
   check_status $? "clean test directory"
-  # Generate the configuration settings file
-  ( \
-    echo "#"
-    echo "#  Settings for this coverage test run"
-    echo "#"
-    echo
-    echo "Compiler version:   " `${TARGET}-gcc --version  | grep gcc`
-    echo "Optimization flag   " ${c_opt}
-    print_verbose
-  ) > ${BASEDIR}/${BSP}-tests/configuration.txt
-
-  rm -f *.exe *.cov *.tmp
-  rm -rf log
-  rm -f annotated.dmp hello.num report
 
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
@@ -490,6 +476,17 @@ fi
 # If requested, generate the coverage report
 if [ ${do_report} = "yes" ] ; then
   echo "Generating report..."
+
+  # Generate the configuration settings file
+  ( \
+    echo "#"
+    echo "#  Settings for this coverage test run"
+    echo "#"
+    echo
+    echo "Compiler version:   " `${TARGET}-gcc --version  | grep gcc`
+    echo "Optimization flag   " ${c_opt}
+    print_verbose
+  ) > ${BASEDIR}/${BSP}-tests/configuration.txt
 
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"

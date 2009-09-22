@@ -1,3 +1,9 @@
+2009-09-22	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* ObjdumpProcessor.cc: SPARC nop is 4 bytes not 1.
+	* do_coverage: Generate configuration.txt as part of reporting.
+	Previously done as part of copying tests.
+
 2009-09-20	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* generate_coverage_html: Correct sorting order for BSPs.

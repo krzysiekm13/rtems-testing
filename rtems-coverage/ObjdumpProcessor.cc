@@ -16,6 +16,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "app_common.h"
+#include <assert.h>
 
 namespace Coverage {
 
@@ -92,20 +93,32 @@ namespace Coverage {
       return false;
     }
 
+    size = 0;
+
     // common patterns
     if ( !strcmp( &line[strlen(line)-3], "nop") )
       isNop = true;
+
     
-    if ( !strcmp( &line[strlen(line)-7], "unknown") )
-      isNop = true;
-    
+    // now check target specific patterns and return proper size if "nop"
+
+    // Check SPARC nops
     if ( !strncmp( target, "sparc", 5 ) ) {
       if ( isNop ) {
-        size = 1; 
+        size = 4; 
         return true;
       }
 
-    } else if ( !strncmp( target, "i386", 4 ) ) {
+      if ( !strcmp( &line[strlen(line)-7], "unknown") ) {
+        size = 4; 
+        return true;
+      } 
+
+      return false;
+    }
+
+    // Check i386 nops
+    if ( !strncmp( target, "i386", 4 ) ) {
       if ( isNop ) {
         size = 1; 
         return true;
@@ -128,7 +141,10 @@ namespace Coverage {
         return true;
       }
 
-    } else if ( !strncmp( target, "arm", 3 ) ) {
+    }
+
+    // Check i386 nops
+    if ( !strncmp( target, "arm", 3 ) ) {
       if ( isNop ) {
         size = 4; 
         return true;
@@ -150,8 +166,9 @@ namespace Coverage {
       }
     }
 
+    fprintf( stderr, "ERROR!!! %s is not a known architecture!!!\n", target );
+    assert(0);
     // ASSUME: ARM dump uses nop instruction. Really "mov r0,r0"
-    size = 0;
     return false;
   }
 
