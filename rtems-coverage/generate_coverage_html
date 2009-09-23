@@ -114,7 +114,7 @@ doit()
       -e '7,7s/<TD>0/<td class="stats-target-good">0/' \
       -e '9,9s/<TD>100/<td class="stats-target-good">100/' \
       -e '10,10s/<TD>0/<td class="stats-target-good">0/' \
-      -e 's/<TD>/<td align="center">/' \
+      -e 's/<[tT][dD]/<td align="center"/' \
       -e '8d' \
       <$row
     done
