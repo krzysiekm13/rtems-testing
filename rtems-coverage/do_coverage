@@ -302,17 +302,20 @@ generate_report()
 
   rm -f merged.cov report.txt
 
-  ( \
-    check_endof; \
-    ${COVBASE}/covmerge -l 0x${tlow} -h 0x${thigh} -r report.txt \
-      -s sizes.txt \
-      -E ${COVBASE}/Explanations.txt -f ${COVERAGE_FORMAT} \
-      -T ${TARGET} -e hello.exe -m merged.cov *.cov; \
-    echo "====== Largest Range Sizes (Size and Count)======" ; \
+  check_endof                                             >summary.txt
+  ${COVBASE}/covmerge \
+    -l 0x${tlow} -h 0x${thigh} \
+    -r report.txt -s sizes.txt \
+    -E ${COVBASE}/Explanations.txt \
+    -f ${COVERAGE_FORMAT} \
+    -T ${TARGET} -e hello.exe -m merged.cov *.cov        >>summary.txt
+  check_status $? "covmerge failed"
+
+  (echo "====== Largest Range Sizes (Size and Count)======" ; \
     grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | \
        tail -15 | sed -e 's/ *\([0-9]*\) *\([0-9]*\)/\2 \1/' | sort -n -r | \
        while read l; do printf "%6d %6d\n" $l; done ; \
-    echo "=====================================" ) >summary.txt
+    echo "=====================================" ) >>summary.txt
 
   generate_html >row.html
 
