@@ -3,7 +3,7 @@
 #
 
 INSTALL_DIR=../bin
-GDBSIM_SCRIPTS=h8sim jmr3904 m32csim m32rsim psim sis simsh
+GDBSIM_SCRIPTS=h8sim jmr3904 lm32_evr m32csim m32rsim psim sis simsh
 SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   gumstix rtl22xx smdk2410 leon2-skyeye
 
@@ -90,6 +90,9 @@ h8sim h8sim-gdb: gdb-sim-run.in gdb-sim.in h8sim.in
 
 jmr3904 jmr3904-gdb: gdb-sim-run.in gdb-sim.in jmr3904.in
 	./mkrun yes MIPS mipstx39 jmr3904
+
+lm32_evr lm32_evr-gdb: gdb-sim-run.in gdb-sim.in lm32_evr.in
+	./mkrun yes LM32 lm32 lm32_evr
 
 m32csim m32csim-gdb: gdb-sim-run.in gdb-sim.in m32csim.in
 	./mkrun yes M32C m32c m32csim

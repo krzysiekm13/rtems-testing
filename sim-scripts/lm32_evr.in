@@ -1,0 +1,56 @@
+#
+#  lm32/lm32_evr Support Using Simulator in GDB
+#
+#  $Id$
+#
+
+runARGS()
+{
+#  echo '--hw-device lm32cpu
+#       --hw-device "lm32uart/reg 0x80006000 0x100"
+#       --hw-device "/lm32uart > int int0 /lm32cpu"
+#       --hw-device "lm32timer/reg 0x80002000 0x80"
+#       --hw-device "/lm32timer > int int1 /lm32cpu"
+#       --memory-region 0x08000000,0x4000000' ${1}
+cat >lm32_evr.conf <<EOF
+lm32cpu
+lm32uart/reg 0x80006000 0x100
+/lm32uart > int int0 /lm32cpu
+lm32timer/reg 0x80002000 0x80
+/lm32timer > int int1 /lm32cpu
+--memory-region  0x08000000,0x4000000
+EOF
+  echo "--hw-file lm32_evr.conf ${1}"
+}
+
+bspGeneratesGDBCommands="yes"
+
+bspGenerateGDBCommands()
+{
+cat <<EOF
+tar sim --hw-device lm32cpu \\
+  --hw-device "lm32uart/reg 0x80006000 0x100" \\
+  --hw-device "/lm32uart > int int0 /lm32cpu" \\
+  --hw-device "lm32timer/reg 0x80002000 0x80" \\
+  --hw-device "/lm32timer > int int1 /lm32cpu" \\
+  --memory-region 0x08000000,0x4000000
+load
+EOF
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *psxtime*) limit=180 ;;
+    *)         limit=60 ;;
+  esac
+  echo ${limit}
+}
