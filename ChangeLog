@@ -1,3 +1,7 @@
+2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* Makefile: rtems-coverage now included in build from top.
+
 2009-09-15	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile: Add merge-helpers.

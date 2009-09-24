@@ -2,6 +2,7 @@
 # $Id$
 #
 
+INSTALL_DIR=../bin
 CXXFLAGS=-g -Wall -O2
 PROGRAMS=covmerge trace_converter qemu-dump-trace
 SHARED_OBJS=CoverageMap.o CoverageMapBase.o \
@@ -19,15 +20,18 @@ TRACE_CONVERTER_OBJS=trace_converter.o $(SHARED_OBJS) \
   TraceFactory.o \
   TraceReaderBase.o TraceReaderQEMU.o
 
-all: $(PROGRAMS) ../bin/trace_converter ../bin/qemu-dump-trace
+all: $(PROGRAMS) ${INSTALL_DIR} ../bin/trace_converter ../bin/qemu-dump-trace
 
-../bin/trace_converter: trace_converter
+../bin/trace_converter: trace_converter ${INSTALL_DIR}
 	cp trace_converter ../bin
 
-../bin/qemu-dump-trace: qemu-dump-trace
+../bin/qemu-dump-trace: qemu-dump-trace ${INSTALL_DIR}
 	cp qemu-dump-trace ../bin
 
-qemu-dump-trace: qemu-dump-trace.c
+${INSTALL_DIR}:
+	test -d ${INSTALL_DIR} || mkdir ${INSTALL_DIR}
+
+qemu-dump-trace: qemu-dump-trace.c ${INSTALL_DIR}
 	$(CXX) -o $(@) qemu-dump-trace.c
 
 covmerge: $(COVMERGE_OBJS)
@@ -64,3 +68,4 @@ clean:
 doxygen:
 	doxygen Doxyfile
 
+install: all

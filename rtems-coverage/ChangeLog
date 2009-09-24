@@ -1,5 +1,9 @@
 2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* Makefile: rtems-coverage now included in build from top.
+
+2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* do_coverage: Attempt to detect when covmerge fails and bail out with
 	an error. This was sometimes causing bad updates to the website to be
 	generated.
