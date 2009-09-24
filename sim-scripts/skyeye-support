@@ -10,7 +10,7 @@ bspNeedsDos2Unix="yes"
 bspGeneratesGDBCommands="yes"
 bspNeedsSttySane="no"
 # sometimes the .cov file has a zero length
-bspWritesZeroCoverage="yes"
+bspRunsFailRandomly="yes"
 
 if [ ${coverage} = "yes" ] ; then
   bspRunFatal="yes"
@@ -25,6 +25,16 @@ runARGS()
 gdbServerARGS()
 {
   echo "-c ${bspTreeFile} -d"
+}
+
+bspCheckRunWasOK()
+{
+  # sometimes the .cov file has a zero length
+  if [ ${coverage} = "yes" -a ! -s ${toRun}.cov ] ; then
+    echo 1
+  else
+    echo 0
+  fi
 }
 
 bspGenerateGDBCommands()

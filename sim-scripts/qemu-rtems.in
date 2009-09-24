@@ -11,6 +11,7 @@ if [ ! -r ${runBSP} ] ; then
 fi
 bspNeedsDos2Unix="yes"
 bspNeedsTraceConversion="yes"
+bspRunsFailRandomly="yes"
 
 # Set the defaults based upon arguments given and do some error checking
 if [ X${QEMUDIR} == X ] ; then
@@ -52,6 +53,7 @@ runARGS()
   cp ${1} ${hd0Dir}/test.exe
 
   if [ ${coverage} = yes ] ; then
+     rm -f trace ${1}.tra
      COVERAGE_ARG="-trace ${1}.tra"
   fi
 
@@ -74,6 +76,21 @@ checkBSPFaults()
   done
 
   return 0
+}
+
+bspCheckRunWasOK()
+{
+  tname=`get_tname $testname`
+
+  logfile=${logdir}/${tname}
+
+  # sometimes the log file indicates the test did not run
+  length=`grep -v "QEMU acceleration layer" ${logfile} | wc -c`
+  if [ ${length} -eq 0 ] ; then
+    echo 1
+  else
+    echo 0
+  fi
 }
 
 bspLimit()

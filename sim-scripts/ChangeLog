@@ -1,5 +1,11 @@
 2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* gdb-sim-run.in, qemu-rtems.in, skyeye-support, smdk2410.in: Add more
+	general support for rerunning a test which does not appear to have
+	produced a complete set of coherent output.
+
+2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* gdb-sim-run.in, qemu-rtems.in: Minor cleanup. Remove bogus output.
 
 2009-09-23	Joel Sherrill <joel.sherrill@oarcorp.com>
