@@ -1,3 +1,7 @@
+2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* gdb-sim-run.in, qemu-rtems.in: Minor cleanup. Remove bogus output.
+
 2009-09-23	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* .cvsignore, Makefile: Add lm32_evr simulator script support.

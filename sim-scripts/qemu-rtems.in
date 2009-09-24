@@ -48,13 +48,17 @@ runARGS()
     echo "MUST BE ELF -- look at using the .exe"
     exit 1
   fi
+
   cp ${1} ${hd0Dir}/test.exe
 
   if [ ${coverage} = yes ] ; then
      COVERAGE_ARG="-trace ${1}.tra"
   fi
+
+  # can also redirect to file with file:log/"`basename ${1} .exe`
+  SERIAL_ARG="stdio"
   echo "-m 8 -boot a -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
-         -monitor null -nographic -serial stdio --no-reboot"
+         -monitor null -nographic -serial ${SERIAL_ARG} --no-reboot"
 }
 
 checkBSPFaults()

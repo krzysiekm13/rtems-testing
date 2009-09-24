@@ -262,7 +262,7 @@ runtest()
   max_run_time=${3}
 
   # Just in case the simulator aborts and messes up the terminal
-  trap "test ${bspNeedsSttySane} = yes && stty sane" SIGABRT return
+  trap "test ${bspNeedsSttySane} = yes && stty sane 2>/dev/null" SIGABRT return
 
   test ${verbose} == 'yes' && echo ${runBSP} `runARGS ${testname}`
 
@@ -289,8 +289,10 @@ runtest()
     catLog ${logfile}
     return
   fi
+
   ${runBSP} `runARGS ${testname}` >${logfile} 2>&1 &
   pid=$!
+
   # Make sure it won't run forever...
   millilimit=`expr ${max_run_time} \* 1000`
   milliseconds=0
