@@ -141,9 +141,10 @@ namespace Coverage {
         return true;
       }
 
+      return false;
     }
 
-    // Check i386 nops
+    // Check ARM nops
     if ( !strncmp( target, "arm", 3 ) ) {
       if ( isNop ) {
         size = 4; 
@@ -164,6 +165,8 @@ namespace Coverage {
         size = 4;
         return true;
       }
+
+      return false;
     }
 
     fprintf( stderr, "ERROR!!! %s is not a known architecture!!!\n", target );
