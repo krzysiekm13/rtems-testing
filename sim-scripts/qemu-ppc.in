@@ -7,18 +7,21 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
-
-if [ -r ${HOME}/qemu-coverage/install-0.11.0-rc1/bin/qemu-system-m68k ] ; then
-  runBSP=${HOME}/qemu-coverage/install-0.11.0-rc1/bin/qemu-system-m68k
+if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-ppc ] ; then
+  runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-ppc
 else
-  runBSP=qemu-system-m68k
+  runBSP=qemu-system-ppc
 fi
-
 bspNeedsDos2Unix="yes"
 
 runARGS()
 {
-  echo "-M uc5282 -nographic -kernel ${1}"
+  if [ ${coverage} = yes ] ; then
+     COVERAGE_ARG="-trace ${1}.tra"
+  fi
+
+  echo "-nographic -M prep -boot n -no-reboot ${COVERAGE_ARG} \
+	    -L `pwd` -bios ${1}"
 }
 
 checkBSPFaults()

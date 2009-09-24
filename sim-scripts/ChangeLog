@@ -1,3 +1,9 @@
+2009-09-24	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* .cvsignore, Makefile, qemu-uc5282.in: Add script to run qemu-ppc
+	simulator.
+	* qemu-ppc.in: New file.
+
 2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gdb-sim-run.in, qemu-rtems.in, skyeye-support, smdk2410.in: Add more
