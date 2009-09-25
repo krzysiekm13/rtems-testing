@@ -1,3 +1,8 @@
+2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage: Rename most qemu scripts to match the BSP name.
+	qemu-leon2 not renamed since we prefer tsim for it.
+
 2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Makefile: rtems-coverage now included in build from top.
