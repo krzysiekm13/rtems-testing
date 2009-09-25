@@ -65,14 +65,14 @@ void *POSIX_Init( void *argument )
   status = pthread_attr_init( &attr );
   assert( !status );
 
-  #ifndef GNAT_MAIN_STACKSPACE
-    #define GNAT_MAIN_STACKSPACE 100
+  #ifndef GNAT_MAIN_STACKSIZE
+    #define GNAT_MAIN_STACKSIZE 100
   #endif
 
-  #ifdef GNAT_MAIN_STACKSPACE
-    stacksize = GNAT_MAIN_STACKSPACE * 1024;
+  #ifdef GNAT_MAIN_STACKSIZE
+    stacksize = GNAT_MAIN_STACKSIZE * 1024;
   #else
-    #define GNAT_MAIN_STACKSPACE 0
+    #define GNAT_MAIN_STACKSIZE 0
   #endif
 
   status = pthread_attr_setstacksize( &attr, stacksize );
@@ -104,14 +104,14 @@ void *POSIX_Init( void *argument )
 #define CONFIGURE_USE_IMFS_AS_BASE_FILESYSTEM
 #define CONFIGURE_LIBIO_MAXIMUM_FILE_DESCRIPTORS 20
 
-#define CONFIGURE_MEMORY_OVERHEAD        (GNAT_MAIN_STACKSPACE)
+#define CONFIGURE_MEMORY_OVERHEAD        (GNAT_MAIN_STACKSIZE)
 /*
-#define CONFIGURE_MEMORY_OVERHEAD        (256 + GNAT_MAIN_STACKSPACE)
+#define CONFIGURE_MEMORY_OVERHEAD        (256 + GNAT_MAIN_STACKSIZE)
 */
 
 #define CONFIGURE_ZERO_WORKSPACE_AUTOMATICALLY 1
 /* #define CONFIGURE_MALLOC_DIRTY */
-#define STACK_CHECKER_ON
+#define CONFIGURE_STACK_CHECKER_ENABLED
 #define CONFIGURE_INIT
 
 #include <rtems/confdefs.h>

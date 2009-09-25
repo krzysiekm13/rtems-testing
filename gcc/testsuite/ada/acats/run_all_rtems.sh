@@ -313,7 +313,8 @@ for chapter in $chapters; do
         ca1020e) rm -f ca1020e_func1.adb ca1020e_func2.adb ca1020e_proc1.adb ca1020e_proc2.adb > /dev/null 2>&1;;
         ca14028) rm -f ca14028_func2.ads ca14028_func3.ads ca14028_proc1.ads ca14028_proc3.ads > /dev/null 2>&1;;
         cxh1001) extraflags="-a -f"; echo "pragma Normalize_Scalars;" > gnat.adc ;;
-        c380004) extraflags="-DGNAT_MAIN_STACKSIZE=1100" ;;
+        ## really need custom rtems_init with increased stack size
+        ##c380004) extraflags="-DGNAT_MAIN_STACKSIZE=11000" ;;
       esac
       if [ "$main" = "" ]; then
          display "FAIL:	$i"

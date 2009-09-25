@@ -1,5 +1,12 @@
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* do_one, rundeja, test_driver, testsuite/ada/acats/Makefile.rtems,
+	testsuite/ada/acats/rtems_init.c,
+	testsuite/ada/acats/run_all_rtems.sh: Add uC5282 support. Standardize
+	GNAT stack size constants.
+
+2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* rundeja, testsuite/ada/acats/Makefile.rtems: Rename most qemu scripts
 	to match the BSP name. qemu-leon2 not renamed since we prefer tsim
 	for it.

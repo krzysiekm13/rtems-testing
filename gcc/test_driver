@@ -116,7 +116,7 @@ do_cpus()
       i386)    bsp=pc386        ;;
       m32c)    bsp=m32csim      ;;
       m32r)    bsp=m32rsim      ;;
-      m68k)    bsp=mcf5206elite ;;
+      m68k)    bsp=uC5282       ;;
       mips)    bsp=jmr3904      ;;
       powerpc) bsp=psim         ;;
       sh)      bsp=simsh1       ;;

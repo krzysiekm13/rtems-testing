@@ -40,6 +40,12 @@ case $1 in
     DEJABSP=nosim
     BSP_SIM=nosim
     ;;
+  uC5282) 
+    CPU=m68k
+    BSP=uC5282
+    DEJABSP=uC5282
+    BSP_SIM=qemu-uC5282
+    ;;
   h8sim) 
     CPU=h8300
     BSP=h8sim

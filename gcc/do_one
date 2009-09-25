@@ -227,7 +227,7 @@ if [ ${needCPU} = yes -a ${needBSP} = yes -a \
    #lm32-lm32_evr)
     m32c-m32csim)         dejacfg=rtems-m32c-m32csim ;;
     m32r-m32rsim)         dejacfg=rtems-m32r-m32rsim ;;
-    m68k-mcf5206elite)    dejacfg=rtems-m68k-nosim ;;
+    m68k-uC5282)          dejacfg=rtems-m68k-uC5282 ;;
     mips-jmr3904)         dejacfg=rtems-mips-jmr3904 ;;
     powerpc-psim)         dejacfg=rtems-powerpc-psim ;;
     sh-simsh1)            dejacfg=rtems-sh-simsh1 ;;

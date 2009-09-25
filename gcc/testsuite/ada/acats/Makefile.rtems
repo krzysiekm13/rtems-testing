@@ -13,7 +13,8 @@ rtemsdir=${RTEMS_MAKEFILE_PATH}
 GNATMAKE=$(AS:as=gnatmake)
 GNATCHOP=$(AS:as=gnatchop)
 CARGS  = -B${rtemsdir}/lib/ -specs bsp_specs -qrtems 
-CARGS += $(CPU_CFLAGS) $(LDFLAGS) $(AM_LDFLAGS)
+CARGS += $(LDFLAGS) $(AM_LDFLAGS)
+# RTS= --RTS=$(shell $(CC) -print-multi-directory $(CFLAGS))
 
 all: RTEMS_SETTINGS rtems_init.o 
 
@@ -53,6 +54,9 @@ stamp-targetrun:
   ifeq ($(RTEMS_BSP),h8sim)
 	echo "  h8sim -C -l 60 $$"'*' >> $@
   endif # h8sim
+  ifeq ($(RTEMS_BSP),uC5282)
+	echo "  qemu-uc5282 -C -l 90 $$"'*' >> $@
+  endif # mcf5206elite
   ifeq ($(RTEMS_BSP),mcf5206elite)
 	echo "  nosim $$"'*' >> $@
   endif # mcf5206elite
@@ -74,7 +78,7 @@ stamp-targetchop:
 stamp-targetmake:
 	echo "target_gnatmake() {" >$@
 	echo "set -x" >>$@
-	echo '  $(GNATMAKE) -fstack-check -v -O $$gnatflags $$gccflags $$* -bargs -Mgnat_main -largs $(CARGS) '$(shell pwd)/rtems_init.o' $$EXTERNAL_OBJECTS' >> $@
+	echo '  $(GNATMAKE) $(CPU_CFLAGS) -fstack-check -v -O $$gnatflags $$gccflags $$* -bargs -Mgnat_main -largs $(CARGS) '$(shell pwd)/rtems_init.o' $$EXTERNAL_OBJECTS' >> $@
 	echo "}" >>$@
 
 #	$(GNATMAKE) -v -O -gnata -gnatE -gnato $(MAIN) -g \
