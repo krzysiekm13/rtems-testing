@@ -134,7 +134,7 @@ bspSupportsDisplayAdapter="no"
 bspSupportsNIC="no"
 bspNeedsSttySane="yes"
 bspNeedsTraceConversion="no"
-bspWritesZeroCoverage="no"
+bspRunsFailRandomly="no"
 
 for v in 4.10 4.9 4.8 4.7 ""
 do

@@ -1,5 +1,9 @@
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* gdb-sim-run.in: Initialize bspRunsFailRandomly to default.
+
+2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* .cvsignore, Makefile: Rename most qemu scripts to match the BSP name.
 	qemu-leon2 not renamed since we prefer tsim for it.
 	* pc386.in, qemuppc.in, uC5282.in: New files.
