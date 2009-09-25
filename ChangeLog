@@ -1,3 +1,8 @@
+2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* VERSIONS: Adjust for having multiple gcc versions installed
+	simultaneously. Limit jobs.
+
 2009-09-24	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* Makefile: rtems-coverage now included in build from top.

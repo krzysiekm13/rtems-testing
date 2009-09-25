@@ -3,17 +3,27 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 
-AUTOCONF=${BASEDIR}/autoconf-2.63
+GCC_VERSION=svn
+#GCC_VERSION=4.4.1
+#GCC_VERSION=4.3.4
+
+# NOTE: 2.63 for 4.4 and lower?
+case ${GCC_VERSION} in
+  4.[432]*)   AUTOCONF=${BASEDIR}/autoconf-2.63 ;;
+  *)          AUTOCONF=${BASEDIR}/autoconf-2.64 ;;
+esac
 AUTOMAKE=${BASEDIR}/automake-1.10.2
-GCCDIR=${BASEDIR}/gcc-svn
+GCCDIR=${BASEDIR}/gcc-${GCC_VERSION}
 BINUTILSDIR=${BASEDIR}/binutils-cvs/src
-NEWLIBDIR=${BASEDIR}/newlib-cvs/src
+#NEWLIBDIR=${BASEDIR}/newlib-cvs/src
+NEWLIBDIR=${BASEDIR}/newlib-1.17.0
 GDBDIR=${BASEDIR}/gdb-cvs/src
 RTEMSDIR=${BASEDIR}/rtems
 
 # These are inferred from above but double check
-INSTALL=${BASEDIR}/install
-BSP_INSTALL=${BASEDIR}/bsp-install
+INSTALL=${BASEDIR}/install-${GCC_VERSION}
+BSP_INSTALL=${INSTALL}
+#BSP_INSTALL=${BASEDIR}/bsp-install
 SCRIPTDIR=${BASEDIR}/gcc-testing
 LOGDIR=${BASEDIR}/log
 RESULTSDIR=${BASEDIR}/results-trunk
@@ -25,7 +35,7 @@ case `hostname` in
     NATIVE_GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
     GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
     ;;
-  RTBF32|RTBF64|iceland*|*oarcorp*)
+  rtbf32a|rtbf64*|iceland*|*oarcorp*)
     NATIVE_GCC_EXTRA_ARGS=""
     GCC_EXTRA_ARGS=""
     ;;
@@ -38,8 +48,8 @@ esac
 # Specify the desired parallelism based upon the host name.
 # TODO: It would be good to probe to figure this out.
 case `hostname` in
-  RTBF32|RTBF64)
-    MAKEJOBS="-j6"
+  rtbf32|rtbf64)
+    MAKEJOBS="-j3"
     ;;
   *)
     MAKEJOBS="-j3"
