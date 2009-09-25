@@ -1,5 +1,10 @@
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* boards/rtems-arm-edb7312.exp: Add -i option.
+	* boards/rtems-m68k-uC5282.exp: New file. Add uC5282 support.
+
+2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* boards/rtems-i386-qemu.exp: Rename most qemu scripts to match the BSP
 	name. qemu-leon2 not renamed since we prefer tsim for it.
 
