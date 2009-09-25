@@ -1,3 +1,10 @@
+2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* .cvsignore, Makefile: Rename most qemu scripts to match the BSP name.
+	qemu-leon2 not renamed since we prefer tsim for it.
+	* pc386.in, qemuppc.in, uC5282.in: New files.
+	* qemu-ppc.in, qemu-rtems.in, qemu-uc5282.in: Removed.
+
 2009-09-24	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* .cvsignore, Makefile, qemu-uc5282.in: Add script to run qemu-ppc

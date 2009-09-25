@@ -33,12 +33,11 @@ m32csim
 m32csim-gdb
 m32rsim
 m32rsim-gdb
+pc386
 psim
 psim-gdb
 qemu-leon2
-qemu-ppc
-qemu-rtems
-qemu-uc5282
+qemuppc
 rtl22xx
 rtl22xx-gdb
 simsh
@@ -47,4 +46,5 @@ sis
 sis-gdb
 smdk2410
 smdk2410-gdb
+uC5282
 usleep
