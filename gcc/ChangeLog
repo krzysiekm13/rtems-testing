@@ -1,3 +1,9 @@
+2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* rundeja, testsuite/ada/acats/Makefile.rtems: Rename most qemu scripts
+	to match the BSP name. qemu-leon2 not renamed since we prefer tsim
+	for it.
+
 2009-09-01	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_one: Use ON_SKYEYE=1 on BSPs that are tested on Skyeye.
