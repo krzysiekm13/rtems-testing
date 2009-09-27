@@ -66,9 +66,10 @@ toggle()
 
 do_one()
 {
+#ECHO=echo
   bsp=${1}
   shift
-  time ${COVBASE}/do_coverage -A -u -m ${*} -B ${bsp}
+  ${ECHO} "time ${COVBASE}/do_coverage -A -u -m ${*} -B ${bsp}"
   rm -rf b-* *-tests
 }
 
@@ -77,6 +78,7 @@ validate_bsp()
   case ${1} in
     edb7312|gumstix|smdk2410)    ;; # ARM
     pc386|qemu)                  ;; # i386
+    uC5282)                      ;; # m68k/Coldfire
     erc32|leon2|leon3)           ;; # SPARC
     *)
       echo "ERROR - does BSP (${bsp}) really exist and support coverage?"
