@@ -316,7 +316,11 @@ generate_report()
 
   rm -f merged.cov report.txt
 
-  check_endof                                             >summary.txt
+  ( check_endof ; \
+    echo "Optimization Level : " ${c_opt} ; \
+    echo "POSIX Enabled      : " ${do_posix} ; \
+    echo "Developmental Code : " ${do_developmental} ; \
+  ) >summary.txt
   ${COVBASE}/covmerge \
     -l 0x${tlow} -h 0x${thigh} \
     -r report.txt -s sizes.txt \
@@ -341,6 +345,8 @@ generate_report()
   cp summary.txt report.txt sizes.txt configuration.txt \
      annotated.dmp hello.num row.html ${results_dir}
   cp ${COVBASE}/Explanations.txt.NotFound ${results_dir}
+  cp hello.exe ${results_dir}
+  bzip2 -9 ${results_dir}/hello.exe
   echo "Results saved in ${results_dir}.tar.bz2"
   tar cjf ${results_dir}.tar.bz2 ${results_dir}
   rm -rf ${results_dir}
