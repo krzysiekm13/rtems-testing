@@ -144,6 +144,25 @@ namespace Coverage {
       return false;
     }
 
+    // Check M68K/Coldfire nops
+    if ( !strncmp( target, "m68k", 4 ) ) {
+      if ( isNop ) {
+        size = 2; 
+        return true;
+      }
+
+      #define GNU_LD_FILLS_ALIGNMENT_WITH_RTS
+      #if defined(GNU_LD_FILLS_ALIGNMENT_WITH_RTS)
+        // Until binutils 2.20, binutils would fill with rts not nop
+        if ( !strcmp( &line[strlen(line)-3], "rts") ) {
+          size = 4; 
+          return true;
+        } 
+      #endif
+
+      return false;
+    }
+
     // Check ARM nops
     if ( !strncmp( target, "arm", 3 ) ) {
       if ( isNop ) {
@@ -170,6 +189,7 @@ namespace Coverage {
     }
 
     fprintf( stderr, "ERROR!!! %s is not a known architecture!!!\n", target );
+    fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
     assert(0);
     // ASSUME: ARM dump uses nop instruction. Really "mov r0,r0"
     return false;
@@ -183,7 +203,6 @@ namespace Coverage {
     FILE *objdumpFile;
     char *cStatus;
     char  buffer[512];
-    int   nopSize;
     int   i;
 
     /*
@@ -214,7 +233,6 @@ namespace Coverage {
     /*
      *  How many bytes is a nop?
      */
-    nopSize = Tools->getNopSize();
 
     while ( 1 ) {
       ObjdumpLine contents;

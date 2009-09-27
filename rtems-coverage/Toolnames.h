@@ -26,6 +26,7 @@ namespace Coverage {
     std::string addr2line;
     std::string objdump;
     std::string target;
+    std::string cpu;
     int         nopSize;
 
   public:
@@ -46,6 +47,11 @@ namespace Coverage {
      *  This method returns the target name.
      */
     const char *getTarget( void );
+
+    /*!
+     *  This method returns the CPU name.
+     */
+    const char *getCPU( void );
 
     /*!
      *  This method returns the program name for addr2line.

@@ -1,3 +1,9 @@
+2009-09-27	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ObjdumpProcessor.cc, Toolnames.cc, Toolnames.h: Support m68k.
+	* do_coverage, run_coverage: Support m68k.  Let do_coverage publish
+	results and run_coverage just run tests.
+
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Rename most qemu scripts to match the BSP name.

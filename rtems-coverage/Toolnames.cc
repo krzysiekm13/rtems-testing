@@ -20,24 +20,24 @@ namespace Coverage {
     const char *target_arg
   )
   {
+    int i;
+
     target    = target_arg; 
     addr2line = target + "-addr2line";
     objdump   = target + "-objdump";
-    if ( !strncmp( target_arg, "sparc", 5 ) ) {
-      nopSize = 4;
-    } else if ( !strncmp( target_arg, "i386", 4 ) ) {
-      nopSize = 1;
-    } else if ( !strncmp( target_arg, "arm", 3 ) ) {
-      // This is right for ARM mode, not Thumb mode.
-      nopSize = 4;
-    } else {
-      fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
-      exit(1);
+    for (i=0 ; target[i] && target[i] != '-' ; ) {
+      cpu[i]   = target[i];
+      cpu[++i] = '\0';
     }
   }
 
   Toolnames::~Toolnames()
   {
+  }
+
+  const char *Toolnames::getCPU( void )
+  {
+    return cpu.c_str();
   }
 
   const char *Toolnames::getTarget( void )

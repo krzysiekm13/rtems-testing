@@ -36,6 +36,7 @@ USAGE=\
         -b        -- Build RTEMS (default=no)
         -C        -- copy tests from build to test execution point (default=no)
         -r        -- run the tests (default=no)
+        -f        -- publish the results to ftp site (default=no)
         -R        -- generate a report (default=no)
 
 Notes:  + There are currently NO checks at each step to determine if
@@ -92,9 +93,10 @@ do_rtems_build="no"
 do_copy_tests="no"
 do_run_tests="no"
 do_report="no"
+do_publish="no"
 BSP="not_set"
 
-while getopts vB:PDSmAucbCrR OPT
+while getopts vB:PDSmAucbCrRf OPT
 do
     case "$OPT" in
         A)
@@ -107,6 +109,7 @@ do
           do_copy_tests="yes"
           do_run_tests="yes"
           do_report="yes"
+          do_publish="yes"
           ;;
         B) BSP="${OPTARG}";;
         v) verbose=`toggle ${verbose}` ;;
@@ -120,6 +123,7 @@ do
         C) do_copy_tests=`toggle ${do_copy_tests}` ;;
         r) do_run_tests=`toggle ${do_run_tests}` ;;
         R) do_report=`toggle ${do_report}` ;;
+        f) do_publish=`toggle ${do_publish}` ;;
         *) fatal;;
     esac
 done
@@ -137,6 +141,13 @@ if [ ${BSP} == "not_set" ] ; then
   fatal "No BSP selected"
 fi
 
+# you can't publish unless ftp directory is accessible
+if [ ${do_publish} = "yes" ] ; then
+  if [ ! -d ${FTPDIR} ] ; then
+    fatal "Publishing results requested and ${FTPDIR} does not exist"
+  fi
+fi
+
 # For most BSPs, there is a script with the same name as the BSP.
 RUNNER=${BSP}
 
@@ -147,6 +158,10 @@ case ${BSP} in
     RTEMS_EXTRA_ARGS="USE_COM1_AS_CONSOLE=1"
     RTEMS_EXTRA_ARGS="${RTEMS_EXTRA_ARGS} BSP_PRESS_KEY_FOR_RESET=0"
     ;; 
+  uC5282)
+    CPU=m68k
+    COVERAGE_FORMAT=RTEMS
+    ;;
   erc32|leon2|leon3)
     CPU=sparc
     COVERAGE_FORMAT=TSIM
@@ -498,6 +513,15 @@ else
   echo "Skipping Generating report..."
 fi
 
+# If requested, publish the coverage report
+if [ ${do_publish} = "yes" ] ; then
+  cp ${bsp}-tests/*tar.bz2 ${FTPDIR}
+  check_status $? "cp ${BSP} results to ftp site failed"
+
+  ${COVBASE}/generate_coverage_html ${FTPDIR}
+else
+  echo "Skipping Publishing report..."
+fi
 stop=`date`
 
 echo "Started: " ${start}

@@ -66,12 +66,9 @@ toggle()
 
 do_one()
 {
-  time ${COVBASE}/do_coverage -A -u -m ${*}
-  if [ $? -eq 0 ] ; then
-    mv *-tests/*tar.bz2 ${RESULTSDIR}
-    cp ${BASEDIR}/covrun-results/* ${FTPDIR}
-    ${COVBASE}/generate_coverage_html ${FTPDIR}
-  fi
+  bsp=${1}
+  shift
+  time ${COVBASE}/do_coverage -A -u -m ${*} -B ${bsp}
   rm -rf b-* *-tests
 }
 
@@ -139,17 +136,17 @@ do
       bsp=`echo $cmd | sed -e 's/_O.$//'`
       Olevel=`echo $cmd | sed -e 's/.*_O\(.\)$/\1/'`
       case ${Olevel} in
-        2)    do_one -B ${bsp} ;;
-        [sS]) do_one -S -B ${bsp} ;;
+        2)    do_one ${bsp} ;;
+        [sS]) do_one ${bsp} -S ;;
         *)    echo ERROR unknown optimization level ; exit 1 ;;
       esac
       ;;
     *_baseline) 
       bsp=`echo $cmd | sed -e 's/_baseline$//'`
-      do_one -S -B ${bsp}         # -Os / POSIX enabled  / regression
-      do_one -B ${bsp}            # -O2 / POSIX enabled  / regression
-      do_one -S -P -B ${bsp}      # -Os / POSIX disabled / regression
-      do_one -S -D -B ${bsp}      # -Os / POSIX enabled  / developmental
+      do_one ${bsp} -S          # -Os / POSIX enabled  / regression
+      do_one ${bsp}             # -O2 / POSIX enabled  / regression
+      do_one ${bsp} -S -P       # -Os / POSIX disabled / regression
+      do_one ${bsp} -S -D       # -Os / POSIX enabled  / developmental
       ;;
     *)
       echo "Unknown command (${cmd})"
