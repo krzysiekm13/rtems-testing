@@ -32,7 +32,7 @@ checkBSPFaults()
 bspLimit()
 {
   testname=$1
-  case ${tname} in
+  case ${testname} in
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
     *psxtime*) limit=270 ;;

@@ -7,9 +7,10 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
+bspNeedsTraceConversion="yes"
 
-if [ -r ${HOME}/qemu-coverage/install-0.11.0-rc1/bin/qemu-system-m68k ] ; then
-  runBSP=${HOME}/qemu-coverage/install-0.11.0-rc1/bin/qemu-system-m68k
+if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-m68k ] ; then
+  runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-m68k
 else
   runBSP=qemu-system-m68k
 fi
@@ -18,7 +19,17 @@ bspNeedsDos2Unix="yes"
 
 runARGS()
 {
-  echo "-M uc5282 -nographic -kernel ${1}"
+  if [ ${coverage} = yes ] ; then
+     rm -f trace ${1}.tra
+     COVERAGE_ARG="-trace ${1}.tra"
+  fi
+
+  echo "-M uc5282 -nographic ${COVERAGE_ARG} -kernel ${1}"
+}
+
+convertTraceToCoverageMap()
+{
+  trace_converter -l 40000 -h 140000 -f QEMU ${1}.tra ${1}.cov 
 }
 
 checkBSPFaults()
@@ -28,7 +39,7 @@ checkBSPFaults()
 
 bspLimit()
 {
-  testname=$1
+  tname=$1
   case ${tname} in
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;

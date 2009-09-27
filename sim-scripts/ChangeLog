@@ -1,3 +1,10 @@
+2009-09-27	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* avrtest.in, ezkit533.in, h8sim.in, jmr3904.in, lm32_evr.in,
+	m32csim.in, m32rsim.in, pc386.in, psim.in, qemu-leon2.in, qemuppc.in,
+	simsh.in, sis.in, uC5282.in: Fix typos. Support coverage and adjust
+	run times on uC5282.
+
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* gdb-sim-run.in: Initialize bspRunsFailRandomly to default.

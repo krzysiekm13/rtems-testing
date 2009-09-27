@@ -108,7 +108,7 @@ bspLimit()
 
 convertTraceToCoverageMap()
 {
- trace_converter -l 100000 -h 200000 -f QEMU ${1}.tra ${1}.cov 
-
+  trace_converter -l 100000 -h 200000 -f QEMU ${1}.tra ${1}.cov 
 }
+
 bspGeneratesDeviceTree="no"
