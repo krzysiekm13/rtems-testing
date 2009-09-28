@@ -521,7 +521,7 @@ fi
 
 # If requested, publish the coverage report
 if [ ${do_publish} = "yes" ] ; then
-  cp ${bsp}-tests/*tar.bz2 ${FTPDIR}
+  cp ${BASEDIR}/${BSP}-tests/${results_dir}.tar.bz2 ${FTPDIR}
   check_status $? "cp ${BSP} results to ftp site failed"
 
   ${COVBASE}/generate_coverage_html ${FTPDIR}

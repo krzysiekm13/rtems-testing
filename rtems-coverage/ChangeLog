@@ -1,5 +1,9 @@
 2009-09-27	Joel Sherrill <joel.sherrill@OARcorp.com>
 
+	* do_coverage, run_coverage: Published uC5282 results.
+
+2009-09-27	Joel Sherrill <joel.sherrill@OARcorp.com>
+
 	* do_coverage: Improve summary.txt by including more settings
 	information.
 

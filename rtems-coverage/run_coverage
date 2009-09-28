@@ -66,10 +66,9 @@ toggle()
 
 do_one()
 {
-#ECHO=echo
   bsp=${1}
   shift
-  ${ECHO} "time ${COVBASE}/do_coverage -A -u -m ${*} -B ${bsp}"
+  time ${COVBASE}/do_coverage -A -u -m ${*} -B ${bsp}
   rm -rf b-* *-tests
 }
 
