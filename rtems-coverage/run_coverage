@@ -68,7 +68,7 @@ do_one()
 {
   bsp=${1}
   shift
-  time ${COVBASE}/do_coverage -A -u -m ${*} -B ${bsp}
+  time ${COVBASE}/do_coverage -A -u -m -f ${*} -B ${bsp}
   rm -rf b-* *-tests
 }
 
@@ -131,7 +131,7 @@ for cmd in $*
 do
   case ${cmd} in
     update) 
-      time ${COVBASE}/do_coverage -u -m -B erc32
+      time ${COVBASE}/do_coverage -u -m -B ${bsp}
       ;;
     *_O[s2])
       bsp=`echo $cmd | sed -e 's/_O.$//'`

@@ -93,7 +93,7 @@ do_rtems_build="no"
 do_copy_tests="no"
 do_run_tests="no"
 do_report="no"
-do_publish="no"
+do_publish="yes"
 BSP="not_set"
 
 while getopts vB:PDSmAucbCrRf OPT

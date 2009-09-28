@@ -1,3 +1,7 @@
+2009-09-28	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage, run_coverage: Do not publish results by default.
+
 2009-09-27	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage, run_coverage: Published uC5282 results.
