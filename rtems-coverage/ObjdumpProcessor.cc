@@ -102,17 +102,27 @@ namespace Coverage {
     
     // now check target specific patterns and return proper size if "nop"
 
-    // Check SPARC nops
-    if ( !strncmp( target, "sparc", 5 ) ) {
+    // Check ARM nops
+    if ( !strncmp( target, "arm", 3 ) ) {
       if ( isNop ) {
         size = 4; 
         return true;
       }
-
-      if ( !strcmp( &line[strlen(line)-7], "unknown") ) {
-        size = 4; 
+    
+      // On ARM, there are literal tables at the end of methods.
+      // We need to avoid them.
+      if ( !strncmp( &line[strlen(line)-10], ".byte", 5) ) {
+        size = 1;
         return true;
-      } 
+      }
+      if ( !strncmp( &line[strlen(line)-13], ".short", 6) ) {
+        size = 2;
+        return true;
+      }
+      if ( !strncmp( &line[strlen(line)-16], ".word", 5) ) {
+        size = 4;
+        return true;
+      }
 
       return false;
     }
@@ -163,27 +173,27 @@ namespace Coverage {
       return false;
     }
 
-    // Check ARM nops
-    if ( !strncmp( target, "arm", 3 ) ) {
+    // Check i386 nops
+    if ( !strncmp( target, "powerpc", 7 ) ) {
       if ( isNop ) {
         size = 4; 
         return true;
       }
-    
-      // On ARM, there are literal tables at the end of methods.
-      // We need to avoid them.
-      if ( !strncmp( &line[strlen(line)-10], ".byte", 5) ) {
-        size = 1;
+
+      return false;
+    }
+
+    // Check SPARC nops
+    if ( !strncmp( target, "sparc", 5 ) ) {
+      if ( isNop ) {
+        size = 4; 
         return true;
       }
-      if ( !strncmp( &line[strlen(line)-13], ".short", 6) ) {
-        size = 2;
+
+      if ( !strcmp( &line[strlen(line)-7], "unknown") ) {
+        size = 4; 
         return true;
-      }
-      if ( !strncmp( &line[strlen(line)-16], ".word", 5) ) {
-        size = 4;
-        return true;
-      }
+      } 
 
       return false;
     }

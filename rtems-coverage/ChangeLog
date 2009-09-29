@@ -1,3 +1,8 @@
+2009-09-29	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ObjdumpProcessor.cc, do_coverage, run_coverage: Add initial
+	powerpc/qemuppc support.
+
 2009-09-28	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage, run_coverage: Do not publish results by default.

@@ -162,6 +162,10 @@ case ${BSP} in
     CPU=m68k
     COVERAGE_FORMAT=RTEMS
     ;;
+  qemuppc)
+    CPU=powerpc
+    COVERAGE_FORMAT=RTEMS
+    ;;
   erc32|leon2|leon3)
     CPU=sparc
     COVERAGE_FORMAT=TSIM

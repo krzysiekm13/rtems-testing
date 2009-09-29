@@ -78,6 +78,7 @@ validate_bsp()
     edb7312|gumstix|smdk2410)    ;; # ARM
     pc386|qemu)                  ;; # i386
     uC5282)                      ;; # m68k/Coldfire
+    qemuppc)                     ;; # PowerPC
     erc32|leon2|leon3)           ;; # SPARC
     *)
       echo "ERROR - does BSP (${bsp}) really exist and support coverage?"
