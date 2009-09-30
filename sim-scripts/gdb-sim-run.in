@@ -19,7 +19,6 @@ test_exit()
   exit $exit_code
 }
 
-
 progname=${0##*/}        # fast basename hack for ksh, bash
 
 USAGE=\
@@ -135,6 +134,7 @@ bspSupportsNIC="no"
 bspNeedsSttySane="yes"
 bspNeedsTraceConversion="no"
 bspRunsFailRandomly="no"
+bspInputDevice=/dev/console
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -280,7 +280,7 @@ runtest()
 
   if [ ${max_run_time} -eq 0 ] ; then
     #echo run ${testname} forever
-    ${runBSP} `runARGS ${testname}`
+    ${runBSP} `runARGS ${testname}` <${bspInputDevice}
     return
   fi
 
@@ -291,12 +291,12 @@ runtest()
   logfile=${logdir}/${tname}
 
   if [ ${bspSimTrustedToExit} = "yes" ] ; then
-    ${runBSP} `runARGS ${testname}` >${logfile} 2>&1
+    ${runBSP} `runARGS ${testname}`  <${bspInputDevice} >${logfile} 2>&1
     catLog ${logfile}
     return
   fi
 
-  ${runBSP} `runARGS ${testname}` >${logfile} 2>&1 &
+  ${runBSP} `runARGS ${testname}`  <${bspInputDevice} >${logfile} 2>&1 &
   pid=$!
 
   # Make sure it won't run forever...
@@ -381,7 +381,7 @@ do
 
   if [ ${bspSupportsGDBServerMode} = "yes" -a ${gdb_server_mode} = "yes" ];then
     test ${verbose} == 'yes' && echo ${runBSP} `runARGS ${toRun}`
-    ${runBSP} `gdbServerARGS ${toRun}`
+    ${runBSP} `gdbServerARGS ${toRun}` <${bspInputDevice}
     exit 0
   fi
 
@@ -437,7 +437,7 @@ do
 
   # some BSPs produce trace oriented files which need to be converted
   # to object coverage maps
-  if [ ${bspNeedsTraceConversion} = "yes" ] ; then
+  if [ ${coverage} = "yes" -a ${bspNeedsTraceConversion} = "yes" ] ; then
     convertTraceToCoverageMap ${toRun}
   fi
 

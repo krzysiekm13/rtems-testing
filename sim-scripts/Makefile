@@ -8,7 +8,7 @@ SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   gumstix rtl22xx smdk2410 leon2-skyeye
 
 TSIM_SCRIPTS=erc32 leon2 leon3
-QEMU_SCRIPTS=pc386 qemuppc qemu-leon2 uC5282
+QEMU_SCRIPTS=pc386 qemuppc qemu-gumstix qemu-leon2 uC5282
 OTHER_SCRIPTS=avrtest
 GENERATED_SCRIPTS=\
   ${GDBSIM_SCRIPTS} $(GDBSIM_SCRIPTS:%=%-gdb) \
@@ -36,6 +36,9 @@ pc386: gdb-sim-run.in pc386.in
 
 qemuppc: gdb-sim-run.in qemuppc.in
 	./mkrun no PowerPC powerpc qemuppc
+
+qemu-gumstix: gdb-sim-run.in qemu-gumstix.in
+	./mkrun no ARM arm qemu-gumstix
 
 qemu-leon2: gdb-sim-run.in qemu-leon2.in
 	./mkrun no SPARC sparc qemu-leon2

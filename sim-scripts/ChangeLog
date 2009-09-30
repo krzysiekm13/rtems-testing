@@ -1,3 +1,9 @@
+2009-09-30	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* .cvsignore, Makefile, gdb-sim-run.in: Add QEMU Gumstix Connex
+	support.
+	* qemu-gumstix.in: New file.
+
 2009-09-27	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* avrtest.in, ezkit533.in, h8sim.in, jmr3904.in, lm32_evr.in,

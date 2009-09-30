@@ -36,6 +36,7 @@ m32rsim-gdb
 pc386
 psim
 psim-gdb
+qemu-gumstix
 qemu-leon2
 qemuppc
 rtl22xx
