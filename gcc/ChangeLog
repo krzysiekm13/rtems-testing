@@ -1,3 +1,8 @@
+2009-09-30	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_one, testsuite/ada/acats/Makefile.rtems: Add lm32. Add doing a
+	make check on binutils every time.
+
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_one, rundeja, test_driver, testsuite/ada/acats/Makefile.rtems,

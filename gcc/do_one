@@ -224,7 +224,7 @@ if [ ${needCPU} = yes -a ${needBSP} = yes -a \
     bfin-eZKit533)        dejacfg=rtems-bfin-nosim ;;
     h8300-h8sim)          dejacfg=rtems-h8300-h8sim ;;
     i386-pc386|i386-qemu) dejacfg=rtems-i386-qemu ;;
-   #lm32-lm32_evr)
+    lm32-lm32_evr)        dejacfg=rtems-lm32-lm32_evr ;;
     m32c-m32csim)         dejacfg=rtems-m32c-m32csim ;;
     m32r-m32rsim)         dejacfg=rtems-m32r-m32rsim ;;
     m68k-uC5282)          dejacfg=rtems-m68k-uC5282 ;;
@@ -291,6 +291,9 @@ j_binutils()
         echo "Failed to build Binutils from source"
         exit 1
       fi
+      echo "Checking Binutils "
+      make check >${LOGDIR}/${cpu}-binutils-check.log 2>&1
+      grep ^FAIL ${LOGDIR}/${cpu}-binutils-check.log
       cd .. 
       test ${do_cleanup} = "yes" && rm -rf b-binutils-${cpu}
       ;;
