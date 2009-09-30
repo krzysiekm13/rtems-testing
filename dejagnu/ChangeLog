@@ -1,3 +1,7 @@
+2009-09-30	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* boards/rtems-m68k-uC5282.exp: Correct name of simulator.
+
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* boards/rtems-arm-edb7312.exp: Add -i option.
