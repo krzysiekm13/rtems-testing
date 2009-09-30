@@ -1,3 +1,7 @@
+2009-09-30	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* README.connex, u-boot-connex-400-r1604.bin: New files.
+
 2009-06-04	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* qemu-nic: Improve qemu-nic so you can provide the NIC type as an

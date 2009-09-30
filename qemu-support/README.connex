@@ -1,0 +1,30 @@
+#
+# $Id$
+#
+
+Board: GumStix Connex PXA255
+RTEMS BSP: gumstix
+
+Flash: http://www.gumstix.net/feeds/u-boot/
+
+  + Fetch a connex U-Boot Flash image
+     dd of=connext-flash.img bs=128k count=128 if=/dev/zero
+     dd of=connext-flash.img bs=128k conv=notrunc if=UBOOT-FLASH-IMAGE
+     dd of=connext-flash.img bs=128k conv=notrunc if=UBOOT-FLASH-IMAGE
+
+  + We would like to do more preprocessing but for now, just copy
+    the UBOOT-FLASH-IMAGE to ${HOME}/qemu.  The one in this directory
+    works fine.
+
+  + This flash is configured to boot GNU/Linux.  There is no kernel in
+    this flash image and we want it to autoboot an RTEMS application.
+    So by hand, we we would LIKE TO BE ABLE TO boot it, reconfigure
+    the bootcmd.  BUT THIS DOES NOT WORK!!!
+   
+    GUM> setenv bootcmd = bootelf 0x400000
+    GUM> saveenv
+    Saving Environment to Flash...
+     ...
+  + Then exit and the flash.img is modified.
+
+So we rebuild the flash image booted each time
