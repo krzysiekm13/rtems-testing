@@ -135,6 +135,7 @@ bspNeedsSttySane="yes"
 bspNeedsTraceConversion="no"
 bspRunsFailRandomly="no"
 bspInputDevice=/dev/console
+bspRedirectInput=no
 
 for v in 4.10 4.9 4.8 4.7 ""
 do
@@ -280,7 +281,11 @@ runtest()
 
   if [ ${max_run_time} -eq 0 ] ; then
     #echo run ${testname} forever
-    ${runBSP} `runARGS ${testname}` <${bspInputDevice}
+    if [ ${bspRedirectInput} = yes ] ; then
+      ${runBSP} `runARGS ${testname}` <${bspInputDevice}
+    else
+      ${runBSP} `runARGS ${testname}`
+    fi
     return
   fi
 
@@ -291,12 +296,20 @@ runtest()
   logfile=${logdir}/${tname}
 
   if [ ${bspSimTrustedToExit} = "yes" ] ; then
-    ${runBSP} `runARGS ${testname}`  <${bspInputDevice} >${logfile} 2>&1
+    if [ ${bspRedirectInput} = yes ] ; then
+      ${runBSP} `runARGS ${testname}` <${bspInputDevice} >${logfile} 2>&1
+    else
+      ${runBSP} `runARGS ${testname}` >${logfile} 2>&1
+    fi
     catLog ${logfile}
     return
   fi
 
-  ${runBSP} `runARGS ${testname}`  <${bspInputDevice} >${logfile} 2>&1 &
+  if [ ${bspRedirectInput} = yes ] ; then
+    ${runBSP} `runARGS ${testname}` <${bspInputDevice} >${logfile} 2>&1 &
+  else
+    ${runBSP} `runARGS ${testname}` >${logfile} 2>&1 &
+  fi
   pid=$!
 
   # Make sure it won't run forever...

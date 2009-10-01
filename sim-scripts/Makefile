@@ -3,7 +3,7 @@
 #
 
 INSTALL_DIR=../bin
-GDBSIM_SCRIPTS=h8sim jmr3904 lm32_evr m32csim m32rsim psim sis simsh
+GDBSIM_SCRIPTS=gdbarmsim h8sim jmr3904 lm32_evr m32csim m32rsim psim sis simsh
 SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
   gumstix rtl22xx smdk2410 leon2-skyeye
 
@@ -91,6 +91,9 @@ leon3: gdb-sim-run.in gdb-sim.in leon3.in tsim-support
 	./mkrun yes SPARC sparc leon3
 
 ### GDB Simulator BSPs
+gdbarmsim gdbarmsim-gdb: gdb-sim-run.in gdb-sim.in gdbarmsim.in
+	./mkrun yes ARM arm gdbarmsim
+
 h8sim h8sim-gdb: gdb-sim-run.in gdb-sim.in h8sim.in
 	./mkrun yes H8300 h8300 h8sim
 

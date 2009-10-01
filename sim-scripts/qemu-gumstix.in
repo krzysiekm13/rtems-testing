@@ -17,6 +17,7 @@ bspNeedsDos2Unix="yes"
 bspGeneratesDeviceTree="yes"
 bspInputDevice=qemu-gumstix.cmds
 bspTreeFile=qemu-gumstix.cmds
+bspRedirectInput=yes
 
 runARGS()
 {
