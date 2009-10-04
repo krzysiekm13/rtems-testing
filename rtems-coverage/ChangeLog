@@ -1,3 +1,7 @@
+2009-10-04	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage: Add ability to publish results to ftp site.
+
 2009-09-29	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ObjdumpProcessor.cc, do_coverage, run_coverage: Add initial

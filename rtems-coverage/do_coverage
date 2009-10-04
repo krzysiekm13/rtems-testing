@@ -93,7 +93,7 @@ do_rtems_build="no"
 do_copy_tests="no"
 do_run_tests="no"
 do_report="no"
-do_publish="yes"
+do_publish="no"
 BSP="not_set"
 
 while getopts vB:PDSmAucbCrRf OPT
@@ -109,7 +109,6 @@ do
           do_copy_tests="yes"
           do_run_tests="yes"
           do_report="yes"
-          do_publish="yes"
           ;;
         B) BSP="${OPTARG}";;
         v) verbose=`toggle ${verbose}` ;;
@@ -525,10 +524,13 @@ fi
 
 # If requested, publish the coverage report
 if [ ${do_publish} = "yes" ] ; then
-  cp ${BASEDIR}/${BSP}-tests/${results_dir}.tar.bz2 ${FTPDIR}
-  check_status $? "cp ${BSP} results to ftp site failed"
-
-  ${COVBASE}/generate_coverage_html ${FTPDIR}
+  if [ -d ${BASEDIR}/${BSP}-tests ] ; then
+    cp ${BASEDIR}/${BSP}-tests/${results_dir}.tar.bz2 ${FTPDIR}
+    check_status $? "cp ${BSP} results to ftp site failed"
+    ${COVBASE}/generate_coverage_html ${FTPDIR}
+  else
+    echo "No results to publish"
+  fi
 else
   echo "Skipping Publishing report..."
 fi
