@@ -154,8 +154,28 @@ genBSPList()
     # sort cpu,bsp alphabetically
 }
 
+cleanup()
+{
+  for bsp in ${BSPs} 
+  do
+    count=`ls -1 ${bsp}*.tar.bz2 | wc -l`
+    if [ ${count} -gt 20 ] ; then
+      echo ${bsp} has ${count} entries.. cleaning it
+      ls -1 ${bsp}-*.tar.bz2 |  sort -t / -k 1 -k 2 -r | sed -e '1,20d' | \
+      while read f
+      do
+        dir=`echo ${f} | sed -e 's/.tar.bz2$//'`
+        rm -rf ${f} ${dir}
+      done
+    fi
+   
+  done
+}
+
 #BSPs=`find * -maxdepth 1 -type d | cut -d'-' -f1 | uniq | grep -v rtems`
 BSPs=`genBSPList`
+
+cleanup
 
 doit >index.html
 exit 0

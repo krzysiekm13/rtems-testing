@@ -1,3 +1,8 @@
+2009-10-10	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* generate_coverage_html: If there are more than 20 entries per BSP
+	before we generate the table, clean up so there are only 20 entries.
+
 2009-10-04	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Add ability to publish results to ftp site.
