@@ -1,3 +1,8 @@
+2009-10-11	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage: Add do_publish to verbose listing.
+	* generate_coverage_html: Second attempt at cleaning listings.
+
 2009-10-10	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* generate_coverage_html: If there are more than 20 entries per BSP

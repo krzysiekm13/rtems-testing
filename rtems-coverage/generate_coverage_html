@@ -161,7 +161,7 @@ cleanup()
     count=`ls -1 ${bsp}*.tar.bz2 | wc -l`
     if [ ${count} -gt 20 ] ; then
       echo ${bsp} has ${count} entries.. cleaning it
-      ls -1 ${bsp}-*.tar.bz2 |  sort -t / -k 1 -k 2 -r | sed -e '1,20d' | \
+      ls -1 ${bsp}-*.tar.bz2 |  sort -t - -k 3 -k 2 -r | sed -e '1,20d' | \
       while read f
       do
         dir=`echo ${f} | sed -e 's/.tar.bz2$//'`

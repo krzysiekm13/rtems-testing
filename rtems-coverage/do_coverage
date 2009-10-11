@@ -150,6 +150,7 @@ fi
 # For most BSPs, there is a script with the same name as the BSP.
 RUNNER=${BSP}
 
+RTEMSEXT=exe
 case ${BSP} in
   pc386)
     CPU=i386
@@ -164,6 +165,7 @@ case ${BSP} in
   qemuppc)
     CPU=powerpc
     COVERAGE_FORMAT=RTEMS
+    RTEMSEXT=ralf
     ;;
   erc32|leon2|leon3)
     CPU=sparc
@@ -201,6 +203,7 @@ print_verbose()
   echo "do_copy_tests:      " ${do_copy_tests}
   echo "do_run_tests:       " ${do_run_tests}
   echo "do_report:          " ${do_report}
+  echo "do_publish:         " ${do_publish}
   echo "Clean Before:       " ${do_clean}
 }
 
@@ -483,7 +486,7 @@ if [ ${do_copy_tests} = "yes" ] ; then
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
-  cp `find . -name *.exe` ../${BSP}-tests
+  cp `find . -name *.${RTEMSEXT} -o -name hello.exe` ../${BSP}-tests
 else
   echo "Skipping copying tests..."
 fi
@@ -494,7 +497,7 @@ if [ ${do_run_tests} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  time ${RUNNER} -c *.exe
+  time ${RUNNER} -c *.${RTEMSEXT}
 else
   echo "Skipping Running tests..."
 fi
