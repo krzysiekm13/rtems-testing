@@ -1,3 +1,7 @@
+2009-10-12	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ObjdumpProcessor.cc: Add another i386 nop pattern.
+
 2009-10-11	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Add do_publish to verbose listing.

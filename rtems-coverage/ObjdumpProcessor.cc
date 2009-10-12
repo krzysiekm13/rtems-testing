@@ -146,6 +146,10 @@ namespace Coverage {
         size = 2;
         return true;
       }
+      if ( !strncmp( &line[strlen(line)-16], "xor    %esi,%esi", 16) ) {
+        size = 2;
+        return true;
+      }
       if ( !strncmp( &line[strlen(line)-21], "lea    0x0(%esi),%esi", 21) ) {
         size = 3;
         return true;
