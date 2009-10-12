@@ -18,6 +18,7 @@ bspLimit()
   case ${testname} in
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
+    *minimum*) limit=1 ;;
     *intrcrit*) limit=120 ;;
     *psxfile01*) limit=90 ;;
     *psxsignal02*) limit=240 ;;

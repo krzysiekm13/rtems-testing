@@ -1,3 +1,14 @@
+2009-10-12	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ant5206.in, avrtest.in, bf537Stamp.in, csb337.in, csb350.in,
+	csb360.in, ezkit533.in, gdb-sim-run.in, gdbarmsim.in, gumstix.in,
+	h8sim.in, jmr3904.in, lm32_evr.in, m32csim.in, m32rsim.in, pc386.in,
+	psim.in, qemu-gumstix.in, qemu-leon2.in, qemuppc.in, rtl22xx.in,
+	simsh.in, sis.in, skyeye-support, smdk2410.in, tsim-support,
+	uC5282.in: Add running minimum to pick up path where there are no
+	Classic API Initialization Tasks. Minimum has IDLE task as first
+	application task.
+
 2009-09-30	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* .cvsignore, Makefile, gdb-sim-run.in: Add QEMU Gumstix Connex

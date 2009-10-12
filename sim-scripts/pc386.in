@@ -99,6 +99,7 @@ bspLimit()
     *base_sp*) limit=5 ;;
     *stackchk*)limit=5 ;;
     *fatal*)   limit=5 ;;
+    *minimum*) limit=5 ;;
     *psxtime*) limit=180 ;;
     *cpuuse*)  limit=30 ;;
     *)         limit=60 ;;

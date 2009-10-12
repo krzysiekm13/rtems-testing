@@ -367,9 +367,10 @@ for toRun in $args
 do
   baseToRun=`basename ${toRun}`
   case ${baseToRun} in
-    *-node*) testtype="mp"     ;;
-    *fatal*) testtype="fatal"  ;;
-    *)       testtype="single" ;;
+    *-node*)   testtype="mp"     ;;
+    *minimum*) testtype="fatal"  ;;
+    *fatal*)   testtype="fatal"  ;;
+    *)         testtype="single" ;;
   esac
   # calculate the limit in case it is used by the simulator script
   if [ ${defaultLimit} = "not_set" ] ; then
@@ -424,7 +425,7 @@ do
     *-node1*)
       warn "Running both nodes associated with ${toRun}"
       ;;
-    minimum*|pppd*)
+    pppd*)
       warn "Skipping ${toRun}; it locks up or takes a VERY long time to run"
       continue
       ;;
