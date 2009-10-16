@@ -237,6 +237,23 @@ NM=${TARGET}-nm
 type ${NM}
 check_status $? "Cannot find ${NM} on PATH"
 
+# Locate the custom file
+custom=${RTEMSDIR}/make/custom/${BSP}.cfg
+if [ ! -r ${custom} ] ; then
+  custom=`ls -1 \
+     ${RTEMSDIR}/c/src/lib/libbsp/${CPU}/*/make/custom/${BSP}.cfg 2>/dev/null`
+  if [ x${custom} = x -o ! -r ${custom} ] ; then
+    echo "Unable to read ${custom}"
+    exit 1
+  fi
+fi
+
+grep "^CFLAGS_OPTIMIZE_V.*=.*-O[2s]" ${custom} >/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Unable to file CFLAGS_OPTIMIZE_V in ${custom}"
+  exit 1
+fi
+
 if [ ${do_optimize_size} = yes ] ; then
  c_opt=-Os
 else
@@ -404,24 +421,12 @@ else
   echo "Skipping Updating RTEMS ..."
 fi
 
-# Now let's patch the make/custom file
-custom=${RTEMSDIR}/make/custom/${BSP}.cfg
-if [ ! -r ${custom} ] ; then
-  echo "Unable to read ${custom}"
-  exit 1
-fi
-
-grep "^CFLAGS_OPTIMIZE_V.*=.*-O[2s]" ${custom} >/dev/null
-if [ $? -ne 0 ] ; then
-  echo "Unable to file CFLAGS_OPTIMIZE_V in ${custom}"
-  exit 1
-fi
-
-sed -e "s/-O[2s]/${c_opt}/" <${custom} >/tmp/XXX
-mv /tmp/XXX ${custom}
-
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
+  # Now let's patch the make/custom file
+  sed -e "s/-O[2s]/${c_opt}/" <${custom} >/tmp/XXX
+  mv /tmp/XXX ${custom}
+
   echo "Configuring RTEMS..."
   rm -rf ${BASEDIR}/b-${BSP}/
   mkdir ${BASEDIR}/b-${BSP}/

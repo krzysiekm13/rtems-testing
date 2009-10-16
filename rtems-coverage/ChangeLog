@@ -1,3 +1,8 @@
+2009-10-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* do_coverage: Reflect new location of custom files. Support old
+	location for running against old versions.
+
 2009-10-12	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ObjdumpProcessor.cc: Add another i386 nop pattern.
