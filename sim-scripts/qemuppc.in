@@ -7,6 +7,7 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
+bspNeedsTraceConversion="yes"
 if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-ppc ] ; then
   runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-ppc
 else
@@ -22,6 +23,11 @@ runARGS()
 
   echo "-nographic -M prep -boot n -no-reboot ${COVERAGE_ARG} \
 	    -L `pwd` -bios ${1}"
+}
+
+convertTraceToCoverageMap()
+{
+  trace_converter -l ffc00000 -h ffc80000 -f QEMU ${1}.tra ${1}.cov 
 }
 
 checkBSPFaults()

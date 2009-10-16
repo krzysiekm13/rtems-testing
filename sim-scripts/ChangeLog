@@ -1,3 +1,8 @@
+2009-10-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* check_endof: Add minimum.
+	* qemuppc.in: Add trace conversion.
+
 2009-10-12	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ant5206.in, avrtest.in, bf537Stamp.in, csb337.in, csb350.in,

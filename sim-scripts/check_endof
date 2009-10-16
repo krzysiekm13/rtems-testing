@@ -20,6 +20,7 @@ do
       # we don't expect an "END OF" from these
       *ppd*) ;;
       *fatal*) ;;
+      *minimum*) ;;
       *stackchk*) ;;
       # These do not know when they hit the case so run until killed.
       *spintrcritical06*) ;;
