@@ -1,3 +1,7 @@
+2009-10-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in: Attempt to detect assertions as generic exits.
+
 2009-10-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* check_endof: Add minimum.

@@ -203,6 +203,7 @@ checkGenericExits()
   for pattern in  \
       "^\*\*\* END OF " \
       "^.*EXECUTIVE SHUTDOWN" \
+      "^assertion .* failed: file .*, line .*, function:" \
       "===.*FAILED.*===" \
       "===.*PASSED.*===" \
       "FAULTY THREAD WILL BE DELETED"
