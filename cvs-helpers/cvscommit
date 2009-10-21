@@ -26,6 +26,11 @@ usage()
   exit 1
 }
 
+if [ ! -d CVS ] ; then
+  echo There is no CVS directory in the current directory.
+  exit 1
+fi
+
 editor="vim"
 changefile="changes-xxx"
 rem_changes="yes"
@@ -81,11 +86,11 @@ commit()
 }
 
 for ddir in ${subdirs} ; do
-  test ${ddir} = "CVS" && continue
-  test ${ddir} = "install" && continue
-  if [ -d $ddir ]; then
-    test -f ${ddir}/ChangeLog || continue
-    cd $ddir >/dev/null
+  test "${ddir}" = "CVS" && continue
+  test "${ddir}" = "install" && continue
+  if [ -d "${ddir}" ]; then
+    test -f "${ddir}/ChangeLog" || continue
+    cd "$ddir" >/dev/null
     mkChangeLogList ${mkchoptions} ${userArg} "${userInfo}" \
           -m "${message}" >${changefile}
     test $? -ne 0 && continue 
