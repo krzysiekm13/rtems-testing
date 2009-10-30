@@ -76,6 +76,12 @@ case $1 in
     DEJABSP=psim
     BSP_SIM=psim
     ;;
+  qemuppc) 
+    CPU=powerpc
+    BSP=qemuppc
+    DEJABSP=qemuppc
+    BSP_SIM=qemuppc
+    ;;
   qemu|pc386)
     CPU=i386
     BSP=pc386

@@ -17,12 +17,14 @@ bspNeedsDos2Unix="yes"
 
 runARGS()
 {
+  objcopy ${1} -O binary ${1}.bin
+
   if [ ${coverage} = yes ] ; then
      COVERAGE_ARG="-trace ${1}.tra"
   fi
 
   echo "-nographic -M prep -boot n -no-reboot ${COVERAGE_ARG} \
-	    -L `pwd` -bios ${1}"
+	    -L `dirname ${1}` -bios `basename ${1}.bin`"
 }
 
 convertTraceToCoverageMap()

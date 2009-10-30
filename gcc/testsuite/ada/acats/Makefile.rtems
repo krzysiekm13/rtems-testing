@@ -54,9 +54,12 @@ stamp-targetrun:
   ifeq ($(RTEMS_BSP),h8sim)
 	echo "  h8sim -C -l 60 $$"'*' >> $@
   endif # h8sim
+  ifeq ($(RTEMS_BSP),qemuppc)
+	echo "  qemuppc -C -l 90 $$"'*' >> $@
+  endif # qemuppc
   ifeq ($(RTEMS_BSP),uC5282)
 	echo "  uC5282 -C -l 90 $$"'*' >> $@
-  endif # mcf5206elite
+  endif # uC5282
   ifeq ($(RTEMS_BSP),mcf5206elite)
 	echo "  nosim $$"'*' >> $@
   endif # mcf5206elite
