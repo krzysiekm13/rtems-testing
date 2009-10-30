@@ -1,7 +1,7 @@
 2009-10-30	Thomas Doerfler <Thomas.Doerfler@embedded-brains.de>
 
 	* dejagnu/boards/rtems-powerpc-qemuppc.exp, Makefile.rtems,
-	qemuppc.in, rundeja: add qemuppc support 
+	sim-scripts/qemuppc.in, rundeja: add qemuppc support 
 	
 
 2009-09-25	Joel Sherrill <joel.sherrill@OARcorp.com>
