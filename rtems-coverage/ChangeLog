@@ -1,3 +1,7 @@
+2009-11-16	Joel Sherrill <joel.sherrill@OARcorp.com>
+
+	* generate_coverage_html: Add argument to specifiy version.
+
 2009-10-16	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Reflect new location of custom files. Support old

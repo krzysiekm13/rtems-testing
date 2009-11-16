@@ -20,32 +20,81 @@ fi
 
 progname=${0##*/}        # fast basename hack for ksh, bash
 
+USAGE=\
+"usage: $progname [ -opts ]
+        -v         -- verbose (default=no)
+        -r VERSION -- RTEMS Version (default=CVS)
+"
+
+#   log an error to stderr
+prerr()
+{
+    echo "$*" >&2
+}
+
+fatal() {
+    prerr "$USAGE"
+    [ "$1" ] && (prerr ; prerr $*);
+    exit 1
+}
+
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
+
+verbose="no"
+RTEMS_VERSION="CVS Head"
+
+while getopts vr: OPT
+do
+    case "$OPT" in
+        r) RTEMS_VERSION="${OPTARG}";;
+        v) verbose=`toggle ${verbose}` ;;
+        *) fatal;;
+    esac
+done
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
 if [ $# -ne 1 ] ; then
-  echo Usage: $0 directory
-  exit 1
+  fatal Usage: $0 directory
 fi
 
 if [ ! -d ${1} ] ; then
-  echo ${1} is not a directory
-  exit 1
+  fatal ${1} is not a directory
 fi
+
 
 print_doc_top()
 {
 cat <<EOF
 <HTML>
 <HEAD>
-<TITLE>RTEMS Coverage Reports</TITLE>
+<TITLE>RTEMS 
+EOF
+
+echo ${RTEMS_VERSION}
+
+cat <<EOF
+Coverage Reports</TITLE>
 <meta http-equiv="Content-Language" content="English" />
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 <link rel="stylesheet" type="text/css" href="rtems/style.css" media="screen" />
 <div class="heading">
-<div class="heading-title">RTEMS Coverage Results</div>
+<div class="heading-title">RTEMS
 EOF
+
+echo ${RTEMS_VERSION}" Coverage Results</div>"
 echo "<div class=\"datetime\">"`date`"</div>"
+
 cat << EOF
-<div class="info">For more information on coverage analysis in general
-visit
+<div class="info">For more information on coverage analysis in general visit
 <a href="http://www.rtems.org/wiki/index.php/Coverage_Analysis_Theory">
 Coverage Analysis Theory</a>.  For information on how the RTEMS Project
 views coverage analysis, visit
