@@ -35,3 +35,48 @@ thread stack address attribute.
 
 NOTE: Code Should be Configured on POSIX
 +++
+
+pipe.c:28
+Simple Test Case
+Pass in a NULL file descriptor.
++++
+
+pipe/pipe.c:35
+Simple Test Case
+This looks like ar error on the path passed in to create.
++++
+
+pipe/pipe.c:82
+Simple Test Case
+This looks like a common error path which will be covered if you
+generate the other errors.
+
++++
+
+pipe/pipe.c:50
+Simple Test Case
+This looks like you need to create multiple pipes so the name generation
+algorithm has a conflict on its first N attempts.
++++
+
+pipe/pipe.c:65
+Simple Test Case
+This looks like there is no test code for blocking mode.
++++
+
+pipe/pipe.c:72
+Simple Test Case
+This looks like a special test where you can create/open the first
+pipe file descriptor but not the second.
++++
+
+bspcmdline_getparam.c:65
+Simple Test Case
+Need a test case to return NULL.
++++
+
+bspcmdline_getparamrhs.c:41
+Simple Test Case
+Need a test case to return NULL.
++++
+
