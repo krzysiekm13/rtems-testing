@@ -492,6 +492,11 @@ if [ ${do_copy_tests} = "yes" ] ; then
   check_status $? "cd b-${BSP}"
 
   cp `find . -name *.${RTEMSEXT} -o -name hello.exe` ../${BSP}-tests
+  if [ -r ./i386-rtems4.?/c/pc*/testsuites/samples/hello/hello.nxe ] ; then
+  cp ./i386-rtems4.?/c/pc*/testsuites/samples/hello/hello.nxe \
+     ../${BSP}-tests/hello.exe
+  fi
+  
 else
   echo "Skipping copying tests..."
 fi
