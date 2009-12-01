@@ -1,6 +1,6 @@
 2009-12-01	Joel Sherrill <joel.sherrill@OARcorp.com>
 
-	* do_coverage:
+	* do_coverage: Adjust for make/custom placement.
 	* rtems-cvs-20091201.diff: New file.
 
 2009-11-25	Joel Sherrill <joel.sherrill@oarcorp.com>
