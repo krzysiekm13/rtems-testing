@@ -43,15 +43,15 @@ NIC=
 
 case ${nic} in
   # PCI NIC model options that work with RTEMS:
-  #   i82558er, i82551, i82557b, rtl8139
-  i82558er|i82551|i82557b|rtl8139) NIC=${nic};;
+  #   i82559er, i82551, i82557b, rtl8139
+  i82559er|i82551|i82557b|rtl8139) NIC=${nic};;
   # ISA NIC model: ne2k_isa
   ne2k_isa) MODEL="-M isapc" ; NIC=${nic} ;;
   none) ;;
   *) fatal Unknown NIC ${nic} ;;
 esac
  
-ARGS="${MODEL} -m 8 \
+ARGS="${MODEL} -m 16 \
     -boot a -fda ${QEMUDIR}/qemu/pc386_fda \
     -hda fat:${QEMUDIR}/qemu/hd  --no-reboot"
 if [ ${nic} != "none" -a $EUID -eq 0 ] ; then

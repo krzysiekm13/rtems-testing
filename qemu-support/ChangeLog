@@ -1,3 +1,8 @@
+2009-12-17	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemu-nic: Increase memory so MicroWindows demos run. Fix typo in NIC
+	name.
+
 2009-09-30	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* README.connex, u-boot-connex-400-r1604.bin: New files.
