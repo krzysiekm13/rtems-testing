@@ -51,7 +51,7 @@ case ${nic} in
   *) fatal Unknown NIC ${nic} ;;
 esac
  
-ARGS="${MODEL} -m 16 \
+ARGS="${MODEL} -m 64 \
     -boot a -fda ${QEMUDIR}/qemu/pc386_fda \
     -hda fat:${QEMUDIR}/qemu/hd  --no-reboot"
 if [ ${nic} != "none" -a $EUID -eq 0 ] ; then

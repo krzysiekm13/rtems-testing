@@ -1,3 +1,7 @@
+2010-01-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemu-nic: Up to 64 MB.
+
 2009-12-17	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemu-nic: Increase memory so MicroWindows demos run. Fix typo in NIC
