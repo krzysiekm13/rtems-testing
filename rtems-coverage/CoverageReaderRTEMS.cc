@@ -47,12 +47,12 @@ namespace Coverage {
     status = stat( file, &statbuf );
     if ( status == -1 ) {
       fprintf( stderr, "Unable to stat %s\n", file );
-      exit( -1 );
+      return false;
     }
 
     if ( statbuf.st_size == 0 ) {
       fprintf( stderr, "%s is 0 bytes long\n", file );
-      exit( -1 );
+      return false;
     }
 
     /*
@@ -60,23 +60,14 @@ namespace Coverage {
      */
     coverageFile = fopen( file, "r" );
     if ( !coverageFile ) {
-      fprintf(
-        stderr,
-        "CoverageReaderRTEMS::ProcessFile - unable to open %s\n",
-        file
-      );
-      exit(-1);
+      fprintf( stderr, "Unable to open %s\n", file );
+      return false;
     }
 
     status = fread( &header, sizeof(header), 1, coverageFile );
     if ( status != 1 ) {
-      fprintf(
-        stderr,
-        "CoverageReaderRTEMS::ProcessFile - unable to read header "
-           "from %s\n",
-        file
-      );
-      exit(-1);
+      fprintf( stderr, "Unable to read header from %s\n", file );
+      return false;
     }
 
     baseAddress = header.start;

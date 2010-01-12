@@ -506,9 +506,7 @@ int main(
   /*
    * Create input
    */
-  
   CoverageReader = Coverage::CreateCoverageReader(coverageFormat);
-
   if ( !CoverageReader ) {
     fprintf( stderr, "Unable to create coverage file reader.\n\n" );
     exit(-1);
@@ -522,10 +520,11 @@ int main(
   /*
    * Create writer
    *
-   * NOTE: We only support one format currently.
+   * NOTE: We ALWAYS write the merged coverage in RTEMS format.
    */
-  CoverageWriter = Coverage::CreateCoverageWriter(coverageFormat);
-
+  CoverageWriter = Coverage::CreateCoverageWriter(
+    Coverage::COVERAGE_FORMAT_RTEMS
+  );
   if ( !CoverageWriter ) {
     fprintf( stderr, "Unable to create coverage file writer.\n\n" );
     exit(-1);

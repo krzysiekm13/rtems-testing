@@ -42,9 +42,8 @@ namespace Coverage {
 
     coverageFile = fopen( file, "r" );
     if ( !coverageFile ) {
-      fprintf(
-        stderr, "CoverageReaderTSIM::ProcessFile - unable to open %s\n", file );
-      exit(-1);
+      fprintf( stderr, "Unable to open %s\n", file );
+      return false;
     }
 
     while ( 1 ) {

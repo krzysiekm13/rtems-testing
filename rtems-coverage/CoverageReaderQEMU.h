@@ -2,20 +2,20 @@
  *  $Id$
  */
 
-/*! @file TraceReaderSKYEYE.h
- *  @brief TraceReaderQEMU Specification
+/*! @file CoverageReaderQEMU.h
+ *  @brief CoverageReaderQEMU Specification
  *
- *  This file contains the specification of the TraceReaderQEMU class.
+ *  This file contains the specification of the CoverageReaderQEMU class.
  */
 
 #ifndef __COVERAGE_READER_QEMU_H__
 #define __COVERAGE_READER_QEMU_H__
 
-#include "TraceReaderBase.h"
+#include "CoverageReaderBase.h"
 
 namespace Coverage {
 
-  /*! @class TraceReaderQEMU
+  /*! @class CoverageReaderQEMU
    *
    *  This class implements the class which reads a coverage map file
    *  produced by QEMU.  Since the SPARC has 32-bit instructions,
@@ -27,15 +27,15 @@ namespace Coverage {
 TBD
 @endverbatim
    */
-  class TraceReaderQEMU : public TraceReaderBase {
+  class CoverageReaderQEMU : public CoverageReaderBase {
 
   public:
 
     /* Inherit documentation from base class. */
-    TraceReaderQEMU();
+    CoverageReaderQEMU();
 
     /* Inherit documentation from base class. */
-    virtual ~TraceReaderQEMU();
+    virtual ~CoverageReaderQEMU();
 
     /* Inherit documentation from base class. */
     bool ProcessFile(
@@ -46,4 +46,3 @@ TBD
 
 }
 #endif
-

@@ -1,3 +1,18 @@
+2010-01-12	Glenn Humphrey <glenn.humphrey@OARcorp.com>
+
+	* CoverageFactory.cc, CoverageFactory.h, CoverageReaderRTEMS.cc,
+	CoverageReaderSkyeye.cc, CoverageReaderTSIM.cc, Makefile,
+	covmerge.cc, do_coverage: Re-worked the design a bit to eliminate the
+	need for a trace conversion step.  Instead the coverage reader for
+	QEMU will just read the trace into a coverage map.  Also changed the
+	trace converter into a coverage converter.  It will allow conversion
+	between different coverage file formats.
+	* CoverageReaderQEMU.cc, CoverageReaderQEMU.h,
+	coverage_converter.cc: New files.
+	* TraceFactory.cc, TraceFactory.h, TraceReaderBase.cc,
+	TraceReaderBase.h, TraceReaderQEMU.cc, TraceReaderQEMU.h,
+	trace_converter.cc: Removed.
+
 2009-12-01	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* do_coverage: Adjust for make/custom placement.

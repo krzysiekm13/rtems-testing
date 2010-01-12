@@ -13,6 +13,7 @@
 
 #include "CoverageFactory.h"
 
+#include "CoverageReaderQEMU.h"
 #include "CoverageReaderRTEMS.h"
 #include "CoverageWriterRTEMS.h"
 #include "CoverageReaderSkyeye.h"
@@ -28,6 +29,9 @@ Coverage::CoverageFormats_t Coverage::CoverageFormatToEnum(
   const char *format
 )
 {
+  if ( !strcmp(format, "QEMU") )
+    return COVERAGE_FORMAT_QEMU;
+
   if ( !strcmp(format, "RTEMS") )
     return COVERAGE_FORMAT_RTEMS;
 
@@ -51,6 +55,8 @@ Coverage::CoverageReaderBase *Coverage::CreateCoverageReader(
 )
 {
   switch (format) {
+    case COVERAGE_FORMAT_QEMU:
+      return new Coverage::CoverageReaderQEMU();
     case COVERAGE_FORMAT_RTEMS:
       return new Coverage::CoverageReaderRTEMS();
     case COVERAGE_FORMAT_SKYEYE:
@@ -79,4 +85,3 @@ Coverage::CoverageWriterBase *Coverage::CreateCoverageWriter(
   }
   return NULL;
 }
-

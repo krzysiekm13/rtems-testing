@@ -16,6 +16,7 @@
 namespace Coverage {
 
   typedef enum {
+    COVERAGE_FORMAT_QEMU,
     COVERAGE_FORMAT_RTEMS,
     COVERAGE_FORMAT_SKYEYE,
     COVERAGE_FORMAT_TSIM

@@ -2,14 +2,14 @@
  *  $Id$
  */
 
-/*! @file TraceReaderQEMU.cc
- *  @brief TraceReaderQEMU Implementation
+/*! @file CoverageReaderQEMU.cc
+ *  @brief CoverageReaderQEMU Implementation
  *
  *  This file contains the implementation of the functions supporting
  *  reading the QEMU coverage data files.
  */
 
-#include "TraceReaderQEMU.h"
+#include "CoverageReaderQEMU.h"
 #include "CoverageMapBase.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,15 +22,15 @@ typedef uint32_t target_ulong;
 
 namespace Coverage {
 
-  TraceReaderQEMU::TraceReaderQEMU()
+  CoverageReaderQEMU::CoverageReaderQEMU()
   {
   }
 
-  TraceReaderQEMU::~TraceReaderQEMU()
+  CoverageReaderQEMU::~CoverageReaderQEMU()
   {
   }
 
-  bool TraceReaderQEMU::ProcessFile(
+  bool CoverageReaderQEMU::ProcessFile(
     const char      *file,
     CoverageMapBase *coverage
   )
@@ -48,12 +48,12 @@ namespace Coverage {
     status = stat( file, &statbuf );
     if ( status == -1 ) {
       fprintf( stderr, "Unable to stat %s\n", file );
-      exit( -1 );
+      return false;
     }
 
     if ( statbuf.st_size == 0 ) {
       fprintf( stderr, "%s is 0 bytes long\n", file );
-      exit( -1 );
+      return false;
     }
 
     /*
@@ -61,23 +61,14 @@ namespace Coverage {
      */
     traceFile = fopen( file, "r" );
     if ( !traceFile ) {
-      fprintf(
-        stderr,
-        "TraceReaderQEMU::ProcessFile - unable to open %s\n",
-        file
-      );
-      exit(-1);
+      fprintf( stderr, "Unable to open %s\n", file );
+      return false;
     }
 
     status = fread( &header, sizeof(trace_header), 1, traceFile );
     if ( status != 1 ) {
-      fprintf(
-        stderr,
-        "TraceReaderQEMU::ProcessFile - unable to read header "
-           "from %s\n",
-        file
-      );
-      exit(-1);
+      fprintf( stderr, "Unable to read header from %s\n", file );
+      return false;
     }
 
     #if 0

@@ -4,26 +4,29 @@
 
 INSTALL_DIR=../bin
 CXXFLAGS=-g -Wall -O2
-PROGRAMS=covmerge trace_converter qemu-dump-trace
+PROGRAMS=covmerge coverage_converter qemu-dump-trace
 SHARED_OBJS=CoverageMap.o CoverageMapBase.o \
   CoverageFactory.o \
-  CoverageReaderBase.o CoverageReaderRTEMS.o \
-  CoverageReaderSkyeye.o CoverageReaderTSIM.o \
-  CoverageWriterBase.o CoverageWriterRTEMS.o \
-  CoverageWriterSkyeye.o CoverageWriterTSIM.o
+  CoverageReaderBase.o \
+  CoverageReaderQEMU.o \
+  CoverageReaderRTEMS.o \
+  CoverageReaderSkyeye.o \
+  CoverageReaderTSIM.o \
+  CoverageWriterBase.o \
+  CoverageWriterRTEMS.o \
+  CoverageWriterSkyeye.o \
+  CoverageWriterTSIM.o
 
 COVMERGE_OBJS= covmerge.o $(SHARED_OBJS) \
   CoverageRanges.o \
   Explanations.o ObjdumpProcessor.o Toolnames.o
 
-TRACE_CONVERTER_OBJS=trace_converter.o $(SHARED_OBJS) \
-  TraceFactory.o \
-  TraceReaderBase.o TraceReaderQEMU.o
+COVERAGE_CONVERTER_OBJS=coverage_converter.o $(SHARED_OBJS)
 
-all: $(PROGRAMS) ${INSTALL_DIR} ../bin/trace_converter ../bin/qemu-dump-trace
+all: $(PROGRAMS) ${INSTALL_DIR} ../bin/coverage_converter ../bin/qemu-dump-trace
 
-../bin/trace_converter: trace_converter ${INSTALL_DIR}
-	cp trace_converter ../bin
+../bin/coverage_converter: coverage_converter ${INSTALL_DIR}
+	cp coverage_converter ../bin
 
 ../bin/qemu-dump-trace: qemu-dump-trace ${INSTALL_DIR}
 	cp qemu-dump-trace ../bin
@@ -39,23 +42,28 @@ covmerge: $(COVMERGE_OBJS)
 
 covmerge.o: covmerge.cc CoverageMap.h CoverageFactory.h
 
-trace_converter: $(TRACE_CONVERTER_OBJS)
-	$(CXX) -o $(@) $(TRACE_CONVERTER_OBJS)
+coverage_converter: $(COVERAGE_CONVERTER_OBJS)
+	$(CXX) -o $(@) $(COVERAGE_CONVERTER_OBJS)
 
-trace_converter.o: trace_converter.cc CoverageMap.h CoverageFactory.h \
-       TraceFactory.h
+coverage_converter.o: coverage_converter.cc CoverageMap.h CoverageFactory.h
 
-CoverageFactory.o: CoverageFactory.cc CoverageFactory.h CoverageReaderBase.h \
+CoverageFactory.o: CoverageFactory.cc CoverageFactory.h \
+  CoverageReaderBase.h CoverageReaderQEMU.h CoverageReaderRTEMS.h \
   CoverageReaderSkyeye.h CoverageReaderTSIM.h  \
-  CoverageWriterBase.h CoverageWriterSkyeye.h CoverageWriterTSIM.h 
+  CoverageWriterBase.h CoverageWriterRTEMS.h \
+  CoverageWriterSkyeye.h CoverageWriterTSIM.h 
 CoverageMap.o: CoverageMap.cc CoverageMap.h
 CoverageRanges.o: CoverageRanges.cc CoverageRanges.h
 CoverageReaderBase.o: CoverageReaderBase.cc CoverageReaderBase.h
+CoverageReaderQEMU.o: CoverageReaderQEMU.cc CoverageReaderQEMU.h qemu-traces.h
+CoverageReaderRTEMS.o: CoverageReaderRTEMS.cc CoverageReaderRTEMS.h \
+  rtemscov_header.h
 CoverageReaderSkyeye.o: CoverageReaderSkyeye.cc CoverageReaderSkyeye.h \
   skyeye_header.h
-CoverageReaderTSIM.o: CoverageReaderTSIM.cc CoverageReaderTSIM.h \
-  skyeye_header.h
+CoverageReaderTSIM.o: CoverageReaderTSIM.cc CoverageReaderTSIM.h
 CoverageWriterBase.o: CoverageWriterBase.cc CoverageWriterBase.h
+CoverageWriterRTEMS.o: CoverageWriterRTEMS.cc CoverageWriterRTEMS.h \
+  rtemscov_header.h
 CoverageWriterSkyeye.o: CoverageWriterSkyeye.cc CoverageWriterSkyeye.h
 CoverageWriterTSIM.o: CoverageWriterTSIM.cc CoverageWriterTSIM.h
 Explanations.o: Explanations.cc Explanations.h

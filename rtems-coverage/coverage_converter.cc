@@ -17,14 +17,13 @@
 
 #include "CoverageMap.h"
 #include "CoverageFactory.h"
-#include "TraceFactory.h"
 #include "app_common.h"
 
 /*
  *  Variables to control global behavior
  */
 int verbose = 0;
-Coverage::TraceFormats_t traceFormat;
+Coverage::CoverageFormats_t inputFormat;
 uint32_t lowAddress  = 0xffffffff;
 uint32_t highAddress = 0xffffffff;
 
@@ -34,7 +33,7 @@ char *progname;
  *  Global variables for the program
  */
 Coverage::CoverageMapBase    *CoverageMap    = NULL;
-Coverage::TraceReaderBase    *TraceReader    = NULL;
+Coverage::CoverageReaderBase *CoverageReader = NULL;
 Coverage::CoverageWriterBase *CoverageWriter = NULL;
 
 /*
@@ -77,11 +76,11 @@ void usage()
 {
   fprintf(
     stderr,
-    "Usage: %s [-v] -l ADDRESS -h ADDRESS trace_in coverage_out\n"
+    "Usage: %s [-v] -l ADDRESS -h ADDRESS coverage_in coverage_out\n"
     "\n"
     "  -l low address   - low address of range to merge\n"
     "  -l high address  - high address of range to merge\n"
-    "  -f format        - trace files are in <format> (Qemu)\n"
+    "  -f format        - coverage files are in <format> (Qemu)\n"
     "  -v               - verbose at initialization\n"
     "\n",
     progname
@@ -98,7 +97,7 @@ int main(
 {
   int         opt;
   char       *format = NULL;
-  const char *traceIn;
+  const char *coverageIn;
   const char *coverageFile;
 
   progname = argv[0];
@@ -107,7 +106,7 @@ int main(
     switch (opt) {
       case 'v': verbose = 1;       break;
       case 'f':
-        traceFormat = Coverage::TraceFormatToEnum(optarg);
+        inputFormat = Coverage::CoverageFormatToEnum(optarg);
         format = optarg;
         break;
       case 'l':
@@ -131,20 +130,21 @@ int main(
   }
 
   if ( (argc - optind) != 2 ) {
-    fprintf( stderr, "ERROR -- Must provide trace and coverage files\n" );
+    fprintf( stderr, "ERROR -- Must provide input and output files\n" );
     exit(1);
   }
 
-  traceIn      = argv[optind];
+  coverageIn   = argv[optind];
   coverageFile = argv[optind + 1];
 
   if ( verbose ) {
-    fprintf( stderr, "verbose         : %d\n", verbose );
-    fprintf( stderr, "Trace Format    : %s\n", format );
-    fprintf( stderr, "Trace File      : %s\n", traceIn );
-    fprintf( stderr, "Coverage File   : %s\n", coverageFile );
-    fprintf( stderr, "low address     : 0x%08x\n", lowAddress );
-    fprintf( stderr, "high address    : 0x%08x\n", highAddress );
+    fprintf( stderr, "verbose       : %d\n", verbose );
+    fprintf( stderr, "Input Format  : %s\n", format );
+    fprintf( stderr, "Input File    : %s\n", coverageIn );
+    fprintf( stderr, "Output Format : %s\n", "RTEMS" );
+    fprintf( stderr, "Output File   : %s\n", coverageFile );
+    fprintf( stderr, "low address   : 0x%08x\n", lowAddress );
+    fprintf( stderr, "high address  : 0x%08x\n", highAddress );
     fprintf( stderr, "\n" );
   }
 
@@ -152,7 +152,7 @@ int main(
    *  Validate format
    */
   if ( !format ) {
-    fprintf( stderr, "trace format report must be given.\n\n" );
+    fprintf( stderr, "input format must be given.\n\n" );
     usage();
     exit(-1);
   }
@@ -197,9 +197,9 @@ int main(
     exit(-1);
   }
 
-  TraceReader = CreateTraceReader( traceFormat );
-  if ( !TraceReader ) {
-    fprintf( stderr, "Unable to create trace file reader.\n\n" );
+  CoverageReader = CreateCoverageReader( inputFormat );
+  if ( !CoverageReader ) {
+    fprintf( stderr, "Unable to create input file reader.\n\n" );
     exit(-1);
   }
 
@@ -207,8 +207,8 @@ int main(
    * Now get to some real work
    */
   if ( verbose )
-    fprintf( stderr, "Processing %s\n", traceIn );
-  TraceReader->ProcessFile( traceIn, CoverageMap );
+    fprintf( stderr, "Processing %s\n", coverageIn );
+  CoverageReader->ProcessFile( coverageIn, CoverageMap );
 
   if ( verbose )
     fprintf(
