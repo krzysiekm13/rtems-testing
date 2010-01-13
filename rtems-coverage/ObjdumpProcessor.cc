@@ -272,6 +272,8 @@ namespace Coverage {
 	baseAddress = l;
         contents.address = baseAddress;
 
+        coverage->setIsStartOfInstruction( baseAddress );
+
         contents.isNop = isNop( buffer, contents.nopSize );
         if ( contents.isNop ) {
           // check the byte immediately before and after the nop
@@ -320,19 +322,21 @@ namespace Coverage {
     for (it =  Contents.begin() ;
 	 it != Contents.end() ;
 	 it++ ) {
-      bool executed = true;  // assume we do not mark it
-
+      const char *annotation = "";
       if ( it->isInstruction &&
-           it->address >= low && it->address <= high &&
-           !coverage->wasExecuted( it->address ) )
-        executed = false;
+           it->address >= low && it->address <= high )  {
+        
+        if ( coverage->wasExecuted( it->address ) )
+          annotation = "\t<== NOT EXECUTED";
+        else if ( coverage->isBranch( it->address ) ) {
+          if ( coverage->wasAlwaysTaken( it->address ) )
+            annotation = "\t<== ALWAYS TAKEN";
+          else if ( coverage->wasNeverTaken( it->address ) )
+            annotation = "\t<== NEVER TAKEN";
+        }
 
-      if ( executed )
-        fprintf(annotatedFile, "%s\n", it->line.c_str() );
-      else
-        fprintf(annotatedFile, "%-76s\t<== NOT EXECUTED\n", it->line.c_str() );
-     // bool        isNop;
-     // uint32_t    address;
+      }
+      fprintf(annotatedFile, "%-76s%s\n", it->line.c_str(), annotation );
     }
     return true;
   }

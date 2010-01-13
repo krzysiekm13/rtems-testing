@@ -38,29 +38,7 @@ namespace Coverage {
     /* Inherit documentation from base class. */
     virtual ~CoverageMap();
 
-    /* Inherit documentation from base class. */
-    void setWasExecuted( uint32_t address );
-
-    /* Inherit documentation from base class. */
-    bool wasExecuted( uint32_t address );
-
   private:
-
-    /*!
-     *  This is a dynamically allocated array of flags to indicate which
-     *  addresses were executed.
-     */
-    bool *wasExecutedArray;
-
-    /*!
-     *  This is the low address of the address range being analyzed.
-     */
-    uint32_t lowAddress;
-
-    /*!
-     *  This is the high address of the address range being analyzed.
-     */
-    uint32_t highAddress;
 
   };
 

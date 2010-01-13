@@ -1,3 +1,20 @@
+2010-01-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* .cvsignore: Add coverage_converter.
+	* CoverageMap.cc, CoverageMap.h, CoverageMapBase.cc,
+	CoverageMapBase.h: Move most of the code into the base class.  Add
+	support for the per address information being in a structure.  Added
+	isStartofInstuction (now set), sourceLine (set when of interest)
+	 as well as the fields needed for branch analysis (e.g. isBranch,
+	wasTaken, wasNotTaken).
+	* CoverageRanges.h: Use CoverageMap for source line information.
+	* ObjdumpProcessor.cc: Set isStartOfInstruction and take first
+	attempt at the reporting logic for branch always or never taken.
+	covmerge.cc: Add concept of "addresses of interest".  Separate
+	method to match addresses to source lines from generation of
+	address of interest.
+	* app_common.h: Add AddressesNeedingSourceLine as extern.
+
 2010-01-12	Glenn Humphrey <glenn.humphrey@OARcorp.com>
 
 	* CoverageFactory.cc, CoverageFactory.h, CoverageReaderRTEMS.cc,

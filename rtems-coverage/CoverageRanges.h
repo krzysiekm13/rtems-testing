@@ -22,8 +22,6 @@ namespace Coverage {
 
     uint32_t lowAddress;
     uint32_t highAddress;
-    std::string lowLine;
-    std::string highLine;
 
     CoverageRange() {}
     CoverageRange(
@@ -31,9 +29,7 @@ namespace Coverage {
       uint32_t highAddressArg
     ) :
       lowAddress(lowAddressArg),
-      highAddress(highAddressArg),
-      lowLine("lowLineNotSet"),
-      highLine("highLineNotSet")
+      highAddress(highAddressArg)
     {
     }
 

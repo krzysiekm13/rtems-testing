@@ -51,6 +51,11 @@ Coverage::CoverageRanges     *Ranges           = NULL;
 Coverage::Explanations       *Explanations     = NULL;
 
 /*
+ *  Set of addresses we need source line number for
+ */
+std::list<uint32_t> AddressesNeedingSourceLine; 
+
+/*
  *  Convert string to int with status out
  */
 
@@ -109,12 +114,12 @@ void usage()
 }
 
 int UncoveredCases = 0;
+
 /*
- *  Find source lines for addresses
+ *  Look over the coverage map and compute uncovered ranges
  */
-void FindSourceForAddresses(void)
+void ComputeUncoveredRanges(void)
 {
-  FILE *tmpfile;
   uint32_t a, la, ha;
   std::list<Coverage::CoverageRange>::iterator it;
 
@@ -129,9 +134,21 @@ void FindSourceForAddresses(void)
 
       UncoveredCases++;
       Ranges->add( la, ha-1 );
+      fprintf( stderr, "Push back %x %x\n", la, ha -1 );
+      AddressesNeedingSourceLine.push_back( la ); 
+      AddressesNeedingSourceLine.push_back( ha-1 ); 
       a = ha;
     }
   }
+}
+
+/*
+ *  Find source lines for addresses
+ */
+void FindSourceForAddresses(void)
+{
+  FILE                          *tmpfile;
+  std::list<uint32_t>::iterator  it; 
 
   /*
    *  Write a temporary file with ranges
@@ -145,10 +162,10 @@ void FindSourceForAddresses(void)
     exit(-1);
   }
 
-  for (it =  Ranges->Set.begin() ;
-       it != Ranges->Set.end() ;
+  for (it =  AddressesNeedingSourceLine.begin() ;
+       it != AddressesNeedingSourceLine.end() ;
        it++ ) {
-    fprintf(tmpfile, "0x%08x\n0x%08x\n", it->lowAddress, it->highAddress-1);
+    fprintf(tmpfile, "0x%08x\n", *it);
   }
 
   fclose( tmpfile );
@@ -192,77 +209,26 @@ void FindSourceForAddresses(void)
     exit(-1);
   }
 
-  for (it =  Ranges->Set.begin() ;
-       it != Ranges->Set.end() ;
+  for (it =  AddressesNeedingSourceLine.begin() ;
+       it != AddressesNeedingSourceLine.end() ;
        it++ ) {
     char buffer[512];
     char *cStatus;
 
     cStatus = fgets( buffer, 512, tmpfile );
     if ( cStatus == NULL ) {
-      fprintf( stderr, "Out of sync in range vs addr2line output\n" );
+      fprintf( stderr, "Out of sync in addr2line output\n" );
       exit( -1 );
     }
     buffer[ strlen(buffer) - 1] = '\0';
 
-    it->lowLine = std::string( buffer );
-
-    cStatus = fgets( buffer, 512, tmpfile );
-    if ( cStatus == NULL ) {
-      fprintf( stderr, "Out of sync in range vs addr2line output\n" );
-      exit( -1 );
-    }
-    buffer[ strlen(buffer) - 1] = '\0';
-
-    it->highLine = std::string( buffer );
+    fprintf( stderr, "XXX %x  %s\n", *it, buffer );
+    CoverageMap->setSourceLine( *it, std::string( buffer ) );
   }
   fclose( tmpfile );
 
   // system( "rm -f ranges01.tmp" );
   // system( "rm -f ranges.tmp" );
-
-  /*
-   *  Go back over the ranges, read the addr2line output, and correlate it.
-   */
-
-  if ( verbose )
-    fprintf( stderr, "Merging addr2line output into range\n" );
-
-  tmpfile = fopen( "ranges01.tmp", "r" );
-  if ( !tmpfile ) {
-    fprintf( stderr, "Unable to open %s\n\n", "ranges01.tmp" );
-    exit(-1);
-  }
-
-  for (it =  Ranges->Set.begin() ;
-       it != Ranges->Set.end() ;
-       it++ ) {
-    char buffer[512];
-    char *cStatus;
-
-    cStatus = fgets( buffer, 512, tmpfile );
-    if ( cStatus == NULL ) {
-      fprintf( stderr, "Out of sync in range vs addr2line output\n" );
-      exit( -1 );
-    }
-    buffer[ strlen(buffer) - 1] = '\0';
-
-    it->lowLine = std::string( buffer );
-
-    cStatus = fgets( buffer, 512, tmpfile );
-    if ( cStatus == NULL ) {
-      fprintf( stderr, "Out of sync in range vs addr2line output\n" );
-      exit( -1 );
-    }
-    buffer[ strlen(buffer) - 1] = '\0';
-
-    it->highLine = std::string( buffer );
-  }
-  fclose( tmpfile );
-
-  // system( "rm -f ranges01.tmp" );
-
-  
 }
 
 /*
@@ -291,7 +257,13 @@ void WriteCoverageReport()
        it != Ranges->Set.end() ;
        it++ ) {
     const Coverage::Explanation *explanation;
-    explanation = Explanations->lookupExplanation( it->lowLine );
+    std::string lowLine;
+    std::string highLine;
+
+    lowLine  = CoverageMap->sourceLine( it->lowAddress );
+    highLine = CoverageMap->sourceLine( it->highAddress );
+
+    explanation = Explanations->lookupExplanation( lowLine );
 
     fprintf(
       report,
@@ -300,9 +272,9 @@ void WriteCoverageReport()
       "%08x : %s\n"
       "Size : %d\n"
       "\n",
-      it->lowAddress, it->highAddress,
-      it->lowAddress,  it->lowLine.c_str(),
-      it->highAddress, it->highLine.c_str(),
+      it->lowAddress,   it->highAddress,
+      it->lowAddress,   lowLine.c_str(),
+      it->highAddress,  highLine.c_str(),
       it->highAddress - it->lowAddress + 1
     );
 
@@ -377,7 +349,7 @@ void WriteSizeReport(void)
     fprintf(
       report,
       "%s\t%d\n",
-      it->lowLine.c_str(),
+      CoverageMap->sourceLine( it->lowAddress ).c_str(),
       it->highAddress - it->lowAddress + 1
     );
   }
@@ -531,6 +503,17 @@ int main(
   }
 
   /*
+   * Add in the objdump before reading the coverage information.  We may
+   * want to take advantage of the information line where instructions
+   * begin.
+   */
+  if ( executable ) {
+    if ( verbose )
+      fprintf( stderr, "Reading objdump of %s\n", executable );
+    ObjdumpProcessor->initialize( executable, CoverageMap );
+  }
+
+  /*
    * Now get to some real work
    */
   if ( verbose )
@@ -541,20 +524,15 @@ int main(
   } 
 
   /*
-   * Add in the objdump
-   */
-  if ( executable ) {
-    if ( verbose )
-      fprintf( stderr, "Reading objdump of %s\n", executable );
-    ObjdumpProcessor->initialize( executable, CoverageMap );
-  }
-
-  /*
    * Now to write some output
    */
   if ( mergedCoverageFile ) {
     if ( verbose )
-      fprintf( stderr, "Writing merged coverage file (%s)\n", mergedCoverageFile );
+      fprintf(
+        stderr,
+        "Writing merged coverage file (%s)\n",
+        mergedCoverageFile
+      );
     CoverageWriter->writeFile(
       mergedCoverageFile,
       CoverageMap,
@@ -564,11 +542,15 @@ int main(
   }
 
   /*
-   *  If we are generating a report which needs the address/source
-   *  information, then we need to generate it.
+   * Iterate over the coverage map and determine the uncovered ranges.
+   */
+  ComputeUncoveredRanges();
+
+  /*
+   *  Look up the source file and line number for the addresses
+   *  of interest.
    */ 
-  if ( coverageReportFile || sizeReportFile)
-    FindSourceForAddresses();
+  FindSourceForAddresses();
 
   /*
    *  Report of ranges not executed
