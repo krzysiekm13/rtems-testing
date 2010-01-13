@@ -1,3 +1,9 @@
+2010-01-13	Glenn Humphrey <glenn.humphrey@OARcorp.com>
+
+	* gdb-sim-run.in, pc386.in, qemu-gumstix.in, qemuppc.in, uC5282.in:
+	Removed explicit conversion from a trace. It is now being read as a
+	trace from covmerge.
+
 2009-10-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in: Attempt to detect assertions as generic exits.

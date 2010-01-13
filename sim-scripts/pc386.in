@@ -5,12 +5,11 @@
 #
 
 bspUsesGDBSimulator="no"
-runBSP=${HOME}/qemu-coverage/install/bin/qemu
+runBSP=${HOME}/qemu_coverage/install-r6588/bin/qemu
 if [ ! -r ${runBSP} ] ; then
   runBSP=qemu
 fi
 bspNeedsDos2Unix="yes"
-bspNeedsTraceConversion="yes"
 bspRunsFailRandomly="yes"
 
 # Set the defaults based upon arguments given and do some error checking
@@ -53,8 +52,8 @@ runARGS()
   cp ${1} ${hd0Dir}/test.exe
 
   if [ ${coverage} = yes ] ; then
-     rm -f trace ${1}.tra
-     COVERAGE_ARG="-trace ${1}.tra"
+     rm -f trace ${1}.cov
+     COVERAGE_ARG="-trace ${1}.cov"
   fi
 
   # can also redirect to file with file:log/"`basename ${1} .exe`
@@ -105,11 +104,6 @@ bspLimit()
     *)         limit=60 ;;
   esac
   echo ${limit}
-}
-
-convertTraceToCoverageMap()
-{
-  trace_converter -l 100000 -h 200000 -f QEMU ${1}.tra ${1}.cov 
 }
 
 bspGeneratesDeviceTree="no"

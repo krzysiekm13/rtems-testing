@@ -453,6 +453,7 @@ do
   # some BSPs produce trace oriented files which need to be converted
   # to object coverage maps
   if [ ${coverage} = "yes" -a ${bspNeedsTraceConversion} = "yes" ] ; then
+    test ${verbose} = "yes" && echo Converting trace map for ${toRun}
     convertTraceToCoverageMap ${toRun}
   fi
 

@@ -7,7 +7,6 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
-bspNeedsTraceConversion="yes"
 
 if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-m68k ] ; then
   runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-m68k
@@ -25,11 +24,6 @@ runARGS()
   fi
 
   echo "-M uc5282 -nographic ${COVERAGE_ARG} -kernel ${1}"
-}
-
-convertTraceToCoverageMap()
-{
-  trace_converter -l 40000 -h 140000 -f QEMU ${1}.tra ${1}.cov 
 }
 
 checkBSPFaults()

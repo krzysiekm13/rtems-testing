@@ -7,29 +7,20 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
-bspNeedsTraceConversion="yes"
-if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-ppc ] ; then
-  runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-ppc
-else
+runBSP=${HOME}/qemu_coverage/install-11/bin/qemu-system-ppc
+if [ ! -r ${runBSP} ] ; then
   runBSP=qemu-system-ppc
 fi
 bspNeedsDos2Unix="yes"
 
 runARGS()
 {
-  objcopy ${1} -O binary ${1}.bin
-
   if [ ${coverage} = yes ] ; then
-     COVERAGE_ARG="-trace ${1}.tra"
+    COVERAGE_ARG="-trace ${1}.tra"
   fi
 
   echo "-nographic -M prep -boot n -no-reboot ${COVERAGE_ARG} \
-	    -L `dirname ${1}` -bios `basename ${1}.bin`"
-}
-
-convertTraceToCoverageMap()
-{
-  trace_converter -l ffc00000 -h ffc80000 -f QEMU ${1}.tra ${1}.cov 
+	    -L `dirname ${1}` -bios `basename ${1}`"
 }
 
 checkBSPFaults()

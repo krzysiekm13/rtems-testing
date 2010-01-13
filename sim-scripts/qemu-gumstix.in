@@ -12,7 +12,6 @@ if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-arm ] ; then
 else
   runBSP=qemu-system-arm
 fi
-bspNeedsTraceConversion="yes"
 bspNeedsDos2Unix="yes"
 bspGeneratesDeviceTree="yes"
 bspInputDevice=qemu-gumstix.cmds
@@ -36,12 +35,6 @@ runARGS()
 
   echo "-M connex -m 289 -nographic -monitor null \
          -pflash ${FLASH} ${COVERAGE_ARG}"
-}
-
-convertTraceToCoverageMap()
-{
-  # 512K of code space covered
-  trace_converter -l a0000000 -h a0080000 -f QEMU ${1}.tra ${1}.cov 
 }
 
 checkBSPFaults()
