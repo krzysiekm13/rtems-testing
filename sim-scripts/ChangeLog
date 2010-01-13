@@ -1,3 +1,7 @@
+2010-01-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemuppc.in: Fix path and coverage output file name.
+
 2010-01-13	Glenn Humphrey <glenn.humphrey@OARcorp.com>
 
 	* gdb-sim-run.in, pc386.in, qemu-gumstix.in, qemuppc.in, uC5282.in:

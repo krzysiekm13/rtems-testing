@@ -7,7 +7,7 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
-runBSP=${HOME}/qemu_coverage/install-11/bin/qemu-system-ppc
+runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-ppc
 if [ ! -r ${runBSP} ] ; then
   runBSP=qemu-system-ppc
 fi
@@ -16,7 +16,7 @@ bspNeedsDos2Unix="yes"
 runARGS()
 {
   if [ ${coverage} = yes ] ; then
-    COVERAGE_ARG="-trace ${1}.tra"
+    COVERAGE_ARG="-trace ${1}.cov"
   fi
 
   echo "-nographic -M prep -boot n -no-reboot ${COVERAGE_ARG} \
