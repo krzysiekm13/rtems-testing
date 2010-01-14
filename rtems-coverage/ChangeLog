@@ -1,5 +1,9 @@
 2010-01-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* ObjdumpProcessor.cc: Add first stab at annotated.html.
+
+2010-01-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* ObjdumpProcessor.cc, ObjdumpProcessor.h, covmerge.cc: Add initial
 	annotated file html support.
 

@@ -338,7 +338,20 @@ namespace Coverage {
         exit(-1);
       }
 
-      // XXX WRITE HTML FILE HEADER
+      // WRITE HTML FILE HEADER
+      if ( aHTML ) {
+        fprintf(
+          aHTML,
+          "<HTML>\n"
+          "<HEAD>\n"
+          /* XXX more specific */
+          "<TITLE>RTEMS Coverage Annotated Dump</TITLE>\n"
+          "<H1>RTEMS Coverage Annotated Dump</H1>\n"
+          "</HEAD>\n"
+          "<BODY bgcolor=#ffffff>\n"
+          "\n"
+        );
+      }
     }
 
     for (it =  Contents.begin() ; it != Contents.end() ; it++ ) {
@@ -360,7 +373,16 @@ namespace Coverage {
         fprintf( aText, "%-76s%s\n", it->line.c_str(), annotation );
       }
       if ( aHTML ) {
-        fprintf( aHTML, "%-76s%s\n", it->line.c_str(), annotation );
+        // XXX WRITE HTML FILE INSTRUCTION LINE with address as the "tag"
+        //     <a name="0x00001234" id="0x00001234">0x00001234</a>
+        //     This will require further decomposition of the objdump line
+        //     into address and contents.
+        fprintf(
+          aHTML,
+          "%-76s%s\n",
+          it->line.c_str(),
+          annotation
+        );
       }
     }
 
@@ -369,6 +391,11 @@ namespace Coverage {
 
     if ( aHTML ) {
       // XXX WRITE HTML FILE TRAILER
+      fprintf(
+        aHTML,
+        "</BODY>\n"
+        "</HTML>\n"
+      );
       fclose( aHTML );
     }
     return true;
