@@ -577,7 +577,8 @@ int main(
     CoverageMap,
     lowAddress,
     highAddress,
-    "annotated.dmp"
+    "annotated.txt",
+    "annotated.html"
   );
 
   /*

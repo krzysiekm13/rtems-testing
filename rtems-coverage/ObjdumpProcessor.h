@@ -56,7 +56,8 @@ namespace Coverage {
       CoverageMapBase *coverage,
       uint32_t         low,
       uint32_t         high,
-      const char      *annotated
+      const char      *annotatedText,
+      const char      *annotatedHTML
     );
   };
 

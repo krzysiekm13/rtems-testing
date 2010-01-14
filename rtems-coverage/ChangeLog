@@ -1,5 +1,10 @@
 2010-01-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* ObjdumpProcessor.cc, ObjdumpProcessor.h, covmerge.cc: Add initial
+	annotated file html support.
+
+2010-01-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* .cvsignore: Add coverage_converter.
 	* CoverageMap.cc, CoverageMap.h, CoverageMapBase.cc,
 	CoverageMapBase.h: Move most of the code into the base class.  Add

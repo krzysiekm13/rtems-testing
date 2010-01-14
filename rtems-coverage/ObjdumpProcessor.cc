@@ -300,28 +300,48 @@ namespace Coverage {
     CoverageMapBase *coverage,
     uint32_t         low,
     uint32_t         high,
-    const char      *annotated
+    const char      *annotatedText,
+    const char      *annotatedHTML
   )
   {
-    FILE *annotatedFile;
+    FILE *aText;
+    FILE *aHTML;
     std::list<ObjdumpLine>::iterator it;
 
-    if ( !annotated )
+    if ( !annotatedText && !annotatedHTML )
       return false;
 
-    annotatedFile = fopen( annotated, "w" );
-    if ( !annotatedFile ) {
-      fprintf(
-        stderr,
-        "ObjdumpProcessor::writeAnnotated - unable to open %s\n",
-        annotated
-      );
-      exit(-1);
+    // Open Annotated Text File
+    aText = NULL;
+    if ( annotatedText ) {
+      aText = fopen( annotatedText, "w" );
+      if ( !aText ) {
+        fprintf(
+          stderr,
+          "ObjdumpProcessor::writeAnnotated - unable to open %s\n",
+          annotatedText
+        );
+        exit(-1);
+      }
     }
 
-    for (it =  Contents.begin() ;
-	 it != Contents.end() ;
-	 it++ ) {
+    // Open Annotated HTML File
+    aHTML = NULL;
+    if ( annotatedHTML ) {
+      aHTML = fopen( annotatedHTML, "w" );
+      if ( !aHTML ) {
+        fprintf(
+          stderr,
+          "ObjdumpProcessor::writeAnnotated - unable to open %s\n",
+          annotatedHTML
+        );
+        exit(-1);
+      }
+
+      // XXX WRITE HTML FILE HEADER
+    }
+
+    for (it =  Contents.begin() ; it != Contents.end() ; it++ ) {
       const char *annotation = "";
       if ( it->isInstruction &&
            it->address >= low && it->address <= high )  {
@@ -336,7 +356,20 @@ namespace Coverage {
         }
 
       }
-      fprintf(annotatedFile, "%-76s%s\n", it->line.c_str(), annotation );
+      if ( aText ) {
+        fprintf( aText, "%-76s%s\n", it->line.c_str(), annotation );
+      }
+      if ( aHTML ) {
+        fprintf( aHTML, "%-76s%s\n", it->line.c_str(), annotation );
+      }
+    }
+
+    if ( aText )
+      fclose( aText );
+
+    if ( aHTML ) {
+      // XXX WRITE HTML FILE TRAILER
+      fclose( aHTML );
     }
     return true;
   }
