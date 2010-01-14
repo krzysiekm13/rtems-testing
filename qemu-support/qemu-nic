@@ -13,7 +13,9 @@ QEMUDIR=/home/joel
 fatal()
 {
   echo $*
-  echo FATAL ERROR
+  echo "Usage: [-v] [-n NIC]"
+  echo ""
+  echo "Supported NICs: i82559er i82551 i82557b rtl8139 ne2k_isa"
   exit 1
 }
 
@@ -48,7 +50,9 @@ case ${nic} in
   # ISA NIC model: ne2k_isa
   ne2k_isa) MODEL="-M isapc" ; NIC=${nic} ;;
   none) ;;
-  *) fatal Unknown NIC ${nic} ;;
+  *)
+     fatal Unknown NIC ${nic}
+     ;;
 esac
  
 ARGS="${MODEL} -m 64 \
