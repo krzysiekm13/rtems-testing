@@ -17,7 +17,8 @@ namespace Coverage {
 
   /*! @class CoverageReaderBase
    *
-   *  This class XXX
+   *  This is the specification of the CoverageReader base class.
+   *  All CoverageReader implementations inherit from this.
    */
   class CoverageReaderBase {
 

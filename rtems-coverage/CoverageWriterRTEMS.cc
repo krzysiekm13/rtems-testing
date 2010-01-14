@@ -6,8 +6,7 @@
  *  @brief CoverageWriterRTEMS Implementation
  *
  *  This file contains the implementation of the functions supporting
- *  XXX
- *
+ *  the unified overage file format.
  */
 
 #include "CoverageWriterRTEMS.h"
@@ -27,7 +26,6 @@ namespace Coverage {
   {
   }
 
-  
   void CoverageWriterRTEMS::writeFile(
     const char                *file,
     Coverage::CoverageMapBase *coverage,

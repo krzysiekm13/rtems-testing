@@ -5,9 +5,8 @@
 /*! @file CoverageWriterTSIM.cc
  *  @brief CoverageWriterTSIM Implementation
  *
- *  This file contains the implementation of the functions supporting
- *  XXX
- *
+ *  This file contains the implementation of the CoverageWriter class
+ *  for the coverage files written by the SPARC simulator TSIM.
  */
 
 #include "CoverageWriterTSIM.h"
@@ -44,7 +43,11 @@ namespace Coverage {
 
     coverageFile = fopen( file, "w" );
     if ( !coverageFile ) {
-      fprintf( stderr, "CoverageWriterTSIM::ProcessFile - unable to open %s\n", file );
+      fprintf(
+        stderr,
+        "CoverageWriterTSIM::ProcessFile - unable to open %s\n",
+        file
+      );
       exit(-1);
     }
 

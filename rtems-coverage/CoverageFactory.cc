@@ -6,10 +6,9 @@
  *  @brief CoverageFactory Implementation
  *
  *  This file contains the implementation of the functions supporting
- *  XXX
- *
+ *  creating a CoverageReader or CoverageWriter of a specific type
+ *  based upon user configuration.
  */
-
 
 #include "CoverageFactory.h"
 

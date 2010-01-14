@@ -6,8 +6,7 @@
  *  @brief CoverageMap Implementation
  *
  *  This file contains the implementation of the functions supporting
- *  XXX
- *
+ *  a CoverageMap.  Currently, it adds no functionality to CoverageMapBase.
  */
 
 #include "CoverageMap.h"

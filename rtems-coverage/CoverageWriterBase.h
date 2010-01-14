@@ -18,7 +18,8 @@ namespace Coverage {
 
   /*! @class CoverageWriterBase
    *
-   *  This class XXX
+   *  This is the specification of the CoverageWriter base class.
+   *  All CoverageWriter implementations inherit from this.
    */
   class CoverageWriterBase {
 

@@ -5,9 +5,9 @@
 /*! @file CoverageWriterSkyeye.cc
  *  @brief CoverageWriterSkyeye Implementation
  *
- *  This file contains the implementation of the functions supporting
- *  XXX
- *
+ *  This file contains the implementation of the CoverageWriter class
+ *  for the coverage files written by the multi-architecture simulator
+ *  Skyeye (http://www.skyeye.org).
  */
 
 #include "CoverageWriterSkyeye.h"

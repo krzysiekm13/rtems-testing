@@ -222,7 +222,6 @@ void FindSourceForAddresses(void)
     }
     buffer[ strlen(buffer) - 1] = '\0';
 
-    fprintf( stderr, "XXX %x  %s\n", *it, buffer );
     CoverageMap->setSourceLine( *it, std::string( buffer ) );
   }
   fclose( tmpfile );
