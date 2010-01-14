@@ -1,3 +1,7 @@
+2010-01-14	Glenn Humphrey <glenn.humphrey@OARcorp.com>
+
+	* pc386.in: Should not have committed localized path to qemu.
+
 2010-01-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemuppc.in: Fix path and coverage output file name.
