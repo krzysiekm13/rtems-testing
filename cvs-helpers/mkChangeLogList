@@ -31,13 +31,14 @@ print_name="no"
 user=$LOGNAME
 cvs_local_arg=""
 basedir=.
-while getopts d:lnM:m:p:u:U: OPT
+while getopts d:lnM:m:p:c:u:U: OPT
 do
   case "$OPT" in 
     d) basedir=$OPTARG ;;
     l) cvs_local_arg="-l" ;;
     n) print_name="yes" ;;
     p) prnum=$OPTARG ;;
+    c) coverity_num=$OPTARG ;;
     m) message=$OPTARG ;; 
     M) message=`cat $OPTARG` ;; 
     u) user=$OPTARG ; print_name="yes" ;;
@@ -97,6 +98,9 @@ fi
 
 if test "X${prnum}" != "X" ; then
   echo "	PR ${prnum}"
+fi
+if test "X${coverity_num}" != "X" ; then
+  echo "	Coverity Id ${coverity_num}"
 fi
 
 # Generate list of modified files

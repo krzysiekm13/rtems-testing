@@ -1,3 +1,7 @@
+2010-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* cvscommit, mkChangeLogList: Add Coverity Id support.
+
 2009-10-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* cvscommit: Fix handling of files/directories with spaces in the name.

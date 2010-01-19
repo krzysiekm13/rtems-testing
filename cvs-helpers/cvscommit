@@ -21,7 +21,8 @@ usage()
   echo "  -M msgfile .. file containing to use for modified files";
   echo "  -u user    .. use user instead of LOGNAME";
   echo "  -U user    .. use explicit user info -- not from passwd";
-  echo "  -P PR      .. PR info";
+  echo "  -p PR      .. PR info";
+  echo "  -c CID     .. Coverity Id number";
   echo
   exit 1
 }
@@ -39,7 +40,7 @@ user=$LOGNAME
 mkchoptions="-n"
 message=
 localdir="no"
-while getopts dlqe:M:m:u:U:p: OPT
+while getopts dlqe:M:m:u:U:p:c: OPT
 do
   case "$OPT" in 
     d) rem_changes="yes" ;;
@@ -51,6 +52,7 @@ do
     u) user=$OPTARG ; mkchoptions=${mkchoptions}" -u ${user}" ;;
     U) userArg="-U" userInfo=$OPTARG ;;
     p) PrInfo=$OPTARG ; mkchoptions=${mkchoptions}" -p ${PrInfo}" ;;
+    c) CoverityInfo=$OPTARG ; mkchoptions=${mkchoptions}" -c ${CoverityInfo}" ;;
     *) usage ;;
   esac
 done
