@@ -93,10 +93,13 @@ struct trace_entry64
 #define TRACE_OP_BLOCK 0x10 /* Block fully executed.  */
 #define TRACE_OP_FAULT 0x20 /* Fault at pc.  */
 #define TRACE_OP_DYN   0x40 /* Dynamic branch.  */
-#define TRACE_OP_BR0 0x01 /* Branch 0 taken at pc.  */
-#define TRACE_OP_BR1 0x02
+#define TRACE_OP_BR0 0x01 /* Branch taken "in direction 0".  */
+#define TRACE_OP_BR1 0x02 /* Branch taken "in direction 1". */
 #define TRACE_OP_BR2 0x04
 #define TRACE_OP_BR3 0x08
+
+#define TRACE_OP_TAKEN     TRACE_OP_BR0 /* Branch not taken at pc.  */
+#define TRACE_OP_NOT_TAKEN TRACE_OP_BR1 /* Branch taken at pc. */
 
 /*
  * Decision map operations

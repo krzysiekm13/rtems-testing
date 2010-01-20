@@ -217,7 +217,6 @@ namespace Coverage {
     FILE *objdumpFile;
     char *cStatus;
     char  buffer[512];
-    int   i;
 
     /*
      * Generate the objdump
@@ -247,7 +246,6 @@ namespace Coverage {
     /*
      *  How many bytes is a nop?
      */
-
     while ( 1 ) {
       ObjdumpLine contents;
       cStatus = fgets( buffer, 512, objdumpFile );
@@ -262,29 +260,18 @@ namespace Coverage {
       contents.isNop         = false;
       contents.address       = 0xffffffff;
 
-      // fprintf( stderr, "%08x : ", baseAddress );
       contents.isInstruction = isInstruction( buffer );
 
       if ( contents.isInstruction ) {
         unsigned long l;
         uint32_t baseAddress;
         sscanf( buffer, "%lx:", &l );
-	baseAddress = l;
+        baseAddress = l;
         contents.address = baseAddress;
 
         coverage->setIsStartOfInstruction( baseAddress );
 
         contents.isNop = isNop( buffer, contents.nopSize );
-        if ( contents.isNop ) {
-          // check the byte immediately before and after the nop
-          // if either was executed, then mark NOP as executed. Otherwise,
-          // we do not want to split the unexecuted range.
-          if ( coverage->wasExecuted( baseAddress - 1 ) ||
-               coverage->wasExecuted( baseAddress + contents.nopSize ) ) {
-            for ( i=0 ; i < contents.nopSize ; i++ )
-	      coverage->setWasExecuted( baseAddress + i );
-          }
-        }
       }
 
       Contents.push_back( contents );
@@ -294,6 +281,29 @@ namespace Coverage {
     // Remove temporary file
     (void) system( "rm -f objdump.tmp" );
     return true;
+  }
+
+  bool ObjdumpProcessor::markNopsAsExecuted(
+    CoverageMapBase *coverage
+  )
+  {
+    ObjdumpLine                      contents;
+    std::list<ObjdumpLine>::iterator it;
+    int                              i;
+
+    for (it = Contents.begin() ; it != Contents.end() ; it++ ) {
+      if ( it->isNop ) {
+         // check the byte immediately before and after the nop
+         // if either was executed, then mark NOP as executed. Otherwise,
+         // we do not want to split the unexecuted range.
+         if ( coverage->wasExecuted( it->address - 1 ) ||
+              coverage->wasExecuted( it->address + it->nopSize ) ) {
+           for ( i=0 ; i < it->nopSize ; i++ )
+             coverage->setWasExecuted( it->address + i );
+         }
+       }
+     }
+     return true;
   }
 
   bool ObjdumpProcessor::writeAnnotated(
@@ -354,12 +364,12 @@ namespace Coverage {
       }
     }
 
-    for (it =  Contents.begin() ; it != Contents.end() ; it++ ) {
-      const char *annotation = "";
+    for (it = Contents.begin() ; it != Contents.end() ; it++ ) {
+      const char *annotation = NULL;
       if ( it->isInstruction &&
            it->address >= low && it->address <= high )  {
         
-        if ( coverage->wasExecuted( it->address ) )
+        if ( !coverage->wasExecuted( it->address ) )
           annotation = "\t<== NOT EXECUTED";
         else if ( coverage->isBranch( it->address ) ) {
           if ( coverage->wasAlwaysTaken( it->address ) )
@@ -370,19 +380,20 @@ namespace Coverage {
 
       }
       if ( aText ) {
-        fprintf( aText, "%-76s%s\n", it->line.c_str(), annotation );
+        if ( !annotation )
+          fprintf( aText, "%s\n", it->line.c_str() );
+        else
+          fprintf( aText, "%-76s%s\n", it->line.c_str(), annotation );
       }
       if ( aHTML ) {
         // XXX WRITE HTML FILE INSTRUCTION LINE with address as the "tag"
         //     <a name="0x00001234" id="0x00001234">0x00001234</a>
         //     This will require further decomposition of the objdump line
         //     into address and contents.
-        fprintf(
-          aHTML,
-          "%-76s%s\n",
-          it->line.c_str(),
-          annotation
-        );
+        if ( !annotation )
+          fprintf( aHTML, "%s\n", it->line.c_str() );
+        else
+          fprintf( aHTML, "%-76s%s\n", it->line.c_str(), annotation );
       }
     }
 

@@ -28,6 +28,7 @@
 int verbose = 0;
 Coverage::CoverageFormats_t coverageFormat;
 char *mergedCoverageFile = NULL;
+char *branchReportFile = NULL;
 char *coverageReportFile = NULL;
 char *sizeReportFile = NULL;
 uint32_t lowAddress  = 0xffffffff;
@@ -49,6 +50,11 @@ Coverage::Toolnames          *Tools            = NULL;
 Coverage::ObjdumpProcessor   *ObjdumpProcessor = NULL;
 Coverage::CoverageRanges     *Ranges           = NULL;
 Coverage::Explanations       *Explanations     = NULL;
+
+int  BranchesAlwaysTaken = 0;
+bool BranchesFound = false;
+int  BranchesNeverTaken = 0;
+int  UncoveredRanges = 0;
 
 /*
  *  Set of addresses we need source line number for
@@ -113,32 +119,54 @@ void usage()
   );
 }
 
-int UncoveredCases = 0;
-
 /*
- *  Look over the coverage map and compute uncovered ranges
+ *  Look over the coverage map and compute uncovered ranges and branches
  */
-void ComputeUncoveredRanges(void)
+void ComputeUncovered(void)
 {
   uint32_t a, la, ha;
   std::list<Coverage::CoverageRange>::iterator it;
 
-  /*
-   *  Find all the unexecuted addresses and add them to the range.
-   */
-  for ( a=lowAddress ; a < highAddress ; a++ ) {
-    if ( !CoverageMap->wasExecuted( a ) ) {
-      la = a;
-      for (ha=a+1 ; ha<=highAddress && !CoverageMap->wasExecuted(ha) ; ha++ )
-        ;
+  a = lowAddress;
+  while (a < highAddress) {
 
-      UncoveredCases++;
-      Ranges->add( la, ha-1 );
-      fprintf( stderr, "Push back %x %x\n", la, ha -1 );
+    /*
+     *  Find all the unexecuted addresses and add them to the range.
+     */
+    if (!CoverageMap->wasExecuted( a )) {
+      la = a;
+      for (ha=a+1; ha<=highAddress && !CoverageMap->wasExecuted(ha); ha++)
+        ;
+      ha--;
+
+      UncoveredRanges++;
+      Ranges->add( la, ha );
       AddressesNeedingSourceLine.push_back( la ); 
-      AddressesNeedingSourceLine.push_back( ha-1 ); 
-      a = ha;
+      AddressesNeedingSourceLine.push_back( ha ); 
+      a = ha + 1;
     }
+
+    else if (CoverageMap->isBranch( a )) {
+      BranchesFound = true;
+      la = a;
+      for (ha=a+1;
+           ha<=highAddress && !CoverageMap->isStartOfInstruction(ha);
+           ha++)
+        ;
+      ha--;
+
+      if (CoverageMap->wasAlwaysTaken( la )) {
+        BranchesAlwaysTaken++;
+        AddressesNeedingSourceLine.push_back( la ); 
+      }
+      else if (CoverageMap->wasNeverTaken( la )) {
+        BranchesNeverTaken++;
+        AddressesNeedingSourceLine.push_back( la ); 
+      }
+      a = ha + 1;
+    }
+    else
+      a++;
   }
 }
 
@@ -180,9 +208,7 @@ void FindSourceForAddresses(void)
     char command[512];
     sprintf(
       command,
-      "%s -e %s <%s | dos2unix | sed "
-          "-e 's/^.*cpukit\\/.*\\/src\\///' -e 's/^.*include\\/.*\\/.*\\///'"
-      ">%s",
+      "%s -e %s <%s | dos2unix >%s",
       Tools->getAddr2line(),
       executable,
       "ranges.tmp",
@@ -194,12 +220,9 @@ void FindSourceForAddresses(void)
     }
   }
 
-  // system( "rm -f ranges.tmp" );
-
   /*
    *  Go back over the ranges, read the addr2line output, and correlate it.
    */
-
   if ( verbose )
     fprintf( stderr, "Merging addr2line output into range\n" );
 
@@ -225,9 +248,112 @@ void FindSourceForAddresses(void)
     CoverageMap->setSourceLine( *it, std::string( buffer ) );
   }
   fclose( tmpfile );
+}
 
-  // system( "rm -f ranges01.tmp" );
-  // system( "rm -f ranges.tmp" );
+/*
+ *  Write branch report
+ */
+void WriteBranchReport()
+{
+  uint32_t                     address;
+  std::string                  branchLine;
+  const Coverage::Explanation *explanation;
+  FILE                        *report;
+
+  /*
+   *  Open the branch report file
+   */
+  report = fopen( branchReportFile, "w" );
+  if ( !report ) {
+    fprintf( stderr, "Unable to open %s\n\n", branchReportFile );
+    usage();
+    exit(-1);
+  }
+
+  if ( verbose )
+    fprintf( stderr, "Writing Branch Report\n" );
+
+  /*
+   *  If no branches were found, then branch coverage is not supported
+   */
+  if (!BranchesFound)
+    fprintf( report, "No branch information found\n" );
+
+  /*
+   *  If branches were found, then check each branch to determine if
+   *  it was always taken or never taken
+   */
+  else {
+    for ( address = lowAddress; address < highAddress; address++ ) {
+
+      if (CoverageMap->isBranch( address ) &&
+          (CoverageMap->wasAlwaysTaken( address ) ||
+           CoverageMap->wasNeverTaken( address ))) {
+
+        branchLine  = CoverageMap->getSourceLine( address );
+
+        /*
+         *  Add an entry to the report
+         */
+        fprintf(
+          report,
+          "============ Branch: %08x ==================\n"
+          "%08x : %s\n",
+          address,
+          address, branchLine.c_str()
+        );
+
+        if (CoverageMap->wasAlwaysTaken( address ))
+          fprintf(
+            report, "Status : %s\n\n", "ALWAYS TAKEN"
+          );
+        else if (CoverageMap->wasNeverTaken( address ))
+          fprintf(
+            report, "Status : %s\n\n", "NEVER TAKEN"
+          );
+
+        /*
+         *  See if an explanation is available
+         */
+        explanation = Explanations->lookupExplanation( branchLine );
+
+        if ( !explanation ) {
+          fprintf(
+            report,
+            "Classification: NONE\n"
+            "\n"
+            "Explanation:\n"
+            "No Explanation\n"
+          );
+        } else {
+          fprintf(
+            report,
+            "Classification: %s\n"
+            "\n"
+            "Explanation:\n",
+            explanation->classification.c_str()
+          );
+
+          for ( unsigned int i=0 ;
+                i < explanation->explanation.size();
+                i++) {
+            fprintf(
+              report,
+              "%s\n",
+              explanation->explanation[i].c_str()
+            );
+          }
+        }
+
+        fprintf(
+          report,
+          "====================================================\n"
+        );
+      }
+    }
+  }
+
+  fclose( report );
 }
 
 /*
@@ -250,7 +376,7 @@ void WriteCoverageReport()
   }
 
   if ( verbose )
-    fprintf( stderr, "Writing Report\n" );
+    fprintf( stderr, "Writing Coverage Report\n" );
 
   for (it =  Ranges->Set.begin() ;
        it != Ranges->Set.end() ;
@@ -259,8 +385,8 @@ void WriteCoverageReport()
     std::string lowLine;
     std::string highLine;
 
-    lowLine  = CoverageMap->sourceLine( it->lowAddress );
-    highLine = CoverageMap->sourceLine( it->highAddress );
+    lowLine  = CoverageMap->getSourceLine( it->lowAddress );
+    highLine = CoverageMap->getSourceLine( it->highAddress );
 
     explanation = Explanations->lookupExplanation( lowLine );
 
@@ -313,11 +439,6 @@ void WriteCoverageReport()
   }
 
   fclose( report );
-
-  /*
-   *  Let the user know how many cases there were
-   */
-  printf( "%d uncovered ranges found\n", UncoveredCases );
 }
 
 /*
@@ -348,7 +469,7 @@ void WriteSizeReport(void)
     fprintf(
       report,
       "%s\t%d\n",
-      CoverageMap->sourceLine( it->lowAddress ).c_str(),
+      CoverageMap->getSourceLine( it->lowAddress ).c_str(),
       it->highAddress - it->lowAddress + 1
     );
   }
@@ -371,14 +492,15 @@ int main(
 
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "a:e:E:f:h:l:m:r:s:T:v")) != -1) {
+  while ((opt = getopt(argc, argv, "b:e:E:f:h:l:m:r:s:T:v")) != -1) {
     switch (opt) {
-      case 'T': target             = optarg;  break;
+      case 'b': branchReportFile   = optarg;  break;
       case 'e': executable         = optarg;  break;
       case 'E': explanations       = optarg;  break;
       case 'm': mergedCoverageFile = optarg;  break;
       case 'r': coverageReportFile = optarg;  break;
       case 's': sizeReportFile     = optarg;  break;
+      case 'T': target             = optarg;  break;
       case 'v': verbose            = 1;       break;
       case 'f':
         coverageFormat = Coverage::CoverageFormatToEnum(optarg);
@@ -424,8 +546,6 @@ int main(
     exit(-1);
   }
 
-  Tools = new Coverage::Toolnames( target );
-
   /*
    *  Validate format
    */
@@ -434,15 +554,6 @@ int main(
     usage();
     exit(-1);
   }
-
-  /*
-   *  Create a ranges set
-   */
-
-  Ranges = new Coverage::CoverageRanges();
-  Explanations = new Coverage::Explanations();
-
-  Explanations->load( explanations );
 
   /*
    * Validate address range
@@ -464,6 +575,19 @@ int main(
     usage();
     exit(-1);
   }
+
+  /*
+   *  Create toolnames based on target
+   */
+  Tools = new Coverage::Toolnames( target );
+
+  /*
+   *  Create a ranges set
+   */
+  Ranges = new Coverage::CoverageRanges();
+  Explanations = new Coverage::Explanations();
+
+  Explanations->load( explanations );
 
   /*
    * Create coverage map
@@ -541,9 +665,15 @@ int main(
   }
 
   /*
-   * Iterate over the coverage map and determine the uncovered ranges.
+   *  Marks nops as executed when they are surrounded by executed instructions.
    */
-  ComputeUncoveredRanges();
+  ObjdumpProcessor->markNopsAsExecuted( CoverageMap );
+
+  /*
+   * Iterate over the coverage map and determine the uncovered
+   * ranges and branches.
+   */
+  ComputeUncovered();
 
   /*
    *  Look up the source file and line number for the addresses
@@ -552,12 +682,44 @@ int main(
   FindSourceForAddresses();
 
   /*
-   *  Report of ranges not executed
+   *  Generate report of ranges not executed
    */ 
   if ( coverageReportFile ) {
     if ( verbose )
       fprintf( stderr, "Writing coverage report (%s)\n", coverageReportFile );
     WriteCoverageReport();
+
+    /*
+     *  Let the user know how many cases there were
+     */
+    printf( "%d uncovered ranges found\n", UncoveredRanges );
+  }
+
+  /*
+   *  Generate report of branches taken/not taken
+   */ 
+  if ( branchReportFile ) {
+    if ( verbose )
+      fprintf( stderr, "Writing branch report (%s)\n", branchReportFile );
+    WriteBranchReport();
+
+    /*
+     *  Let the user know how many branch cases were found
+     */
+    if (!BranchesFound)
+      printf( "No branch information found\n" );
+    else {
+      printf(
+        "%d uncovered branches found\n",
+        BranchesAlwaysTaken + BranchesNeverTaken
+      );
+      printf(
+        "   %d branches always taken\n", BranchesAlwaysTaken
+      );
+      printf(
+        "   %d branches never taken\n", BranchesNeverTaken
+      );
+    }
   }
 
   /*

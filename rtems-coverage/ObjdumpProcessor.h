@@ -52,6 +52,10 @@ namespace Coverage {
       CoverageMapBase *coverage
     );
 
+    bool markNopsAsExecuted(
+      CoverageMapBase *coverage
+    );
+
     bool writeAnnotated(
       CoverageMapBase *coverage,
       uint32_t         low,

@@ -23,11 +23,11 @@ namespace Coverage {
   class Toolnames {
 
   private:
+
     std::string addr2line;
     std::string objdump;
     std::string target;
     std::string cpu;
-    int         nopSize;
 
   public:
 
@@ -63,10 +63,6 @@ namespace Coverage {
      */
     const char *getObjdump( void );
 
-    /*!
-     *  Size of a nop instruction
-     */
-    const int getNopSize( void );
   };
 
 }

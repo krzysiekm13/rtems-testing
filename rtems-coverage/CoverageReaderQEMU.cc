@@ -35,12 +35,13 @@ namespace Coverage {
     CoverageMapBase *coverage
   )
   {
-    FILE               *traceFile;
-    int                 status;
-    uintptr_t           i;
-    struct trace_header header;
+    uint32_t            beginning;
     struct trace_entry  entry;
+    struct trace_header header;
+    uintptr_t           i;
     struct stat         statbuf;
+    int                 status;
+    FILE               *traceFile;
 
     /*
      *  Verify it has a non-zero size
@@ -96,9 +97,30 @@ namespace Coverage {
       #if 0
         fprintf( stderr, "0x%08x %d 0x%2x\n", entry.pc, entry.size, entry.op );
       #endif
-      if ( entry.op & TRACE_OP_BLOCK ) { /* Block fully executed.  */
+
+      /* Mark block as fully executed. */
+      if ( entry.op & TRACE_OP_BLOCK ) {
         for ( i=0 ; i<entry.size ; i++ ) {
           coverage->setWasExecuted( entry.pc + i );
+        }
+      }
+
+      /* Determine if additional branch information is available. */
+      if (entry.op & 0x0f) {
+
+        if (coverage->getBeginningOfInstruction(
+              entry.pc + entry.size -1, &beginning
+            )) {
+
+          if (entry.op & TRACE_OP_TAKEN) {
+            coverage->setIsBranch( beginning );
+            coverage->setWasTaken( beginning );
+          }
+
+          else if (entry.op & TRACE_OP_NOT_TAKEN) {
+            coverage->setIsBranch( beginning );
+            coverage->setWasNotTaken( beginning );
+          }
         }
       }
     }

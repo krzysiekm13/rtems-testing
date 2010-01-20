@@ -19,17 +19,18 @@
 namespace Coverage {
 
   class Explanation {
+
   public:
 
     /*!
      *  This is the starting line number of the uncovered range.
      */
-    std::string              startingPoint;
+    std::string startingPoint;
 
     /*!
      *  This is the classification of the range.
      */
-    std::string              classification;
+    std::string classification;
 
     /*!
      *  This is the multi-line explanation.
@@ -39,7 +40,7 @@ namespace Coverage {
     /*!
      *  This indicates whether we used this explanation on this run.
      */
-    bool                     found;
+    bool found;
 
     Explanation() {found = false;}
 
@@ -91,5 +92,5 @@ namespace Coverage {
   };
 
 }
-#endif
 
+#endif

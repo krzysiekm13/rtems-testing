@@ -1,3 +1,10 @@
+2010-01-20	Glenn Humphrey
+
+	* CoverageMapBase.cc, CoverageMapBase.h, CoverageReaderQEMU.cc,
+	Explanations.h, ObjdumpProcessor.cc, ObjdumpProcessor.h,
+	Toolnames.cc, Toolnames.h, covmerge.cc, do_coverage, qemu-traces.h:
+	Completed branch analysis implementation.
+
 2010-01-14	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* CoverageFactory.cc, CoverageMap.cc, CoverageReaderBase.cc,

@@ -55,9 +55,4 @@ namespace Coverage {
     return objdump.c_str();
   }
 
-  const int Toolnames::getNopSize( void )
-  {
-     return nopSize;
-  }
-  
 }
