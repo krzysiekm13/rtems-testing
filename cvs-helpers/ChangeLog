@@ -2,7 +2,6 @@
 
 	* mkChangeLogList: Fixed bug where new files and removed files messages
 	could go past the desired column.
-	* // -e s/, // -e s/: Removed.
 
 2010-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
