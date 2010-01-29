@@ -1,3 +1,9 @@
+2010-01-29	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* mkChangeLogList: Fixed bug where new files and removed files messages
+	could go past the desired column.
+	* // -e s/, // -e s/: Removed.
+
 2010-01-19	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* cvscommit, mkChangeLogList: Add Coverity Id support.

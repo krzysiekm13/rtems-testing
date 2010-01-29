@@ -14,7 +14,7 @@ mklog_()
   if test `cat XXX | wc -l` -ne 0 ; then
     (cat XXX | cut -d':' -f2 | \
     sed -e '$!s/$/,/' -e '$s/$/:/' ; \
-    test $? -ne 0 || echo $* )| \
+    test $? -ne 0 || echo "$*" )| \
     xargs -s80 | sed -e '1s/^/	\* /' -e '2,$s/^/	/' 
   fi
   rm -f XXX
@@ -109,13 +109,12 @@ ${CVS} diff ${cvsarg} 2>/dev/null | grep ^Index | mklog_ ${message}
 # Generate list of deleted files
 test ${files_added} -gt 1 && plural=s
 ${CVS} diff ${cvsarg} 2>&1 | grep "is a new entry, no comparison" | \
-  sed -e 's/^.*: //' -e 's/ is a .*$//' | mklog_ | \
-  sed -e "\$,\$s/:\$/: New file${plural}./"
+  sed -e 's/^.*: //' -e 's/ is a .*$//' | mklog_ "New file${plural}."
 
 # Generate list of removed files
 ${CVS} diff ${cvsarg} 2>&1 | grep "was removed, no comparison" | \
-  sed -e 's/^.*: //' -e 's/ was removed, no comparison.*$//' | mklog_ | \
-  sed -e '$,$s/:$/: Removed./'
+  sed -e 's/^.*: //' -e 's/ was removed, no comparison.*$//' | \
+  mklog_ Removed.
 echo
 
 
