@@ -1,3 +1,11 @@
+2010-02-01	Glenn Humphrey
+
+	* Makefile, ObjdumpProcessor.cc, ObjdumpProcessor.h, app_common.h,
+	covmerge.cc: Moved report writing functions into their own file. The
+	collection of functions will probably be made into a class when other
+	output formats are determined.
+	* Reports.cc, Reports.h: New files.
+
 2010-01-20	Glenn Humphrey
 
 	* CoverageMapBase.cc, CoverageMapBase.h, CoverageReaderQEMU.cc,

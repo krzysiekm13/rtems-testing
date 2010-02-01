@@ -19,7 +19,10 @@ SHARED_OBJS=CoverageMap.o CoverageMapBase.o \
 
 COVMERGE_OBJS= covmerge.o $(SHARED_OBJS) \
   CoverageRanges.o \
-  Explanations.o ObjdumpProcessor.o Toolnames.o
+  Explanations.o \
+  ObjdumpProcessor.o \
+  Reports.o \
+  Toolnames.o
 
 COVERAGE_CONVERTER_OBJS=coverage_converter.o $(SHARED_OBJS)
 
@@ -68,6 +71,7 @@ CoverageWriterSkyeye.o: CoverageWriterSkyeye.cc CoverageWriterSkyeye.h
 CoverageWriterTSIM.o: CoverageWriterTSIM.cc CoverageWriterTSIM.h
 Explanations.o: Explanations.cc Explanations.h
 ObjdumpProcessor.o: ObjdumpProcessor.cc ObjdumpProcessor.h
+Reports.o: Reports.cc Reports.h
 Toolnames.o: Toolnames.cc Toolnames.h
 
 clean:

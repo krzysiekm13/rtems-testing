@@ -17,7 +17,21 @@
 
 namespace Coverage {
 
-  class ObjdumpLine;
+  class ObjdumpLine {
+
+  public:
+
+     ObjdumpLine();
+
+     ~ObjdumpLine();
+
+     std::string line;
+     bool        isInstruction;
+     bool        isNop;
+     int         nopSize;
+     uint32_t    address;
+
+  };
 
   /*! @class ObjdumpProcessor
    *
@@ -29,19 +43,20 @@ namespace Coverage {
    *  executed.
    */
   class ObjdumpProcessor {
+
   private:
 
-     std::list<ObjdumpLine> Contents;
-
-     bool isInstruction(
-       const char *line
-     );
-     bool isNop(
-       const char *line,
-       int        &size
-     );
+    bool isInstruction(
+      const char *line
+    );
+    bool isNop(
+      const char *line,
+      int        &size
+    );
 
   public:
+
+    std::list<ObjdumpLine> Contents;
 
     ObjdumpProcessor();
 
@@ -56,15 +71,7 @@ namespace Coverage {
       CoverageMapBase *coverage
     );
 
-    bool writeAnnotated(
-      CoverageMapBase *coverage,
-      uint32_t         low,
-      uint32_t         high,
-      const char      *annotatedText,
-      const char      *annotatedHTML
-    );
   };
-
 }
 #endif
 

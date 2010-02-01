@@ -20,27 +20,17 @@
 
 namespace Coverage {
 
-  class ObjdumpLine {
-  
-  public:
-     ObjdumpLine()
-     {
-       isInstruction = false;
-       isNop         = false;
-       nopSize       = 0;
-       address       = 0xffffffff;
-     } 
+  ObjdumpLine::ObjdumpLine()
+  {
+    isInstruction = false;
+    isNop         = false;
+    nopSize       = 0;
+    address       = 0xffffffff;
+  } 
 
-     ~ObjdumpLine()
-     {
-     } 
-
-     std::string line;
-     bool        isInstruction;
-     bool        isNop;
-     int         nopSize;
-     uint32_t    address;
-  };
+  ObjdumpLine::~ObjdumpLine()
+  {
+  } 
 
   /*
    * ObjdumpProcessor Class
@@ -304,111 +294,5 @@ namespace Coverage {
        }
      }
      return true;
-  }
-
-  bool ObjdumpProcessor::writeAnnotated(
-    CoverageMapBase *coverage,
-    uint32_t         low,
-    uint32_t         high,
-    const char      *annotatedText,
-    const char      *annotatedHTML
-  )
-  {
-    FILE *aText;
-    FILE *aHTML;
-    std::list<ObjdumpLine>::iterator it;
-
-    if ( !annotatedText && !annotatedHTML )
-      return false;
-
-    // Open Annotated Text File
-    aText = NULL;
-    if ( annotatedText ) {
-      aText = fopen( annotatedText, "w" );
-      if ( !aText ) {
-        fprintf(
-          stderr,
-          "ObjdumpProcessor::writeAnnotated - unable to open %s\n",
-          annotatedText
-        );
-        exit(-1);
-      }
-    }
-
-    // Open Annotated HTML File
-    aHTML = NULL;
-    if ( annotatedHTML ) {
-      aHTML = fopen( annotatedHTML, "w" );
-      if ( !aHTML ) {
-        fprintf(
-          stderr,
-          "ObjdumpProcessor::writeAnnotated - unable to open %s\n",
-          annotatedHTML
-        );
-        exit(-1);
-      }
-
-      // WRITE HTML FILE HEADER
-      if ( aHTML ) {
-        fprintf(
-          aHTML,
-          "<HTML>\n"
-          "<HEAD>\n"
-          /* XXX more specific */
-          "<TITLE>RTEMS Coverage Annotated Dump</TITLE>\n"
-          "<H1>RTEMS Coverage Annotated Dump</H1>\n"
-          "</HEAD>\n"
-          "<BODY bgcolor=#ffffff>\n"
-          "\n"
-        );
-      }
-    }
-
-    for (it = Contents.begin() ; it != Contents.end() ; it++ ) {
-      const char *annotation = NULL;
-      if ( it->isInstruction &&
-           it->address >= low && it->address <= high )  {
-        
-        if ( !coverage->wasExecuted( it->address ) )
-          annotation = "\t<== NOT EXECUTED";
-        else if ( coverage->isBranch( it->address ) ) {
-          if ( coverage->wasAlwaysTaken( it->address ) )
-            annotation = "\t<== ALWAYS TAKEN";
-          else if ( coverage->wasNeverTaken( it->address ) )
-            annotation = "\t<== NEVER TAKEN";
-        }
-
-      }
-      if ( aText ) {
-        if ( !annotation )
-          fprintf( aText, "%s\n", it->line.c_str() );
-        else
-          fprintf( aText, "%-76s%s\n", it->line.c_str(), annotation );
-      }
-      if ( aHTML ) {
-        // XXX WRITE HTML FILE INSTRUCTION LINE with address as the "tag"
-        //     <a name="0x00001234" id="0x00001234">0x00001234</a>
-        //     This will require further decomposition of the objdump line
-        //     into address and contents.
-        if ( !annotation )
-          fprintf( aHTML, "%s\n", it->line.c_str() );
-        else
-          fprintf( aHTML, "%-76s%s\n", it->line.c_str(), annotation );
-      }
-    }
-
-    if ( aText )
-      fclose( aText );
-
-    if ( aHTML ) {
-      // XXX WRITE HTML FILE TRAILER
-      fprintf(
-        aHTML,
-        "</BODY>\n"
-        "</HTML>\n"
-      );
-      fclose( aHTML );
-    }
-    return true;
   }
 }

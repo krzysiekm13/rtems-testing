@@ -15,12 +15,13 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "CoverageMap.h"
-#include "CoverageFactory.h"
-#include "ObjdumpProcessor.h"
 #include "app_common.h"
+#include "CoverageFactory.h"
+#include "CoverageMap.h"
 #include "CoverageRanges.h"
 #include "Explanations.h"
+#include "ObjdumpProcessor.h"
+#include "Reports.h"
 
 /*
  *  Variables to control global behavior
@@ -250,234 +251,6 @@ void FindSourceForAddresses(void)
   fclose( tmpfile );
 }
 
-/*
- *  Write branch report
- */
-void WriteBranchReport()
-{
-  uint32_t                     address;
-  std::string                  branchLine;
-  const Coverage::Explanation *explanation;
-  FILE                        *report;
-
-  /*
-   *  Open the branch report file
-   */
-  report = fopen( branchReportFile, "w" );
-  if ( !report ) {
-    fprintf( stderr, "Unable to open %s\n\n", branchReportFile );
-    usage();
-    exit(-1);
-  }
-
-  if ( verbose )
-    fprintf( stderr, "Writing Branch Report\n" );
-
-  /*
-   *  If no branches were found, then branch coverage is not supported
-   */
-  if (!BranchesFound)
-    fprintf( report, "No branch information found\n" );
-
-  /*
-   *  If branches were found, then check each branch to determine if
-   *  it was always taken or never taken
-   */
-  else {
-    for ( address = lowAddress; address < highAddress; address++ ) {
-
-      if (CoverageMap->isBranch( address ) &&
-          (CoverageMap->wasAlwaysTaken( address ) ||
-           CoverageMap->wasNeverTaken( address ))) {
-
-        branchLine  = CoverageMap->getSourceLine( address );
-
-        /*
-         *  Add an entry to the report
-         */
-        fprintf(
-          report,
-          "============ Branch: %08x ==================\n"
-          "%08x : %s\n",
-          address,
-          address, branchLine.c_str()
-        );
-
-        if (CoverageMap->wasAlwaysTaken( address ))
-          fprintf(
-            report, "Status : %s\n\n", "ALWAYS TAKEN"
-          );
-        else if (CoverageMap->wasNeverTaken( address ))
-          fprintf(
-            report, "Status : %s\n\n", "NEVER TAKEN"
-          );
-
-        /*
-         *  See if an explanation is available
-         */
-        explanation = Explanations->lookupExplanation( branchLine );
-
-        if ( !explanation ) {
-          fprintf(
-            report,
-            "Classification: NONE\n"
-            "\n"
-            "Explanation:\n"
-            "No Explanation\n"
-          );
-        } else {
-          fprintf(
-            report,
-            "Classification: %s\n"
-            "\n"
-            "Explanation:\n",
-            explanation->classification.c_str()
-          );
-
-          for ( unsigned int i=0 ;
-                i < explanation->explanation.size();
-                i++) {
-            fprintf(
-              report,
-              "%s\n",
-              explanation->explanation[i].c_str()
-            );
-          }
-        }
-
-        fprintf(
-          report,
-          "====================================================\n"
-        );
-      }
-    }
-  }
-
-  fclose( report );
-}
-
-/*
- *  Write coverage report
- */
-void WriteCoverageReport()
-{
-  FILE *report;
-  std::list<Coverage::CoverageRange>::iterator it;
-
-  /*
-   *  Now begin to write the real report
-   */
-  report = fopen( coverageReportFile, "w" );
-
-  if ( !report ) {
-    fprintf( stderr, "Unable to open %s\n\n", coverageReportFile );
-    usage();
-    exit(-1);
-  }
-
-  if ( verbose )
-    fprintf( stderr, "Writing Coverage Report\n" );
-
-  for (it =  Ranges->Set.begin() ;
-       it != Ranges->Set.end() ;
-       it++ ) {
-    const Coverage::Explanation *explanation;
-    std::string lowLine;
-    std::string highLine;
-
-    lowLine  = CoverageMap->getSourceLine( it->lowAddress );
-    highLine = CoverageMap->getSourceLine( it->highAddress );
-
-    explanation = Explanations->lookupExplanation( lowLine );
-
-    fprintf(
-      report,
-      "============ Range: %08x - %08x ============\n"
-      "%08x : %s\n"
-      "%08x : %s\n"
-      "Size : %d\n"
-      "\n",
-      it->lowAddress,   it->highAddress,
-      it->lowAddress,   lowLine.c_str(),
-      it->highAddress,  highLine.c_str(),
-      it->highAddress - it->lowAddress + 1
-    );
-
-    if ( !explanation ) {
-      fprintf(
-        report,
-        "Classification: NONE\n"
-        "\n"
-        "Explanation:\n"
-        "No Explanation\n"
-      );
-    } else {
-      fprintf(
-        report,
-        "Classification: %s\n"
-        "\n"
-        "Explanation:\n",
-        explanation->classification.c_str()
-      );
-
-      
-      for ( unsigned int i=0 ;
-            i < explanation->explanation.size();
-            i++) {
-        fprintf(
-          report,
-          "%s\n",
-          explanation->explanation[i].c_str()
-        );
-      }
-    }
-
-    fprintf(
-      report,
-      "====================================================\n"
-    );
-  }
-
-  fclose( report );
-}
-
-/*
- *  Write size report
- */
-void WriteSizeReport(void)
-{
-  FILE *report;
-  std::list<Coverage::CoverageRange>::iterator it;
-
-  /*
-   *  Now begin to write the real report
-   */
-  report = fopen( sizeReportFile, "w" );
-
-  if ( !report ) {
-    fprintf( stderr, "Unable to open %s\n\n", sizeReportFile );
-    usage();
-    exit(-1);
-  }
-
-  if ( verbose )
-    fprintf( stderr, "Writing Report\n" );
-
-  for (it =  Ranges->Set.begin() ;
-       it != Ranges->Set.end() ;
-       it++ ) {
-    fprintf(
-      report,
-      "%s\t%d\n",
-      CoverageMap->getSourceLine( it->lowAddress ).c_str(),
-      it->highAddress - it->lowAddress + 1
-    );
-  }
-
-  fclose( report );
-
-}
-
 #define PrintableString(_s) \
        ((!(_s)) ? "NOT SET" : (_s))
 
@@ -687,7 +460,7 @@ int main(
   if ( coverageReportFile ) {
     if ( verbose )
       fprintf( stderr, "Writing coverage report (%s)\n", coverageReportFile );
-    WriteCoverageReport();
+    WriteCoverageReport( coverageReportFile );
 
     /*
      *  Let the user know how many cases there were
@@ -701,7 +474,7 @@ int main(
   if ( branchReportFile ) {
     if ( verbose )
       fprintf( stderr, "Writing branch report (%s)\n", branchReportFile );
-    WriteBranchReport();
+    WriteBranchReport( branchReportFile, lowAddress, highAddress );
 
     /*
      *  Let the user know how many branch cases were found
@@ -728,19 +501,15 @@ int main(
   if ( sizeReportFile ) {
     if ( verbose )
       fprintf( stderr, "Writing size report (%s)\n", sizeReportFile );
-    WriteSizeReport();
+    WriteSizeReport( sizeReportFile );
   }
 
   /*
    *  Generate annotated assembly file
    */
-  ObjdumpProcessor->writeAnnotated(
-    CoverageMap,
-    lowAddress,
-    highAddress,
-    "annotated.txt",
-    "annotated.html"
-  );
+  if ( verbose )
+    fprintf( stderr, "Writing annotated report (%s)\n", "annotated.txt" );
+  WriteAnnotatedReport( "annotated.txt", lowAddress, highAddress );
 
   /*
    * write explanations that were not found
