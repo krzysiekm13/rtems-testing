@@ -1,5 +1,9 @@
 2010-03-05	Glenn Humphrey
 
+	* do_coverage:  Added the automatic generation of the rtems.syms file.
+
+2010-03-05	Glenn Humphrey
+
 	* CoverageFactory.cc, CoverageFactory.h, CoverageMap.h,
 	CoverageMapBase.cc, CoverageMapBase.h, CoverageRanges.cc,
 	CoverageRanges.h, CoverageReaderBase.h, CoverageReaderQEMU.cc,

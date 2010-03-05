@@ -349,11 +349,61 @@ generate_reports()
   rm -rf ${results_dir}
 }
 
+# This grabs the list of methods from a library or object file
+filter_nm()
+{
+  for l in $*
+  do
+    test ${verbose} = "yes" && echo Generating symbols from ${l} >&2
+    # echo "========= START $l"
+    ${TARGET}-nm --format=sysv $l | grep "FUNC|" | \
+      cut -d'|' -f1 | sed -e 's/ *$//'
+    # echo "========= END $l"
+  done
+}
+
 # generate the list of symbols to analyze
 generate_symbols()
 {
-  # this will do until we generate the symbols list
-  cp ${BASEDIR}/rtems.syms ${BASEDIR}/${BSP}-tests
+  cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/cpukit
+  check_status $? "could not cd to object directory"
+
+  # Base set of libraries to analyse.  Do NOT include libscorecpu.a!!!
+  filter_nm score/libscore.a sapi/libsapi.a rtems/librtems.a
+
+  # Now add the POSIX API onto that
+  if [ ${do_posix} = "yes" ] ; then
+    filter_nm posix/libposix.a
+  fi
+
+  # Now add developmental libraries
+  # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
+  if [ ${do_developmental} = "yes" ] ; then
+    # filter_nm libfs/librfs.a
+    # filter_nm libfs/libdosfs.a
+    filter_nm libfs/libimfs.a
+    filter_nm libcsupport/libcsupport.a
+    # filter_nm libi2c/libi2c.a
+    # filter_nm zlib/libz.a
+    # filter_nm libmd/libmd.a
+    # filter_nm libmisc/libshell.a
+    filter_nm libmisc/libbspcmdline.a
+    filter_nm libmisc/libcpuuse.a
+    # filter_nm libmisc/libuuid.a
+    filter_nm libmisc/libstackchk.a
+    # filter_nm libmisc/libmw-fb.a
+    # NEVER INCLUDE libdummy.a!!!
+    # filter_nm libmisc/libdummy.a
+    # filter_nm libmisc/libfsmount.a
+    filter_nm libmisc/libstringto.a
+    filter_nm libmisc/libdevnull.a
+    # filter_nm libmisc/libcapture.a
+    filter_nm libmisc/libdumpbuf.a
+    # filter_nm libmisc/libmonitor.a
+    # filter_nm libmisc/libserdbg.a
+    # filter_nm libmisc/libuntar.a
+    # filter_nm libblock/libblock.a
+  fi
 }
 
 # Now we are ready to start doing real work
@@ -511,7 +561,7 @@ if [ ${do_reports} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  generate_symbols
+  generate_symbols >${BASEDIR}/${BSP}-tests/rtems.syms
 
   generate_reports ${TARGET} ${BSP} ${COVERAGE_FORMAT}
 else
