@@ -322,14 +322,18 @@ int main(
          itr != SymbolsToAnalyze->set.end();
          itr++) {
 
-      // Scan through the symbol's unified coverage map.
+      // If the symbol's unified coverage map exists, scan through it
+      // and count bytes.
       theCoverageMap = itr->second.unifiedCoverageMap;
-      endAddress = itr->second.size - 1;
+      if (theCoverageMap) {
 
-      for (a = 0; a < endAddress; a++) {
-        totalBytes++;
-        if (!theCoverageMap->wasExecuted( a ))
-          notExecuted++;
+        endAddress = itr->second.size - 1;
+
+        for (a = 0; a < endAddress; a++) {
+          totalBytes++;
+          if (!theCoverageMap->wasExecuted( a ))
+            notExecuted++;
+        }
       }
     }
 

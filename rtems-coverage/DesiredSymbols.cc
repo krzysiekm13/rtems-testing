@@ -121,10 +121,16 @@ namespace Coverage {
 
       // Create containers for the symbol's uncovered ranges and branches.
       theRanges = new CoverageRanges();
+      itr->second.uncoveredRanges = theRanges;
       theBranches = new CoverageRanges();
+      itr->second.uncoveredBranches = theBranches;
 
-      // Scan through the symbol's unified coverage map.
+      // If the unified coverage map exists, ...
       theCoverageMap = itr->second.unifiedCoverageMap;
+      if (!theCoverageMap)
+        continue;
+
+      // scan through it.
       endAddress = itr->second.size - 1;
       a = 0;
       while (a <= endAddress) {
@@ -193,10 +199,6 @@ namespace Coverage {
         else
           a++;
       }
-
-      // Save the uncovered ranges and branches containers.
-      itr->second.uncoveredRanges = theRanges;
-      itr->second.uncoveredBranches = theBranches;
     }
   }
 
