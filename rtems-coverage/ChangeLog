@@ -1,3 +1,11 @@
+2010-03-05	Joel Sherrill <joel.sherrilL@oarcorp.com>
+
+	* .cvsignore: Add covoar
+	* CoverageMapBase.cc: Fix off by one bug which resulted in thinking
+	there was branch information on simulators which provided no branch
+	information.
+	* do_coverage: Improve error message.
+
 2010-03-05	Glenn Humphrey
 
 	* do_coverage:  Added the automatic generation of the rtems.syms file.

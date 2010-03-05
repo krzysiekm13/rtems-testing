@@ -28,7 +28,7 @@ namespace Coverage {
 
     Info = new perAddressInfo_t[ high - low + 1 ];
 
-    for (a=low; a<high; a++) {
+    for (a=low; a<=high; a++) {
 
       perAddressInfo_t *i = &Info[ a-low ];
 

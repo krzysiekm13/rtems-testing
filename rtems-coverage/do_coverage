@@ -213,7 +213,8 @@ fi
 # Basic error checking and sanity checking on the directory structure
 # and PATH
 if [ ! -d ${COVBASE} ] ; then
-  echo You do not have ${COVBASE}
+  echo "The directory you specified for the base of the coverage run is "
+  echo "not present. (${COVBASE})"
   exit 1
 fi
 
