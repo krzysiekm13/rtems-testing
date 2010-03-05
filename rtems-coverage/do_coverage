@@ -36,8 +36,8 @@ USAGE=\
         -b        -- Build RTEMS (default=no)
         -C        -- copy tests from build to test execution point (default=no)
         -r        -- run the tests (default=no)
+        -R        -- generate reports (default=no)
         -f        -- publish the results to ftp site (default=no)
-        -R        -- generate a report (default=no)
 
 Notes:  + There are currently NO checks at each step to determine if
           the previous steps were performed!!!
@@ -92,7 +92,7 @@ do_rtems_configure="no"
 do_rtems_build="no"
 do_copy_tests="no"
 do_run_tests="no"
-do_report="no"
+do_reports="no"
 do_publish="no"
 BSP="not_set"
 
@@ -108,7 +108,7 @@ do
           do_rtems_build="yes"
           do_copy_tests="yes"
           do_run_tests="yes"
-          do_report="yes"
+          do_reports="yes"
           ;;
         B) BSP="${OPTARG}";;
         v) verbose=`toggle ${verbose}` ;;
@@ -121,7 +121,7 @@ do
         b) do_rtems_build=`toggle ${do_rtems_build}` ;;
         C) do_copy_tests=`toggle ${do_copy_tests}` ;;
         r) do_run_tests=`toggle ${do_run_tests}` ;;
-        R) do_report=`toggle ${do_report}` ;;
+        R) do_reports=`toggle ${do_reports}` ;;
         f) do_publish=`toggle ${do_publish}` ;;
         *) fatal;;
     esac
@@ -150,7 +150,7 @@ fi
 # For most BSPs, there is a script with the same name as the BSP.
 RUNNER=${BSP}
 
-RTEMSEXT=exe
+RTEMSEXT=ralf
 case ${BSP} in
   pc386)
     CPU=i386
@@ -165,7 +165,6 @@ case ${BSP} in
   qemuppc)
     CPU=powerpc
     COVERAGE_FORMAT=QEMU
-    RTEMSEXT=ralf
     ;;
   erc32|leon2|leon3)
     CPU=sparc
@@ -202,7 +201,7 @@ print_verbose()
   echo "do_rtems_build:     " ${do_rtems_build}
   echo "do_copy_tests:      " ${do_copy_tests}
   echo "do_run_tests:       " ${do_run_tests}
-  echo "do_report:          " ${do_report}
+  echo "do_reports:         " ${do_reports}
   echo "do_publish:         " ${do_publish}
   echo "Clean Before:       " ${do_clean}
 }
@@ -220,12 +219,6 @@ fi
 
 if [ ! -d ${RTEMSDIR} ] ; then
   echo "Check out RTEMS!!!"
-  exit 1
-fi
-
-grep _COVERAGE ${RTEMSDIR}/c/src/make/leaf.cfg >/dev/null
-if [ $? -ne 0 ] ; then
-  echo "It doesn't look like you patched the RTEMS source for coverage."
   exit 1
 fi
 
@@ -306,7 +299,7 @@ generate_html()
 }
 
 # generate the coverage report set
-generate_report()
+generate_reports()
 {
   if [ $# -ne 3 ] ; then
     echo Usage: ${0} TARGET BSP COVERAGE_FORMAT
@@ -320,40 +313,23 @@ generate_report()
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  ${NM} -g -n hello.exe >hello.num
-
-  # Basic validity checking
-  tlow=`grep "T ${lowsym}$" hello.num | cut -d' ' -f1`
-  if [ X${tlow} = X ] ; then
-    echo "low symbol (${lowsym}) not found"
-  fi
-  thigh=`grep "T ${highsym}$" hello.num | cut -d' ' -f1`
-  if [ X${thigh} = X ] ; then
-    echo "high symbol (${highsym}) not found"
-  fi
-
-  if [ X${tlow} = X -o X${thigh} = X ] ; then
-    echo "Did you patch RTEMS for coverage testing?"
-    exit 1
-  fi
-
-  rm -f merged.cov summary.txt report.txt branch.txt sizes.txt
+  rm -f summary.txt annotated.txt uncovered.txt branch.txt sizes.txt
 
   ( check_endof ; \
     echo "Optimization Level : " ${c_opt} ; \
     echo "POSIX Enabled      : " ${do_posix} ; \
     echo "Developmental Code : " ${do_developmental} ; \
   ) >summary.txt
-  ${COVBASE}/covmerge \
-    -l 0x${tlow} -h 0x${thigh} \
-    -r report.txt -b branch.txt -s sizes.txt \
-    -E ${COVBASE}/Explanations.txt \
+  ${COVBASE}/covoar \
+    -T ${TARGET} \
     -f ${COVERAGE_FORMAT} \
-    -T ${TARGET} -e hello.exe -m merged.cov *.cov        >>summary.txt
-  check_status $? "covmerge failed"
+    -E ${COVBASE}/Explanations.txt \
+    -e ralf -c ralf.cov \
+    *.ralf >> summary.txt
+  check_status $? "covoar failed"
 
   (echo "====== Largest Range Sizes (Size and Count)======" ; \
-    grep ^Size report.txt | cut -d':' -f2 | sort -n | uniq -c | \
+    grep ^Size uncovered.txt | cut -d':' -f2 | sort -n | uniq -c | \
        tail -15 | sed -e 's/ *\([0-9]*\) *\([0-9]*\)/\2 \1/' | sort -n -r | \
        while read l; do printf "%6d %6d\n" $l; done ; \
     echo "=====================================" ) >>summary.txt
@@ -365,14 +341,19 @@ generate_report()
   # Now create the archive of information
   rm -rf ${results_dir}
   mkdir ${results_dir}
-  cp summary.txt report.txt branch.txt sizes.txt configuration.txt \
-     annotated.txt hello.num row.html ${results_dir}
+  cp summary.txt uncovered.txt branch.txt sizes.txt configuration.txt \
+     annotated.txt row.html ${results_dir}
   cp ${COVBASE}/Explanations.txt.NotFound ${results_dir}
-  cp hello.exe ${results_dir}
-  bzip2 -9 ${results_dir}/hello.exe
   echo "Results saved in ${results_dir}.tar.bz2"
   tar cjf ${results_dir}.tar.bz2 ${results_dir}
   rm -rf ${results_dir}
+}
+
+# generate the list of symbols to analyze
+generate_symbols()
+{
+  # this will do until we generate the symbols list
+  cp ${BASEDIR}/rtems.syms ${BASEDIR}/${BSP}-tests
 }
 
 # Now we are ready to start doing real work
@@ -491,11 +472,11 @@ if [ ${do_copy_tests} = "yes" ] ; then
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
-  cp `find . -name *.${RTEMSEXT} -o -name hello.exe` ../${BSP}-tests
-  if [ -r ./i386-rtems4.?/c/pc*/testsuites/samples/hello/hello.nxe ] ; then
-  cp ./i386-rtems4.?/c/pc*/testsuites/samples/hello/hello.nxe \
-     ../${BSP}-tests/hello.exe
-  fi
+  find `pwd` -name "*.ralf" -o -name "*.exe" | while read f
+  do
+    rm -f ../${BSP}-tests/`basename ${f}`
+    ln -s ${f} ../${BSP}-tests
+  done
   
 else
   echo "Skipping copying tests..."
@@ -512,9 +493,9 @@ else
   echo "Skipping Running tests..."
 fi
 
-# If requested, generate the coverage report
-if [ ${do_report} = "yes" ] ; then
-  echo "Generating report..."
+# If requested, generate the coverage reports
+if [ ${do_reports} = "yes" ] ; then
+  echo "Generating reports..."
 
   # Generate the configuration settings file
   ( \
@@ -530,12 +511,14 @@ if [ ${do_report} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  generate_report ${TARGET} ${BSP} ${COVERAGE_FORMAT}
+  generate_symbols
+
+  generate_reports ${TARGET} ${BSP} ${COVERAGE_FORMAT}
 else
-  echo "Skipping Generating report..."
+  echo "Skipping Generating reports..."
 fi
 
-# If requested, publish the coverage report
+# If requested, publish the coverage reports
 if [ ${do_publish} = "yes" ] ; then
   if [ -d ${BASEDIR}/${BSP}-tests ] ; then
     cp ${BASEDIR}/${BSP}-tests/${results_dir}.tar.bz2 ${FTPDIR}
@@ -545,7 +528,7 @@ if [ ${do_publish} = "yes" ] ; then
     echo "No results to publish"
   fi
 else
-  echo "Skipping Publishing report..."
+  echo "Skipping Publishing reports..."
 fi
 stop=`date`
 

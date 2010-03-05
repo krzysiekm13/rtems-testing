@@ -11,6 +11,7 @@
 #ifndef __COVERAGE_WRITER_TSIM_H__
 #define __COVERAGE_WRITER_TSIM_H__
 
+#include "CoverageMapBase.h"
 #include "CoverageWriterBase.h"
 
 namespace Coverage {
@@ -25,24 +26,23 @@ namespace Coverage {
   public:
 
     /*! 
-     *  This method is the default constructor of a CoverageWriterTSIM instance.
+     *  This method constructs a CoverageWriterTSIM instance.
      */
     CoverageWriterTSIM();
 
     /*! 
-     *  This method is the destructor for a CoverageWriterTSIM instance.
+     *  This method destructs a CoverageWriterTSIM instance.
      */
     virtual ~CoverageWriterTSIM();
 
     /* Inherit documentation from base class. */
     void writeFile(
-      const char                *file,
-      Coverage::CoverageMapBase *coverage,
-      uint32_t                   lowAddress,
-      uint32_t                   highAddress
+      const char* const file,
+      CoverageMapBase*  coverage,
+      uint32_t          lowAddress,
+      uint32_t          highAddress
     );
   };
 
 }
 #endif
-

@@ -11,44 +11,44 @@
 #ifndef __COVERAGE_READER_BASE_H__
 #define __COVERAGE_READER_BASE_H__
 
-#include "CoverageMapBase.h"
+#include "ExecutableInfo.h"
 
 namespace Coverage {
 
   /*! @class CoverageReaderBase
    *
    *  This is the specification of the CoverageReader base class.
-   *  All CoverageReader implementations inherit from this.
+   *  All CoverageReader implementations inherit from this class.
    */
   class CoverageReaderBase {
 
   public:
 
     /*! 
-     *  This method is the default constructor of a CoverageReaderBase instance.
+     *  This method constructs a CoverageReaderBase instance.
      */
     CoverageReaderBase();
 
     /*! 
-     *  This method is the destructor for a CoverageReaderBase instance.
+     *  This method destructs a CoverageReaderBase instance.
      */
     virtual ~CoverageReaderBase();
 
     /*!
-     *  Process the input @a file and add it to the @a coverage map.
+     *  This method processes the coverage information from the input
+     *  @a file and adds it to the specified @a executableInformation.
      *
-     *  @param[in] file is the file to process
-     *  @param[in] coverage is the coverage map to update
+     *  @param[in] file is the coverage file to process
+     *  @param[in] executableInformation is the information for an
+     *             associated executable
      *
-     *  @return This method returns TRUE if the method succeeded 
-     *  and FALSE if it failed.
+     *  @return Returns TRUE if the method succeeded and FALSE if it failed.
      */
-    virtual bool ProcessFile(
-      const char      *file,
-      CoverageMapBase *coverage
+    virtual bool processFile(
+      const char* const     file,
+      ExecutableInfo* const executableInformation
     ) = 0;
   };
 
 }
 #endif
-

@@ -22,14 +22,16 @@ namespace Coverage {
   }
 
   void CoverageRanges::add(
-    uint32_t lowAddressArg,
-    uint32_t highAddressArg
+    uint32_t          lowAddressArg,
+    uint32_t          highAddressArg,
+    uncoveredReason_t why
   )
   {
-    CoverageRange c;
+    coverageRange_t c;
 
     c.lowAddress  = lowAddressArg;
     c.highAddress = highAddressArg;
-    Set.push_back(c);
+    c.reason      = why;
+    set.push_back(c);
   }
 }

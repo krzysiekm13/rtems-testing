@@ -10,11 +10,11 @@
  *  Skyeye (http://www.skyeye.org).
  */
 
-#include "CoverageWriterSkyeye.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "CoverageWriterSkyeye.h"
 #include "skyeye_header.h"
 
 namespace Coverage {
@@ -27,29 +27,27 @@ namespace Coverage {
   {
   }
 
-  
   void CoverageWriterSkyeye::writeFile(
-    const char                *file,
-    Coverage::CoverageMapBase *coverage,
-    uint32_t                   lowAddress,
-    uint32_t                   highAddress
+    const char* const file,
+    CoverageMapBase*  coverage,
+    uint32_t          lowAddress,
+    uint32_t          highAddress
   )
   {
-    FILE          *coverageFile;
-    uint32_t       a;
-    int            status;
-    uint8_t        cover;
-    prof_header_t  header;
+    uint32_t      a;
+    uint8_t       cover;
+    FILE*         coverageFile;
+    prof_header_t header;
+    int           status;
 
     /*
      *  read the file and update the coverage map passed in
      */
-
     coverageFile = fopen( file, "w" );
     if ( !coverageFile ) {
       fprintf(
         stderr,
-        "CoverageWriterSkyeye::ProcessFile - unable to open %s\n",
+        "ERROR: CoverageWriterSkyeye::writeFile - unable to open %s\n",
         file
       );
       exit(-1);
@@ -67,8 +65,8 @@ namespace Coverage {
     if (status != sizeof(header)) {
       fprintf(
         stderr,
-        "CoverageWriterSkyeye::ProcessFile - unable to write header "
-           "to %s\n",
+        "ERROR: CoverageWriterSkyeye::writeFile - unable to write header "
+        "to %s\n",
         file
       );
       exit(-1);
@@ -79,7 +77,13 @@ namespace Coverage {
       cover |= ((coverage->wasExecuted( a + 4 )) ? 0x10 : 0);
       status = fwrite(&cover, 1, sizeof(cover), coverageFile);
       if (status != sizeof(cover)) {
-	fprintf( stderr, "Error writing in %s at address 0x%08x\n", file, a );
+	fprintf(
+          stderr,
+          "ERROR: CoverageWriterSkyeye::writeFile - write to %s "
+          "at address 0x%08x failed\n",
+          file,
+          a
+        );
 	exit( -1 );
       }
       // fprintf( stderr, "0x%x %d\n", a, cover );

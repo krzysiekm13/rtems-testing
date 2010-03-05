@@ -12,17 +12,17 @@
 #define __COVERAGE_READER_RTEMS_H__
 
 #include "CoverageReaderBase.h"
+#include "ExecutableInfo.h"
 
 namespace Coverage {
 
   /*! @class CoverageReaderRTEMS
    *
-   *  This class implements the class which reads a coverage map file
-   *  produced by RTEMS.  Since the SPARC has 32-bit instructions,
+   *  This class implements the functionality which reads a coverage map
+   *  file produced by RTEMS.  Since the SPARC has 32-bit instructions,
    *  RTEMS produces a file with an integer for each 32-bit word.  The
-   *  integer will have the least significant bit if the address
+   *  integer will have the least significant bit set if the address
    *  was executed.
-
 @verbatim
 TBD
 @endverbatim
@@ -38,12 +38,11 @@ TBD
     virtual ~CoverageReaderRTEMS();
 
     /* Inherit documentation from base class. */
-    bool ProcessFile(
-      const char      *file,
-      CoverageMapBase *coverage
+    bool processFile(
+      const char* const     file,
+      ExecutableInfo* const executableInformation
     );
   };
 
 }
 #endif
-

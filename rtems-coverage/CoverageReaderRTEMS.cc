@@ -9,12 +9,12 @@
  *  reading the RTEMS coverage data files.
  */
 
-#include "CoverageReaderRTEMS.h"
-#include "CoverageMapBase.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include "CoverageReaderRTEMS.h"
+#include "ExecutableInfo.h"
 #include "rtemscov_header.h"
 
 namespace Coverage {
@@ -27,9 +27,9 @@ namespace Coverage {
   {
   }
 
-  bool CoverageReaderRTEMS::ProcessFile(
-    const char      *file,
-    CoverageMapBase *coverage
+  bool CoverageReaderRTEMS::processFile(
+    const char* const     file,
+    ExecutableInfo* const executableInformation
   )
   {
     FILE                        *coverageFile;
@@ -41,9 +41,9 @@ namespace Coverage {
     rtems_coverage_map_header_t  header;
     struct stat                  statbuf;
 
-    /*
-     *  Verify it has a non-zero size
-     */
+    //
+    // Verify that the coverage file has a non-zero size.
+    //
     status = stat( file, &statbuf );
     if ( status == -1 ) {
       fprintf( stderr, "Unable to stat %s\n", file );
@@ -55,9 +55,9 @@ namespace Coverage {
       return false;
     }
 
-    /*
-     *  read the file and update the coverage map passed in
-     */
+    //
+    // Open the coverage file and read the header.
+    //
     coverageFile = fopen( file, "r" );
     if ( !coverageFile ) {
       fprintf( stderr, "Unable to open %s\n", file );
@@ -84,7 +84,10 @@ namespace Coverage {
       (unsigned long) length
     );
     #endif
-      
+
+    //
+    // Read and process each line of the coverage file.
+    //
     for ( i=0 ; i<length ; i++ ) {
       status = fread( &cover, sizeof(uint8_t), 1, coverageFile );
       if ( status != 1 ) {
@@ -98,7 +101,7 @@ namespace Coverage {
       }
 
       if ( cover ) {
-        coverage->setWasExecuted( baseAddress + i );
+        executableInformation->markWasExecuted( baseAddress + i );
       }
     }
 

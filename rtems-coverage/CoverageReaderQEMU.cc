@@ -9,11 +9,12 @@
  *  reading the QEMU coverage data files.
  */
 
-#include "CoverageReaderQEMU.h"
-#include "CoverageMapBase.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+
+#include "CoverageReaderQEMU.h"
+#include "ExecutableInfo.h"
 
 /* XXX really not always right */
 typedef uint32_t target_ulong;
@@ -30,44 +31,43 @@ namespace Coverage {
   {
   }
 
-  bool CoverageReaderQEMU::ProcessFile(
-    const char      *file,
-    CoverageMapBase *coverage
+  bool CoverageReaderQEMU::processFile(
+    const char* const     file,
+    ExecutableInfo* const executableInformation
   )
   {
-    uint32_t            beginning;
     struct trace_entry  entry;
     struct trace_header header;
     uintptr_t           i;
     struct stat         statbuf;
     int                 status;
-    FILE               *traceFile;
+    FILE*               traceFile;
 
-    /*
-     *  Verify it has a non-zero size
-     */
+    //
+    // Verify that the coverage file has a non-zero size.
+    //
     status = stat( file, &statbuf );
-    if ( status == -1 ) {
+    if (status == -1) {
       fprintf( stderr, "Unable to stat %s\n", file );
       return false;
     }
 
-    if ( statbuf.st_size == 0 ) {
+    if (statbuf.st_size == 0) {
       fprintf( stderr, "%s is 0 bytes long\n", file );
       return false;
     }
 
-    /*
-     *  read the file and update the coverage map passed in
-     */
+    //
+    // Open the coverage file and read the header.
+    //
     traceFile = fopen( file, "r" );
-    if ( !traceFile ) {
+    if (!traceFile) {
       fprintf( stderr, "Unable to open %s\n", file );
       return false;
     }
 
     status = fread( &header, sizeof(trace_header), 1, traceFile );
-    if ( status != 1 ) {
+    if (status != 1) {
       fprintf( stderr, "Unable to read header from %s\n", file );
       return false;
     }
@@ -90,38 +90,36 @@ namespace Coverage {
        );
     #endif
 
+    //
+    // Read and process each line of the coverage file.
+    //
     while (1) {
       status = fread( &entry, sizeof(struct trace_entry), 1, traceFile );
-      if ( status != 1 )
+      if (status != 1)
         break;
       #if 0
         fprintf( stderr, "0x%08x %d 0x%2x\n", entry.pc, entry.size, entry.op );
       #endif
 
-      /* Mark block as fully executed. */
-      if ( entry.op & TRACE_OP_BLOCK ) {
-        for ( i=0 ; i<entry.size ; i++ ) {
-          coverage->setWasExecuted( entry.pc + i );
+      // Mark block as fully executed.
+      if (entry.op & TRACE_OP_BLOCK) {
+        for (i=0; i<entry.size; i++) {
+          executableInformation->markWasExecuted( entry.pc + i );
         }
       }
 
-      /* Determine if additional branch information is available. */
+      // Determine if additional branch information is available. */
       if (entry.op & 0x0f) {
 
-        if (coverage->getBeginningOfInstruction(
-              entry.pc + entry.size -1, &beginning
-            )) {
+        if (entry.op & TRACE_OP_TAKEN)
+          executableInformation->markBranchTaken(
+            entry.pc + entry.size -1
+          );
 
-          if (entry.op & TRACE_OP_TAKEN) {
-            coverage->setIsBranch( beginning );
-            coverage->setWasTaken( beginning );
-          }
-
-          else if (entry.op & TRACE_OP_NOT_TAKEN) {
-            coverage->setIsBranch( beginning );
-            coverage->setWasNotTaken( beginning );
-          }
-        }
+        else if (entry.op & TRACE_OP_NOT_TAKEN)
+          executableInformation->markBranchNotTaken(
+            entry.pc + entry.size -1
+          );
       }
     }
 

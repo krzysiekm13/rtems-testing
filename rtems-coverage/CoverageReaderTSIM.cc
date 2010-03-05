@@ -9,10 +9,12 @@
  *  for the coverage files written by the SPARC simulator TSIM.
  */
 
-#include "CoverageReaderTSIM.h"
-#include "CoverageMapBase.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+
+#include "CoverageReaderTSIM.h"
+#include "ExecutableInfo.h"
 
 namespace Coverage {
 
@@ -24,26 +26,44 @@ namespace Coverage {
   {
   }
 
-  bool CoverageReaderTSIM::ProcessFile(
-    const char      *file,
-    CoverageMapBase *coverage
+  bool CoverageReaderTSIM::processFile(
+    const char* const     file,
+    ExecutableInfo* const executableInformation
   )
   {
-    FILE *coverageFile;
-    int   baseAddress;
-    int   status;
-    int   i;
-    int   cover;
+    int         baseAddress;
+    int         cover;
+    FILE*       coverageFile;
+    int         i;
+    struct stat statbuf;
+    int         status;
 
-    /*
-     *  read the file and update the coverage map passed in
-     */
+    //
+    // Verify that the coverage file has a non-zero size.
+    //
+    status = stat( file, &statbuf );
+    if ( status == -1 ) {
+      fprintf( stderr, "Unable to stat %s\n", file );
+      return false;
+    }
+
+    if ( statbuf.st_size == 0 ) {
+      fprintf( stderr, "%s is 0 bytes long\n", file );
+      return false;
+    }
+
+    //
+    // Open the coverage file.
+    //
     coverageFile = fopen( file, "r" );
     if ( !coverageFile ) {
       fprintf( stderr, "Unable to open %s\n", file );
       return false;
     }
 
+    //
+    // Read and process each line of the coverage file.
+    //
     while ( 1 ) {
       status = fscanf( coverageFile, "%x : ", &baseAddress );
       if ( status == EOF || status == 0 ) {
@@ -63,10 +83,10 @@ namespace Coverage {
 	}
         // fprintf( stderr, "%d ", cover );
         if ( cover & 1 ) {
-          coverage->setWasExecuted( baseAddress + i );
-          coverage->setWasExecuted( baseAddress + i + 1 );
-          coverage->setWasExecuted( baseAddress + i + 2 );
-          coverage->setWasExecuted( baseAddress + i + 3 );
+          executableInformation->markWasExecuted( baseAddress + i );
+          executableInformation->markWasExecuted( baseAddress + i + 1 );
+          executableInformation->markWasExecuted( baseAddress + i + 2 );
+          executableInformation->markWasExecuted( baseAddress + i + 3 );
         }
       }
       // fprintf( stderr, "\n" );

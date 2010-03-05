@@ -10,31 +10,18 @@
  *  coverage map. 
  */
 
-#include "ObjdumpProcessor.h"
+#include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+
+#include "ObjdumpProcessor.h"
 #include "app_common.h"
-#include <assert.h>
+#include "ExecutableInfo.h"
 
 namespace Coverage {
 
-  ObjdumpLine::ObjdumpLine()
-  {
-    isInstruction = false;
-    isNop         = false;
-    nopSize       = 0;
-    address       = 0xffffffff;
-  } 
-
-  ObjdumpLine::~ObjdumpLine()
-  {
-  } 
-
-  /*
-   * ObjdumpProcessor Class
-   */
   ObjdumpProcessor::ObjdumpProcessor()
   {
   }
@@ -43,73 +30,41 @@ namespace Coverage {
   {
   }
 
-  bool ObjdumpProcessor::isInstruction(
-    const char *line
-  )
-  {
-    int i; 
-    bool allBlank = true;
-    
-    for ( i=0 ; i<8 ; i++ ) {
-      if ( isxdigit( line[i] ) ) {
-        allBlank = false;
-        continue;
-      }
-      if ( isspace( line[i] ) ) {
-        continue;
-      }
-      return false;
-    }
-
-    if ( allBlank )
-      return false;
-
-    if ( line[8] != ':' )
-      return false;
-
-    return true;
-  }
-
   bool ObjdumpProcessor::isNop(
-    const char *line,
-    int        &size
+    const char* const line,
+    int&              size
   )
   {
     bool        isNop = false;
     const char *target = Tools->getTarget();
 
-    if ( !isInstruction(line) ) {
-      size = 0;
-      return false;
-    }
-
     size = 0;
 
     // common patterns
-    if ( !strcmp( &line[strlen(line)-3], "nop") )
+    if (!strcmp( &line[strlen(line)-3], "nop"))
       isNop = true;
 
     
     // now check target specific patterns and return proper size if "nop"
 
     // Check ARM nops
-    if ( !strncmp( target, "arm", 3 ) ) {
-      if ( isNop ) {
+    if (!strncmp( target, "arm", 3 )) {
+      if (isNop) {
         size = 4; 
         return true;
       }
     
       // On ARM, there are literal tables at the end of methods.
       // We need to avoid them.
-      if ( !strncmp( &line[strlen(line)-10], ".byte", 5) ) {
+      if (!strncmp( &line[strlen(line)-10], ".byte", 5)) {
         size = 1;
         return true;
       }
-      if ( !strncmp( &line[strlen(line)-13], ".short", 6) ) {
+      if (!strncmp( &line[strlen(line)-13], ".short", 6)) {
         size = 2;
         return true;
       }
-      if ( !strncmp( &line[strlen(line)-16], ".word", 5) ) {
+      if (!strncmp( &line[strlen(line)-16], ".word", 5)) {
         size = 4;
         return true;
       }
@@ -118,29 +73,29 @@ namespace Coverage {
     }
 
     // Check i386 nops
-    if ( !strncmp( target, "i386", 4 ) ) {
-      if ( isNop ) {
+    if (!strncmp( target, "i386", 4 )) {
+      if (isNop) {
         size = 1; 
         return true;
       }
       // i386 has some two and three byte nops
-      if ( !strncmp( &line[strlen(line)-14], "xchg   %ax,%ax", 14) ) {
+      if (!strncmp( &line[strlen(line)-14], "xchg   %ax,%ax", 14)) {
         size = 2;
         return true;
       }
-      if ( !strncmp( &line[strlen(line)-16], "xor    %eax,%eax", 16) ) {
+      if (!strncmp( &line[strlen(line)-16], "xor    %eax,%eax", 16)) {
         size = 2;
         return true;
       }
-      if ( !strncmp( &line[strlen(line)-16], "xor    %ebx,%ebx", 16) ) {
+      if (!strncmp( &line[strlen(line)-16], "xor    %ebx,%ebx", 16)) {
         size = 2;
         return true;
       }
-      if ( !strncmp( &line[strlen(line)-16], "xor    %esi,%esi", 16) ) {
+      if (!strncmp( &line[strlen(line)-16], "xor    %esi,%esi", 16)) {
         size = 2;
         return true;
       }
-      if ( !strncmp( &line[strlen(line)-21], "lea    0x0(%esi),%esi", 21) ) {
+      if (!strncmp( &line[strlen(line)-21], "lea    0x0(%esi),%esi", 21)) {
         size = 3;
         return true;
       }
@@ -149,8 +104,8 @@ namespace Coverage {
     }
 
     // Check M68K/Coldfire nops
-    if ( !strncmp( target, "m68k", 4 ) ) {
-      if ( isNop ) {
+    if (!strncmp( target, "m68k", 4 )) {
+      if (isNop) {
         size = 2; 
         return true;
       }
@@ -158,7 +113,7 @@ namespace Coverage {
       #define GNU_LD_FILLS_ALIGNMENT_WITH_RTS
       #if defined(GNU_LD_FILLS_ALIGNMENT_WITH_RTS)
         // Until binutils 2.20, binutils would fill with rts not nop
-        if ( !strcmp( &line[strlen(line)-3], "rts") ) {
+        if (!strcmp( &line[strlen(line)-3], "rts")) {
           size = 4; 
           return true;
         } 
@@ -168,8 +123,8 @@ namespace Coverage {
     }
 
     // Check i386 nops
-    if ( !strncmp( target, "powerpc", 7 ) ) {
-      if ( isNop ) {
+    if (!strncmp( target, "powerpc", 7 )) {
+      if (isNop) {
         size = 4; 
         return true;
       }
@@ -178,13 +133,13 @@ namespace Coverage {
     }
 
     // Check SPARC nops
-    if ( !strncmp( target, "sparc", 5 ) ) {
-      if ( isNop ) {
+    if (!strncmp( target, "sparc", 5 )) {
+      if (isNop) {
         size = 4; 
         return true;
       }
 
-      if ( !strcmp( &line[strlen(line)-7], "unknown") ) {
+      if (!strcmp( &line[strlen(line)-7], "unknown")) {
         size = 4; 
         return true;
       } 
@@ -199,100 +154,143 @@ namespace Coverage {
     return false;
   }
 
-  bool ObjdumpProcessor::initialize(
-    const char      *executable,
-    CoverageMapBase *coverage
+  void ObjdumpProcessor::load(
+    ExecutableInfo* const executableInformation
   )
   {
-    FILE *objdumpFile;
-    char *cStatus;
-    char  buffer[512];
+    uint32_t           baseAddress;
+    char               buffer[ 512 ];
+    char*              cStatus;
+    uint32_t           endAddress = 0xffffffff;
+    uint32_t           instructionAddress;
+    int                items;
+    objdumpLine_t      lineInfo;
+    FILE*              objdumpFile;
+    bool               processSymbol = false;
+    bool               saveInstructionDump = false;
+    char               symbol[ 100 ];
+    SymbolInformation* symbolInfo = NULL;
+    char               terminator;
 
-    /*
-     * Generate the objdump
-     */
+    // Generate the objdump.
     sprintf( buffer, "%s -da --source %s | sed -e \'s/ *$//\' >objdump.tmp",
-      Tools->getObjdump(), executable );
+      Tools->getObjdump(), (executableInformation->getFileName()).c_str() );
 
-    if ( system( buffer ) ) {
-      fprintf( stderr, "objdump command (%s) failed\n", buffer );
+    if (system( buffer )) {
+      fprintf(
+        stderr,
+        "ERROR: ObjdumpProcessor::load - command (%s) failed\n",
+        buffer
+      );
       exit( -1 );
     }
 
-    /*
-     *  read the file and update the coverage map passed in
-     */
-
+    // Open the objdump file.
     objdumpFile = fopen( "objdump.tmp", "r" );
-    if ( !objdumpFile ) {
+    if (!objdumpFile) {
       fprintf(
         stderr,
-        "ObjdumpProcessor::ProcessFile - unable to open %s\n",
+        "ERROR: ObjdumpProcessor::load - unable to open %s\n",
         "objdump.tmp"
       );
       exit(-1);
     }
 
-    /*
-     *  How many bytes is a nop?
-     */
+    // Process all lines from the objdump file.
     while ( 1 ) {
-      ObjdumpLine contents;
+
+      // Get the line.
       cStatus = fgets( buffer, 512, objdumpFile );
-      if ( cStatus == NULL ) {
+      if (cStatus == NULL) {
         break;
       }
-
       buffer[ strlen(buffer) - 1] = '\0';
 
-      contents.line          = buffer;
-      contents.isInstruction = false;
-      contents.isNop         = false;
-      contents.address       = 0xffffffff;
+      lineInfo.line          = buffer;
+      lineInfo.address       = 0xffffffff;
+      lineInfo.isInstruction = false;
+      lineInfo.isNop         = false;
+      lineInfo.nopSize       = 0;
 
-      contents.isInstruction = isInstruction( buffer );
+      // Look for the start of a symbol's objdump and extract
+      // address and symbol.
+      items = sscanf(
+        buffer,
+        "%x <%[^>]>%c",
+        &baseAddress, symbol, &terminator
+      );
 
-      if ( contents.isInstruction ) {
-        unsigned long l;
-        uint32_t baseAddress;
-        sscanf( buffer, "%lx:", &l );
-        baseAddress = l;
-        contents.address = baseAddress;
+      // If all items found ...
+      if ((items == 3) && (terminator == ':')) {
 
-        coverage->setIsStartOfInstruction( baseAddress );
+        // we are at the beginning of a symbol's objdump and
+        // must end any processing of the previous symbol.
+        processSymbol = false;
+        saveInstructionDump = false;
 
-        contents.isNop = isNop( buffer, contents.nopSize );
+        // See if the symbol is one that we care about.
+        symbolInfo = SymbolsToAnalyze->find( symbol );
+
+        // If it is, ...
+        if (symbolInfo) {
+
+          // indicate that we are processing a symbols objdump and
+          // compute the ending address for termination.
+          processSymbol = true;
+          endAddress = baseAddress +
+           executableInformation->getSymbolTable()->getLength( symbol ) - 1;
+
+          // If there are NOT already instructions available, indicate that they
+          // are to be saved.
+          if (symbolInfo->instructions.empty()) {
+            saveInstructionDump = true;
+            symbolInfo->sourceFile = executableInformation->getFileName();
+            symbolInfo->baseAddress = baseAddress;
+          }
+        }
       }
 
-      Contents.push_back( contents );
+      else if (processSymbol) {
+
+        // See if it is the dump of an instruction.
+        items = sscanf(
+          buffer,
+          "%x%c",
+          &instructionAddress, &terminator
+        );
+
+        // If it looks like an instruction ...
+        if ((items == 2) && (terminator == ':')) {
+
+          // and we are NOT beyond the end of the symbol's objdump,
+          if (instructionAddress <= endAddress) {
+
+            // update the line's information and ...
+            lineInfo.address       = instructionAddress;
+            lineInfo.isInstruction = true;
+            lineInfo.isNop         = isNop( buffer, lineInfo.nopSize );
+
+            // mark the address as the beginning of an instruction.
+            executableInformation->markStartOfInstruction( instructionAddress );
+          }
+
+          // If we are beyond the end of the symbol's objdump,
+          // it's time to end processing of this symbol.
+          else {
+            processSymbol = false;
+            saveInstructionDump = false;
+          }
+        }
+      }
+
+      // If we are processing a symbol, ...
+      if (processSymbol && saveInstructionDump) {
+
+        // add line to the current symbol's information and ...
+        symbolInfo->instructions.push_back( lineInfo );
+
+      }
     }
-    fclose( objdumpFile );
-
-    // Remove temporary file
-    (void) system( "rm -f objdump.tmp" );
-    return true;
   }
 
-  bool ObjdumpProcessor::markNopsAsExecuted(
-    CoverageMapBase *coverage
-  )
-  {
-    ObjdumpLine                      contents;
-    std::list<ObjdumpLine>::iterator it;
-    int                              i;
-
-    for (it = Contents.begin() ; it != Contents.end() ; it++ ) {
-      if ( it->isNop ) {
-         // check the byte immediately before and after the nop
-         // if either was executed, then mark NOP as executed. Otherwise,
-         // we do not want to split the unexecuted range.
-         if ( coverage->wasExecuted( it->address - 1 ) ||
-              coverage->wasExecuted( it->address + it->nopSize ) ) {
-           for ( i=0 ; i < it->nopSize ; i++ )
-             coverage->setWasExecuted( it->address + i );
-         }
-       }
-     }
-     return true;
-  }
 }

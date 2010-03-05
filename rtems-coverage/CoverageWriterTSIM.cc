@@ -9,9 +9,10 @@
  *  for the coverage files written by the SPARC simulator TSIM.
  */
 
-#include "CoverageWriterTSIM.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "CoverageWriterTSIM.h"
 
 namespace Coverage {
   
@@ -25,27 +26,26 @@ namespace Coverage {
 
   
   void CoverageWriterTSIM::writeFile(
-    const char                *file,
-    Coverage::CoverageMapBase *coverage,
-    uint32_t                   lowAddress,
-    uint32_t                   highAddress
+    const char* const file,
+    CoverageMapBase*  coverage,
+    uint32_t          lowAddress,
+    uint32_t          highAddress
   )
   {
-    FILE      *coverageFile;
-    uint32_t   a;
-    int        status;
-    int        i;
-    int        cover;
+    uint32_t a;
+    int      cover;
+    FILE*    coverageFile;
+    int      i;
+    int      status;
 
     /*
      *  read the file and update the coverage map passed in
      */
-
     coverageFile = fopen( file, "w" );
     if ( !coverageFile ) {
       fprintf(
         stderr,
-        "CoverageWriterTSIM::ProcessFile - unable to open %s\n",
+        "ERROR: CoverageWriterTSIM::writeFile - unable to open %s\n",
         file
       );
       exit(-1);
@@ -63,7 +63,8 @@ namespace Coverage {
 	if ( status == EOF || status == 0 ) {
           fprintf(
             stderr,
-            "CoverageWriterTSIM: Error writing in %s at address 0x%08x\n",
+            "ERROR: CoverageWriterTSIM:writeFile - write to %s "
+            "at address 0x%08x failed\n",
             file,
             a
           );

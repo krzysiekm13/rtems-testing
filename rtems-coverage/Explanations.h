@@ -11,84 +11,111 @@
 #ifndef __EXPLANATIONS_H__
 #define __EXPLANATIONS_H__
 
-#include <stdint.h>
 #include <map>
+#include <stdint.h>
 #include <string>
 #include <vector>
 
 namespace Coverage {
 
+  /*! @class Explanation
+   *
+   *  This class defines the information that comprises an explanation
+   *  of an uncovered range or branch.
+   */
   class Explanation {
 
   public:
 
     /*!
-     *  This is the starting line number of the uncovered range.
+     *  This member variable contains the starting line number of
+     *  the uncovered range or branch.
      */
     std::string startingPoint;
 
     /*!
-     *  This is the classification of the range.
+     *  This member variable contains the classification of
+     *  the explanation.
      */
     std::string classification;
 
     /*!
-     *  This is the multi-line explanation.
+     *  This member variable contains the multi-line explanation text.
      */
     std::vector<std::string> explanation;
 
     /*!
-     *  This indicates whether we used this explanation on this run.
+     *  This member variable indicates whether this explanation was
+     *  used during analysis.
      */
     bool found;
 
+    /*!
+     *  This method constructs an Explanation instance.
+     */
     Explanation() {found = false;}
 
+    /*!
+     *  This method destructs an Explanation instance.
+     */
     ~Explanation() {}
   };
 
   /*! @class Explanations
    *
-   *  This is the base class for Coverage Map implementations.
+   *  This class defines a set of Explanation instances.
    */
   class Explanations {
 
   public:
+
     /*!
+     *  This member variable contains a list of Explanation instances.
      */
-    std::map<std::string, Explanation> Set;
+    std::map<std::string, Explanation> set;
 
     /*! 
-     *  This method is the default constructor of a Explanations instance.
+     *  This method constructs an Explanations instance.
      */
     Explanations();
 
     /*! 
-     *  This method is the destructor for a Explanations instance.
+     *  This method destructs an Explanations instance.
      */
     ~Explanations();
 
     /*!
+     *  This methods loads the explanation information from the
+     *  specified file.
+     *
+     *  @param[in] explanations specifies the file name containing
+     *             the explanation information
      */
     void load(
-      const char *explanations
+      const char* const explanations
     );
 
     /*!
+     *  This method returns the explanation associated with the
+     *  specified starting line number.
+     *
+     *  @param[in] start specifies the starting line number for
+     *             which to search
      */
     const Explanation *lookupExplanation(
-      std::string start
+      std::string& start
     );
 
     /*!
+     *  This method writes a file that contains a list of any
+     *  explanations that were not looked up.
+     *
+     *  @param[in] fileName specifies the name of the file to write
      */  
     void writeNotFound(
-      const char *fileName
+      const char* const fileName
     );
 
-  protected:
-
-    bool NotFoundOccurred;
   };
 
 }

@@ -17,18 +17,18 @@ namespace Coverage {
 
   /*! @class CoverageMap
    *
-   *  This class implements a coverage map which only supports a single
-   *  range of addresses -- low to high. 
+   *  This class implements a coverage map which supports a single
+   *  range of addresses from low to high. 
    */
   class CoverageMap : public CoverageMapBase {
 
   public:
 
     /*! 
-     *  This method is the constructor of a CoverageMap instance.
+     *  This method constructs a CoverageMap instance.
      *
-     *  @param[in] low is the low address of the range.
-     *  @param[in] high is the high address of the range.
+     *  @param[in] low specifies the lowest address of the coverage map.
+     *  @param[in] high specifies the highest address of the coverage map.
      */
     CoverageMap(
       uint32_t low,
@@ -38,10 +38,7 @@ namespace Coverage {
     /* Inherit documentation from base class. */
     virtual ~CoverageMap();
 
-  private:
-
   };
 
 }
 #endif
-

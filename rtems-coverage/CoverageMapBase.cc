@@ -10,10 +10,12 @@
  *  which provide a base level of functionality of a CoverageMap.
  */
 
-#include "CoverageMapBase.h"
-#include <stdlib.h>
-#include <limits.h>
 #include <libgen.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "CoverageMapBase.h"
 
 namespace Coverage {
 
@@ -30,25 +32,52 @@ namespace Coverage {
 
       perAddressInfo_t *i = &Info[ a-low ];
 
-      i->wasExecuted          = false;
       i->isStartOfInstruction = false;
+      i->wasExecuted          = false;
       i->isBranch             = false;
       i->wasTaken             = false;
       i->wasNotTaken          = false;
-      i->sourceLine.clear();
     }
   }
 
   CoverageMapBase::~CoverageMapBase()
   {
-    if ( Info )
+    if (Info)
       delete Info;
+  }
+
+  void CoverageMapBase::dump( void ) const {
+
+    uint32_t          a;
+    perAddressInfo_t* entry;
+
+    fprintf( stderr, "Coverage Map Contents:\n" );
+
+    for (a = lowAddress; a <= highAddress; a++) {
+
+      entry = &Info[ a - lowAddress ];
+
+      fprintf(
+        stderr,
+        "0x%x - isStartOfInstruction = %s, wasExecuted = %s\n",
+        a,
+        entry->isStartOfInstruction ? "TRUE" : "FALSE",
+        entry->wasExecuted ? "TRUE" : "FALSE"
+      );
+      fprintf(
+        stderr,
+        "           isBranch = %s, wasTaken = %s, wasNotTaken = %s\n",
+        entry->isBranch ? "TRUE" : "FALSE",
+        entry->wasTaken ? "TRUE" : "FALSE",
+        entry->wasNotTaken ? "TRUE" : "FALSE"
+      );
+    }
   }
 
   bool CoverageMapBase::getBeginningOfInstruction(
     uint32_t  address,
-    uint32_t *beginning
-  )
+    uint32_t* beginning
+  ) const
   {
     bool     status = false;
     uint32_t start;
@@ -71,18 +100,14 @@ namespace Coverage {
     return status;
   }
 
-  /* XXX Not sure this is what we want */
-  uint32_t CoverageMapBase::getBeginningOfNextInstruction(
-    uint32_t address
-  )
+  uint32_t CoverageMapBase::getHighAddress( void ) const
   {
-    uint32_t beginning = address++;
+    return highAddress;
+  }
 
-    while ((beginning < highAddress ) &&
-           (!Info[ beginning - lowAddress ].isStartOfInstruction))
-      beginning++;
-
-    return beginning;
+  uint32_t CoverageMapBase::getLowAddress( void ) const
+  {
+    return lowAddress;
   }
 
   void CoverageMapBase::setIsStartOfInstruction(
@@ -94,7 +119,7 @@ namespace Coverage {
     Info[ address - lowAddress ].isStartOfInstruction = true;
   }
 
-  bool CoverageMapBase::isStartOfInstruction( uint32_t address )
+  bool CoverageMapBase::isStartOfInstruction( uint32_t address ) const
   {
     if ((address < lowAddress) || (address > highAddress))
       return false;
@@ -108,59 +133,11 @@ namespace Coverage {
     Info[ address - lowAddress ].wasExecuted = true;
   }
 
-  bool CoverageMapBase::wasExecuted( uint32_t address )
+  bool CoverageMapBase::wasExecuted( uint32_t address ) const
   {
     if ((address < lowAddress) || (address > highAddress))
       return false;
     return Info[ address - lowAddress ].wasExecuted;
-  }
-
-  void CoverageMapBase::setSourceLine(
-    uint32_t    address,
-    std::string line
-  )
-  {
-    char rpath[PATH_MAX];
-    char *base;
-    uint32_t a;
-
-    if ((address < lowAddress) || (address > highAddress))
-      return;
-
-    a = address - lowAddress;
-#if 0
-    if ( !Info[ a ].isStartOfInstruction ) {
-      find start of this instuction
-      set a to start of this instruction
-    }
-#endif
-    
-    // obtain the full clean absolute path 
-    realpath( line.c_str(), rpath );
-    // XXX TDB rip off up until cpukit .. want cpukit/score/src/chain.c
-
-    // Get the filename (no directory)
-    base = basename( rpath );
-    Info[ a ].sourceLine = std::string( base );
-  }
-
-  std::string CoverageMapBase::getSourceLine( uint32_t address )
-  {
-    uint32_t a;
-
-    if ( address < lowAddress )
-      return "OUT_OF_RANGE_LOW";
-    if ( address > highAddress )
-      return "OUT_OF_RANGE_HIGH";
-
-    a = address - lowAddress;
-#if 0
-    if ( !Info[ a ].isStartOfInstruction ) {
-      find start of this instuction
-      set a to start of this instruction
-    }
-#endif
-    return Info[ a ].sourceLine;
   }
 
   void CoverageMapBase::setIsBranch(
@@ -172,7 +149,7 @@ namespace Coverage {
     Info[ address - lowAddress ].isBranch = true;
   }
 
-  bool CoverageMapBase::isBranch( uint32_t address )
+  bool CoverageMapBase::isBranch( uint32_t address ) const
   {
     if ((address < lowAddress) || (address > highAddress))
       return false;
@@ -197,7 +174,7 @@ namespace Coverage {
     Info[ address - lowAddress ].wasNotTaken = true;
   }
 
-  bool CoverageMapBase::wasAlwaysTaken( uint32_t address )
+  bool CoverageMapBase::wasAlwaysTaken( uint32_t address ) const
   {
     if ((address < lowAddress) || (address > highAddress))
       return false;
@@ -205,10 +182,20 @@ namespace Coverage {
             !Info[ address - lowAddress ].wasNotTaken);
   }
 
-  bool CoverageMapBase::wasNeverTaken( uint32_t address )
+  bool CoverageMapBase::wasNeverTaken( uint32_t address ) const
   {
     if ((address < lowAddress) || (address > highAddress))
       return false;
     return (!Info[ address - lowAddress ].wasTaken);
+  }
+
+  bool CoverageMapBase::wasNotTaken( uint32_t address ) const
+  {
+    return (Info[ address - lowAddress ].wasNotTaken);
+  }
+
+  bool CoverageMapBase::wasTaken( uint32_t address ) const
+  {
+    return (Info[ address - lowAddress ].wasTaken);
   }
 }

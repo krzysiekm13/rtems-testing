@@ -1,3 +1,25 @@
+2010-03-05	Glenn Humphrey
+
+	* CoverageFactory.cc, CoverageFactory.h, CoverageMap.h,
+	CoverageMapBase.cc, CoverageMapBase.h, CoverageRanges.cc,
+	CoverageRanges.h, CoverageReaderBase.h, CoverageReaderQEMU.cc,
+	CoverageReaderQEMU.h, CoverageReaderRTEMS.cc, CoverageReaderRTEMS.h,
+	CoverageReaderSkyeye.cc, CoverageReaderSkyeye.h,
+	CoverageReaderTSIM.cc, CoverageReaderTSIM.h, CoverageWriterBase.h,
+	CoverageWriterRTEMS.cc, CoverageWriterRTEMS.h,
+	CoverageWriterSkyeye.cc, CoverageWriterSkyeye.h,
+	CoverageWriterTSIM.cc, CoverageWriterTSIM.h, Explanations.cc,
+	Explanations.h, Makefile, ObjdumpProcessor.cc, ObjdumpProcessor.h,
+	Reports.cc, Reports.h, Toolnames.cc, Toolnames.h, VERSIONS-COVERAGE,
+	app_common.h, coverage_converter.cc, do_coverage:  Extensive re-write
+	to perform analysis based on a list of symbols instead of an address
+	range.  This allows executables that are linked differently to be
+	analyzed together.  Note that this update has broken covmerge and
+	coverage_converter.  It will be determined later whether to fix them
+	or delete them.
+	* DesiredSymbols.cc, DesiredSymbols.h, ExecutableInfo.cc,
+	ExecutableInfo.h, SymbolTable.cc, SymbolTable.h, covoar.cc: New files.
+
 2010-02-01	Glenn Humphrey
 
 	* Makefile, ObjdumpProcessor.cc, ObjdumpProcessor.h, app_common.h,

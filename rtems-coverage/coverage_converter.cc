@@ -2,53 +2,51 @@
  *  $Id$
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
 #include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <netdb.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <stdlib.h>
-#include <signal.h>
 #include <unistd.h>
-#include <errno.h>
 
-#include "CoverageMap.h"
-#include "CoverageFactory.h"
 #include "app_common.h"
+#include "CoverageFactory.h"
+#include "CoverageMap.h"
 
 /*
  *  Variables to control global behavior
  */
-int verbose = 0;
-Coverage::CoverageFormats_t inputFormat;
-uint32_t lowAddress  = 0xffffffff;
-uint32_t highAddress = 0xffffffff;
-
-char *progname;
+Coverage::CoverageReaderBase* coverageReader = NULL;
+Coverage::CoverageWriterBase* coverageWriter = NULL;
+uint32_t                      highAddress = 0xffffffff;
+Coverage::CoverageFormats_t   inputFormat;
+uint32_t                      lowAddress  = 0xffffffff;
+char*                         progname;
 
 /*
  *  Global variables for the program
  */
 Coverage::CoverageMapBase    *CoverageMap    = NULL;
-Coverage::CoverageReaderBase *CoverageReader = NULL;
-Coverage::CoverageWriterBase *CoverageWriter = NULL;
 
 /*
  *  Convert string to int with status out
  */
 
 bool stringToUint32(
-  const char  *s,
-  int          base,
-  uint32_t    *n
+  const char* s,
+  int         base,
+  uint32_t*   n
 )
 {
   long long result;
 
-  if ( !n )
+  if (!n)
     return false;
 
   errno = 0;
@@ -56,13 +54,13 @@ bool stringToUint32(
 
   result = strtoll( s, NULL, base );
 
-  if ( (result == 0) && errno )
+  if ((result == 0) && errno)
     return false; 
 
-  if ( (result == LLONG_MAX) && (errno == ERANGE))
+  if ((result == LLONG_MAX) && (errno == ERANGE))
     return false; 
 
-  if ( (result == LLONG_MIN) && (errno == ERANGE))
+  if ((result == LLONG_MIN) && (errno == ERANGE))
     return false; 
 
   *n = (uint32_t)result;
@@ -91,34 +89,37 @@ void usage()
        ((!(_s)) ? "NOT SET" : (_s))
 
 int main(
-  int argc,
-  char **argv
+  int    argc,
+  char** argv
 )
 {
+  char*       format = NULL;
+  const char* coverageFile;
+  const char* coverageIn;
   int         opt;
-  char       *format = NULL;
-  const char *coverageIn;
-  const char *coverageFile;
 
+  //
+  // Process command line options.
+  //
   progname = argv[0];
 
   while ((opt = getopt(argc, argv, "f:h:l:v")) != -1) {
     switch (opt) {
-      case 'v': verbose = 1;       break;
+      case 'v': Verbose = 1;       break;
       case 'f':
         inputFormat = Coverage::CoverageFormatToEnum(optarg);
         format = optarg;
         break;
       case 'l':
-        if ( ! stringToUint32( optarg, 16, &lowAddress ) ) {
-          fprintf( stderr, "Low address is not a hexadecimal number\n" );
+        if (!stringToUint32( optarg, 16, &lowAddress )) {
+          fprintf( stderr, "ERROR: Low address is not a hexadecimal number\n" );
           usage();
           exit(-1);
         }
         break;
       case 'h': 
-        if ( ! stringToUint32( optarg, 16, &highAddress ) ) {
-          fprintf( stderr, "High address is not a hexadecimal number\n" );
+        if (!stringToUint32( optarg, 16, &highAddress )) {
+          fprintf( stderr, "ERROR: High address is not a hexadecimal number\n" );
           usage();
           exit(-1);
         }
@@ -129,16 +130,16 @@ int main(
     }
   }
 
-  if ( (argc - optind) != 2 ) {
-    fprintf( stderr, "ERROR -- Must provide input and output files\n" );
+  if ((argc - optind) != 2) {
+    fprintf( stderr, "ERROR: Must provide input and output files\n" );
     exit(1);
   }
 
   coverageIn   = argv[optind];
   coverageFile = argv[optind + 1];
 
-  if ( verbose ) {
-    fprintf( stderr, "verbose       : %d\n", verbose );
+  if (Verbose) {
+    fprintf( stderr, "Verbose       : %d\n", Verbose );
     fprintf( stderr, "Input Format  : %s\n", format );
     fprintf( stderr, "Input File    : %s\n", coverageIn );
     fprintf( stderr, "Output Format : %s\n", "RTEMS" );
@@ -148,72 +149,71 @@ int main(
     fprintf( stderr, "\n" );
   }
 
-  /*
-   *  Validate format
-   */
-  if ( !format ) {
-    fprintf( stderr, "input format must be given.\n\n" );
+  //
+  // Validate inputs.
+  //
+
+  // Validate format.
+  if (!format) {
+    fprintf( stderr, "ERROR: input format must be given.\n\n" );
     usage();
     exit(-1);
   }
 
-  /*
-   * Validate address range
-   */
-  if ( lowAddress == 0xffffffff ) {
-    fprintf( stderr, "Low address not specified.\n\n" );
+  // Validate address range
+  if (lowAddress == 0xffffffff) {
+    fprintf( stderr, "ERROR: Low address not specified.\n\n" );
     usage();
     exit(-1);
   }
 
-  if ( highAddress == 0xffffffff ) {
-    fprintf( stderr, "High address not specified.\n\n" );
+  if (highAddress == 0xffffffff) {
+    fprintf( stderr, "ERROR: High address not specified.\n\n" );
     usage();
     exit(-1);
   }
 
-  if ( lowAddress >= highAddress ) {
-    fprintf( stderr, "Low address >= high address.\n\n" );
+  if (lowAddress >= highAddress) {
+    fprintf( stderr, "ERROR: Low address >= high address.\n\n" );
     usage();
     exit(-1);
   }
 
-  /*
-   * Create coverage map
-   */
+  //
+  // Create data to support conversion.
+  //
+
+  // Create coverage map.
   CoverageMap = new Coverage::CoverageMap( lowAddress, highAddress );
-  if ( !CoverageMap ) {
-    fprintf( stderr, "Unable to create coverage map.\n\n" );
+  if (!CoverageMap) {
+    fprintf( stderr, "ERROR: Unable to create coverage map.\n\n" );
     exit(-1);
   }
 
-  /*
-   * Create writer
-   */
-  CoverageWriter =
+  // Create coverage writer.
+  coverageWriter =
     Coverage::CreateCoverageWriter(Coverage::COVERAGE_FORMAT_RTEMS);
-  if ( !CoverageWriter ) {
-    fprintf( stderr, "Unable to create coverage file writer.\n\n" );
+  if (!coverageWriter) {
+    fprintf( stderr, "ERROR: Unable to create coverage file writer.\n\n" );
     exit(-1);
   }
 
-  CoverageReader = CreateCoverageReader( inputFormat );
-  if ( !CoverageReader ) {
-    fprintf( stderr, "Unable to create input file reader.\n\n" );
+  // Create coverage reader.
+  coverageReader = CreateCoverageReader( inputFormat );
+  if (!coverageReader) {
+    fprintf( stderr, "ERROR: Unable to create input file reader.\n\n" );
     exit(-1);
   }
 
-  /*
-   * Now get to some real work
-   */
-  if ( verbose )
+  // Now get to some real work.
+  if (Verbose)
     fprintf( stderr, "Processing %s\n", coverageIn );
-  CoverageReader->ProcessFile( coverageIn, CoverageMap );
+  coverageReader->processFile( coverageIn, CoverageMap );
 
-  if ( verbose )
+  if (Verbose)
     fprintf(
       stderr, "Writing coverage file (%s)\n", coverageFile );
-  CoverageWriter->writeFile(
+  coverageWriter->writeFile(
     coverageFile,
     CoverageMap,
     lowAddress,

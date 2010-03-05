@@ -10,8 +10,11 @@
  *  based upon user configuration.
  */
 
-#include "CoverageFactory.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+#include "CoverageFactory.h"
 #include "CoverageReaderQEMU.h"
 #include "CoverageReaderRTEMS.h"
 #include "CoverageWriterRTEMS.h"
@@ -20,36 +23,32 @@
 #include "CoverageReaderTSIM.h"
 #include "CoverageWriterTSIM.h"
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 Coverage::CoverageFormats_t Coverage::CoverageFormatToEnum(
-  const char *format
+  const char* const format
 )
 {
-  if ( !strcmp(format, "QEMU") )
+  if (!strcmp( format, "QEMU" ))
     return COVERAGE_FORMAT_QEMU;
 
-  if ( !strcmp(format, "RTEMS") )
+  if (!strcmp( format, "RTEMS" ))
     return COVERAGE_FORMAT_RTEMS;
 
-  if ( !strcmp(format, "Skyeye") )
+  if (!strcmp( format, "Skyeye" ))
     return COVERAGE_FORMAT_SKYEYE;
 
-  if ( !strcmp(format, "TSIM") )
+  if (!strcmp( format, "TSIM" ))
     return COVERAGE_FORMAT_TSIM;
 
   fprintf(
     stderr,
-    "%s is unknown coverage format\n"
-    "Supported formats: RTEMS, TSIM, and Skyeye\n",
+    "ERROR: %s is an unknown coverage format "
+    "(supported formats - QEMU, RTEMS, Skyeye and TSIM)\n",
     format
   );
   exit( 1 );
 }
 
-Coverage::CoverageReaderBase *Coverage::CreateCoverageReader(
+Coverage::CoverageReaderBase* Coverage::CreateCoverageReader(
   CoverageFormats_t format
 )
 {
@@ -68,7 +67,7 @@ Coverage::CoverageReaderBase *Coverage::CreateCoverageReader(
   return NULL;
 }
 
-Coverage::CoverageWriterBase *Coverage::CreateCoverageWriter(
+Coverage::CoverageWriterBase* Coverage::CreateCoverageWriter(
   CoverageFormats_t format
 )
 {

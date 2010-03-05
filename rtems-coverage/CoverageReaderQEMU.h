@@ -12,17 +12,19 @@
 #define __COVERAGE_READER_QEMU_H__
 
 #include "CoverageReaderBase.h"
+#include "ExecutableInfo.h"
 
 namespace Coverage {
 
   /*! @class CoverageReaderQEMU
    *
-   *  This class implements the class which reads a coverage map file
-   *  produced by QEMU.  Since the SPARC has 32-bit instructions,
+   *  This class implements the functionality which reads a coverage map
+   *  file produced by QEMU.  Since the SPARC has 32-bit instructions,
    *  QEMU produces a file with an integer for each 32-bit word.  The
-   *  integer will have the least significant bit if the address
-   *  was executed.
-
+   *  integer will have the least significant bit set if the address
+   *  was executed.  QEMU also supports reporting branch information.
+   *  Several bits are set to indicate whether a branch was taken and
+   *  NOT taken.
 @verbatim
 TBD
 @endverbatim
@@ -38,9 +40,9 @@ TBD
     virtual ~CoverageReaderQEMU();
 
     /* Inherit documentation from base class. */
-    bool ProcessFile(
-      const char      *file,
-      CoverageMapBase *coverage
+    bool processFile(
+      const char* const     file,
+      ExecutableInfo* const executableInformation
     );
   };
 
