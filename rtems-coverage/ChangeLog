@@ -1,3 +1,8 @@
+2010-03-08	Glenn Humphrey
+
+	* DesiredSymbols.cc, Reports.cc:  Added logic to deal with desired
+	symbols that are never referenced during analysis.
+
 2010-03-05	Glenn Humphrey
 
 	* DesiredSymbols.cc, covoar.cc:  Fix a few errors that occurred when

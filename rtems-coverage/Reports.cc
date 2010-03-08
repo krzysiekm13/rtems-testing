@@ -39,6 +39,14 @@ void Coverage::WriteAnnotatedReport(
        ditr != SymbolsToAnalyze->set.end();
        ditr++) {
 
+    // If uncoveredRanges and uncoveredBranches don't exist, then the
+    // symbol was never referenced by any executable.  Just skip it.
+    if ((ditr->second.uncoveredRanges == NULL) &&
+        (ditr->second.uncoveredBranches == NULL))
+      continue;
+
+    // If uncoveredRanges and uncoveredBranches are empty, then everything
+    // must have been covered for this symbol.  Just skip it.
     if ((ditr->second.uncoveredRanges->set.empty()) &&
         (ditr->second.uncoveredBranches->set.empty()))
       continue;
@@ -108,7 +116,7 @@ void Coverage::WriteBranchReport(
 
       theBranches = ditr->second.uncoveredBranches;
 
-      if (!theBranches->set.empty()) {
+      if (theBranches && !theBranches->set.empty()) {
 
         for (ritr =  theBranches->set.begin() ;
              ritr != theBranches->set.end() ;
@@ -118,7 +126,7 @@ void Coverage::WriteBranchReport(
           fprintf(
             report,
             "============================================\n"
-            "Method        : %s (0x%x)\n"
+            "Symbol        : %s (0x%x)\n"
             "Line          : %s (0x%x)\n"
             "Size in Bytes : %d\n",
             ditr->first.c_str(),
@@ -208,7 +216,27 @@ void Coverage::WriteCoverageReport(
 
     theRanges = ditr->second.uncoveredRanges;
 
-    if (!theRanges->set.empty()) {
+    // If uncoveredRanges doesn't exist, then the symbol was never
+    // referenced by any executable.  There may be a problem with the
+    // desired symbols list or with the executables so put something
+    // in the report.
+    if (theRanges == NULL) {
+
+      fprintf(
+        report,
+        "============================================\n"
+        "Symbol        : %s\n\n"
+        "          *** NEVER REFERENCED ***\n\n"
+        "This symbol was never referenced by an analyzed executable.\n"
+        "Therefore there is no size or disassembly for this symbol.\n"
+        "This could be due to symbol misspelling or lack of a test for\n"
+        "this symbol.\n"
+        "============================================\n",
+        ditr->first.c_str()
+      );
+    }
+
+    else if (!theRanges->set.empty()) {
 
       for (ritr =  theRanges->set.begin() ;
            ritr != theRanges->set.end() ;
@@ -217,7 +245,7 @@ void Coverage::WriteCoverageReport(
         fprintf(
           report,
           "============================================\n"
-          "Method        : %s (0x%x)\n"
+          "Symbol        : %s (0x%x)\n"
           "Starting Line : %s (0x%x)\n"
           "Ending Line   : %s (0x%x)\n"
           "Size in Bytes : %d\n\n",
@@ -297,7 +325,7 @@ void Coverage::WriteSizeReport(
 
     theRanges = ditr->second.uncoveredRanges;
 
-    if (!theRanges->set.empty()) {
+    if (theRanges && !theRanges->set.empty()) {
 
       for (ritr =  theRanges->set.begin() ;
            ritr != theRanges->set.end() ;
