@@ -110,7 +110,7 @@ namespace Coverage {
   {
     uint32_t                                             a, la, ha;
     uint32_t                                             endAddress;
-    std::list<ObjdumpProcessor::objdumpLine_t>::iterator itr;
+    std::list<ObjdumpProcessor::objdumpLine_t>::reverse_iterator itr;
     DesiredSymbols::symbolSet_t::iterator                sitr;
     CoverageRanges*                                      theBranches;
     CoverageMapBase*                                     theCoverageMap;
@@ -134,14 +134,20 @@ namespace Coverage {
       sitr->second.uncoveredBranches = theBranches;
 
       // Mark any trailing nops as executed.  Some targets use nops to
-      // force alignment but still include the nops in the symbol size.
-      for (itr = sitr->second.instructions.end();
-           itr != sitr->second.instructions.begin();
-           itr--) {
+      // force alignment of the next method but still include the nops
+      // in the symbol size.
+      //
+      // NOTE: If nop's are used for alignment inside a method, this 
+      //       will not mark them!!!
+      for (itr = sitr->second.instructions.rbegin(), itr++;
+           itr != sitr->second.instructions.rend();
+           itr++) {
         if (itr->isNop) {
-          theCoverageMap->setWasExecuted(
-            itr->address - sitr->second.baseAddress
-          );
+          for ( int a=0; a < itr->nopSize ; a++ ) {
+            theCoverageMap->setWasExecuted(
+              itr->address - sitr->second.baseAddress + a
+            );
+          }
         }
         else
           break;

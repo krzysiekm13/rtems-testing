@@ -1,5 +1,5 @@
 # USE FULL PATHS!!!
-BASEDIR=${HOME}/rtems-4.10-work/
+BASEDIR=${HOME}/test-gcc
 
 
 RTEMS_VERSION=4.10
