@@ -28,7 +28,6 @@ USAGE=\
         -A        -- Execute all steps (default=no)
         -B BSP    -- Specify BSP to test
         -P        -- Enable POSIX API (default=yes)
-        -D        -- Enable Developmental Coverage (default=no)
         -S        -- Optimize for size (default=no)
         -m        -- Update and build covMerge (default=no)
         -u        -- Do CVS update on RTEMS (default=no)
@@ -84,7 +83,6 @@ toggle()
 verbose="no"
 do_all="no"
 do_posix="yes"
-do_developmental="no"
 do_optimize_size="no"
 do_covmerge="no"
 do_rtems_update="no"
@@ -96,7 +94,7 @@ do_reports="no"
 do_publish="no"
 BSP="not_set"
 
-while getopts vB:PDSmAucbCrRf OPT
+while getopts vB:PSmAucbCrRf OPT
 do
     case "$OPT" in
         A)
@@ -114,7 +112,6 @@ do
         v) verbose=`toggle ${verbose}` ;;
         m) do_covmerge=`toggle ${do_covmerge}` ;;
         P) do_posix=`toggle ${do_posix}` ;;
-        D) do_developmental=`toggle ${do_developmental}` ;;
         S) do_optimize_size=`toggle ${do_optimize_size}` ;;
         u) do_rtems_update=`toggle ${do_rtems_update}` ;;
         c) do_rtems_configure=`toggle ${do_rtems_configure}` ;;
@@ -194,7 +191,6 @@ print_verbose()
   echo "do_all:             " ${do_all}
   echo "do_covmerge         " ${do_covmerge}
   echo "do_posix:           " ${do_posix}
-  echo "do_developmental:   " ${do_developmental}
   echo "do_optimize_size:   " ${do_optimize_size}
   echo "do_rtems_update:    " ${do_rtems_update}
   echo "do_rtems_configure: " ${do_rtems_configure}
@@ -261,16 +257,9 @@ else
   EXTENSION=${EXTENSION}p
 fi
 
-if [ ${do_developmental} = yes ] ; then
-  EXTENSION=${EXTENSION}D
-else
-  EXTENSION=${EXTENSION}d
-fi
-
 day=`date +%Y%m%d`
 hour=`date +%H`
 minute=`date +%M`
-results_dir=${BSP}${EXTENSION}-${day}-${hour}${minute}
 
 echo "Testing ${TARGET}/${BSP} at optimization (${c_opt})"
 
@@ -289,7 +278,7 @@ generate_html()
     print_element ${c_opt}
     print_element ${do_posix}
     print_element ${do_developmental}
-    print_element `grep "uncovered range" summary.txt | cut -d ' ' -f1`
+    print_element `grep "Uncovered range" summary.txt | cut -d ':' -f2`
     print_element `grep "age Not Exec" summary.txt | cut -d ':' -f2`
     print_element `grep "age Exec" summary.txt | cut -d ':' -f2`
     print_element `grep "Bytes Not Exec" summary.txt | cut -d ':' -f2`
@@ -342,8 +331,8 @@ generate_reports()
   # Now create the archive of information
   rm -rf ${results_dir}
   mkdir ${results_dir}
-  cp summary.txt uncovered.txt branch.txt sizes.txt configuration.txt \
-     annotated.txt row.html ${results_dir}
+  cp annotated.txt branch.txt configuration.txt sizes.txt summary.txt \
+     uncovered.txt row.html ${results_dir}
   cp ${COVBASE}/Explanations.txt.NotFound ${results_dir}
   echo "Results saved in ${results_dir}.tar.bz2"
   tar cjf ${results_dir}.tar.bz2 ${results_dir}
@@ -562,9 +551,21 @@ if [ ${do_reports} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  generate_symbols >${BASEDIR}/${BSP}-tests/rtems.syms
+  for do_developmental in no yes
+  do
+    if [ ${do_developmental} = yes ] ; then
+      echo "Processing coverage for developmental configuration ..."
+      EXT=${EXTENSION}D
+    else
+      echo "Processing coverage for core source configuration ..."
+      EXT=${EXTENSION}d
+    fi
+    results_dir=${BSP}${EXT}-${day}-${hour}${minute}
 
-  generate_reports ${TARGET} ${BSP} ${COVERAGE_FORMAT}
+    generate_symbols >${BASEDIR}/${BSP}-tests/rtems.syms
+
+    generate_reports ${TARGET} ${BSP} ${COVERAGE_FORMAT}
+  done
 else
   echo "Skipping Generating reports..."
 fi
@@ -572,7 +573,8 @@ fi
 # If requested, publish the coverage reports
 if [ ${do_publish} = "yes" ] ; then
   if [ -d ${BASEDIR}/${BSP}-tests ] ; then
-    cp ${BASEDIR}/${BSP}-tests/${results_dir}.tar.bz2 ${FTPDIR}
+    cd ${BASEDIR}/${BSP}-tests/
+    cp ${BSP}${EXTENSION}[dD]-${day}-${hour}${minute}.tar.bz2 ${FTPDIR}
     check_status $? "cp ${BSP} results to ftp site failed"
     ${COVBASE}/generate_coverage_html ${FTPDIR}
   else
