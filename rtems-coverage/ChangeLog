@@ -1,5 +1,9 @@
 2010-03-08	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* generate_coverage_html: Fix generation of anchor links.
+
+2010-03-08	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* generate_coverage_html: Try to generate anchor links.
 
 2010-03-08	Joel Sherrill <joel.sherrill@oarcorp.com>
