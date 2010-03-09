@@ -106,6 +106,19 @@ RTEMS Coverage Testing</a>.
 <body>
 <br>
 <br>
+<strong>BSPs with Coverage Results</strong>
+<ul>
+EOF
+for bsp in $BSPs
+do
+  cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
+	sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
+  echo "<li><a href=\"#${bsp}\">${cpu}/${bsp}</li>"
+done
+cat <<EOF
+</ul>
+<br>
+<br>
 <table class="stats-table" $cellspacing="1" cellpadding="2">
 EOF
 }
@@ -133,8 +146,13 @@ doit()
     cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
           sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
     echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
-    echo "<tr class=\"stats-table-target\"><td colspan=\"10\"> <strong>" \
-          ${cpu}/${bsp} "</strong></td></tr>"
+    echo "<tr class=\"stats-table-target\">"
+    echo "<a name=\"#${bsp}\">"
+    echo "<td colspan=\"10\"> "
+    echo "<strong>${cpu}/${bsp}</strong>
+    echo "</td>"
+    echo "</a>"
+    echo "</tr>"
     echo "<tr class=\"stats-table-top\">"
     ### generate header
     print_heading Day

@@ -1,5 +1,9 @@
 2010-03-08	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* generate_coverage_html: Try to generate anchor links.
+
+2010-03-08	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* do_coverage: Appears to publish correctly now doing developmental and
 	non-developmental profiles from a single test run.
 
