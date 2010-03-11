@@ -1,0 +1,19 @@
+#! /bin/sh
+#
+#  $Id$
+#
+
+BASEDIR=${HOME}/test-gcc/
+
+RUNCOVERAGE=${BASEDIR}/gcc-testing/rtems-coverage/run_coverage
+
+${RUNCOVERAGE} -t \
+  edb7312_baseline \
+  gumstix_baseline \
+  smdk2410_baseline \
+  pc386_baseline \
+  uC5282_baseline \
+  qemuppc_baseline \
+  erc32_baseline \
+  leon2_baseline \
+  leon3_baseline \

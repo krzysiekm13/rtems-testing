@@ -36,7 +36,8 @@ USAGE=\
         -C        -- copy tests from build to test execution point (default=no)
         -r        -- run the tests (default=no)
         -R        -- generate reports (default=no)
-        -f        -- publish the results to ftp site (default=no)
+        -t        -- publish the results to ftp site (default=no)
+        -f        -- save the results locally (default=no)
 
 Notes:  + There are currently NO checks at each step to determine if
           the previous steps were performed!!!
@@ -92,9 +93,10 @@ do_copy_tests="no"
 do_run_tests="no"
 do_reports="no"
 do_publish="no"
+do_save_tarballs="no"
 BSP="not_set"
 
-while getopts vB:PSmAucbCrRf OPT
+while getopts vB:PSmAucbCrRft OPT
 do
     case "$OPT" in
         A)
@@ -120,6 +122,7 @@ do
         r) do_run_tests=`toggle ${do_run_tests}` ;;
         R) do_reports=`toggle ${do_reports}` ;;
         f) do_publish=`toggle ${do_publish}` ;;
+        t) do_save_tarballs=`toggle ${do_save_tarballs}` ;;
         *) fatal;;
     esac
 done
@@ -148,16 +151,20 @@ fi
 RUNNER=${BSP}
 
 RTEMSEXT=ralf
+COVEXT=cov
 case ${BSP} in
   pc386)
     CPU=i386
     COVERAGE_FORMAT=QEMU
     RTEMS_EXTRA_ARGS="USE_COM1_AS_CONSOLE=1"
     RTEMS_EXTRA_ARGS="${RTEMS_EXTRA_ARGS} BSP_PRESS_KEY_FOR_RESET=0"
+    RTEMSEXT=exe
     ;; 
   uC5282)
     CPU=m68k
     COVERAGE_FORMAT=QEMU
+    RTEMSEXT=exe
+    COVEXT=tra
     ;;
   qemuppc)
     CPU=powerpc
@@ -186,20 +193,24 @@ fi
 ##### VERBOSE
 print_verbose()
 {
-  echo "BSP:                " ${BSP}
-  echo "Target:             " ${TARGET}
-  echo "do_all:             " ${do_all}
-  echo "do_covmerge         " ${do_covmerge}
-  echo "do_posix:           " ${do_posix}
-  echo "do_optimize_size:   " ${do_optimize_size}
-  echo "do_rtems_update:    " ${do_rtems_update}
-  echo "do_rtems_configure: " ${do_rtems_configure}
-  echo "do_rtems_build:     " ${do_rtems_build}
-  echo "do_copy_tests:      " ${do_copy_tests}
-  echo "do_run_tests:       " ${do_run_tests}
-  echo "do_reports:         " ${do_reports}
-  echo "do_publish:         " ${do_publish}
-  echo "Clean Before:       " ${do_clean}
+  echo "BSP:                  " ${BSP}
+  echo "Target:               " ${TARGET}
+  echo "do_all:               " ${do_all}
+  echo "do_covmerge           " ${do_covmerge}
+  echo "do_posix:             " ${do_posix}
+  echo "do_optimize_size:     " ${do_optimize_size}
+  echo "do_rtems_update:      " ${do_rtems_update}
+  echo "do_rtems_configure:   " ${do_rtems_configure}
+  echo "do_rtems_build:       " ${do_rtems_build}
+  echo "do_copy_tests:        " ${do_copy_tests}
+  echo "do_run_tests:         " ${do_run_tests}
+  echo "do_reports:           " ${do_reports}
+  echo "do_publish:           " ${do_publish}
+  echo "do_save_tarballs:     " ${do_save_tarballs}
+  echo "Clean Before:         " ${do_clean}
+  echo "Executable Extension  " ${RTEMSEXT}
+  echo "Coverage Extension    " ${COVEXT}
+
 }
 
 if [ ${verbose} = "yes" ] ; then
@@ -257,6 +268,7 @@ else
   EXTENSION=${EXTENSION}p
 fi
 
+year=`date +%Y`
 day=`date +%Y%m%d`
 hour=`date +%H`
 minute=`date +%M`
@@ -310,12 +322,12 @@ generate_reports()
     echo "POSIX Enabled      : " ${do_posix} ; \
     echo "Developmental Code : " ${do_developmental} ; \
   ) >summary.txt
-  ${COVBASE}/covoar \
+  ${COVBASE}/covoar -v \
     -T ${TARGET} \
     -f ${COVERAGE_FORMAT} \
     -E ${COVBASE}/Explanations.txt \
-    -e ralf -c ralf.cov \
-    *.ralf >> summary.txt
+    -e ${RTEMSEXT} -c ${RTEMSEXT}.${COVEXT} \
+    *.exe >> summary.txt
   check_status $? "covoar failed"
 
   (echo "====== Largest Range Sizes (Size and Count)======" ; \
@@ -466,12 +478,6 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     posix_en=dis
   fi
 
-  if [ ${do_developmental} = "yes" ] ; then
-    EXPERIMENTAL_ARG="experimental"
-  else
-    EXPERIMENTAL_ARG="yes"
-  fi
-
   ${RTEMSDIR}/configure NDEBUG=1 \
     RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
     RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
@@ -479,9 +485,8 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     ${RTEMS_EXTRA_ARGS} \
     --target=${TARGET} --enable-rtemsbsp=${BSP} \
     --enable-maintainer-mode \
-    --enable-coverage=${EXPERIMENTAL_ARG} \
     --disable-itron --${posix_en}able-posix --enable-tests \
-    --disable-tcpip --disable-ada --disable-cxx \
+    --disable-networking --disable-ada --disable-cxx \
     --prefix=${BASEDIR}/coverage/install >c.log 2>&1
   check_status $? "configuring RTEMS for ${BSP}"
 else
@@ -571,14 +576,26 @@ else
 fi
 
 # If requested, publish the coverage reports
-if [ ${do_publish} = "yes" ] ; then
+if [ ${do_publish} = "yes" -o ${do_save_tarballs} = "yes" ] ; then
   if [ -d ${BASEDIR}/${BSP}-tests ] ; then
     cd ${BASEDIR}/${BSP}-tests/
-    cp ${BSP}${EXTENSION}[dD]-${day}-${hour}${minute}.tar.bz2 ${FTPDIR}
-    check_status $? "cp ${BSP} results to ftp site failed"
-    ${COVBASE}/generate_coverage_html ${FTPDIR}
+    if [ ${do_publish} = "yes" ] ; then
+      cp ${BSP}${EXTENSION}[dD]-${day}-${hour}${minute}.tar.bz2 ${FTPDIR}
+      check_status $? "cp ${BSP} results to ftp site failed"
+      ${COVBASE}/generate_coverage_html ${FTPDIR}
+    fi
+    if [ ${do_save_tarballs} = "yes" ] ; then
+      if [ ! -d ../tarballs/${year} ] ; then
+         echo "Creating ../tarballs/${year}"
+         mkdir ../tarballs/${year}
+         check_status $? "Failed to mkdir ../tarballs/${year}"
+      fi
+      cp ${BSP}${EXTENSION}[dD]-${day}-${hour}${minute}.tar.bz2 \
+         ../tarballs/${year}
+      check_status $? "cp ${BSP} results to save directory"
+    fi
   else
-    echo "No results to publish"
+    echo "No results to publish or save"
   fi
 else
   echo "Skipping Publishing reports..."

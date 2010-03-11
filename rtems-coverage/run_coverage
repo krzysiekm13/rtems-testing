@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-#  Script to help running coverage from cron
+#  Script to help running coverage profiles
 #
 #  $Id$
 #
@@ -21,7 +21,9 @@ fi
 progname=${0##*/}        # fast basename hack for ksh, bash
 
 USAGE=\
-"usage: $progname [ -v ] cmd [ more cmds]
+"usage: $progname [ -opts ] cmd [ more cmds]
+        -t        -- publish the results to ftp site (default=no)
+        -f        -- save the results locally (default=no)
 	-v	   -- verbose
 
 where cmds are:
@@ -68,7 +70,7 @@ do_one()
 {
   bsp=${1}
   shift
-  time ${COVBASE}/do_coverage -A -u -m -f ${*} -B ${bsp}
+  time ${COVBASE}/do_coverage -A -u -m ${SAVE} ${PUBLISH} ${*} -B ${bsp}
   rm -rf b-* *-tests
 }
 
@@ -87,15 +89,27 @@ validate_bsp()
 }
 
 verbose="no"
+do_publish="no"
+do_save_tarballs="no"
 
-while getopts v OPT
+while getopts ftv OPT
 do
 
     case "$OPT" in
+      f) do_publish=`toggle ${do_publish}` ;;
+      t) do_save_tarballs=`toggle ${do_save_tarballs}` ;;
       v) verbose=`toggle ${verbose}` ;;
       *) fatal;;
     esac
 done
+
+# Set the publish and save options
+if [ ${do_publish} = "yes" ] ; then
+  PUBLISH="-f"
+fi
+if [ ${do_save_tarballs} = "yes" ] ; then
+  SAVE="-t"
+fi
 
 shiftcount=`expr $OPTIND - 1`
 shift $shiftcount
@@ -146,9 +160,8 @@ do
     *_baseline) 
       bsp=`echo $cmd | sed -e 's/_baseline$//'`
       do_one ${bsp} -S          # -Os / POSIX enabled  / regression
-      do_one ${bsp}             # -O2 / POSIX enabled  / regression
       do_one ${bsp} -S -P       # -Os / POSIX disabled / regression
-      do_one ${bsp} -S -D       # -Os / POSIX enabled  / developmental
+      do_one ${bsp}             # -O2 / POSIX enabled  / regression
       ;;
     *)
       echo "Unknown command (${cmd})"

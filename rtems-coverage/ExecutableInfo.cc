@@ -90,12 +90,15 @@ namespace Coverage {
       info = NULL;
       info = theSymbolTable->getInfo( symbol );
       if (!info) {
+        /* A little too verbose :-D */
+        #if 0
         if (Verbose)
           fprintf(
             stderr,
             "Unable to find symbol information for %s\n",
             symbol.c_str()
           );
+        #endif
         continue;
       }
 

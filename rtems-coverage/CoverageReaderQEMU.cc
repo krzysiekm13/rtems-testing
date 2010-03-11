@@ -39,14 +39,15 @@ namespace Coverage {
     struct trace_entry  entry;
     struct trace_header header;
     uintptr_t           i;
-    struct stat         statbuf;
+    struct stat64       statbuf;
     int                 status;
     FILE*               traceFile;
 
     //
     // Verify that the coverage file has a non-zero size.
     //
-    status = stat( file, &statbuf );
+    // NOTE: We must use stat64 because some of the coverage files are HUGE!
+    status = stat64( file, &statbuf );
     if (status == -1) {
       fprintf( stderr, "Unable to stat %s\n", file );
       return false;

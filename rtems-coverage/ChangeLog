@@ -1,3 +1,18 @@
+2010-03-11	Joel Sherrill <joel.sherrilL@oarcorp.com>
+
+	* CoverageReaderQEMU.cc: Some trace files are larger than 2 GB
+	so use stat64. 
+	* ExecutableInfo.cc: Disable message about unable to find symbol
+	information.  It is just too noisy to be useful anymore.
+	* covoar.cc: Add disabled code to print list of executable/coverage
+	files being processed.
+	* do_coverage: Add option to save tarballs. Update to support
+	running all BSPs we currently support coverage on.
+	* generate_coverage_html: Disable removing entries when more
+	than 20.
+	* run_coverage: Update to reflect new way of doing things.
+	* coverage_cron: New file.  Will be run once per week.
+
 2010-03-08	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* generate_coverage_html: Fix generation of anchor links.
