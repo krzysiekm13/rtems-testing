@@ -7,9 +7,8 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
-if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-arm ] ; then
-  runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-arm
-else
+runBSP=NOT_OVERRIDDEN
+if [ ! -r ${runBSP} ] ; then
   runBSP=qemu-system-arm
 fi
 bspNeedsDos2Unix="yes"

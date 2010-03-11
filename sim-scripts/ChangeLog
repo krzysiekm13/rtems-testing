@@ -1,3 +1,8 @@
+2010-03-11	Joel Sherrill <joel.sherrilL@oarcorp.com>
+
+	* pc386.in, qemu-gumstix.in, qemu-leon2.in, qemuppc.in: Use
+	qemu on path.
+
 2010-01-14	Glenn Humphrey <glenn.humphrey@OARcorp.com>
 
 	* pc386.in: Should not have committed localized path to qemu.

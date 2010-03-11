@@ -5,7 +5,7 @@
 #
 
 bspUsesGDBSimulator="no"
-runBSP=${HOME}/qemu-coverage/install/bin/qemu
+runBSP=NOT_OVERRIDDEN
 if [ ! -r ${runBSP} ] ; then
   runBSP=qemu
 fi

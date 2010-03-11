@@ -7,9 +7,12 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
-runBSP=qemu-system-sparc
 bspNeedsDos2Unix="yes"
 
+runBSP=NOT_OVERRIDDEN
+if [ ! -r ${runBSP} ] ; then
+  runBSP=qemu-system-sparc
+fi
 runARGS()
 {
   echo "-nographic -M at697 -kernel ${1}"

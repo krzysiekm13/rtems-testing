@@ -7,7 +7,7 @@
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
-runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-ppc
+runBSP=NOT_OVERRIDDEN
 if [ ! -r ${runBSP} ] ; then
   runBSP=qemu-system-ppc
 fi
