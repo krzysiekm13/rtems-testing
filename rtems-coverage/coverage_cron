@@ -8,6 +8,7 @@ BASEDIR=${HOME}/test-gcc/
 RUNCOVERAGE=${BASEDIR}/gcc-testing/rtems-coverage/run_coverage
 
 ${RUNCOVERAGE} -t \
+  update \
   edb7312_baseline \
   gumstix_baseline \
   smdk2410_baseline \

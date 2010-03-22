@@ -170,6 +170,13 @@ case ${BSP} in
     CPU=powerpc
     COVERAGE_FORMAT=QEMU
     ;;
+  lm32_evr)
+    CPU=lm32
+    COVERAGE_FORMAT=QEMU
+    RTEMSEXT=exe
+    COVEXT=tra
+    RUNNER=qemu-lm32_evr
+    ;;
   erc32|leon2|leon3)
     CPU=sparc
     COVERAGE_FORMAT=TSIM
@@ -249,9 +256,9 @@ if [ ! -r ${custom} ] ; then
   fi
 fi
 
-grep "^CFLAGS_OPTIMIZE_V.*=.*-O[2s]" ${custom} >/dev/null
+grep "^CFLAGS_OPTIMIZE_V.*=.*-O[2s0]" ${custom} >/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Unable to file CFLAGS_OPTIMIZE_V in ${custom}"
+  echo "Unable to find CFLAGS_OPTIMIZE_V in ${custom}"
   exit 1
 fi
 
@@ -322,7 +329,7 @@ generate_reports()
     echo "POSIX Enabled      : " ${do_posix} ; \
     echo "Developmental Code : " ${do_developmental} ; \
   ) >summary.txt
-  ${COVBASE}/covoar -v \
+  ${COVBASE}/covoar \
     -T ${TARGET} \
     -f ${COVERAGE_FORMAT} \
     -E ${COVBASE}/Explanations.txt \
@@ -457,7 +464,7 @@ fi
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
   # Now let's patch the make/custom file
-  sed -e "s/-O[2s]/${c_opt}/" <${custom} >/tmp/XXX
+  sed -e "s/-O[0123s]/${c_opt}/" <${custom} >/tmp/XXX
   mv /tmp/XXX ${custom}
 
   echo "Configuring RTEMS..."
@@ -585,13 +592,12 @@ if [ ${do_publish} = "yes" -o ${do_save_tarballs} = "yes" ] ; then
       ${COVBASE}/generate_coverage_html ${FTPDIR}
     fi
     if [ ${do_save_tarballs} = "yes" ] ; then
-      if [ ! -d ../tarballs/${year} ] ; then
-         echo "Creating ../tarballs/${year}"
-         mkdir ../tarballs/${year}
-         check_status $? "Failed to mkdir ../tarballs/${year}"
+      if [ ! -d ${TARDIR} ] ; then
+         echo "Creating ${TARDIR}"
+         mkdir -p ${TARDIR}
+         check_status $? "Failed to mkdir ${TARDIR}"
       fi
-      cp ${BSP}${EXTENSION}[dD]-${day}-${hour}${minute}.tar.bz2 \
-         ../tarballs/${year}
+      cp ${BSP}${EXTENSION}[dD]-${day}-${hour}${minute}.tar.bz2 ${TARDIR}
       check_status $? "cp ${BSP} results to save directory"
     fi
   else

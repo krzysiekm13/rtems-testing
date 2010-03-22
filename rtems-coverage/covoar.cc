@@ -145,7 +145,7 @@ int main(
       executablesToAnalyze.push_back( executableInfo );
       coverageFileName = executableInfo->getFileName();
       coverageFileName.replace(
-        coverageFileName.length() - executableExtensionLength + 1,
+        coverageFileName.length() - executableExtensionLength,
         executableExtensionLength,
         coverageFileExtension
       );
@@ -167,7 +167,7 @@ int main(
     fprintf( stderr, "Coverage Format : %s\n", format );
     fprintf( stderr, "Target          : %s\n", PrintableString(target) );
     fprintf( stderr, "\n" );
-#if 0
+#if 1
     // Process each executable/coverage file pair.
     eitr = executablesToAnalyze.begin();
     for (citr = coverageFileNames.begin();

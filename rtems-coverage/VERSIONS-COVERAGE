@@ -4,11 +4,21 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.10
 case ${RTEMS_VERSION} in
-  4.6)  RTEMSDIR=${BASEDIR}/rtems-46 ;;
-  4.7)  RTEMSDIR=${BASEDIR}/rtems-47 ;;
-  4.8)  RTEMSDIR=${BASEDIR}/rtems-48 ;;
-  4.9)  RTEMSDIR=${BASEDIR}/rtems-49 ;;
-  4.10) RTEMSDIR=${BASEDIR}/rtems ;;
+  4.6)  RTEMSDIR=${BASEDIR}/rtems-46
+        TARDIR=${BASEDIR}/tarballs/4.6
+        ;;
+  4.7)  RTEMSDIR=${BASEDIR}/rtems-47
+        TARDIR=${BASEDIR}/tarballs/4.7
+        ;;
+  4.8)  RTEMSDIR=${BASEDIR}/rtems-48
+        TARDIR=${BASEDIR}/tarballs/4.8
+        ;;
+  4.9)  RTEMSDIR=${BASEDIR}/rtems-49
+        TARDIR=${BASEDIR}/tarballs/4.9
+        ;;
+  4.10) RTEMSDIR=${BASEDIR}/rtems
+        TARDIR=${BASEDIR}/tarballs/`date +%Y`
+        ;;
   *)
     echo "ERROR -- UNKNOWN RTEMS VERSION ${RTEMS_VERSION}"
     exit 1
@@ -19,6 +29,7 @@ LOGDIR=${BASEDIR}/log
 
 # for publishing results
 FTPDIR=/home/ftp/pub/rtems/people/joel/coverage/
+
 
 # These symbols mark the range of the code block we are analyzing.
 # If the structure of the linked executable changes, then we need

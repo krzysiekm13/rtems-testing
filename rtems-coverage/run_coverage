@@ -162,6 +162,7 @@ do
       do_one ${bsp} -S          # -Os / POSIX enabled  / regression
       do_one ${bsp} -S -P       # -Os / POSIX disabled / regression
       do_one ${bsp}             # -O2 / POSIX enabled  / regression
+      do_one ${bsp}    -P       # -O2 / POSIX disabled  / regression
       ;;
     *)
       echo "Unknown command (${cmd})"

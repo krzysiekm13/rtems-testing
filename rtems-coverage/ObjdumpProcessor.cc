@@ -43,7 +43,6 @@ namespace Coverage {
     // common patterns
     if (!strcmp( &line[strlen(line)-3], "nop"))
       isNop = true;
-
     
     // now check target specific patterns and return proper size if "nop"
 
@@ -122,8 +121,18 @@ namespace Coverage {
       return false;
     }
 
-    // Check i386 nops
+    // Check powerpc nops
     if (!strncmp( target, "powerpc", 7 )) {
+      if (isNop) {
+        size = 4; 
+        return true;
+      }
+
+      return false;
+    }
+
+    // Check powerpc nops
+    if (!strncmp( target, "lm32", 4 )) {
       if (isNop) {
         size = 4; 
         return true;

@@ -1,3 +1,13 @@
+2010-03-22	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* ObjdumpProcessor.cc: Add lm32.
+	* VERSIONS-COVERAGE: Add tarball directory.
+	* coverage_cron: Add update before running others.
+	* covoar.cc: Print coverage/executable pairs when verbose.
+	* do_coverage: Add lm32_evr and tarball saving support.
+	* run_coverage: Add another analysis with POSIX disabled.
+	* style.css: Fix URL for logo.
+
 2010-03-11	Joel Sherrill <joel.sherrilL@oarcorp.com>
 
 	* CoverageReaderQEMU.cc: Some trace files are larger than 2 GB
