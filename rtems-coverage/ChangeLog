@@ -1,5 +1,9 @@
 2010-03-23	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* do_coverage: Probe for parallelism.
+
+2010-03-23	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* ObjdumpProcessor.cc, VERSIONS-COVERAGE, coverage_cron, covoar.cc,
 	do_coverage, run_coverage: Now runs 4.6 and 4.7 coverage reports.
 
