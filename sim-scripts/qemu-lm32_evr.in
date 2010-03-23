@@ -1,0 +1,48 @@
+#
+#  lm32/lm32_evr Qemu Support 
+#
+#  $Id$
+#
+
+bspUsesGDBSimulator="no"
+# bspGeneratesGDBCommands="yes"
+# bspSupportsGDBServerMode="yes"
+
+if [ -r ${HOME}/qemu-coverage/install/bin/qemu-system-lm32 ] ; then
+  runBSP=${HOME}/qemu-coverage/install/bin/qemu-system-lm32
+else
+  runBSP=qemu-system-lm32
+fi
+
+bspNeedsDos2Unix="yes"
+
+# qemu-system-lm32 -M lm32-evr -trace ticker.trace -kernel ~/ticker.exe
+runARGS()
+{
+  if [ ${coverage} = yes ] ; then
+     rm -f trace ${1}.tra
+     COVERAGE_ARG="-trace ${1}.tra"
+  fi
+
+  echo "-M lm32-evr -nographic ${COVERAGE_ARG} -kernel ${1}"
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  tname=$1
+  case ${tname} in
+    *stackchk*)limit=5 ;;
+    *fatal*)   limit=1 ;;
+    *minimum*) limit=1 ;;
+    *psxtime*) limit=270 ;;
+    *)         limit=60 ;;
+  esac
+  echo ${limit}
+}
+
+bspGeneratesDeviceTree="no"
