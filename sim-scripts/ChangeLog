@@ -1,5 +1,9 @@
 2010-03-23	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* .cvsignore: Add qemu-lm32_evr.
+
+2010-03-23	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* Makefile: Probe for parallelism.
 	* qemu-lm32_evr.in: New file.
 
