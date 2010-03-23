@@ -45,13 +45,5 @@ case `hostname` in
     ;;
 esac
 
-# Specify the desired parallelism based upon the host name.
-# TODO: It would be good to probe to figure this out.
-case `hostname` in
-  rtbf32|rtbf64)
-    MAKEJOBS="-j3"
-    ;;
-  *)
-    MAKEJOBS="-j3"
-    ;;
-esac
+# Specify the desired parallelism
+MAKEJOBS=`/usr/bin/getconf _NPROCESSORS_ONLN`

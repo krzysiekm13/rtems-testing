@@ -1,3 +1,7 @@
+2010-03-23	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* VERSIONS: Probe for parallelism.
+
 2009-10-30	Thomas Doerfler <Thomas.Doerfler@embedded-brains.de>
 
 	* dejagnu/boards/rtems-powerpc-qemuppc.exp, Makefile.rtems,
