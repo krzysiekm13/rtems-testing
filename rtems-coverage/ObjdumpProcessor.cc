@@ -180,16 +180,19 @@ namespace Coverage {
     char               symbol[ 100 ];
     SymbolInformation* symbolInfo = NULL;
     char               terminator;
+    int                status;
 
     // Generate the objdump.
     sprintf( buffer, "%s -da --source %s | sed -e \'s/ *$//\' >objdump.tmp",
       Tools->getObjdump(), (executableInformation->getFileName()).c_str() );
 
-    if (system( buffer )) {
+    status = system( buffer );
+    if (status) {
       fprintf(
         stderr,
-        "ERROR: ObjdumpProcessor::load - command (%s) failed\n",
-        buffer
+        "ERROR: ObjdumpProcessor::load - command (%s) failed with %d\n",
+        buffer,
+        status
       );
       exit( -1 );
     }

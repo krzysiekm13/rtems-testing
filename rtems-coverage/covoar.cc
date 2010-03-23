@@ -31,6 +31,7 @@
 const char*                          branchReportFile = "branch.txt";
 char*                                coverageFileExtension = NULL;
 std::list<std::string>               coverageFileNames;
+int                                  coverageExtensionLength = 0;
 Coverage::CoverageFormats_t          coverageFormat;
 Coverage::CoverageReaderBase*        coverageReader = NULL;
 const char*                          coverageReportFile = "uncovered.txt";
@@ -114,7 +115,10 @@ int main(
         executableExtension = optarg;
         executableExtensionLength = strlen( executableExtension );
         break;
-      case 'c': coverageFileExtension = optarg;  break;
+      case 'c':
+         coverageFileExtension = optarg;
+         coverageExtensionLength = strlen( coverageFileExtension );
+         break;
       case 'E': explanations          = optarg;  break;
       case 'T': target                = optarg;  break;
       case 'v': Verbose               = true;    break;

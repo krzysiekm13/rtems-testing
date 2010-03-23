@@ -3,18 +3,44 @@
 #  $Id$
 #
 
-BASEDIR=${HOME}/test-gcc/
+vfile=`dirname $0`/VERSIONS-COVERAGE
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS-COVERAGE file not found
+  exit 1
+fi
 
-RUNCOVERAGE=${BASEDIR}/gcc-testing/rtems-coverage/run_coverage
+source ${vfile}
 
-${RUNCOVERAGE} -t \
-  update \
-  edb7312_baseline \
-  gumstix_baseline \
-  smdk2410_baseline \
-  pc386_baseline \
-  uC5282_baseline \
-  qemuppc_baseline \
-  erc32_baseline \
-  leon2_baseline \
-  leon3_baseline \
+if [ ! -d ${BASEDIR} ] ; then
+  echo Have you set the BASEDIR in VERSIONS correctly?
+  exit 1
+fi
+
+progname=${0##*/}        # fast basename hack for ksh, bash
+
+RUNCOVERAGE=${COVBASE}/run_coverage
+
+
+
+BSPS="erc32 leon2 leon3"
+case ${RTEMS_VERSION} in
+  4.6)  ;;
+  4.7)  ;;
+  4.8)  ;;
+  4.9)  BSPS="${BSPS} edb7312 smdk2410 pc386 uC5282"
+        ;;
+  4.10) BSPS="${BSPS} edb7312 gumstix smdk2410 pc386 uC5282 qemuppc"
+        ;;
+  *)
+    echo "ERROR -- UNKNOWN RTEMS VERSION ${RTEMS_VERSION}"
+    exit 1
+    ;;
+esac
+
+
+${RUNCOVERAGE} -t update 
+for b in ${BSPS}
+do
+  ${RUNCOVERAGE} -t ${b}_baseline
+done
+exit 0

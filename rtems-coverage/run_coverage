@@ -146,7 +146,7 @@ for cmd in $*
 do
   case ${cmd} in
     update) 
-      time ${COVBASE}/do_coverage -u -m -B ${bsp}
+      time ${COVBASE}/do_coverage -u -m -B erc32
       ;;
     *_O[s2])
       bsp=`echo $cmd | sed -e 's/_O.$//'`

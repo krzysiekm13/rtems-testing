@@ -150,7 +150,7 @@ fi
 # For most BSPs, there is a script with the same name as the BSP.
 RUNNER=${BSP}
 
-RTEMSEXT=ralf
+RTEMSEXT=${DEFAULT_EXEEXT}
 COVEXT=cov
 case ${BSP} in
   pc386)
@@ -250,6 +250,7 @@ custom=${RTEMSDIR}/make/custom/${BSP}.cfg
 if [ ! -r ${custom} ] ; then
   custom=`ls -1 \
      ${RTEMSDIR}/c/src/lib/libbsp/${CPU}/*/make/custom/${BSP}.cfg 2>/dev/null`
+  check_status $? "unable to find a custom file"
   if [ x${custom} = x -o ! -r ${custom} ] ; then
     echo "Unable to read ${custom}"
     exit 1
@@ -334,7 +335,7 @@ generate_reports()
     -f ${COVERAGE_FORMAT} \
     -E ${COVBASE}/Explanations.txt \
     -e ${RTEMSEXT} -c ${RTEMSEXT}.${COVEXT} \
-    *.exe >> summary.txt
+    *.${RTEMSEXT} >> summary.txt
   check_status $? "covoar failed"
 
   (echo "====== Largest Range Sizes (Size and Count)======" ; \
@@ -363,55 +364,65 @@ filter_nm()
 {
   for l in $*
   do
-    test ${verbose} = "yes" && echo Generating symbols from ${l} >&2
-    # echo "========= START $l"
-    ${TARGET}-nm --format=sysv $l | grep "FUNC|" | \
-      cut -d'|' -f1 | sed -e 's/ *$//'
-    # echo "========= END $l"
+    if [ -r ${l} ] ; then
+      test ${verbose} = "yes" && echo Generating symbols from ${l} >&2
+      # echo "========= START $l"
+      ${TARGET}-nm --format=sysv $l | grep "FUNC|" | \
+        cut -d'|' -f1 | sed -e 's/ *$//'
+      # echo "========= END $l"
+    fi
   done
 }
 
 # generate the list of symbols to analyze
 generate_symbols()
 {
-  cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/cpukit
-  check_status $? "could not cd to object directory"
+  if [ ${RTEMS_VERSION} = 4.6 ] ; then
+    cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/exec
+    check_status $? "could not cd to object directory"
 
+    subd=o-optimize/
+  else
+    cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/cpukit
+    check_status $? "could not cd to object directory"
+
+    subd=
+  fi
   # Base set of libraries to analyse.  Do NOT include libscorecpu.a!!!
-  filter_nm score/libscore.a sapi/libsapi.a rtems/librtems.a
+  filter_nm score/${subd}libscore.a sapi/${subd}libsapi.a rtems/${subd}librtems.a
 
   # Now add the POSIX API onto that
   if [ ${do_posix} = "yes" ] ; then
-    filter_nm posix/libposix.a
+    filter_nm posix/${subd}libposix.a
   fi
 
   # Now add developmental libraries
   # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
   if [ ${do_developmental} = "yes" ] ; then
-    # filter_nm libfs/librfs.a
-    # filter_nm libfs/libdosfs.a
-    filter_nm libfs/libimfs.a
-    filter_nm libcsupport/libcsupport.a
-    # filter_nm libi2c/libi2c.a
-    # filter_nm zlib/libz.a
-    # filter_nm libmd/libmd.a
-    # filter_nm libmisc/libshell.a
-    filter_nm libmisc/libbspcmdline.a
-    filter_nm libmisc/libcpuuse.a
-    # filter_nm libmisc/libuuid.a
-    filter_nm libmisc/libstackchk.a
-    # filter_nm libmisc/libmw-fb.a
+    # filter_nm libfs/${subd}librfs.a
+    # filter_nm libfs/${subd}libdosfs.a
+    filter_nm libfs/${subd}libimfs.a
+    filter_nm libcsupport/${subd}libcsupport.a
+    # filter_nm libi2c/${subd}libi2c.a
+    # filter_nm zlib/${subd}libz.a
+    # filter_nm libmd/${subd}libmd.a
+    # filter_nm libmisc/${subd}libshell.a
+    filter_nm libmisc/${subd}libbspcmdline.a
+    filter_nm libmisc/${subd}libcpuuse.a
+    # filter_nm libmisc/${subd}libuuid.a
+    filter_nm libmisc/${subd}libstackchk.a
+    # filter_nm libmisc/${subd}libmw-fb.a
     # NEVER INCLUDE libdummy.a!!!
-    # filter_nm libmisc/libdummy.a
-    # filter_nm libmisc/libfsmount.a
-    filter_nm libmisc/libstringto.a
-    filter_nm libmisc/libdevnull.a
-    # filter_nm libmisc/libcapture.a
-    filter_nm libmisc/libdumpbuf.a
-    # filter_nm libmisc/libmonitor.a
-    # filter_nm libmisc/libserdbg.a
-    # filter_nm libmisc/libuntar.a
-    # filter_nm libblock/libblock.a
+    # filter_nm libmisc/${subd}libdummy.a
+    # filter_nm libmisc/${subd}libfsmount.a
+    filter_nm libmisc/${subd}libstringto.a
+    filter_nm libmisc/${subd}libdevnull.a
+    # filter_nm libmisc/${subd}libcapture.a
+    filter_nm libmisc/${subd}libdumpbuf.a
+    # filter_nm libmisc/${subd}libmonitor.a
+    # filter_nm libmisc/${subd}libserdbg.a
+    # filter_nm libmisc/${subd}libuntar.a
+    # filter_nm libblock/${subd}libblock.a
   fi
 }
 
@@ -507,7 +518,11 @@ if [ ${do_rtems_build} = "yes" ] ; then
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
-  make -j4 >b.log 2>&1
+  if [ ${RTEMS_VERSION} = 4.6 ] ; then
+    make >b.log 2>&1
+  else
+    make -j4 >b.log 2>&1
+  fi
   check_status $? "Building RTEMS for ${BSP}"
 else
   echo "Skipping Building RTEMS ..."

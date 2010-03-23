@@ -2,22 +2,27 @@
 BASEDIR=${HOME}/test-gcc
 
 
-RTEMS_VERSION=4.10
+RTEMS_VERSION=4.6
 case ${RTEMS_VERSION} in
   4.6)  RTEMSDIR=${BASEDIR}/rtems-46
         TARDIR=${BASEDIR}/tarballs/4.6
+        DEFAULT_EXEEXT=exe
         ;;
   4.7)  RTEMSDIR=${BASEDIR}/rtems-47
         TARDIR=${BASEDIR}/tarballs/4.7
+        DEFAULT_EXEEXT=exe
         ;;
   4.8)  RTEMSDIR=${BASEDIR}/rtems-48
         TARDIR=${BASEDIR}/tarballs/4.8
+        DEFAULT_EXEEXT=exe
         ;;
   4.9)  RTEMSDIR=${BASEDIR}/rtems-49
         TARDIR=${BASEDIR}/tarballs/4.9
+        DEFAULT_EXEEXT=ralf
         ;;
   4.10) RTEMSDIR=${BASEDIR}/rtems
         TARDIR=${BASEDIR}/tarballs/`date +%Y`
+        DEFAULT_EXEEXT=ralf
         ;;
   *)
     echo "ERROR -- UNKNOWN RTEMS VERSION ${RTEMS_VERSION}"
