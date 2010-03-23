@@ -1,5 +1,13 @@
 2010-03-23	Joel Sherrill <joel@oarcorp.com>
 
+	* CoverageReaderQEMU.cc: Default to stat() not stat64() if on
+	ancient gcc as is present in Redhat 7.x where RTEMS 4.5 is maintained.
+	* VERSIONS-COVERAGE: Add 4.5 stanza.
+	* do_coverage: Support 4.5.  Detect when no symbols.  Alow for
+	copying executables as well as linking.
+
+2010-03-23	Joel Sherrill <joel@oarcorp.com>
+
 	* Explanations.cc: Add include of unistd.h.
 
 2010-03-23	Joel Sherrill <joel.sherrilL@OARcorp.com>

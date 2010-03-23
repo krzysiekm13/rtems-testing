@@ -21,6 +21,13 @@ typedef uint32_t target_ulong;
 
 #include "qemu-traces.h"
 
+/* hack so this can compile on the RH7 RTEMS 4.5 host */
+#if (__GNUC__ <= 2)
+#define STAT stat
+#else
+#define STAT stat64
+#endif
+
 namespace Coverage {
 
   CoverageReaderQEMU::CoverageReaderQEMU()
@@ -39,15 +46,15 @@ namespace Coverage {
     struct trace_entry  entry;
     struct trace_header header;
     uintptr_t           i;
-    struct stat64       statbuf;
+    struct STAT         statbuf;
     int                 status;
     FILE*               traceFile;
 
     //
     // Verify that the coverage file has a non-zero size.
     //
-    // NOTE: We must use stat64 because some of the coverage files are HUGE!
-    status = stat64( file, &statbuf );
+    // NOTE: We prefer stat64 because some of the coverage files are HUGE!
+    status = STAT( file, &statbuf );
     if (status == -1) {
       fprintf( stderr, "Unable to stat %s\n", file );
       return false;

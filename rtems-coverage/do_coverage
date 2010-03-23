@@ -33,11 +33,12 @@ USAGE=\
         -u        -- Do CVS update on RTEMS (default=no)
         -c        -- Configure RTEMS (default=no)
         -b        -- Build RTEMS (default=no)
-        -C        -- copy tests from build to test execution point (default=no)
+        -C        -- get tests from build to test execution point (default=no)
+        -L        -- do not link files to test execution point (default=link)
         -r        -- run the tests (default=no)
         -R        -- generate reports (default=no)
-        -t        -- publish the results to ftp site (default=no)
-        -f        -- save the results locally (default=no)
+        -f        -- publish the results to ftp site (default=no)
+        -t        -- save the results locally (default=no)
 
 Notes:  + There are currently NO checks at each step to determine if
           the previous steps were performed!!!
@@ -90,13 +91,14 @@ do_rtems_update="no"
 do_rtems_configure="no"
 do_rtems_build="no"
 do_copy_tests="no"
+do_link_tests="yes"
 do_run_tests="no"
 do_reports="no"
 do_publish="no"
 do_save_tarballs="no"
 BSP="not_set"
 
-while getopts vB:PSmAucbCrRft OPT
+while getopts vB:PSmAucbCLrRft OPT
 do
     case "$OPT" in
         A)
@@ -119,6 +121,7 @@ do
         c) do_rtems_configure=`toggle ${do_rtems_configure}` ;;
         b) do_rtems_build=`toggle ${do_rtems_build}` ;;
         C) do_copy_tests=`toggle ${do_copy_tests}` ;;
+        L) do_link_tests=`toggle ${do_link_tests}` ;;
         r) do_run_tests=`toggle ${do_run_tests}` ;;
         R) do_reports=`toggle ${do_reports}` ;;
         f) do_publish=`toggle ${do_publish}` ;;
@@ -191,7 +194,7 @@ case ${BSP} in
     ;;
 esac
 
-if [ ${RTEMS_VERSION} = 4.6 ] ; then
+if [ ${RTEMS_VERSION} = 4.6 -o ${RTEMS_VERSION} = 4.5 ] ; then
   TARGET=${CPU}-rtems
 else
   TARGET=${CPU}-rtems${RTEMS_VERSION}
@@ -210,6 +213,7 @@ print_verbose()
   echo "do_rtems_configure:   " ${do_rtems_configure}
   echo "do_rtems_build:       " ${do_rtems_build}
   echo "do_copy_tests:        " ${do_copy_tests}
+  echo "do_link_tests:        " ${do_link_tests}
   echo "do_run_tests:         " ${do_run_tests}
   echo "do_reports:           " ${do_reports}
   echo "do_publish:           " ${do_publish}
@@ -257,7 +261,7 @@ if [ ! -r ${custom} ] ; then
   fi
 fi
 
-grep "^CFLAGS_OPTIMIZE_V.*=.*-O[2s0]" ${custom} >/dev/null
+grep "^CFLAGS_OPTIMIZE_V.*=.*-O[s01234]" ${custom} >/dev/null
 if [ $? -ne 0 ] ; then
   echo "Unable to find CFLAGS_OPTIMIZE_V in ${custom}"
   exit 1
@@ -370,6 +374,8 @@ filter_nm()
       ${TARGET}-nm --format=sysv $l | grep "FUNC|" | \
         cut -d'|' -f1 | sed -e 's/ *$//'
       # echo "========= END $l"
+    else
+      echo "${l} is not readable"
     fi
   done
 }
@@ -377,7 +383,7 @@ filter_nm()
 # generate the list of symbols to analyze
 generate_symbols()
 {
-  if [ ${RTEMS_VERSION} = 4.6 ] ; then
+  if [ ${RTEMS_VERSION} = 4.6 -o ${RTEMS_VERSION} = 4.5 ] ; then
     cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/exec
     check_status $? "could not cd to object directory"
 
@@ -388,41 +394,57 @@ generate_symbols()
 
     subd=
   fi
-  # Base set of libraries to analyse.  Do NOT include libscorecpu.a!!!
-  filter_nm score/${subd}libscore.a sapi/${subd}libsapi.a rtems/${subd}librtems.a
 
-  # Now add the POSIX API onto that
-  if [ ${do_posix} = "yes" ] ; then
-    filter_nm posix/${subd}libposix.a
-  fi
+  if [ ${RTEMS_VERSION} = 4.5 ] ; then
+    filter_nm wrapup/rtems/o-optimize/librtems.a
+    if [ ${do_posix} = "yes" ] ; then
+      filter_nm wrapup/posix/o-optimize/libposix.a
+    fi
 
-  # Now add developmental libraries
-  # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
-  if [ ${do_developmental} = "yes" ] ; then
-    # filter_nm libfs/${subd}librfs.a
-    # filter_nm libfs/${subd}libdosfs.a
-    filter_nm libfs/${subd}libimfs.a
-    filter_nm libcsupport/${subd}libcsupport.a
-    # filter_nm libi2c/${subd}libi2c.a
-    # filter_nm zlib/${subd}libz.a
-    # filter_nm libmd/${subd}libmd.a
-    # filter_nm libmisc/${subd}libshell.a
-    filter_nm libmisc/${subd}libbspcmdline.a
-    filter_nm libmisc/${subd}libcpuuse.a
-    # filter_nm libmisc/${subd}libuuid.a
-    filter_nm libmisc/${subd}libstackchk.a
-    # filter_nm libmisc/${subd}libmw-fb.a
-    # NEVER INCLUDE libdummy.a!!!
-    # filter_nm libmisc/${subd}libdummy.a
-    # filter_nm libmisc/${subd}libfsmount.a
-    filter_nm libmisc/${subd}libstringto.a
-    filter_nm libmisc/${subd}libdevnull.a
-    # filter_nm libmisc/${subd}libcapture.a
-    filter_nm libmisc/${subd}libdumpbuf.a
-    # filter_nm libmisc/${subd}libmonitor.a
-    # filter_nm libmisc/${subd}libserdbg.a
-    # filter_nm libmisc/${subd}libuntar.a
-    # filter_nm libblock/${subd}libblock.a
+    if [ ${do_developmental} = "yes" ] ; then
+      filter_nm ../lib/libc/${subd}libcsupport.a
+      filter_nm ../lib/libmisc/wrapup/${subd}libmisc.a
+    fi
+  else  # 4.6 or newer
+
+    # Base set of libraries to analyse.  Do NOT include libscorecpu.a!!!
+    filter_nm score/${subd}libscore.a
+    filter_nm sapi/${subd}libsapi.a
+    filter_nm rtems/${subd}librtems.a
+
+    # Now add the POSIX API onto that
+    if [ ${do_posix} = "yes" ] ; then
+      filter_nm posix/${subd}libposix.a
+    fi
+
+    # Now add developmental libraries
+    # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
+    if [ ${do_developmental} = "yes" ] ; then
+      # filter_nm libfs/${subd}librfs.a
+      # filter_nm libfs/${subd}libdosfs.a
+      filter_nm libfs/${subd}libimfs.a
+      filter_nm libcsupport/${subd}libcsupport.a
+      # filter_nm libi2c/${subd}libi2c.a
+      # filter_nm zlib/${subd}libz.a
+      # filter_nm libmd/${subd}libmd.a
+      # filter_nm libmisc/${subd}libshell.a
+      filter_nm libmisc/${subd}libbspcmdline.a
+      filter_nm libmisc/${subd}libcpuuse.a
+      # filter_nm libmisc/${subd}libuuid.a
+      filter_nm libmisc/${subd}libstackchk.a
+      # filter_nm libmisc/${subd}libmw-fb.a
+      # NEVER INCLUDE libdummy.a!!!
+      # filter_nm libmisc/${subd}libdummy.a
+      # filter_nm libmisc/${subd}libfsmount.a
+      filter_nm libmisc/${subd}libstringto.a
+      filter_nm libmisc/${subd}libdevnull.a
+      # filter_nm libmisc/${subd}libcapture.a
+      filter_nm libmisc/${subd}libdumpbuf.a
+      # filter_nm libmisc/${subd}libmonitor.a
+      # filter_nm libmisc/${subd}libserdbg.a
+      # filter_nm libmisc/${subd}libuntar.a
+      # filter_nm libblock/${subd}libblock.a
+    fi
   fi
 }
 
@@ -496,16 +518,24 @@ if [ ${do_rtems_configure} = "yes" ] ; then
     posix_en=dis
   fi
 
-  ${RTEMSDIR}/configure NDEBUG=1 \
-    RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
-    RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
-    RTEMS_DO_NOT_UNROLL_THREADQ_ENQUEUE_PRIORITY=1 \
-    ${RTEMS_EXTRA_ARGS} \
-    --target=${TARGET} --enable-rtemsbsp=${BSP} \
-    --enable-maintainer-mode \
-    --disable-itron --${posix_en}able-posix --enable-tests \
-    --disable-networking --disable-ada --disable-cxx \
-    --prefix=${BASEDIR}/coverage/install >c.log 2>&1
+  if [ ${RTEMS_VERSION} = 4.5 ] ; then
+    ${RTEMSDIR}/configure \
+      --target=${TARGET} --enable-rtemsbsp=${BSP} \
+      --enable-maintainer-mode \
+      --disable-itron --${posix_en}able-posix --enable-tests \
+      --disable-networking --disable-ada --disable-cxx \
+      --prefix=${BASEDIR}/coverage/install >c.log 2>&1
+  else
+    ${RTEMSDIR}/configure NDEBUG=1 \
+      RTEMS_DO_NOT_INLINE_THREAD_ENABLE_DISPATCH=1 \
+      RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
+      RTEMS_DO_NOT_UNROLL_THREADQ_ENQUEUE_PRIORITY=1 \
+      ${RTEMS_EXTRA_ARGS} \
+      --enable-maintainer-mode \
+      --disable-itron --${posix_en}able-posix --enable-tests \
+      --disable-networking --disable-ada --disable-cxx \
+      --prefix=${BASEDIR}/coverage/install >c.log 2>&1
+  fi
   check_status $? "configuring RTEMS for ${BSP}"
 else
   echo "Skipping Configuring RTEMS ..."
@@ -518,7 +548,8 @@ if [ ${do_rtems_build} = "yes" ] ; then
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
-  if [ ${RTEMS_VERSION} = 4.6 ] ; then
+  if [ ${RTEMS_VERSION} = 4.6 -o ${RTEMS_VERSION} = 4.5 ] ; then
+    sleep 5  # 4.5 on chroot'ed env needs this for some reason
     make >b.log 2>&1
   else
     cpus=`/usr/bin/getconf _NPROCESSORS_ONLN`
@@ -543,7 +574,11 @@ if [ ${do_copy_tests} = "yes" ] ; then
   find `pwd` -name "*.ralf" -o -name "*.exe" | while read f
   do
     rm -f ../${BSP}-tests/`basename ${f}`
-    ln -s ${f} ../${BSP}-tests
+    if [ ${do_link_tests} = "yes" ] ; then 
+      ln -s ${f} ../${BSP}-tests
+    else
+      cp ${f} ../${BSP}-tests
+    fi
   done
   
 else
@@ -591,6 +626,10 @@ if [ ${do_reports} = "yes" ] ; then
     results_dir=${BSP}${EXT}-${day}-${hour}${minute}
 
     generate_symbols >${BASEDIR}/${BSP}-tests/rtems.syms
+    syms=`cat ${BASEDIR}/${BSP}-tests/rtems.syms | wc -l`
+    if [ ${syms} -eq 0 ] ; then
+      fatal "no symbols found"
+    fi
 
     generate_reports ${TARGET} ${BSP} ${COVERAGE_FORMAT}
   done
