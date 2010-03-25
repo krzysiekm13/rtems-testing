@@ -4,19 +4,20 @@ BASEDIR=${HOME}/test-gcc
 RTEMS_VERSION=4.10
 
 GCC_VERSION=svn
-#GCC_VERSION=4.4.1
+#GCC_VERSION=4.4.2
 #GCC_VERSION=4.3.4
 
 # NOTE: 2.63 for 4.4 and lower?
 case ${GCC_VERSION} in
-  4.[432]*)   AUTOCONF=${BASEDIR}/autoconf-2.63 ;;
-  *)          AUTOCONF=${BASEDIR}/autoconf-2.64 ;;
+  4.[32]*)   AUTOCONF=${BASEDIR}/autoconf-2.63 ;;
+  *)         AUTOCONF=${BASEDIR}/autoconf-2.65 ;;
 esac
-AUTOMAKE=${BASEDIR}/automake-1.10.2
+AUTOMAKE=${BASEDIR}/automake-1.11.1
 GCCDIR=${BASEDIR}/gcc-${GCC_VERSION}
 BINUTILSDIR=${BASEDIR}/binutils-cvs/src
+#BINUTILSDIR=${BASEDIR}/binutils-2.20
 #NEWLIBDIR=${BASEDIR}/newlib-cvs/src
-NEWLIBDIR=${BASEDIR}/newlib-1.17.0
+NEWLIBDIR=${BASEDIR}/newlib-1.18.0
 GDBDIR=${BASEDIR}/gdb-cvs/src
 RTEMSDIR=${BASEDIR}/rtems
 
@@ -46,4 +47,4 @@ case `hostname` in
 esac
 
 # Specify the desired parallelism
-MAKEJOBS=`/usr/bin/getconf _NPROCESSORS_ONLN`
+# MAKEJOBS="-j`/usr/bin/getconf _NPROCESSORS_ONLN`"
