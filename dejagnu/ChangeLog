@@ -1,3 +1,13 @@
+2010-03-25	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* boards/rtems-avr-avrtest.exp, boards/rtems-h8300-h8sim.exp,
+	boards/rtems-i386-qemu.exp, boards/rtems-lm32-lm32_evr.exp,
+	boards/rtems-m32c-m32csim.exp, boards/rtems-m32r-m32rsim.exp,
+	boards/rtems-m68k-uC5282.exp, boards/rtems-mips-jmr3904.exp,
+	boards/rtems-powerpc-psim.exp, boards/rtems-powerpc-qemuppc.exp,
+	boards/rtems-sh-simsh1.exp, boards/rtems-sparc-sis.exp: Add -i
+	argument to invocation of simulator.
+
 2009-09-30	Joel Sherrill <joel.sherrill@OARcorp.com>
 
 	* boards/rtems-lm32-lm32_evr.exp: New file.

@@ -47,7 +47,7 @@ set_board_info isremote 0
 
 # wrapper script which handles the device tree
 set_board_info sim "pc386"
-set_board_info sim,options ""
+set_board_info sim,options "-i"
 
 # No support for signals on this target.
 set_board_info gdb,nosignals 1
