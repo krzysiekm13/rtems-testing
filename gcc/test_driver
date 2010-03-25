@@ -18,9 +18,6 @@ if [ ! -d ${BASEDIR} ] ; then
   exit 1
 fi
 
-start=`date`
-echo Started at: ${start}
-
 BASEDIR=`pwd`
 
 for d in ${AUTOCONF} ${AUTOMAKE} ${BINUTILSDIR} \
@@ -32,11 +29,76 @@ do
   fi
 done
 
-### TODO: Parse arguments to get these
-doCleanInstallPoint="yes"
-doUpdateTools=yes
-doUpdateRTEMS=yes
-doNative=yes
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
+
+usage()
+{
+cat <<EOF
+do_one [options] CPU ..  CPU
+  -c - clean install point (also installs auto tools)
+  -u - update GNU source if version from CVS/SVN
+  -U - update RTEMS source if version from CVS/SVN (will bootstrap)
+  -v - verbose
+EOF
+}
+
+doCleanInstallPoint="no"
+doUpdateTools="no"
+doUpdateRTEMS="no"
+doNative="no"
+verbose="no"
+
+while getopts AcnuUv OPT
+do
+  case "$OPT" in
+    A) doCleanInstallPoint=`toggle ${doCleanInstallPoint}`
+       doNative=`toggle ${doNative}`
+       doUpdateTools=`toggle ${doUpdateTools}`
+       doUpdateRTEMS=`toggle ${doUpdateRTEMS}`
+       ;;
+    c) doCleanInstallPoint=`toggle ${doCleanInstallPoint}` ;;
+    n) doNative=`toggle ${doNative}` ;;
+    u) doUpdateTools=`toggle ${doUpdateTools}` ;;
+    U) doUpdateRTEMS=`toggle ${doUpdateRTEMS}` ;;
+    v) verbose=`toggle ${verbose}` ;;
+    *) usage; exit 1;
+  esac
+done
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+args=$*
+
+CPUs=""
+for cpu in ${args}
+do
+  if [ ${cpu} = "native" ] ; then
+    doNative="yes"
+  else
+    CPUs="${CPUs} ${cpu}"
+  fi
+done
+
+
+if [ ${verbose} = "yes" ] ; then
+  echo "Clean Install Point: " ${doCleanInstallPoint}
+  echo "Install Autotools:   " ${doCleanInstallPoint}
+  echo "Install Native:      " ${doNative}
+  echo "Update Tool Source:  " ${doUpdateTools}
+  echo "Update RTEMS:        " ${doUpdateRTEMS}
+  echo "CPUs to Build:       " ${CPUs}
+fi
+
+start=`date`
+echo Started at: ${start}
 
 # HELPER - Update RTEMS
 update_rtems()
@@ -108,7 +170,6 @@ do_cpus()
   for cpu in $*
   do
     case $cpu in
-      native)  bsp=native       ;;
       arm)     bsp=edb7312      ;;
       avr)     bsp=avrtest      ;;
       bfin)    bsp=eZKit533     ;;
@@ -129,17 +190,17 @@ do_cpus()
 
     doOne=${SCRIPTDIR}/gcc/do_one 
     # Everything
-    time sh -x ${doOne} -v -d -A ${tests} \
+    # -M -> do not mail
+    #time sh -x ${doOne} -v -d -A ${tests} \
+#	${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
+    # Just C/C++, no clean up, no mail
+    time sh -x ${doOne} -v -b -D -1 -d -M -r ${tests} \
         ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
-    # Just C
-    #time sh -x ${doOne} -v -b -D -1 -r ${tests} \
-    #    ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     # Just C/C++
     #time sh -x ${doOne} -v -1 -r -g ${tests}\
     #     ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
   done
-
 
   stopped=`date`
   echo Started at: ${start}
@@ -153,24 +214,24 @@ fi
 
 # Update gcc and install autotools in parallel
   if [ ${doCleanInstallPoint} = "yes" ] ; then
-    install_auto &
+    install_auto
   fi
   if [ ${doUpdateTools} = "yes" ] ; then
-    update_gcc &
-    update_others &
+    update_gcc
+    update_others
   fi
 wait
 
 # Do any remaining prep work in parallel
   if [ ${doUpdateRTEMS} = "yes" ] ; then
-    update_rtems &
+    update_rtems
   fi
 wait
 
-# Build the native compiler as a baseline to build the others
-  if [ ${doNative} = "yes" ] ; then
-    time sh -x ${SCRIPTDIR}/gcc/do_one -n >${BASEDIR}/native.log 2>&1
-  fi
+if [ ${doNative} = "yes" ]; then
+  # Build the native compiler as a baseline to build the others
+  time sh -x ${SCRIPTDIR}/gcc/do_one -n >${BASEDIR}/native.log 2>&1
+fi
 
 # Now cycle over all these CPUs
 if [ $? -eq 0 ] ; then
@@ -189,7 +250,7 @@ if [ $? -eq 0 ] ; then
     # port insufficient to run gcc tests
     do_cpus avr
   else
-    for cpu in $*
+    for cpu in ${CPUs}
     do
       do_cpus ${cpu}
     done

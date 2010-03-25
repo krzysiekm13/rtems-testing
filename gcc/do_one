@@ -1,4 +1,4 @@
-#! /bin/sh 
+#! /bin/sh -x
 #
 # Execution Times (for sparc-rtems${RTEMS_VERSION})
 #
@@ -80,6 +80,15 @@ fatal()
   exit 1
 }
 
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
+
 while getopts bdDnv1cmargCATM OPT
 do
     case "$OPT" in
@@ -91,28 +100,28 @@ do
            do_ada="yes"
            do_rtems="yes"
            ;;
-        d) do_cleanup="no" ;;
-        D) do_gdb="yes" ;;
+        d) do_cleanup=`toggle ${do_cleanup}` ;;
+        D) do_gdb=`toggle ${do_gdb}` ;;
         T) run_gcctests="yes"
            run_acats="yes"
            ;;
         # unrpm binutils
-        b) do_binutils="yes" ;;
+        b) do_binutils=`toggle ${do_binutils}` ;;
         # Build the native
-        n) do_native="yes";;
+        n) do_native=`toggle ${do_native}` ;;
         # Stage 1 arguments
-        1) do_stage1="yes";;
-        c) do_cxx="no";;
-        m) do_multilib="no";;
+        1) do_stage1=`toggle ${do_stage1}` ;;
+        c) do_cxx=`toggle ${do_cxx}` ;;
+        m) do_multilib=`toggle ${do_multilib}` ;;
         # Stage 2 arguments
-        a) do_ada="yes" ;;
+        a) do_ada=`toggle ${do_ada}` ;;
         # Build RTEMS
-        r) do_rtems="yes" ;;
+        r) do_rtems=`toggle ${do_rtems}` ;;
         # Testsuites to run
-        g) run_gcctests="yes" ;;
-        C) run_acats="yes" ;;
-        v) verbose="yes";;
-        M) do_mail="no";;
+        g) run_gcctests=`toggle ${run_gcctests}` ;;
+        C) run_acats=`toggle ${run_acats}` ;;
+        v) verbose=`toggle ${verbose}` ;;
+        M) do_mail=`toggle ${do_mail}` ;;
         *) fatal;;
     esac
 done
@@ -433,9 +442,24 @@ j_gcc1()
    --enable-newlib-mb --enable-newlib-iconv \
    --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
     --enable-version-specific-runtime-libs \
-    --enable-languages=c${cxx} --target=$TARGET --prefix=$INSTALL &&
-  make ${MAKEJOBS} &&
+    --enable-languages=c${cxx} --target=$TARGET --prefix=$INSTALL
+  if [ $? -ne 0 ] ; then
+    echo "Failed to configure GCC C/C++ .. bailing"
+    exit 1
+  fi
+
+  make ${MAKEJOBS}
+  if [ $? -ne 0 ] ; then
+    echo "Failed to build GCC C/C++ .. bailing"
+    exit 1
+  fi
+
   make install
+  if [ $? -ne 0 ] ; then
+    echo "Failed to install GCC C/C++ .. bailing"
+    exit 1
+  fi
+
 }
 
 if [ ${do_stage1} = "yes" ] ; then

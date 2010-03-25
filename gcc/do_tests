@@ -5,10 +5,10 @@
 #
 
 gcc=gcc
-prefix=/home/joel/work-gnat/svn/install
+prefix=/users/joel/work-gnat/svn/install
 target=powerpc-rtems4.10
 bsp=psim
-tmpdir=/home/joel/work-gnat/svn/install/../gcctests-${bsp}
+tmpdir=/users/joel/work-gnat/svn/install/../gcctests-${bsp}
 
 cd ${gcc}
 rm -f site.exp

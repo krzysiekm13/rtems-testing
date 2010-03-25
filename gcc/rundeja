@@ -119,7 +119,6 @@ RTEMS_MAKEFILE_PATH=${rtemsdir} \
 RTEMS_CONFIG_OBJ=${rtems_config} \
 --target_board=rtems-${CPU}-${DEJABSP} \
 "
-#"execute.exp=pr206*"
 # "execute.exp=pr206*"
 # vect.exp=vect*
 # powerpc.exp=405*

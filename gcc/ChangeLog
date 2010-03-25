@@ -1,3 +1,10 @@
+2010-03-25	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one: Toggle command line arguments.
+	* rundeja: Remove one comment line.
+	* test_driver: Add commadn line arguments.
+	* do_tests: Fix path. 
+
 2009-10-27	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* rundeja: Use correct name for simulator.
