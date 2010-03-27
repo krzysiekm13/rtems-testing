@@ -54,11 +54,19 @@ args=$*
 
 cvsarg="${cvs_local_arg} ${basedir}"
 
-# done parsing arguments, now work 
-if [ "X${CVSROOT}" = "X" ] ; then
-  CVS=cvs
+if [ -d .svn ] ; then
+  CVS=svn
+else if [ -d CVS ] ; then
+  cmd=cvs
+  # done parsing arguments, now work 
+  if [ "X${CVSROOT}" = "X" ] ; then
+    CVS=${cmd}
+  else
+    CVS="${cmd} -d ${CVSROOT}"
+  fi
 else
-  CVS="cvs -d ${CVSROOT}"
+  echo "This does not look like a CVS or SVN checkout."
+  exit 1
 fi
 
 CVS="${CVS}"

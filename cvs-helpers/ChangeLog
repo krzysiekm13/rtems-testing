@@ -1,3 +1,7 @@
+2010-03-27	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* mkChangeLogList: Add initial support for svn.
+
 2010-01-29	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* mkChangeLogList: Fixed bug where new files and removed files messages
