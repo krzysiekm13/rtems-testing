@@ -1,0 +1,26 @@
+#
+#  $Id$
+#
+
+This directory contains the build_tools script.  This script is used to
+build and install an RTEMS toolset from source.  You are responsible for
+downloading the various tools from either release images or their
+development versions and patching as appropriate.
+
+To build the tools, simply invoke the following command with INSTALL_POINT
+replaced with "prefix" in GNU tool terms:
+
+./build_tools INSTALL_POINT
+
+Depending on the target and the speed of the machine, this can take
+anywhere from 30 minutes to a few hours.
+
+When completed, you should prepend INSTALL_POINT/bin to your PATH:
+
+export PATH=INSTALL_POINT/bin:$PATH
+
+Since you need the proper autoconf and automake versions to bootstrap
+RTEMS from CVS, these are included in the build script.
+
+--Joel Sherrill (28 Match 2010)
+
