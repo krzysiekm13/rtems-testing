@@ -236,16 +236,18 @@ fi
 # Now cycle over all these CPUs
 if [ $? -eq 0 ] ; then
   if [ $# -eq 0 ] ; then
-    # Simulators included in gdb
-    do_cpus powerpc sh sparc powerpc h8300 mips sh m32c m32r
-    # Requires qemu installation
-    do_cpus i386 
-
     # Requires Skyeye install
     do_cpus arm
 
     # no simulator -- waiting for Skyeye
     do_cpus bfin m68k
+
+    # Simulators included in gdb
+    do_cpus h8300 lm32 m32c m32r mips powerpc sh sparc
+
+    # Requires qemu installation
+    do_cpus i386 m68k
+
 
     # port insufficient to run gcc tests
     do_cpus avr
