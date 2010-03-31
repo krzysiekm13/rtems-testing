@@ -2,7 +2,7 @@
 BASEDIR=${HOME}/test-gcc
 
 
-RTEMS_VERSION=4.5
+RTEMS_VERSION=4.10
 case ${RTEMS_VERSION} in
   4.5)  RTEMSDIR=${BASEDIR}/rtems-45
         TARDIR=${BASEDIR}/tarballs/4.5

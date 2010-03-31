@@ -170,6 +170,7 @@ case ${BSP} in
     COVEXT=tra
     ;;
   qemuppc)
+    RTEMSEXT=ralf
     CPU=powerpc
     COVERAGE_FORMAT=QEMU
     ;;
@@ -338,8 +339,8 @@ generate_reports()
     -T ${TARGET} \
     -f ${COVERAGE_FORMAT} \
     -E ${COVBASE}/Explanations.txt \
-    -e ${RTEMSEXT} -c ${RTEMSEXT}.${COVEXT} \
-    *.${RTEMSEXT} >> summary.txt
+    -e exe -c ${RTEMSEXT}.${COVEXT} \
+    *.exe >> summary.txt
   check_status $? "covoar failed"
 
   (echo "====== Largest Range Sizes (Size and Count)======" ; \
@@ -531,6 +532,7 @@ if [ ${do_rtems_configure} = "yes" ] ; then
       RTEMS_DO_NOT_INLINE_CORE_MUTEX_SEIZE=1 \
       RTEMS_DO_NOT_UNROLL_THREADQ_ENQUEUE_PRIORITY=1 \
       ${RTEMS_EXTRA_ARGS} \
+      --target=${TARGET} --enable-rtemsbsp=${BSP} \
       --enable-maintainer-mode \
       --disable-itron --${posix_en}able-posix --enable-tests \
       --disable-networking --disable-ada --disable-cxx \

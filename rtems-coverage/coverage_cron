@@ -20,8 +20,6 @@ progname=${0##*/}        # fast basename hack for ksh, bash
 
 RUNCOVERAGE=${COVBASE}/run_coverage
 
-
-
 BSPS="erc32 leon2 leon3"
 case ${RTEMS_VERSION} in
   4.6)  ;;
