@@ -1,3 +1,8 @@
+2010-04-09	Jennifer Averett <Jennifer.Averett@oarcorp.com>
+
+	* Explanations.txt: Added explanation for missing coverage in
+	fifo_open.
+
 2010-04-05	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* rtems-cvs-20100405.diff: New file.

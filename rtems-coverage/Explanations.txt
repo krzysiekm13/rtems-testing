@@ -80,3 +80,8 @@ Simple Test Case
 Need a test case to return NULL.
 +++
 
+fifo.c:170
+Simple Test Case
+This looks like an existing test is broken or is only testing error paths.
++++
+
