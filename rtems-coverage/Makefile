@@ -3,7 +3,7 @@
 #
 
 INSTALL_DIR=../bin
-CXXFLAGS=-g -Wall -O2
+CXXFLAGS=-g -Wall -O2 -march=native -mtune=native
 PROGRAMS=covoar qemu-dump-trace
 
 COVOAR_OBJS= covoar.o \
