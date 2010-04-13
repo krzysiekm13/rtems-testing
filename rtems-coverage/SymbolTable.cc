@@ -74,7 +74,6 @@ namespace Coverage {
     const std::string& executableName
   )
   {
-    uint32_t    address = 0;
     char        buffer[512];
     char       *cStatus;
     uint32_t    end = 0;

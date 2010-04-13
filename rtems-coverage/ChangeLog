@@ -1,3 +1,7 @@
+2010-04-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* SymbolTable.cc: Remove warning.
+
 2010-04-13	Jennifer Averett <Jennifer.Averett@OARcorp.com
 
 	* CoverageReaderQEMU.cc: Reduced calls to get map from a
