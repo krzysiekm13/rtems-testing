@@ -22,8 +22,8 @@ fi
 
 progname=${0##*/}        # fast basename hack for ksh, bash
 
-USAGE=\
-"usage: $progname [ -opts ]
+USAGE="
+usage: $progname [ -opts ]
         -v        -- verbose (default=no)
         -A        -- Execute all steps (default=no)
         -B BSP    -- Specify BSP to test
@@ -57,10 +57,6 @@ fatal() {
     prerr "$USAGE"
     [ "$1" ] && (prerr ; prerr $*);
     exit 1
-}
-
-warn() {
-    [ "$1" ] && prerr $*
 }
 
 check_status()
