@@ -1,5 +1,9 @@
 2010-04-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* ObjdumpProcessor.cc: Generate temporary file name.
+
+2010-04-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* Makefile: Tune for native architecture.
 
 2010-04-13	Joel Sherrill <joel.sherrill@oarcorp.com>

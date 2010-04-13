@@ -181,10 +181,22 @@ namespace Coverage {
     SymbolInformation* symbolInfo = NULL;
     char               terminator;
     int                status;
+    char               dumpFile[128];
 
+    sprintf(
+      dumpFile,
+      "%s.dmp",
+      executableInformation->getFileName().c_str()
+    );
+      
     // Generate the objdump.
-    sprintf( buffer, "%s -da --source %s | sed -e \'s/ *$//\' >objdump.tmp",
-      Tools->getObjdump(), (executableInformation->getFileName()).c_str() );
+    sprintf(
+      buffer,
+      "%s -da --source %s | sed -e \'s/ *$//\' >%s",
+      Tools->getObjdump(),
+      (executableInformation->getFileName()).c_str(),
+      dumpFile
+    );
 
     status = system( buffer );
     if (status) {
@@ -198,12 +210,12 @@ namespace Coverage {
     }
 
     // Open the objdump file.
-    objdumpFile = fopen( "objdump.tmp", "r" );
+    objdumpFile = fopen( dumpFile, "r" );
     if (!objdumpFile) {
       fprintf(
         stderr,
         "ERROR: ObjdumpProcessor::load - unable to open %s\n",
-        "objdump.tmp"
+        dumpFile
       );
       exit(-1);
     }
