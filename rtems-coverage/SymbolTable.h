@@ -96,8 +96,14 @@ namespace Coverage {
      *  This map associates each address from an executable
      *  with the symbol that contains the address.
      */
-    typedef std::map<uint32_t, std::string> contents_t;
+    typedef struct {
+       uint32_t min;
+       uint32_t max;
+       std::string symbol;
+    } symbol_entry_t;
+    typedef std::map< uint32_t, symbol_entry_t > contents_t;
     contents_t contents;
+
 
     /*!
      *  This map associates each symbol from an executable with

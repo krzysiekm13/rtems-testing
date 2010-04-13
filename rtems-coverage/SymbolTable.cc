@@ -55,12 +55,19 @@ namespace Coverage {
     uint32_t address
   )
   {
-    contents_t::iterator it = contents.find( address );
+    contents_t::iterator it = contents.end();
 
-    if (it == contents.end())
+    it--;
+    if (address > ((*it).first)) {
       return "";
-    else
-      return ((*it).second);
+    }
+
+    it = contents.lower_bound( address );
+    if (((*it).second).min <= address ) {
+      return ((*it).second).symbol;
+    } else {
+      return "";
+    }
   }
 
   bool SymbolTable::load(
@@ -79,7 +86,7 @@ namespace Coverage {
     symbolInfo  symbolData;
 
     // Generate the nm output
-    sprintf( buffer, "%s -f sysv %s | sed -e \'s/ *$//\' >nm.tmp",
+    sprintf( buffer, "%s -n -f sysv %s | sed -e \'s/ *$//\' >nm.tmp",
       Tools->getNm(), executableName.c_str() );
 
     if ( system( buffer ) ) {
@@ -127,9 +134,9 @@ namespace Coverage {
 
           // add the symbol information to the symbol table.
           end = start + length - 1;
-          for (address = start; address <= end; address++) {
-            contents[ address ] = symbol;
-          }
+          symbol_entry_t entry = { start, end, symbol };
+          contents[end] = entry;
+
           symbolData.startingAddress = start;
           symbolData.length = length;
           info[ symbol ] = symbolData;

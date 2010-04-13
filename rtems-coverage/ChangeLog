@@ -1,3 +1,13 @@
+2010-04-13	Jennifer Averett <Jennifer.Averett@OARcorp.com
+
+	* CoverageReaderQEMU.cc: Reduced calls to get map from a
+	call/address to call/block.  This reduced the runtime of the
+	analysis phase significantly.
+        * Makefile: Added cpu dependent switches.  Also link using
+	CXXFLAGS in case we are profiling.
+        * SymbolTable.cc, SymbolTable.h: Changed symbol lookup per address
+	to symbol lookup per addressblock.
+
 2010-04-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_coverage: Slightly improve usage.

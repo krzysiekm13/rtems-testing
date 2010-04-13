@@ -15,6 +15,7 @@
 
 #include "CoverageReaderQEMU.h"
 #include "ExecutableInfo.h"
+#include "CoverageMap.h"
 
 /* XXX really not always right */
 typedef uint32_t target_ulong;
@@ -24,8 +25,10 @@ typedef uint32_t target_ulong;
 /* hack so this can compile on the RH7 RTEMS 4.5 host */
 #if (__GNUC__ <= 2)
 #define STAT stat
+#define OPEN fopen
 #else
 #define STAT stat64
+#define OPEN fopen64
 #endif
 
 namespace Coverage {
@@ -68,7 +71,7 @@ namespace Coverage {
     //
     // Open the coverage file and read the header.
     //
-    traceFile = fopen( file, "r" );
+    traceFile = OPEN( file, "r" );
     if (!traceFile) {
       fprintf( stderr, "Unable to open %s\n", file );
       return false;
@@ -102,6 +105,8 @@ namespace Coverage {
     // Read and process each line of the coverage file.
     //
     while (1) {
+      CoverageMapBase* aCoverageMap = NULL;
+
       status = fread( &entry, sizeof(struct trace_entry), 1, traceFile );
       if (status != 1)
         break;
@@ -110,9 +115,16 @@ namespace Coverage {
       #endif
 
       // Mark block as fully executed.
+      // Obtain the coverage map containing the specified address.
+      aCoverageMap = executableInformation->getCoverageMap( entry.pc );
+
+      // Ensure that coverage map exists.
+      if (!aCoverageMap)
+        continue;
+
       if (entry.op & TRACE_OP_BLOCK) {
-        for (i=0; i<entry.size; i++) {
-          executableInformation->markWasExecuted( entry.pc + i );
+       for (i=0; i<entry.size; i++) {
+          aCoverageMap->setWasExecuted( entry.pc + i );
         }
       }
 
@@ -120,14 +132,10 @@ namespace Coverage {
       if (entry.op & 0x0f) {
 
         if (entry.op & TRACE_OP_TAKEN)
-          executableInformation->markBranchTaken(
-            entry.pc + entry.size -1
-          );
+          aCoverageMap->setWasTaken( entry.pc + entry.size - 1);
 
         else if (entry.op & TRACE_OP_NOT_TAKEN)
-          executableInformation->markBranchNotTaken(
-            entry.pc + entry.size -1
-          );
+          aCoverageMap->setWasNotTaken( entry.pc + entry.size -1 );
       }
     }
 

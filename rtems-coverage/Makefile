@@ -40,7 +40,7 @@ qemu-dump-trace: qemu-dump-trace.c ${INSTALL_DIR}
 	$(CXX) -o $(@) qemu-dump-trace.c
 
 covoar: $(COVOAR_OBJS)
-	$(CXX) -o $(@) $(COVOAR_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(@) $(COVOAR_OBJS)
 
 covoar.o: covoar.cc CoverageFactory.h CoverageMap.h DesiredSymbols.h \
   ExecutableInfo.h Explanations.h ObjdumpProcessor.h Reports.h
