@@ -1,3 +1,8 @@
+2010-04-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* boards/rtems-lm32-lm32_evr.exp: Correct cpu flags.
+	* boards/rtems-m68k-uC5282.exp: Link differently so the right multilib is used.
+
 2010-03-25	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* boards/rtems-avr-avrtest.exp, boards/rtems-h8300-h8sim.exp,
