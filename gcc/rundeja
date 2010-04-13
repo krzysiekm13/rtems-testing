@@ -28,6 +28,12 @@ case $1 in
     DEJABSP=edb7312
     BSP_SIM=edb7312
     ;;
+  lm32_evr) 
+    CPU=lm32
+    BSP=lm32_evr
+    DEJABSP=lm32_evr
+    BSP_SIM=lm32_evr
+    ;;
   m32csim) 
     CPU=m32c
     BSP=m32csim

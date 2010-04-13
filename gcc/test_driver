@@ -116,20 +116,25 @@ update_gcc()
 {
   cd ${GCCDIR}
   if [ -d .svn ] ; then
-    ./contrib/gcc_update
-    if [ $? -ne 0 ] ; then
-      echo "Update of GCC Failed."
-      exit 1 
-    fi
+    grep "svn+ssh" .svn/entries >/dev/null
+    if [ $? -eq 0 ] ; then
+      echo "Skipping gcc update -- ssh keyed check out"
+    else
+      echo "Updating gcc -- anonymous check out"
+      ./contrib/gcc_update
+      if [ $? -ne 0 ] ; then
+        echo "Update of GCC Failed."
+        exit 1 
+      fi
+   fi
   fi
+  return 0 
 }
 
 # HELPER - Remove all the installed previous builds
 clean_up()
 {
-  rm -rf ${INSTALL}/* &
-  rm -rf ${BSP_INSTALL}/* &
-  wait
+  rm -rf ${INSTALL}/* ${BSP_INSTALL}/*
 }
 
 install_auto()
@@ -175,6 +180,7 @@ do_cpus()
       bfin)    bsp=eZKit533     ;;
       h8300)   bsp=h8sim        ;;
       i386)    bsp=pc386        ;;
+      lm32)    bsp=lm32_evr     ;;
       m32c)    bsp=m32csim      ;;
       m32r)    bsp=m32rsim      ;;
       m68k)    bsp=uC5282       ;;
@@ -206,6 +212,9 @@ do_cpus()
   echo Started at: ${start}
   echo Stopped at: ${stopped}
 }
+
+update_gcc
+exit 0
 
 if [ ${doCleanInstallPoint} = "yes" ] ; then
   # Clean the install point
