@@ -83,27 +83,38 @@ namespace Coverage {
     uint32_t    start = 0;
     char        symbol[ 100 ];
     symbolInfo  symbolData;
+    char        nmName[128];
+
+
+    sprintf(
+      nmName,
+      "%s.nm",
+      executableName.c_str()
+    );
 
     // Generate the nm output
-    sprintf( buffer, "%s -n -f sysv %s | sed -e \'s/ *$//\' >nm.tmp",
-      Tools->getNm(), executableName.c_str() );
+    if (FileIsNewer(executableName.c_str(), nmName )){
 
-    if ( system( buffer ) ) {
-      fprintf(
-        stderr,
-        "ERROR: SymbolTable::load - command (%s) failed\n",
-        buffer
-      );
-      exit( -1 );
+      sprintf( buffer, "%s -n -f sysv %s | sed -e \'s/ *$//\' >%s",
+        Tools->getNm(), executableName.c_str(), nmName );
+
+      if ( system( buffer ) ) {
+        fprintf(
+          stderr,
+          "ERROR: SymbolTable::load - command (%s) failed\n",
+          buffer
+        );
+        exit( -1 );
+      }
     }
 
     // Read the file and process each desired symbol
-    nmFile = fopen( "nm.tmp", "r" );
+    nmFile = fopen( nmName, "r" );
     if ( !nmFile ) {
       fprintf(
         stderr,
         "ERROR: SymbolTable::load - unable to open %s\n",
-        "nm.tmp"
+        nmName
       );
       exit(-1);
     }
@@ -149,7 +160,7 @@ namespace Coverage {
     fclose( nmFile );
 
     // Remove temporary file
-    (void) system( "rm -f nm.tmp" );
+    // (void) system( "rm -f nm.tmp" );
     return true;
   }
 

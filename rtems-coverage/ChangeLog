@@ -1,3 +1,11 @@
+2010-04-15	Jennifer Averett <Jennifer.Averett@OARcorp.com
+
+	* Makefile, ObjdumpProcessor.cc, SymbolTable.cc, app_common.h: Modified
+	code to read and compare the object file/or/nm file with the
+	executable and not recreate the file if the executable is older than
+	the file.
+	* app_common.cc: New file.
+
 2010-04-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* ObjdumpProcessor.cc: Generate temporary file name.

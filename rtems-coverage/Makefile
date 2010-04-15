@@ -6,7 +6,8 @@ INSTALL_DIR=../bin
 CXXFLAGS=-g -Wall -O2 -march=native -mtune=native
 PROGRAMS=covoar qemu-dump-trace
 
-COVOAR_OBJS= covoar.o \
+COVOAR_OBJS= app_common.o \
+  covoar.o \
   CoverageFactory.o \
   CoverageMap.o \
   CoverageMapBase.o \
@@ -41,6 +42,8 @@ qemu-dump-trace: qemu-dump-trace.c ${INSTALL_DIR}
 
 covoar: $(COVOAR_OBJS)
 	$(CXX) $(CXXFLAGS) -o $(@) $(COVOAR_OBJS)
+
+app_common.o: app_common.h app_common.cc
 
 covoar.o: covoar.cc CoverageFactory.h CoverageMap.h DesiredSymbols.h \
   ExecutableInfo.h Explanations.h ObjdumpProcessor.h Reports.h

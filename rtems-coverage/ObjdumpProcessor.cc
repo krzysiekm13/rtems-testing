@@ -163,6 +163,7 @@ namespace Coverage {
     return false;
   }
 
+
   void ObjdumpProcessor::load(
     ExecutableInfo* const executableInformation
   )
@@ -190,24 +191,29 @@ namespace Coverage {
     );
       
     // Generate the objdump.
-    sprintf(
-      buffer,
-      "%s -da --source %s | sed -e \'s/ *$//\' >%s",
-      Tools->getObjdump(),
+    if ( FileIsNewer( 
       (executableInformation->getFileName()).c_str(),
       dumpFile
-    );
-
-    status = system( buffer );
-    if (status) {
-      fprintf(
-        stderr,
-        "ERROR: ObjdumpProcessor::load - command (%s) failed with %d\n",
+       )) {
+      sprintf(
         buffer,
-        status
+        "%s -da --source %s | sed -e \'s/ *$//\' >%s",
+        Tools->getObjdump(),
+        (executableInformation->getFileName()).c_str(),
+        dumpFile
       );
-      exit( -1 );
-    }
+
+      status = system( buffer );
+      if (status) {
+        fprintf(
+          stderr,
+          "ERROR: ObjdumpProcessor::load - command (%s) failed with %d\n",
+          buffer,
+          status
+        );
+        exit( -1 );
+      }
+    } 
 
     // Open the objdump file.
     objdumpFile = fopen( dumpFile, "r" );

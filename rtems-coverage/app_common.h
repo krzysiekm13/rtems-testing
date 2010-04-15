@@ -16,4 +16,6 @@ extern Coverage::DesiredSymbols* SymbolsToAnalyze;
 extern Coverage::Toolnames*      Tools;
 extern bool                      Verbose;
 
+bool FileIsNewer( const char *f1, const char *f2 ); 
+
 #endif
