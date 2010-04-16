@@ -1,5 +1,10 @@
 2010-04-16	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
+	* TraceReaderBase.cc, TraceReaderLogQEMU.cc, TraceReaderLogQEMU.h: New
+	files.
+
+2010-04-16	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
 	* CoverageReaderQEMU.cc: Modified to read multiple blocks at a time.
 
 2010-04-15	Jennifer Averett <Jennifer.Averett@OARcorp.com
