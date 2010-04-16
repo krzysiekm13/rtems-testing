@@ -46,7 +46,6 @@ namespace Coverage {
     ExecutableInfo* const executableInformation
   )
   {
-    struct trace_entry  entry;
     struct trace_header header;
     uintptr_t           i;
     struct STAT         statbuf;
@@ -104,38 +103,51 @@ namespace Coverage {
     //
     // Read and process each line of the coverage file.
     //
+#define ENTRIES 1024
     while (1) {
-      CoverageMapBase* aCoverageMap = NULL;
+      CoverageMapBase     *aCoverageMap = NULL;
+      struct trace_entry  entries[ENTRIES];
+      struct trace_entry  *entry;
+      int                 num_entries;
 
-      status = fread( &entry, sizeof(struct trace_entry), 1, traceFile );
-      if (status != 1)
+      num_entries = fread( 
+        entries, 
+        sizeof(struct trace_entry), 
+        ENTRIES, 
+        traceFile 
+      );
+      if (num_entries == 0)
         break;
       #if 0
         fprintf( stderr, "0x%08x %d 0x%2x\n", entry.pc, entry.size, entry.op );
       #endif
 
-      // Mark block as fully executed.
-      // Obtain the coverage map containing the specified address.
-      aCoverageMap = executableInformation->getCoverageMap( entry.pc );
+      for (int count=0; count<num_entries; count++) {
+        entry = &entries[count];
+      
+        // Mark block as fully executed.
+        // Obtain the coverage map containing the specified address.
+        aCoverageMap = executableInformation->getCoverageMap( entry->pc );
 
-      // Ensure that coverage map exists.
-      if (!aCoverageMap)
-        continue;
+        // Ensure that coverage map exists.
+        if (!aCoverageMap)
+          continue;
 
-      if (entry.op & TRACE_OP_BLOCK) {
-       for (i=0; i<entry.size; i++) {
-          aCoverageMap->setWasExecuted( entry.pc + i );
+        if (entry->op & TRACE_OP_BLOCK) {
+         for (i=0; i<entry->size; i++) {
+            aCoverageMap->setWasExecuted( entry->pc + i );
+          }
         }
-      }
 
-      // Determine if additional branch information is available. */
-      if (entry.op & 0x0f) {
+        // Determine if additional branch information is available. */
+        if (entry->op & 0x0f) {
 
-        if (entry.op & TRACE_OP_TAKEN)
-          aCoverageMap->setWasTaken( entry.pc + entry.size - 1);
+          if (entry->op & TRACE_OP_TAKEN)
+            aCoverageMap->setWasTaken( entry->pc + entry->size - 1);
 
-        else if (entry.op & TRACE_OP_NOT_TAKEN)
-          aCoverageMap->setWasNotTaken( entry.pc + entry.size -1 );
+          else if (entry->op & TRACE_OP_NOT_TAKEN)
+            aCoverageMap->setWasNotTaken( entry->pc + entry->size -1 );
+        }
       }
     }
 
