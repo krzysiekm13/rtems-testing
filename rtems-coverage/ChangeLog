@@ -1,3 +1,8 @@
+2010-04-18	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* coverage_cron, do_coverage, run_coverage: Support lm32_evr. Attempt
+	to do multiple coverage runs in parallel.
+
 2010-04-16	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* TraceReaderBase.cc, TraceReaderLogQEMU.cc, TraceReaderLogQEMU.h: New

@@ -22,23 +22,45 @@ RUNCOVERAGE=${COVBASE}/run_coverage
 
 BSPS="erc32 leon2 leon3"
 case ${RTEMS_VERSION} in
-  4.6)  ;;
-  4.7)  ;;
-  4.8)  ;;
-  4.9)  BSPS="${BSPS} edb7312 smdk2410 pc386 uC5282"
-        ;;
-  4.10) BSPS="${BSPS} edb7312 gumstix smdk2410 pc386 uC5282 qemuppc"
-        ;;
+  4.6|4.7|4.8|4.9|4.10|4.11) ;;
   *)
     echo "ERROR -- UNKNOWN RTEMS VERSION ${RTEMS_VERSION}"
     exit 1
     ;;
 esac
 
+if [ `expr ${RTEMS_VERSION} \>= 4.9` -eq 0 ] ; then
+  BSPS="${BSPS} edb7312 smdk2410 pc386 uC5282"
+fi
+
+if [ ${RTEMS_VERSION} = 4.10 -o ${RTEMS_VERSION} = 4.11 ] ; then
+  BSPS="${BSPS} gumstix uC5282 qemuppc lm32_evr"
+fi
+
+echo VERSION: ${RTEMS_VERSION}
+echo BSPs   : ${BSPS}
+
+# Eventually it would be nice to figure out why some builds break
+# when we do two in parallel.
+do_parallel=no
 
 ${RUNCOVERAGE} -t update 
-for b in ${BSPS}
-do
-  ${RUNCOVERAGE} -t ${b}_baseline
-done
+if [ ${do_parallel} = no ]; then
+  for b in ${BSPS}
+  do
+    ${RUNCOVERAGE} -t ${b}_baseline
+  done
+else
+  maxjobs=`/usr/bin/getconf _NPROCESSORS_ONLN`
+  jobs=0
+  for b in ${BSPS}
+  do
+    ${RUNCOVERAGE} -t ${b}_baseline &
+    jobs=`expr ${jobs} + 1`
+    if [ ${jobs} -eq ${maxjobs} ] ; then
+      jobs=0
+      wait
+    fi
+  done
+fi
 exit 0

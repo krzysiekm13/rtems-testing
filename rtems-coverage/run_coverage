@@ -71,6 +71,7 @@ do_one()
   bsp=${1}
   shift
   time ${COVBASE}/do_coverage -A -u -m ${SAVE} ${PUBLISH} ${*} -B ${bsp}
+  check_status $? "FAILED ${bsp}" 
   rm -rf b-* *-tests
 }
 
@@ -79,6 +80,7 @@ validate_bsp()
   case ${1} in
     edb7312|gumstix|smdk2410)    ;; # ARM
     pc386|qemu)                  ;; # i386
+    lm32_evr)                    ;; # lm32
     uC5282)                      ;; # m68k/Coldfire
     qemuppc)                     ;; # PowerPC
     erc32|leon2|leon3)           ;; # SPARC
@@ -124,9 +126,12 @@ fi
 for cmd in $*
 do
   case ${cmd} in
-    update)                      ;; # general commands
+    update) ;;                       # general command
     *_Os|*_O2|*_baseline)            # one BSP at specific -Ox level
-      bsp=`echo $cmd | sed -e 's/_.*$//'`
+      case ${cmd} in
+        lm32_evr*) bsp=lm32_evr ;;
+        *)         bsp=`echo $cmd | sed -e 's/_.*$//'` ;;
+      esac
       validate_bsp ${bsp}
       ;;
     *)
