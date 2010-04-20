@@ -1,3 +1,10 @@
+2010-04-20	Joel Sherrill <joel.sherrilL@oarcorp.com>
+
+	* .cvsignore, Makefile, bf537Stamp.in, ezkit533.in: Move current
+	scripts to skyeye named ones so the default is to use the new
+	simulator in gdb.
+	* bf537Stamp-skyeye.in, ezkit533-skyeye.in: New files.
+
 2010-04-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* pc386.in: Specify CPU as 486

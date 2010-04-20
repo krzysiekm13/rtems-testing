@@ -3,6 +3,8 @@ ant5206-gdb
 avrtest
 bf537Stamp
 bf537Stamp-gdb
+bf537Stamp-skyeye
+bf537Stamp-skyeye-gdb
 csb337
 csb337-gdb
 csb350
@@ -15,6 +17,8 @@ erc32
 erc32-gdb
 ezkit533
 ezkit533-gdb
+ezkit533-skyeye
+ezkit533-skyeye-gdb
 gdbarmsim
 gdbarmsim-gdb
 gumstix

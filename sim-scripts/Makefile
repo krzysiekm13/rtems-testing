@@ -3,9 +3,10 @@
 #
 
 INSTALL_DIR=../bin
-GDBSIM_SCRIPTS=gdbarmsim h8sim jmr3904 lm32_evr m32csim m32rsim psim sis simsh
-SKYEYE_SCRIPTS=ant5206 bf537Stamp csb337 csb350 csb360 edb7312 ezkit533 \
-  gumstix rtl22xx smdk2410 leon2-skyeye
+GDBSIM_SCRIPTS=bf537Stamp ezkit533 gdbarmsim h8sim jmr3904 lm32_evr \
+  m32csim m32rsim psim sis simsh
+SKYEYE_SCRIPTS=ant5206 bf537Stamp-skyeye csb337 csb350 csb360 edb7312 \
+  ezkit533-skyeye gumstix rtl22xx smdk2410 leon2-skyeye
 
 TSIM_SCRIPTS=erc32 leon2 leon3
 QEMU_SCRIPTS=pc386 qemuppc qemu-gumstix qemu-leon2 qemu-lm32_evr uC5282
@@ -62,8 +63,8 @@ csb350: gdb-sim-run.in gdb-sim.in csb350.in
 csb360: gdb-sim-run.in gdb-sim.in csb360.in
 	./mkrun yes M68K-Coldfire m68k csb360
 
-bf537Stamp: gdb-sim-run.in gdb-sim.in bf537Stamp.in
-	./mkrun yes Blackfin bfin bf537Stamp
+bf537Stamp-skyeye: gdb-sim-run.in gdb-sim.in bf537Stamp-skyeye.in
+	./mkrun yes Blackfin bfin bf537Stamp-skyeye
 
 edb7312: gdb-sim-run.in gdb-sim.in edb7312.in
 	./mkrun yes ARM arm edb7312
@@ -77,8 +78,8 @@ rtl22xx: gdb-sim-run.in gdb-sim.in rtl22xx.in
 smdk2410: gdb-sim-run.in gdb-sim.in smdk2410.in
 	./mkrun yes ARM arm smdk2410
 
-ezkit533: gdb-sim-run.in gdb-sim.in ezkit533.in
-	./mkrun yes Blackfin bfin ezkit533
+ezkit533-skyeye: gdb-sim-run.in gdb-sim.in ezkit533-skyeye.in
+	./mkrun yes Blackfin bfin ezkit533-skyeye
 
 leon2-skyeye: gdb-sim-run.in gdb-sim.in leon2-skyeye.in
 	./mkrun yes SPARC sparc leon2-skyeye
@@ -94,6 +95,12 @@ leon3: gdb-sim-run.in gdb-sim.in leon3.in tsim-support
 	./mkrun yes SPARC sparc leon3
 
 ### GDB Simulator BSPs
+bf537Stamp bf537Stamp-gdb: gdb-sim-run.in gdb-sim.in bf537Stamp.in
+	./mkrun yes Blackfin bfin bf537Stamp
+
+ezkit533 ezkit533-gdb: gdb-sim-run.in gdb-sim.in ezkit533.in
+	./mkrun yes Blackfin bfin ezkit533
+
 gdbarmsim gdbarmsim-gdb: gdb-sim-run.in gdb-sim.in gdbarmsim.in
 	./mkrun yes ARM arm gdbarmsim
 

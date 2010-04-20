@@ -1,15 +1,25 @@
 #
-#  Blackfin/bf537Stamp Support 
+#  Blackfin BF537 Stamp Support 
 #
 #  $Id$
 #
 
-##INSERT SKYEYE SUPPORT HERE
+runARGS()
+{
+  echo "--env operating --model bf537 ${1}"
+}
 
 checkBSPFaults()
 {
-  bspExited_ARM
-  return $?
+  logfile=$1
+  grep "^Unhandled exception" ${logfile}
+  exceptionExit=$?
+  grep "^mips-core: " ${logfile}
+  badAccessExit=$?
+  if [ $badAccessExit -eq 0 -o $exceptionExit -eq 0 ] ; then
+    return 1
+  fi
+  return 0
 }
 
 bspLimit()
@@ -25,15 +35,12 @@ bspLimit()
   echo ${limit}
 }
 
-bspGeneratesDeviceTree="yes"
-bspTreeFile=bf537Stamp.conf
+bspGeneratesGDBCommands="yes"
 
-### Generate the PSIM device tree based upon the type of application being run
-bspGenerateDeviceTree()
+bspGenerateGDBCommands()
 {
 cat <<EOF
-arch:blackfin
-mach:bf537
-uart: mod=pipe, desc_in=/dev/null, desc_out=/dev/stdout
+target sim --env operating --model bf537
+load
 EOF
 }
