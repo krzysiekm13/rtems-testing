@@ -6,8 +6,23 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "app_common.h"
+#include "DesiredSymbols.h"
+#include "Toolnames.h"
+#include "Explanations.h"
+
+/*
+ *  Global variables for the program
+ */
+Coverage::Explanations*     AllExplanations  = NULL;
+Coverage::ObjdumpProcessor* objdumpProcessor = NULL;
+Coverage::DesiredSymbols*   SymbolsToAnalyze = NULL;
+Coverage::Toolnames*        Tools            = NULL;
+bool                        Verbose          = false;
+
 
 bool FileIsNewer( const char *f1, const char *f2 ) {
   struct stat buf1, buf2;
@@ -24,4 +39,17 @@ bool FileIsNewer( const char *f1, const char *f2 ) {
   return false;
 }
 
+bool ReadUntilFound( FILE *file, const char *line )
+{
+  char discardBuff[100];
+  size_t  len = strlen( line );
+
+  do { 
+    if (! fgets( discardBuff, 99, file ) )
+      return false;
+
+    if ( strncmp( discardBuff, line, len ) == 0 ) 
+      return true; 
+  } while (1);
+}
 

@@ -16,7 +16,8 @@
 
 #include "qemu-log.h"
 
-#include "TraceReaderBase.cc"
+#include "app_common.h"
+#include "TraceReaderBase.h"
 #include "TraceReaderLogQEMU.h"
 #include "TraceList.h"
 
@@ -37,22 +38,6 @@ typedef uint32_t target_ulong;
 
 namespace Trace {
 
-
-bool ReadUntilFound( FILE *file, const char *line )
-{
-  char discardBuff[100];
-  size_t  len = strlen( line );
-
-  do { 
-    if (! fgets( discardBuff, 99, file ) )
-      return false;
-
-    if ( strncmp( discardBuff, line, len ) == 0 ) 
-      return true; 
-  } while (1);
-}
-
-
   TraceReaderLogQEMU::TraceReaderLogQEMU()
   {
   }
@@ -65,8 +50,12 @@ bool ReadUntilFound( FILE *file, const char *line )
     const char* const     file
   )
   {
-    struct trace_header header;
-    uintptr_t           i;
+    bool                done          = false;
+    bool                isBranch      = false;
+    QEMU_LOG_IN_Block_t first         = { 0, "", "" };
+    QEMU_LOG_IN_Block_t last          = { 0, "", "" };
+    QEMU_LOG_IN_Block_t nextExecuted  = { 0, "", "" };
+    uint32_t            nextlogical;
     struct STAT         statbuf;
     int                 status;
     FILE*               logFile;
@@ -95,44 +84,99 @@ bool ReadUntilFound( FILE *file, const char *line )
       return false;
     }
 
+
+    //
+    //  Discard Header section
+    //
     if (! ReadUntilFound( logFile, QEMU_LOG_SECTION_END ) ) {
       fprintf( stderr, "Unable to locate end of log file header\n" );
       return false;
     }
 
-    do {
+    //
+    //  Find first IN block
+    //
+    if (! ReadUntilFound( logFile, QEMU_LOG_IN_KEY )){
+      fprintf(stderr,"Error: Unable to locate first IN: Block in Log file \n");
+      return false;
+    }
 
-      QEMU_LOG_IN_Block_t first, last;
+    //
+    //  Read First Start Address
+    //
+    if ( 
+      fscanf( 
+        logFile, 
+        "0x%08lx: %s %s\n", 
+        &first.address, 
+        first.instruction, 
+        first.data 
+      ) != 3  ) 
+    {
+      fprintf(stderr, "Error Unable to Read Initial First Block\n" );
+      done = true;
+    }
 
-      if (! ReadUntilFound( logFile, QEMU_LOG_IN_KEY ))
-        break;
-     
-       if ( fscanf( logFile, "0x%08x: %s %s\n", &first.address, first.instruction, first.data ) != 3 )
-         fprintf(stderr, "Error Unable to Read First Block\n" );
-printf("Start Address 0x%x, %s %s\n", first.address, first.instruction, first.data );
+    while (!done) {
 
         last = first;
    
-        while( fscanf( logFile, "0x%08x: %s %s\n", &last.address, last.instruction, last.data ) == 3 );
-printf("End Address 0x%x, %s %s\n", last.address, last.instruction, last.data ); 
+        // Read until we get to the last instruction in the block.
+        while( 
+          fscanf( 
+             logFile, 
+             "0x%08lx: %s %s\n", 
+             &last.address, 
+             last.instruction, 
+             last.data 
+           ) == 3 
+        );
 
-    } while (1);
+        // If (last.instruction is a branch instruction) {
 
-    //
-    // Read and process each line of the coverage file.
-    //
+        nextlogical = objdumpProcessor->getAddressAfter(last.address);
+
+        if (! ReadUntilFound( logFile, QEMU_LOG_IN_KEY )) {
+          done = true;
+        }
+        if ( 
+          fscanf( 
+            logFile, 
+            "0x%08lx: %s %s\n", 
+            &nextExecuted.address, 
+            nextExecuted.instruction, 
+            nextExecuted.data 
+          ) != 3 
+        ) {
+          fprintf(stderr, "Error Unable to Read First Block\n" );
+        }
+
+
+        // If the nextlogical was not found we are throwing away
+        // the block; otherwise add the block to the trace list.
+        if (nextlogical != 0) {
+          isBranch = objdumpProcessor->IsBranch( last.instruction ); 
+
+          if (  isBranch &&
+               ( nextExecuted.address == nextlogical )) {
+            Trace.add( 
+              first.address, 
+              nextlogical, 
+              TraceList::EXIT_REASON_BRANCH_NOT_TAKEN 
+            );
+          } else if (isBranch) {
+            Trace.add( 
+              first.address, 
+              nextlogical, 
+              TraceList::EXIT_REASON_BRANCH_TAKEN 
+            );
+          } else
+            Trace.add(first.address, nextlogical, TraceList::EXIT_REASON_OTHER);
+        }    
+        first = nextExecuted;
+    } 
 
     fclose( logFile );
     return true;
   }
-}
-
-
-
-
-main ()
-{
-  Trace::TraceReaderLogQEMU log;
-
-  log.processFile( "/tmp/qemu.log" );
 }

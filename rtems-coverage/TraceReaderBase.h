@@ -2,38 +2,43 @@
  *  $Id$
  */
 
-/*! @file TraceReaderLogQEMU.h
- *  @brief TraceReaderLogQEMU Specification
+/*! @file TraceReaderBase.h
+ *  @brief TraceReaderBase Specification
  *
- *  This file contains the specification of the TraceReaderLogQEMU class.
+ *  This file contains the specification of the TraceReaderBase class.
  */
 
-#ifndef __TRACE_READER_LOG_QEMU_H__
-#define __TRACE_READER_LOG_QEMU_H__
+#ifndef __TRACE_READER_BASE_H__
+#define __TRACE_READER_BASE_H__
 
-#include "TraceReaderBase.h"
+#include "TraceList.h"
 
 namespace Trace {
 
-  /*! @class TraceReaderLogQEMU
+  /*! @class TraceReaderBase
    *
    *  This is the specification of the TraceReader base class.
    *  All TraceReader implementations inherit from this class.
    */
-  class TraceReaderLogQEMU: public TraceReaderBase {
+  class TraceReaderBase {
 
   public:
 
+    /*!
+     *  Trace list that is filled by processFile.
+     */
+    TraceList Trace;
+
 
     /*! 
-     *  This method constructs a TraceReaderLogQEMU instance.
+     *  This method constructs a TraceReaderBase instance.
      */
-    TraceReaderLogQEMU();
+    TraceReaderBase();
 
     /*! 
-     *  This method destructs a TraceReaderLogQEMU instance.
+     *  This method destructs a TraceReaderBase instance.
      */
-    virtual ~TraceReaderLogQEMU();
+    virtual ~TraceReaderBase();
 
     /*!
      *  This method processes the coverage information from the input
@@ -47,7 +52,7 @@ namespace Trace {
      */
     virtual bool processFile(
       const char* const     file
-    );
+    ) = 0;
   };
 
 }

@@ -15,6 +15,7 @@
 #include <string>
 
 #include "ExecutableInfo.h"
+#include "TargetBase.h"
 
 namespace Coverage {
 
@@ -65,6 +66,8 @@ namespace Coverage {
 
     } objdumpLine_t;
 
+    typedef std::list<uint32_t> objdumpFile_t;
+
     /*!
      *  This method constructs an ObjdumpProcessor instance.
      */
@@ -76,6 +79,22 @@ namespace Coverage {
     virtual ~ObjdumpProcessor();
 
     /*!
+     *  This method returns a file pointer to the objdump file
+     *  for the given executable file name.  
+     */
+    FILE* getFile( 
+      std::string exeFileName 
+    ); 
+
+    /*!
+     *  This method fills the objdumpList list with all the 
+     *  instruction addresses in the object dump file.
+     */
+    void loadAddressTable (
+      std::string executableFileName
+    );
+
+    /*!
      *  This method generates and processes an object dump for
      *  the specified executable.
      */
@@ -83,7 +102,24 @@ namespace Coverage {
       ExecutableInfo* const executableInformation
     );
 
+    /*!
+     *  This method returns the next address in othe objdumpList.
+     */
+    uint32_t getAddressAfter( uint32_t address );
+
+    /*!
+     *  This method returns true if the instrucation is
+     *  an instruction that results in a code branch, otherwise
+     *  it returns false.
+     */
+    bool IsBranch( const char *instruction );
+
+
   private:
+
+    objdumpFile_t       objdumpList;
+    Target::TargetBase  *target_m;
+
 
     /*!
      *  This method determines whether the specified line is a

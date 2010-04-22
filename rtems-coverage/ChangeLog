@@ -1,3 +1,16 @@
+2010-04-22	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* Makefile, ObjdumpProcessor.cc, ObjdumpProcessor.h, Toolnames.cc,
+	TraceReaderLogQEMU.cc, TraceReaderLogQEMU.h, app_common.cc,
+	app_common.h, covoar.cc: Added and rearragnged to get the
+	TraceReaderLogQEMU working.
+	* TargetBase.cc, TargetBase.h, TargetFactory.cc, TargetFactory.h,
+	Target_arm.cc, Target_arm.h, Target_i386.cc, Target_i386.h,
+	Target_lm32.cc, Target_lm32.h, Target_m68k.cc, Target_m68k.h,
+	Target_powerpc.cc, Target_powerpc.h, Target_sparc.cc, Target_sparc.h,
+	TraceConverter.cc, TraceList.cc, TraceList.h, TraceReaderBase.h: New
+	files.
+
 2010-04-18	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* coverage_cron, do_coverage, run_coverage: Support lm32_evr. Attempt

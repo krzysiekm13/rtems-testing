@@ -41,21 +41,11 @@ int                                  executableExtensionLength = 0;
 std::list<Coverage::ExecutableInfo*> executablesToAnalyze;
 char*                                explanations = NULL;
 char*                                noExplanations = NULL;
-Coverage::ObjdumpProcessor*          objdumpProcessor = NULL;
 char*                                progname;
 bool                                 singleExecutable = false;
 const char*                          sizeReportFile = "sizes.txt";
 const char*                          symbolsFile = "rtems.syms";
 char*                                target = NULL;
-
-/*
- *  Global variables for the program
- */
-Coverage::Explanations*   AllExplanations = NULL;
-Coverage::DesiredSymbols* SymbolsToAnalyze = NULL;
-Coverage::Toolnames*      Tools = NULL;
-
-bool Verbose = false;
 
 
 /*

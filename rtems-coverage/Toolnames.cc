@@ -22,15 +22,20 @@ namespace Coverage {
   )
   {
     int i;
+    std::string front = "";
 
     target    = target_arg; 
-    addr2line = target + "-addr2line";
-    nm        = target + "-nm";
-    objdump   = target + "-objdump";
     for (i=0 ; target[i] && target[i] != '-' ; ) {
       cpu[i]   = target[i];
       cpu[++i] = '\0';
     }
+    if (target[i] == '-')
+      front = target + "-";
+
+
+    addr2line = front + "addr2line";
+    nm        = front + "nm";
+    objdump   = front + "objdump";
   }
 
   Toolnames::~Toolnames()

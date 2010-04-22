@@ -4,10 +4,9 @@
 
 INSTALL_DIR=../bin
 CXXFLAGS=-g -Wall -O2 -march=native -mtune=native
-PROGRAMS=covoar qemu-dump-trace
+PROGRAMS=covoar qemu-dump-trace trace-converter
 
-COVOAR_OBJS= app_common.o \
-  covoar.o \
+COMMON_OBJS= app_common.o \
   CoverageFactory.o \
   CoverageMap.o \
   CoverageMapBase.o \
@@ -27,22 +26,54 @@ COVOAR_OBJS= app_common.o \
   ObjdumpProcessor.o \
   Reports.o \
   SymbolTable.o \
-  Toolnames.o
+  Target_arm.o  \
+  TargetBase.o  \
+  TargetFactory.o \
+  Target_i386.o  \
+  Target_lm32.o  \
+  Target_m68k.o  \
+  Target_powerpc.o \
+  Target_sparc.o \
+  Toolnames.o 
 
-all: $(PROGRAMS) ${INSTALL_DIR} ../bin/qemu-dump-trace
+TRACECONVERTER_OBJS = \
+  $(COMMON_OBJS) \
+  TraceConverter.o \
+  TraceList.o \
+  TraceReaderBase.o \
+  TraceReaderLogQEMU.o
 
-../bin/qemu-dump-trace: qemu-dump-trace ${INSTALL_DIR}
-	cp qemu-dump-trace ../bin
+COVOAR_OBJS = \
+  $(COMMON_OBJS) \
+  covoar.o
+
+INSTALLED= \
+    ../bin/qemu-dump-trace \
+    ../bin/trace-converter
+
+all: $(PROGRAMS) ${INSTALL_DIR} $(INSTALLED)
 
 ${INSTALL_DIR}:
 	test -d ${INSTALL_DIR} || mkdir ${INSTALL_DIR}
 
+#  INSTALLED PROGRAMS
+../bin/qemu-dump-trace: qemu-dump-trace ${INSTALL_DIR}
+	cp qemu-dump-trace ../bin
+
+../bin/trace-converter: trace-converter ${INSTALL_DIR}
+	cp trace-converter ../bin
+
+#  EXECUTABLES
 qemu-dump-trace: qemu-dump-trace.c ${INSTALL_DIR}
 	$(CXX) -o $(@) qemu-dump-trace.c
 
 covoar: $(COVOAR_OBJS)
 	$(CXX) $(CXXFLAGS) -o $(@) $(COVOAR_OBJS)
 
+trace-converter: $(TRACECONVERTER_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(@) $(TRACECONVERTER_OBJS)
+
+#  DEPENDENCIES ON SINGLE OBJECTS
 app_common.o: app_common.h app_common.cc
 
 covoar.o: covoar.cc CoverageFactory.h CoverageMap.h DesiredSymbols.h \
@@ -75,11 +106,26 @@ DesiredSymbols.o: DesiredSymbols.cc DesiredSymbols.h CoverageMap.h
 ExecutableInfo.o: ExecutableInfo.cc ExecutableInfo.h CoverageMap.h \
   DesiredSymbols.h SymbolTable.h
 Explanations.o: Explanations.cc Explanations.h
-ObjdumpProcessor.o: ObjdumpProcessor.cc ObjdumpProcessor.h ExecutableInfo.h
+ObjdumpProcessor.o: ObjdumpProcessor.cc ObjdumpProcessor.h ExecutableInfo.h \
+  TargetBase.h TargetFactory.h
 Reports.o: Reports.cc Reports.h CoverageRanges.h DesiredSymbols.h \
   Explanations.h ObjdumpProcessor.h
 SymbolTable.o: SymbolTable.cc SymbolTable.h
+Target_arm.o: Target_arm.cc Target_arm.h TargetBase.h
+TargetBase.o: TargetBase.cc TargetBase.h
+TargetFactory.o: TargetFactory.cc TargetFactory.h TargetBase.h Target_arm.h \
+  Target_i386.h Target_lm32.h Target_m68k.h Target_powerpc.h Target_sparc.h
+Target_i386.o: Target_i386.cc Target_i386.h TargetBase.h
+Target_lm32.o: Target_lm32.cc Target_lm32.h TargetBase.h
+Target_m68k.o: Target_m68k.cc Target_m68k.h TargetBase.h
+Target_powerpc.o: Target_powerpc.cc Target_powerpc.h TargetBase.h
+Target_sparc.o: Target_sparc.cc Target_sparc.h TargetBase.h
 Toolnames.o: Toolnames.cc Toolnames.h
+
+TraceConverter.o: TraceConverter.cc TraceReaderBase.h TraceList.h
+TraceList.o: TraceList.cc TraceList.h
+TraceReaderBase.o: TraceReaderBase.cc TraceReaderBase.h TraceList.h
+TraceReaderLogQEMU.o: TraceReaderLogQEMU.cc TraceReaderLogQEMU.h TraceReaderBase.h TraceList.h
 
 clean:
 	rm -rf $(PROGRAMS) *.o doxy html latex *.exe *~

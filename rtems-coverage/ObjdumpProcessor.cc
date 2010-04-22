@@ -15,19 +15,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 #include "ObjdumpProcessor.h"
 #include "app_common.h"
 #include "ExecutableInfo.h"
+#include "TargetFactory.h"
 
 namespace Coverage {
 
   ObjdumpProcessor::ObjdumpProcessor()
   {
+    target_m = Target::TargetFactory(Tools->getTarget());
   }
 
   ObjdumpProcessor::~ObjdumpProcessor()
   {
+  }
+
+  bool ObjdumpProcessor::IsBranch(
+    const char *instruction 
+  )
+  { 
+    if (target_m)
+      return target_m->isBranch( instruction );
+ 
+    fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
+    assert(0);
+    return false;
   }
 
   bool ObjdumpProcessor::isNop(
@@ -35,171 +50,36 @@ namespace Coverage {
     int&              size
   )
   {
-    bool        isNop = false;
-    const char *target = Tools->getTarget();
 
-    size = 0;
+    if (target_m)
+      return target_m->isNopLine( line, size );
 
-    // common patterns
-    if (!strcmp( &line[strlen(line)-3], "nop"))
-      isNop = true;
-    
-    // now check target specific patterns and return proper size if "nop"
-
-    // Check ARM nops
-    if (!strncmp( target, "arm", 3 )) {
-      if (isNop) {
-        size = 4; 
-        return true;
-      }
-    
-      // On ARM, there are literal tables at the end of methods.
-      // We need to avoid them.
-      if (!strncmp( &line[strlen(line)-10], ".byte", 5)) {
-        size = 1;
-        return true;
-      }
-      if (!strncmp( &line[strlen(line)-13], ".short", 6)) {
-        size = 2;
-        return true;
-      }
-      if (!strncmp( &line[strlen(line)-16], ".word", 5)) {
-        size = 4;
-        return true;
-      }
-
-      return false;
-    }
-
-    // Check i386 nops
-    if (!strncmp( target, "i386", 4 )) {
-      if (isNop) {
-        size = 1; 
-        return true;
-      }
-      // i386 has some two and three byte nops
-      if (!strncmp( &line[strlen(line)-14], "xchg   %ax,%ax", 14)) {
-        size = 2;
-        return true;
-      }
-      if (!strncmp( &line[strlen(line)-16], "xor    %eax,%eax", 16)) {
-        size = 2;
-        return true;
-      }
-      if (!strncmp( &line[strlen(line)-16], "xor    %ebx,%ebx", 16)) {
-        size = 2;
-        return true;
-      }
-      if (!strncmp( &line[strlen(line)-16], "xor    %esi,%esi", 16)) {
-        size = 2;
-        return true;
-      }
-      if (!strncmp( &line[strlen(line)-21], "lea    0x0(%esi),%esi", 21)) {
-        size = 3;
-        return true;
-      }
-
-      return false;
-    }
-
-    // Check M68K/Coldfire nops
-    if (!strncmp( target, "m68k", 4 )) {
-      if (isNop) {
-        size = 2; 
-        return true;
-      }
-
-      #define GNU_LD_FILLS_ALIGNMENT_WITH_RTS
-      #if defined(GNU_LD_FILLS_ALIGNMENT_WITH_RTS)
-        // Until binutils 2.20, binutils would fill with rts not nop
-        if (!strcmp( &line[strlen(line)-3], "rts")) {
-          size = 4; 
-          return true;
-        } 
-      #endif
-
-      return false;
-    }
-
-    // Check powerpc nops
-    if (!strncmp( target, "powerpc", 7 )) {
-      if (isNop) {
-        size = 4; 
-        return true;
-      }
-
-      return false;
-    }
-
-    // Check powerpc nops
-    if (!strncmp( target, "lm32", 4 )) {
-      if (isNop) {
-        size = 4; 
-        return true;
-      }
-
-      return false;
-    }
-
-    // Check SPARC nops
-    if (!strncmp( target, "sparc", 5 )) {
-      if (isNop) {
-        size = 4; 
-        return true;
-      }
-
-      if (!strcmp( &line[strlen(line)-7], "unknown")) {
-        size = 4; 
-        return true;
-      } 
-
-      return false;
-    }
-
-    fprintf( stderr, "ERROR!!! %s is not a known architecture!!!\n", target );
+    fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
     fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
     assert(0);
+
     // ASSUME: ARM dump uses nop instruction. Really "mov r0,r0"
     return false;
   }
 
-
-  void ObjdumpProcessor::load(
-    ExecutableInfo* const executableInformation
-  )
+  FILE* ObjdumpProcessor::getFile( 
+    std::string exeFileName 
+  ) 
   {
-    uint32_t           baseAddress;
-    char               buffer[ 512 ];
-    char*              cStatus;
-    uint32_t           endAddress = 0xffffffff;
-    uint32_t           instructionAddress;
-    int                items;
-    objdumpLine_t      lineInfo;
-    FILE*              objdumpFile;
-    bool               processSymbol = false;
-    bool               saveInstructionDump = false;
-    char               symbol[ 100 ];
-    SymbolInformation* symbolInfo = NULL;
-    char               terminator;
-    int                status;
     char               dumpFile[128];
+    FILE*              objdumpFile;
+    char               buffer[ 512 ];
+    int                status;
 
-    sprintf(
-      dumpFile,
-      "%s.dmp",
-      executableInformation->getFileName().c_str()
-    );
+    sprintf(dumpFile,"%s.dmp", exeFileName.c_str() );
       
     // Generate the objdump.
-    if ( FileIsNewer( 
-      (executableInformation->getFileName()).c_str(),
-      dumpFile
-       )) {
+    if ( FileIsNewer( exeFileName.c_str(), dumpFile )) {
       sprintf(
         buffer,
         "%s -da --source %s | sed -e \'s/ *$//\' >%s",
         Tools->getObjdump(),
-        (executableInformation->getFileName()).c_str(),
+         exeFileName.c_str(),
         dumpFile
       );
 
@@ -225,6 +105,89 @@ namespace Coverage {
       );
       exit(-1);
     }
+
+    return objdumpFile;
+  }
+
+  uint32_t ObjdumpProcessor::getAddressAfter( uint32_t address )
+  {
+    objdumpFile_t::iterator itr;
+
+    itr = find ( objdumpList.begin(), objdumpList.end(), address );
+    if (itr == objdumpList.end()) {
+      return 0;
+    }
+    
+    itr++;
+    if (itr == objdumpList.end()) {
+      fprintf(
+        stderr,
+        "ERROR: ObjdumpProcessor::getAddressAfter - Unable to find address after %x \n",
+        address
+      );
+      exit( -1 );
+    }
+
+    return (*itr);
+
+  }
+
+  void ObjdumpProcessor::loadAddressTable (std::string executableFileName )
+  {
+    char               buffer[ 512 ];
+    char*              cStatus;
+    uint32_t           instructionAddress;
+    int                items;
+    FILE*              objdumpFile;
+    char               terminator;
+
+    objdumpFile = getFile( executableFileName );
+
+    // Process all lines from the objdump file.
+    while ( 1 ) {
+
+      // Get the line.
+      cStatus = fgets( buffer, 512, objdumpFile );
+      if (cStatus == NULL) {
+        break;
+      }
+      buffer[ strlen(buffer) - 1] = '\0';
+
+      // See if it is the dump of an instruction.
+      items = sscanf(
+        buffer,
+        "%x%c",
+        &instructionAddress, &terminator
+      );
+
+      // If it looks like an instruction ...
+      if ((items == 2) && (terminator == ':')){
+        objdumpList.push_back(instructionAddress);
+      }
+    }
+  }
+
+
+  void ObjdumpProcessor::load(
+    ExecutableInfo* const executableInformation
+  )
+  {
+    uint32_t           baseAddress;
+    char               buffer[ 512 ];
+    char*              cStatus;
+    uint32_t           endAddress = 0xffffffff;
+    uint32_t           instructionAddress;
+    int                items;
+    objdumpLine_t      lineInfo;
+    FILE*              objdumpFile;
+    bool               processSymbol = false;
+    bool               saveInstructionDump = false;
+    char               symbol[ 100 ];
+    SymbolInformation* symbolInfo = NULL;
+    char               terminator;
+
+
+    objdumpFile = getFile( executableInformation->getFileName() );
 
     // Process all lines from the objdump file.
     while ( 1 ) {
