@@ -1,5 +1,9 @@
 2010-04-22	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* TraceConverter.cc: Add argument for output trace file.
+
+2010-04-22	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* TraceConverter.cc: Add getopt processing.
 
 2010-04-22	Jennifer Averett <Jennifer.Averett@OARcorp.com>

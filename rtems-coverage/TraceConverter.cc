@@ -43,6 +43,7 @@ int main(
   Trace::TraceReaderLogQEMU    log;
   const char                  *cpuname = NULL;
   const char                  *executable = NULL;
+  const char                  *tracefile = NULL;
   const char                  *logname = "/tmp/qemu.log";
    
   //
@@ -55,6 +56,7 @@ int main(
       case 'c': cpuname = optarg;    break;
       case 'e': executable = optarg; break;
       case 'l': logname = optarg;    break;
+      case 't': tracefile = optarg;  break;
       case 'v': Verbose = true;      break;
       default:  usage();
     }
@@ -68,6 +70,11 @@ int main(
 
   if ( !executable ) {
     fprintf( stderr, "executable not specified\n" );
+    usage();
+  }
+
+  if ( !tracefile ) {
+    fprintf( stderr, "output trace file not specified\n" );
     usage();
   }
 
