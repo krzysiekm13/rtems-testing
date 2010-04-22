@@ -1,5 +1,9 @@
 2010-04-22	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
+	* qemu-log.h: New file.
+
+2010-04-22	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
 	* Makefile, ObjdumpProcessor.cc, ObjdumpProcessor.h, Toolnames.cc,
 	TraceReaderLogQEMU.cc, TraceReaderLogQEMU.h, app_common.cc,
 	app_common.h, covoar.cc: Added and rearragnged to get the
