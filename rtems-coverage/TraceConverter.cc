@@ -22,21 +22,63 @@
 #include "Toolnames.h"
 #include "app_common.h"
 
+char *progname;
+
+void usage()
+{
+  fprintf(
+    stderr,
+    "Usage: %s [-v] -c CPU -e executable [-E logfile]\n",
+    progname
+  );
+  exit(1);
+}
+
 int main(
   int    argc,
   char** argv
 )
 {
+  int                          opt;
   Trace::TraceReaderLogQEMU    log;
+  const char                  *cpuname = NULL;
+  const char                  *executable = NULL;
+  const char                  *logname = "/tmp/qemu.log";
    
+  //
+  // Process command line options.
+  //
+  progname = argv[0];
+
+  while ((opt = getopt(argc, argv, "c:e:l:v")) != -1) {
+    switch (opt) {
+      case 'c': cpuname = optarg;    break;
+      case 'e': executable = optarg; break;
+      case 'l': logname = optarg;    break;
+      case 'v': Verbose = true;      break;
+      default:  usage();
+    }
+  }
+
+  // Make sure we have all the required parameters
+  if ( !cpuname ) {
+    fprintf( stderr, "cpuname not specified\n" );
+    usage();
+  }
+
+  if ( !executable ) {
+    fprintf( stderr, "executable not specified\n" );
+    usage();
+  }
+
   // Create toolnames.
-  Tools = new Coverage::Toolnames( "i386" );
+  Tools = new Coverage::Toolnames( cpuname );
 
   objdumpProcessor = new Coverage::ObjdumpProcessor();
  
-  objdumpProcessor->loadAddressTable( "static" );
+  objdumpProcessor->loadAddressTable( executable );
 
-  log.processFile( "/tmp/qemu.log" );
+  log.processFile( logname );
 
   log.Trace.ShowList();
 }
