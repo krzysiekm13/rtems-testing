@@ -35,7 +35,6 @@ namespace Target {
      //! This is the string found in configuration to match.
      const char    *theTarget;
      //! This is the static wrapper for the constructor.
-     // XXX Change the calling parameters to "theCtor".
      TargetBase *(*theCtor)( 
        std::string
      );
@@ -51,9 +50,9 @@ namespace Target {
   static FactoryEntry_t FactoryTable[] = {
     { "arm",     Target_arm_Constructor },
     { "i386",    Target_i386_Constructor },
+    { "lm32",    Target_lm32_Constructor },
     { "m68k",    Target_m68k_Constructor },
     { "powerpc", Target_powerpc_Constructor },
-    { "lm32",    Target_lm32_Constructor },
     { "sparc",   Target_sparc_Constructor },
     { "TBD",     NULL },
   };
@@ -62,18 +61,26 @@ namespace Target {
     std::string          targetName
   )
   {
-    size_t i;
+    size_t      i;
+    std::string cpu;
 
+    i = targetName.find( '-' );
+    if ( i == targetName.npos )
+      cpu = targetName;
+    else
+      cpu = targetName.substr( 0, i );
+
+    // fprintf( stderr, "%s --> %s\n", targetName.c_str(), cpu.c_str());
     // Iterate over the table trying to find an entry with a matching name
     for ( i=0 ; i < sizeof(FactoryTable) / sizeof(FactoryEntry_t); i++ ) {
-      if ( !strcmp(FactoryTable[i].theTarget, targetName.c_str() ) )
-        return FactoryTable[i].theCtor( targetName );
+      if ( !strcmp(FactoryTable[i].theTarget, cpu.c_str() ) )
+        return FactoryTable[i].theCtor( cpu );
     }
 
     fprintf(
       stderr,
       "ERROR!!! %s is not a known architecture!!!\n",
-      targetName.c_str()
+      cpu.c_str()
     );
     fprintf( stderr, "-- fix me\n" );
     exit( 1 );
