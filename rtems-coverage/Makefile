@@ -41,7 +41,9 @@ TRACECONVERTER_OBJS = \
   TraceConverter.o \
   TraceList.o \
   TraceReaderBase.o \
-  TraceReaderLogQEMU.o
+  TraceReaderLogQEMU.o \
+  TraceWriterBase.o \
+  TraceWriterQEMU.o
 
 COVOAR_OBJS = \
   $(COMMON_OBJS) \
@@ -126,6 +128,8 @@ TraceConverter.o: TraceConverter.cc TraceReaderBase.h TraceList.h
 TraceList.o: TraceList.cc TraceList.h
 TraceReaderBase.o: TraceReaderBase.cc TraceReaderBase.h TraceList.h
 TraceReaderLogQEMU.o: TraceReaderLogQEMU.cc TraceReaderLogQEMU.h TraceReaderBase.h TraceList.h
+TraceWriterBase.o: TraceWriterBase.cc TraceWriterBase.h
+TraceWriterQEMU.o: TraceWriterQEMU.cc TraceWriterQEMU.h TraceWriterBase.h TraceReaderLogQEMU.h TraceList.h
 
 clean:
 	rm -rf $(PROGRAMS) *.o doxy html latex *.exe *~

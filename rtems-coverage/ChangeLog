@@ -1,3 +1,11 @@
+2010-04-23	Jennifer Averett <Jennifer.Averett@OARcorp.com
+
+	* Makefile, TraceConverter.cc, TraceList.cc, TraceList.h,
+	TraceReaderLogQEMU.cc: Finished TraceConverter added TraceWriter
+	functionality.
+	* TraceWriterBase.cc, TraceWriterBase.h, TraceWriterQEMU.cc,
+	TraceWriterQEMU.h: New files.
+
 2010-04-23	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* .cvsignore: Add trace-converter.

@@ -71,6 +71,12 @@ namespace Trace {
     );
 
     /*!
+     *  This method displays the trace information in the variable t.
+     */
+    void ShowTrace( traceRange_t *t);
+
+
+    /*!
      *  This method iterates through set displaying the data on the screen.
      */
     void ShowList();

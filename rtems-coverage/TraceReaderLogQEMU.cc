@@ -138,8 +138,8 @@ namespace Trace {
 
         if (! ReadUntilFound( logFile, QEMU_LOG_IN_KEY )) {
           done = true;
-        }
-        if ( 
+          nextExecuted = last;
+        }else if ( 
           fscanf( 
             logFile, 
             "0x%08lx: %s %s\n", 

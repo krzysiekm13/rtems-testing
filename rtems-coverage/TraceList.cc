@@ -30,17 +30,24 @@ namespace Trace {
       set.push_back( t );     
     }
 
+    void TraceList::ShowTrace( traceRange_t *t)
+    {
+      printf(
+        "Start 0x%x, length 0x%03x Reason %d\n", 
+        t->lowAddress, 
+        t->length, 
+        t->exitReason
+      );
+    }
+
     void  TraceList::ShowList()
     {
       ranges_t::iterator   ritr;
+      traceRange_t         t;
 
       for ( ritr=set.begin(); ritr != set.end(); ritr++ ) {
-        printf(
-          "Start 0x%x, length 0x%03x Reason %d\n", 
-          ritr->lowAddress, 
-          ritr->length, 
-          ritr->exitReason 
-        );
+        t = *ritr;
+        ShowTrace( &t );
       }
     }
 

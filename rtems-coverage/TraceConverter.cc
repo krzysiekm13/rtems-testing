@@ -17,6 +17,7 @@
 #include "qemu-log.h"
 
 #include "TraceReaderLogQEMU.h"
+#include "TraceWriterQEMU.h"
 #include "TraceList.h"
 #include "ObjdumpProcessor.h"
 #include "Toolnames.h"
@@ -28,7 +29,7 @@ void usage()
 {
   fprintf(
     stderr,
-    "Usage: %s [-v] -c CPU -e executable [-E logfile]\n",
+    "Usage: %s [-v] -c CPU -e executable -t tracefile [-E logfile]\n",
     progname
   );
   exit(1);
@@ -41,9 +42,10 @@ int main(
 {
   int                          opt;
   Trace::TraceReaderLogQEMU    log;
-  const char                  *cpuname = NULL;
+  Trace::TraceWriterQEMU       trace;
+  const char                  *cpuname    = NULL;
   const char                  *executable = NULL;
-  const char                  *tracefile = NULL;
+  const char                  *tracefile  =  NULL;
   const char                  *logname = "/tmp/qemu.log";
    
   //
@@ -51,7 +53,7 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "c:e:l:v")) != -1) {
+  while ((opt = getopt(argc, argv, "c:e:l:t:v")) != -1) {
     switch (opt) {
       case 'c': cpuname = optarg;    break;
       case 'e': executable = optarg; break;
@@ -87,5 +89,6 @@ int main(
 
   log.processFile( logname );
 
-  log.Trace.ShowList();
+  trace.writeFile( tracefile, &log );
+
 }
