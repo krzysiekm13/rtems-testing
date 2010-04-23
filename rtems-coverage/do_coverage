@@ -334,6 +334,7 @@ generate_reports()
   ${COVBASE}/covoar \
     -T ${TARGET} \
     -f ${COVERAGE_FORMAT} \
+    -s rtems.syms \
     -E ${COVBASE}/Explanations.txt \
     -e exe -c ${RTEMSEXT}.${COVEXT} \
     *.exe >> summary.txt

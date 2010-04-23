@@ -43,7 +43,7 @@ char*                                explanations = NULL;
 char*                                progname;
 bool                                 singleExecutable = false;
 const char*                          sizeReportFile = "sizes.txt";
-const char*                          symbolsFile = "rtems.syms";
+const char*                          symbolsFile = NULL;
 char*                                target = NULL;
 
 
@@ -63,6 +63,7 @@ void usage()
     "  -f FORMAT                 - coverage file format "
            "(RTEMS, QEMU, TSIM or Skyeye)\n"
     "  -E EXPLANATIONS           - name of file with explanations\n"
+    "  -s SYMBOLS_FILE           - name of file with symbols of interest\n"
     "  -1 EXECUTABLE             - name of executable to get symbols from\n"
     "  -e EXE_EXTENSION          - extension of the executables to analyze\n"
     "  -c COVERAGEFILE_EXTENSION - extension of the coverage files to analyze\n"
@@ -93,7 +94,7 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "1:e:c:E:f:T:v")) != -1) {
+  while ((opt = getopt(argc, argv, "1:e:c:E:f:s:T:v")) != -1) {
     switch (opt) {
       case '1':
         singleExecutable = true;
@@ -109,6 +110,7 @@ int main(
          coverageExtensionLength = strlen( coverageFileExtension );
          break;
       case 'E': explanations          = optarg;  break;
+      case 's': symbolsFile           = optarg;  break;
       case 'T': target                = optarg;  break;
       case 'v': Verbose               = true;    break;
       case 'f':
@@ -194,6 +196,13 @@ int main(
   // Validate format.
   if (!format) {
     fprintf( stderr, "ERROR: coverage format report not specified\n" );
+    usage();
+    exit(-1);
+  }
+
+  // Validate that we have a symbols of interest file.
+  if (!symbolsFile) {
+    fprintf( stderr, "ERROR: symbols of interest file not specified\n" );
     usage();
     exit(-1);
   }
