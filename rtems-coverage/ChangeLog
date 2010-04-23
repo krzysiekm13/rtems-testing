@@ -1,3 +1,7 @@
+2010-04-23	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* covoar.cc: Should no longer have to have an explanations file.
+
 2010-04-23	Jennifer Averett <Jennifer.Averett@OARcorp.com
 
 	* ChangeLog: Added trace-converter

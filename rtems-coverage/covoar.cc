@@ -40,7 +40,6 @@ char*                                executableExtension = NULL;
 int                                  executableExtensionLength = 0;
 std::list<Coverage::ExecutableInfo*> executablesToAnalyze;
 char*                                explanations = NULL;
-char*                                noExplanations = NULL;
 char*                                progname;
 bool                                 singleExecutable = false;
 const char*                          sizeReportFile = "sizes.txt";
@@ -216,7 +215,8 @@ int main(
 
   // Create explanations.
   AllExplanations = new Coverage::Explanations();
-  AllExplanations->load( explanations );
+  if ( explanations )
+    AllExplanations->load( explanations );
 
   // Create coverage map reader.
   coverageReader = Coverage::CreateCoverageReader(coverageFormat);
@@ -313,11 +313,13 @@ int main(
   Coverage::WriteAnnotatedReport( "annotated.txt" );
 
   // Write explanations that were not found.
-  std::string str = explanations;
-  str = str + ".NotFound";
-  if (Verbose)
-    fprintf( stderr, "Writing Not Found Report (%s)\n", str.c_str() );
-  AllExplanations->writeNotFound(str.c_str());
+  if ( explanations ) {
+    std::string str = explanations;
+    str = str + ".NotFound";
+    if (Verbose)
+      fprintf( stderr, "Writing Not Found Report (%s)\n", str.c_str() );
+    AllExplanations->writeNotFound(str.c_str());
+  }
 
   // Calculate coverage statistics and output results.
   {
