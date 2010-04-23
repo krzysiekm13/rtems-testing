@@ -1,5 +1,13 @@
 2010-04-23	Jennifer Averett <Jennifer.Averett@OARcorp.com
 
+	* ChangeLog: Added trace-converter
+
+2010-04-23	Jennifer Averett <Jennifer.Averett@OARcorp.com
+
+	* .cvsignore: Added trace-converter
+
+2010-04-23	Jennifer Averett <Jennifer.Averett@OARcorp.com
+
 	* Makefile, TraceConverter.cc, TraceList.cc, TraceList.h,
 	TraceReaderLogQEMU.cc: Finished TraceConverter added TraceWriter
 	functionality.
