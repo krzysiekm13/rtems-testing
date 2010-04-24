@@ -57,6 +57,9 @@ namespace Coverage {
   {
     contents_t::iterator it = contents.end();
 
+    if ( contents.size() == 0 )
+      return "";
+
     it--;
     if (address > ((*it).first)) {
       return "";

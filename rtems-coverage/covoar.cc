@@ -373,7 +373,7 @@ int main(
       SymbolsToAnalyze->getNumberUncoveredRanges()
     );
     if (SymbolsToAnalyze->getNumberBranchesFound() == 0)
-      printf( "No branch information found\n" );
+      printf( "MAIN No branch information found\n" );
     else {
       printf(
         "Total branches found     : %d\n",

@@ -118,9 +118,6 @@ namespace Coverage {
       );
       if (num_entries == 0)
         break;
-      #if 0
-        fprintf( stderr, "0x%08x %d 0x%2x\n", entry.pc, entry.size, entry.op );
-      #endif
 
       for (int count=0; count<num_entries; count++) {
         entry = &entries[count];
@@ -133,6 +130,9 @@ namespace Coverage {
         if (!aCoverageMap)
           continue;
 
+	#if 0
+	  fprintf( stderr, "0x%08x %d 0x%2x \n", entry->pc, entry->size, entry->op );
+	#endif
         if (entry->op & TRACE_OP_BLOCK) {
          for (i=0; i<entry->size; i++) {
             aCoverageMap->setWasExecuted( entry->pc + i );
@@ -140,13 +140,16 @@ namespace Coverage {
         }
 
         // Determine if additional branch information is available. */
-        if (entry->op & 0x0f) {
-
-          if (entry->op & TRACE_OP_TAKEN)
-            aCoverageMap->setWasTaken( entry->pc + entry->size - 1);
-
-          else if (entry->op & TRACE_OP_NOT_TAKEN)
-            aCoverageMap->setWasNotTaken( entry->pc + entry->size -1 );
+        if (entry->op & TRACE_OP_TAKEN) {
+          aCoverageMap->setWasTaken( entry->pc + entry->size - 1);
+	  #if 0
+	    fprintf( stderr, "0x%08x %d 0x%2x TAKEN\n", entry->pc, entry->size, entry->op );
+	  #endif
+        } else if (entry->op & TRACE_OP_NOT_TAKEN) {
+          aCoverageMap->setWasNotTaken( entry->pc + entry->size -1 );
+	  #if 0
+	    fprintf( stderr, "0x%08x %d 0x%2x NOT TAKEN\n", entry->pc, entry->size, entry->op );
+	  #endif
         }
       }
     }

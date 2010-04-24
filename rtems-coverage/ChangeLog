@@ -1,3 +1,8 @@
+2010-04-24	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* CoverageReaderQEMU.cc, SymbolTable.cc, covoar.cc: Investigate why no
+	branch information.
+
 2010-04-23	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* covoar.cc, do_coverage: Add -s argument for symbols of interest file.
