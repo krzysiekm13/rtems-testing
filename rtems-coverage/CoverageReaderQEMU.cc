@@ -141,15 +141,11 @@ namespace Coverage {
 
         // Determine if additional branch information is available. */
         if (entry->op & TRACE_OP_TAKEN) {
+          aCoverageMap->setIsBranch( entry->pc + entry->size - 1);
           aCoverageMap->setWasTaken( entry->pc + entry->size - 1);
-	  #if 0
-	    fprintf( stderr, "0x%08x %d 0x%2x TAKEN\n", entry->pc, entry->size, entry->op );
-	  #endif
         } else if (entry->op & TRACE_OP_NOT_TAKEN) {
+          aCoverageMap->setIsBranch( entry->pc + entry->size - 1);
           aCoverageMap->setWasNotTaken( entry->pc + entry->size -1 );
-	  #if 0
-	    fprintf( stderr, "0x%08x %d 0x%2x NOT TAKEN\n", entry->pc, entry->size, entry->op );
-	  #endif
         }
       }
     }
