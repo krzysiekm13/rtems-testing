@@ -1,5 +1,9 @@
 2010-04-24	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* CoverageReaderQEMU.cc: Fixed branches taken/not taken.
+
+2010-04-24	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* CoverageReaderQEMU.cc: Fix branch taken/not taken reporting.
 
 2010-04-24	Joel Sherrill <joel.sherrilL@OARcorp.com>
