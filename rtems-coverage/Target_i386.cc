@@ -8,6 +8,7 @@
  *  This file contains the implementation of the base class for 
  *  functions supporting target unique functionallity.
  */
+
 #include "Target_i386.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -99,16 +100,14 @@ namespace Target {
       const char* const instruction
   )
   {
-    if ( 
-      find(
-        branchInstructions.begin(), 
-        branchInstructions.end(), 
-        instruction 
-      ) == branchInstructions.end()
+    if ( find(
+           branchInstructions.begin(), 
+           branchInstructions.end(), 
+           instruction 
+        ) == branchInstructions.end()
     )
       return false;
-    else
-      return true;
+    return true;
   }
 
   TargetBase *Target_i386_Constructor(

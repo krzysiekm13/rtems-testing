@@ -60,7 +60,7 @@ namespace Target {
     );
 
   private:
-    std::list < std::string> branchInstructions;
+    std::list <std::string> branchInstructions;
   };
 
   //!

@@ -13,12 +13,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <algorithm>
 
 namespace Target {
 
+  // http://www.latticesemi.com/documents/doc20890x45.pdf
   Target_lm32::Target_lm32( std::string targetName ):
     TargetBase( targetName )
   {
+    branchInstructions.push_back("be");
+    branchInstructions.push_back("bge");
+    branchInstructions.push_back("bgeu");
+    branchInstructions.push_back("bg");
+    branchInstructions.push_back("bgu");
+    branchInstructions.push_back("bne");
   }
 
   Target_lm32::~Target_lm32()
@@ -42,8 +50,14 @@ namespace Target {
       const char* const instruction
   )
   {
-    fprintf( stderr, "DETERMINE BRANCH INSTRUCTIONS FOR THIS ARCHITECTURE! -- fix me\n" );
-    exit( -1 );    
+    if ( find(
+           branchInstructions.begin(), 
+           branchInstructions.end(), 
+           instruction 
+        ) == branchInstructions.end()
+    )
+      return false;
+    return true;
   }
 
   TargetBase *Target_lm32_Constructor(
