@@ -1,3 +1,8 @@
+2010-04-26	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* ObjdumpProcessor.cc, TraceConverter.cc, TraceReaderLogQEMU.cc: Bug
+	Fix: Instructions with no data were flagged as the end of the blcok.
+
 2010-04-25	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Target_i386.cc, Target_i386.h, Target_lm32.cc, Target_lm32.h: Add

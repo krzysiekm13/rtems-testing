@@ -120,12 +120,7 @@ namespace Coverage {
     
     itr++;
     if (itr == objdumpList.end()) {
-      fprintf(
-        stderr,
-        "ERROR: ObjdumpProcessor::getAddressAfter - Unable to find address after %x \n",
-        address
-      );
-      exit( -1 );
+      return 0;
     }
 
     return (*itr);

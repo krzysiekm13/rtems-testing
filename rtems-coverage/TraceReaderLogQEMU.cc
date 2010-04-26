@@ -59,6 +59,8 @@ namespace Trace {
     struct STAT         statbuf;
     int                 status;
     FILE*               logFile;
+    int                 result;
+    char                buffer[120];
 
     //
     // Verify that the log file has a non-zero size.
@@ -104,14 +106,15 @@ namespace Trace {
     //
     //  Read First Start Address
     //
-    if ( 
-      fscanf( 
-        logFile, 
-        "0x%08lx: %s %s\n", 
-        &first.address, 
-        first.instruction, 
-        first.data 
-      ) != 3  ) 
+    fgets(buffer, 120, logFile );
+    result = sscanf( 
+      buffer, 
+      "0x%08lx: %s %s\n", 
+      &first.address, 
+      first.instruction, 
+      first.data 
+    );
+    if ( result < 2 ) 
     {
       fprintf(stderr, "Error Unable to Read Initial First Block\n" );
       done = true;
@@ -119,63 +122,63 @@ namespace Trace {
 
     while (!done) {
 
-        last = first;
+      last = first;
    
-        // Read until we get to the last instruction in the block.
-        while( 
-          fscanf( 
-             logFile, 
-             "0x%08lx: %s %s\n", 
-             &last.address, 
-             last.instruction, 
-             last.data 
-           ) == 3 
+      // Read until we get to the last instruction in the block.
+      do {
+        fgets(buffer, 120, logFile );
+        result = sscanf( 
+          buffer, 
+          "0x%08lx: %s %s\n", 
+          &last.address, 
+          last.instruction, 
+          last.data 
         );
+      } while( result > 1);
 
-        // If (last.instruction is a branch instruction) {
+      nextlogical = objdumpProcessor->getAddressAfter(last.address);
 
-        nextlogical = objdumpProcessor->getAddressAfter(last.address);
-
-        if (! ReadUntilFound( logFile, QEMU_LOG_IN_KEY )) {
-          done = true;
-          nextExecuted = last;
-        }else if ( 
-          fscanf( 
-            logFile, 
-            "0x%08lx: %s %s\n", 
-            &nextExecuted.address, 
-            nextExecuted.instruction, 
-            nextExecuted.data 
-          ) != 3 
-        ) {
+      if (! ReadUntilFound( logFile, QEMU_LOG_IN_KEY )) {
+        done = true;
+        nextExecuted = last;
+      } else {
+        fgets(buffer, 120, logFile );
+        result = sscanf( 
+          buffer, 
+          "0x%08lx: %s %s\n", 
+          &nextExecuted.address, 
+          nextExecuted.instruction, 
+          nextExecuted.data 
+        );
+        if ( result < 2 )  
+        {
           fprintf(stderr, "Error Unable to Read First Block\n" );
         }
+      }
 
+      // If the nextlogical was not found we are throwing away
+      // the block; otherwise add the block to the trace list.
+      if (nextlogical != 0) {
+        isBranch = objdumpProcessor->IsBranch( last.instruction ); 
 
-        // If the nextlogical was not found we are throwing away
-        // the block; otherwise add the block to the trace list.
-        if (nextlogical != 0) {
-          isBranch = objdumpProcessor->IsBranch( last.instruction ); 
-
-          if (  isBranch &&
-               ( nextExecuted.address == nextlogical )) {
-            Trace.add( 
-              first.address, 
-              nextlogical, 
-              TraceList::EXIT_REASON_BRANCH_NOT_TAKEN 
-            );
-          } else if (isBranch) {
-            Trace.add( 
-              first.address, 
-              nextlogical, 
-              TraceList::EXIT_REASON_BRANCH_TAKEN 
-            );
-          } else
-            Trace.add(first.address, nextlogical, TraceList::EXIT_REASON_OTHER);
-        }    
-        first = nextExecuted;
+        if (  isBranch &&
+          ( nextExecuted.address == nextlogical )) {
+          Trace.add( 
+            first.address, 
+            nextlogical, 
+            TraceList::EXIT_REASON_BRANCH_NOT_TAKEN 
+          );
+        } else if (isBranch) {
+          Trace.add( 
+            first.address, 
+            nextlogical, 
+            TraceList::EXIT_REASON_BRANCH_TAKEN 
+          );
+        } else
+          Trace.add(first.address, nextlogical, TraceList::EXIT_REASON_OTHER);
+      }
+      first = nextExecuted;
     } 
-
     fclose( logFile );
     return true;
   }

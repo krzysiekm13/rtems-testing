@@ -43,9 +43,9 @@ int main(
   int                          opt;
   Trace::TraceReaderLogQEMU    log;
   Trace::TraceWriterQEMU       trace;
-  const char                  *cpuname    = NULL;
-  const char                  *executable = NULL;
-  const char                  *tracefile  =  NULL;
+  const char                  *cpuname    = "";
+  const char                  *executable = "";
+  const char                  *tracefile  =  "";
   const char                  *logname = "/tmp/qemu.log";
    
   //
