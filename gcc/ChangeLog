@@ -1,3 +1,7 @@
+2010-04-29	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one, test_driver: Add more arguments. Remove early exit.
+
 2010-04-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* rundeja, test_driver: Add lm32.  Do not attempt to update gcc

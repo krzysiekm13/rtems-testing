@@ -294,7 +294,8 @@ j_binutils()
       rm -rf b-binutils-${cpu}
       mkdir b-binutils-${cpu}
       cd b-binutils-${cpu}
-      (${BINUTILSDIR}/configure --target=${TARGET} --prefix=$INSTALL && \
+      (${BINUTILSDIR}/configure --target=${TARGET} --prefix=$INSTALL \
+        --disable-werror && \
         make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-binutils.log 2>&1
       if [ $? -ne 0 ] ; then
         echo "Failed to build Binutils from source"

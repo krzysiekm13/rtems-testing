@@ -42,7 +42,12 @@ usage()
 {
 cat <<EOF
 do_one [options] CPU ..  CPU
+  -A - enable clean, native, and update
+  -a - build Ada (default=yes)
   -c - clean install point (also installs auto tools)
+  -m - mail results to lists (default=yes)
+  -n - build native
+  -T - run tests (default=yes)
   -u - update GNU source if version from CVS/SVN
   -U - update RTEMS source if version from CVS/SVN (will bootstrap)
   -v - verbose
@@ -54,8 +59,11 @@ doUpdateTools="no"
 doUpdateRTEMS="no"
 doNative="no"
 verbose="no"
+doAda="yes"
+doMail="yes"
+doTests="yes"
 
-while getopts AcnuUv OPT
+while getopts AacmnuUv OPT
 do
   case "$OPT" in
     A) doCleanInstallPoint=`toggle ${doCleanInstallPoint}`
@@ -63,8 +71,11 @@ do
        doUpdateTools=`toggle ${doUpdateTools}`
        doUpdateRTEMS=`toggle ${doUpdateRTEMS}`
        ;;
+    a) doAda=`toggle ${doAda}` ;;
     c) doCleanInstallPoint=`toggle ${doCleanInstallPoint}` ;;
+    m) doMail=`toggle ${doMail}` ;;
     n) doNative=`toggle ${doNative}` ;;
+    T) doTests=`toggle ${doTests}` ;;
     u) doUpdateTools=`toggle ${doUpdateTools}` ;;
     U) doUpdateRTEMS=`toggle ${doUpdateRTEMS}` ;;
     v) verbose=`toggle ${verbose}` ;;
@@ -94,8 +105,19 @@ if [ ${verbose} = "yes" ] ; then
   echo "Install Native:      " ${doNative}
   echo "Update Tool Source:  " ${doUpdateTools}
   echo "Update RTEMS:        " ${doUpdateRTEMS}
-  echo "CPUs to Build:       " ${CPUs}
+  echo "Build Ada            " ${doAda}
+  echo "Email Results:       " ${doMail}
+  echo "Run Tests:           " ${doTests}
+  if [ X${CPUs} = X ] ; then
+    echo "CPUs to Build:       " ALL
+  else
+    echo "CPUs to Build:       " ${CPUs}
+  fi
 fi
+
+test ${doMail}  = "no"   && mailArg="-M"
+test ${doTests} = "yes" && testArg="-T"
+test ${doAda}   = "yes" && adaArg="-a"
 
 start=`date`
 echo Started at: ${start}
@@ -167,8 +189,6 @@ update_others()
 
 do_cpus()
 {
-  tests=-T
-
   bsp=
 
   exitStatus=0
@@ -195,16 +215,8 @@ do_cpus()
     esac
 
     doOne=${SCRIPTDIR}/gcc/do_one 
-    # Everything
-    # -M -> do not mail
-    #time sh -x ${doOne} -v -d -A ${tests} \
-#	${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
-    # Just C/C++, no clean up, no mail
-    time sh -x ${doOne} -v -b -D -1 -d -M -r ${tests} \
+    time sh -x ${doOne} -v -b -D -1 -d -r ${adaArg} ${mailArg} ${testArg} \
         ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
-    # Just C/C++
-    #time sh -x ${doOne} -v -1 -r -g ${tests}\
-    #     ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
   done
 
@@ -214,7 +226,6 @@ do_cpus()
 }
 
 update_gcc
-exit 0
 
 if [ ${doCleanInstallPoint} = "yes" ] ; then
   # Clean the install point
