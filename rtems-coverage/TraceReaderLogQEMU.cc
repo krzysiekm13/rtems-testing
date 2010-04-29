@@ -51,7 +51,6 @@ namespace Trace {
   )
   {
     bool                done          = false;
-    bool                isBranch      = false;
     QEMU_LOG_IN_Block_t first         = { 0, "", "" };
     QEMU_LOG_IN_Block_t last          = { 0, "", "" };
     QEMU_LOG_IN_Block_t nextExecuted  = { 0, "", "" };
@@ -159,23 +158,16 @@ namespace Trace {
       // If the nextlogical was not found we are throwing away
       // the block; otherwise add the block to the trace list.
       if (nextlogical != 0) {
-        isBranch = objdumpProcessor->IsBranch( last.instruction ); 
+        TraceList::exitReason_t reason = TraceList::EXIT_REASON_OTHER;
 
-        if (  isBranch &&
-          ( nextExecuted.address == nextlogical )) {
-          Trace.add( 
-            first.address, 
-            nextlogical, 
-            TraceList::EXIT_REASON_BRANCH_NOT_TAKEN 
-          );
-        } else if (isBranch) {
-          Trace.add( 
-            first.address, 
-            nextlogical, 
-            TraceList::EXIT_REASON_BRANCH_TAKEN 
-          );
-        } else
-          Trace.add(first.address, nextlogical, TraceList::EXIT_REASON_OTHER);
+        if ( objdumpProcessor->IsBranch( last.instruction ) ) {
+          if ( nextExecuted.address == nextlogical ) {
+            reason = TraceList::EXIT_REASON_BRANCH_NOT_TAKEN;
+          }  else {
+            reason = TraceList::EXIT_REASON_BRANCH_TAKEN;
+          }
+        }
+        Trace.add( first.address, nextlogical, reason );
       }
       first = nextExecuted;
     } 

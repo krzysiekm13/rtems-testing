@@ -10,11 +10,9 @@
  */
 
 #include "Target_i386.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <algorithm>
 
 namespace Target {
 
@@ -96,19 +94,6 @@ namespace Target {
     return false;
   }
 
-  bool Target_i386::isBranch(
-      const char* const instruction
-  )
-  {
-    if ( find(
-           branchInstructions.begin(), 
-           branchInstructions.end(), 
-           instruction 
-        ) == branchInstructions.end()
-    )
-      return false;
-    return true;
-  }
 
   TargetBase *Target_i386_Constructor(
     std::string          targetName

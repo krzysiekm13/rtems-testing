@@ -106,6 +106,56 @@ namespace Coverage {
     #undef MAX_LINE_LENGTH
   }
 
+  void DesiredSymbols::Preprocess( void )
+  {
+    CoverageMapBase*                                             theCoverageMap;
+    std::list<ObjdumpProcessor::objdumpLine_t>::reverse_iterator itr;
+    std::list<ObjdumpProcessor::objdumpLine_t>::iterator         fitr;
+    DesiredSymbols::symbolSet_t::iterator                        sitr;
+
+    // Look at each symbol.
+    for (sitr = SymbolsToAnalyze->set.begin();
+         sitr != SymbolsToAnalyze->set.end();
+         sitr++) {
+
+      // If the unified coverage map does not exist, the symbol was
+      // never referenced by any executable.  Just skip it.
+      theCoverageMap = sitr->second.unifiedCoverageMap;
+      if (!theCoverageMap)
+        continue;
+
+      // Mark any trailing nops as executed.  Some targets use nops to
+      // force alignment of the next method but still include the nops
+      // in the symbol size.
+      //
+      // Mark all branches as isBranch.
+      //
+      // NOTE: If nop's are used for alignment inside a method, this 
+      //       will not mark them!!!
+      for (itr = sitr->second.instructions.rbegin(), itr++;
+           itr != sitr->second.instructions.rend();
+           itr++) {
+        if (itr->isNop) {
+          for ( int a=0; a < itr->nopSize ; a++ ) {
+            theCoverageMap->setWasExecuted(
+              itr->address - sitr->second.baseAddress + a
+            );
+          }
+        } else
+          break;
+      }
+
+      for (fitr = sitr->second.instructions.begin(), fitr++;
+           fitr != sitr->second.instructions.end();
+           fitr++) {
+        if (fitr->isBranch) {
+           theCoverageMap->setIsBranch( fitr->address -  sitr->second.baseAddress );
+        }
+      }
+
+    }
+  }
+
   void DesiredSymbols::computeUncovered( void )
   {
     uint32_t                                             a, la, ha;
@@ -132,26 +182,6 @@ namespace Coverage {
       sitr->second.uncoveredRanges = theRanges;
       theBranches = new CoverageRanges();
       sitr->second.uncoveredBranches = theBranches;
-
-      // Mark any trailing nops as executed.  Some targets use nops to
-      // force alignment of the next method but still include the nops
-      // in the symbol size.
-      //
-      // NOTE: If nop's are used for alignment inside a method, this 
-      //       will not mark them!!!
-      for (itr = sitr->second.instructions.rbegin(), itr++;
-           itr != sitr->second.instructions.rend();
-           itr++) {
-        if (itr->isNop) {
-          for ( int a=0; a < itr->nopSize ; a++ ) {
-            theCoverageMap->setWasExecuted(
-              itr->address - sitr->second.baseAddress + a
-            );
-          }
-        }
-        else
-          break;
-      }
 
       // Now scan through the coverage map of this symbol.
       endAddress = sitr->second.size - 1;
@@ -555,20 +585,15 @@ namespace Coverage {
         destinationCoverageMap->setIsStartOfInstruction( dAddress );
 
       // Merge the execution data.
-      if (sourceCoverageMap->wasExecuted( sAddress))
+      if (sourceCoverageMap->wasExecuted( sAddress ))
         destinationCoverageMap->setWasExecuted( dAddress );
 
       // Merge the branch data.
-      if (sourceCoverageMap->isBranch( sAddress )) {
+      if (sourceCoverageMap->wasTaken( sAddress ))
+        destinationCoverageMap->setWasTaken( dAddress );
 
-        destinationCoverageMap->setIsBranch( dAddress );
-
-        if (sourceCoverageMap->wasTaken( sAddress))
-          destinationCoverageMap->setWasTaken( dAddress );
-
-        if (sourceCoverageMap->wasNotTaken( sAddress))
-          destinationCoverageMap->setWasNotTaken( dAddress );
-      }
+      if (sourceCoverageMap->wasNotTaken( sAddress ))
+        destinationCoverageMap->setWasNotTaken( dAddress );
     }
   }
 

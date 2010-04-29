@@ -47,13 +47,6 @@ namespace Target {
     return false;
   }
 
-  bool Target_sparc::isBranch(
-      const char* const instruction
-  )
-  {
-    fprintf( stderr, "DETERMINE BRANCH INSTRUCTIONS FOR THIS ARCHITECTURE! -- fix me\n" );
-    exit( -1 );    
-  }
 
   TargetBase *Target_sparc_Constructor(
     std::string          targetName

@@ -1,3 +1,12 @@
+2010-04-29	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* CoverageMapBase.cc, CoverageReaderQEMU.cc, DesiredSymbols.cc,
+	DesiredSymbols.h, Makefile, ObjdumpProcessor.cc, ObjdumpProcessor.h,
+	TargetBase.cc, TargetBase.h, Target_i386.cc, Target_i386.h,
+	Target_lm32.cc, Target_lm32.h, Target_sparc.cc,
+	TraceReaderLogQEMU.cc, covoar.cc: Modified such that branch
+	information is gathered from the objdump file and cleaned up comments
+
 2010-04-26	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* ObjdumpProcessor.cc, TraceConverter.cc, TraceReaderLogQEMU.cc: Bug

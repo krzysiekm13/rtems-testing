@@ -64,6 +64,12 @@ namespace Coverage {
        */
       int nopSize;
 
+      /*!
+       *  This member variable contains an indication of whether the line
+       *  is a branch instruction.
+       */
+      bool isBranch;
+
     } objdumpLine_t;
 
     typedef std::list<uint32_t> objdumpFile_t;
@@ -114,6 +120,14 @@ namespace Coverage {
      */
     bool IsBranch( const char *instruction );
 
+    /*!
+     *  This method returns true if the instruction from 
+     *  the given line in the objdmp file is a branch instruction,
+     *  otherwise it returns false.
+     */
+    bool isBranchLine(
+      const char* const line
+    );
 
   private:
 

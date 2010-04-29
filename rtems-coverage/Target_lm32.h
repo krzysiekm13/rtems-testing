@@ -51,16 +51,7 @@ namespace Target {
       int&              size
     );
 
-    /*!
-     *  This method determines if the specified instruction from an
-     *  objdump file is a branch instruction.
-     */
-    bool isBranch(
-      const char* const instruction
-    );
-
   private:
-    std::list <std::string> branchInstructions;
 
   };
 

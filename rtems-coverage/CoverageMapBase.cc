@@ -186,7 +186,8 @@ namespace Coverage {
   {
     if ((address < lowAddress) || (address > highAddress))
       return false;
-    return (!Info[ address - lowAddress ].wasTaken);
+    return (!Info[ address - lowAddress ].wasTaken &&
+            Info[ address - lowAddress ].wasNotTaken);
   }
 
   bool CoverageMapBase::wasNotTaken( uint32_t address ) const

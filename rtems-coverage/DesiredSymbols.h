@@ -209,6 +209,12 @@ namespace Coverage {
       const CoverageMapBase* const sourceCoverageMap
     );
 
+    /*!
+     *  This method preprocess each symbols coverage map to marking nop
+     *  and branch information.
+     */
+    void Preprocess( void );
+
   private:
 
     /*!

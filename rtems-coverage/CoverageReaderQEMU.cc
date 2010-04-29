@@ -101,7 +101,7 @@ namespace Coverage {
     #endif
 
     //
-    // Read and process each line of the coverage file.
+    // Read ENTRIES number of trace entries.
     //
 #define ENTRIES 1024
     while (1) {
@@ -110,6 +110,8 @@ namespace Coverage {
       struct trace_entry  *entry;
       int                 num_entries;
 
+
+      // Read and process each line of the coverage file.
       num_entries = fread( 
         entries, 
         sizeof(struct trace_entry), 
@@ -119,7 +121,10 @@ namespace Coverage {
       if (num_entries == 0)
         break;
 
+      // Get the coverage map for each entry.  Note that the map is
+      // the same for each entry in the coverage map
       for (int count=0; count<num_entries; count++) {
+
         entry = &entries[count];
       
         // Mark block as fully executed.
@@ -130,27 +135,24 @@ namespace Coverage {
         if (!aCoverageMap)
           continue;
 
-	#if 0
-	  fprintf( stderr, "0x%08x %d 0x%2x \n", entry->pc, entry->size, entry->op );
-	#endif
+        // Set was executed for each TRACE_OP_BLOCK
         if (entry->op & TRACE_OP_BLOCK) {
          for (i=0; i<entry->size; i++) {
             aCoverageMap->setWasExecuted( entry->pc + i );
           }
         }
 
-        // Determine if additional branch information is available. */
-        if ( (entry->op & (TRACE_OP_TAKEN|TRACE_OP_NOT_TAKEN)) != 0 ) {
+        // Determine if additional branch information is available.
+       if ( (entry->op & (TRACE_OP_TAKEN|TRACE_OP_NOT_TAKEN)) != 0 ) {
           unsigned int a = entry->pc + entry->size - 1;
           while (!aCoverageMap->isStartOfInstruction(a))
             a--;
-	  aCoverageMap->setIsBranch( a );
-	  if (entry->op & TRACE_OP_TAKEN) {
-	    aCoverageMap->setWasTaken( a );
-	  } else if (entry->op & TRACE_OP_NOT_TAKEN) {
+          if (entry->op & TRACE_OP_TAKEN) {
+            aCoverageMap->setWasTaken( a );
+          } else if (entry->op & TRACE_OP_NOT_TAKEN) {
 	    aCoverageMap->setWasNotTaken( a );
-	  }
-        }
+          }
+	}
       }
     }
 

@@ -37,12 +37,26 @@ namespace Coverage {
     const char *instruction 
   )
   { 
-    if (target_m)
-      return target_m->isBranch( instruction );
- 
-    fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
-    assert(0);
-    return false;
+    if (!target_m) {
+      fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
+      assert(0);
+      return false;
+    }
+
+    return target_m->isBranch( instruction );
+  }
+
+  bool ObjdumpProcessor::isBranchLine(
+    const char* const line
+  )
+  {
+    if (!target_m) {
+      fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
+      assert(0);
+      return false;
+    }
+
+    return  target_m->isBranchLine( line );
   }
 
   bool ObjdumpProcessor::isNop(
@@ -51,15 +65,14 @@ namespace Coverage {
   )
   {
 
-    if (target_m)
-      return target_m->isNopLine( line, size );
+    if (!target_m){
+      fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
+      fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
+      assert(0);
+      return false;
+    }
 
-    fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
-    fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
-    assert(0);
-
-    // ASSUME: ARM dump uses nop instruction. Really "mov r0,r0"
-    return false;
+    return target_m->isNopLine( line, size );
   }
 
   FILE* ObjdumpProcessor::getFile( 
@@ -199,6 +212,7 @@ namespace Coverage {
       lineInfo.isInstruction = false;
       lineInfo.isNop         = false;
       lineInfo.nopSize       = 0;
+      lineInfo.isBranch      = false;
 
       // Look for the start of a symbol's objdump and extract
       // address and symbol.
@@ -257,6 +271,7 @@ namespace Coverage {
             lineInfo.address       = instructionAddress;
             lineInfo.isInstruction = true;
             lineInfo.isNop         = isNop( buffer, lineInfo.nopSize );
+            lineInfo.isBranch      = isBranchLine( buffer );
 
             // mark the address as the beginning of an instruction.
             executableInformation->markStartOfInstruction( instructionAddress );

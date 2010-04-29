@@ -46,20 +46,6 @@ namespace Target {
     return false;
   }
 
-  bool Target_lm32::isBranch(
-      const char* const instruction
-  )
-  {
-    if ( find(
-           branchInstructions.begin(), 
-           branchInstructions.end(), 
-           instruction 
-        ) == branchInstructions.end()
-    )
-      return false;
-    return true;
-  }
-
   TargetBase *Target_lm32_Constructor(
     std::string          targetName
   )
