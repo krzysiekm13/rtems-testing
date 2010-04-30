@@ -19,6 +19,24 @@ namespace Target {
   Target_sparc::Target_sparc( std::string targetName ):
     TargetBase( targetName )
   {
+    branchInstructions.push_back("bn");
+    branchInstructions.push_back("be");
+    branchInstructions.push_back("ble");
+    branchInstructions.push_back("bl");
+    branchInstructions.push_back("bleu");
+    branchInstructions.push_back("bcs");
+    branchInstructions.push_back("bneg");
+    branchInstructions.push_back("bvs");
+    branchInstructions.push_back("ba");
+    branchInstructions.push_back("bne");
+    branchInstructions.push_back("bg");
+    branchInstructions.push_back("bge");
+    branchInstructions.push_back("bgu");
+    branchInstructions.push_back("bcc");
+    branchInstructions.push_back("bpos");
+    branchInstructions.push_back("bvc");
+  
+    branchInstructions.sort();    
   }
 
   Target_sparc::~Target_sparc()

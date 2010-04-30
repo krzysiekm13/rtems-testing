@@ -1,3 +1,8 @@
+2010-04-30	Jennifer Averett
+
+	* Target_arm.cc, Target_m68k.cc, Target_powerpc.cc, Target_sparc.cc:
+	Added branch instructions into constructor.
+
 2010-04-29	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* CoverageMapBase.cc, CoverageReaderQEMU.cc, DesiredSymbols.cc,

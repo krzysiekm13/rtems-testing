@@ -19,6 +19,25 @@ namespace Target {
   Target_m68k::Target_m68k( std::string targetName ):
     TargetBase( targetName )
   {
+    branchInstructions.push_back("bcc");
+    branchInstructions.push_back("bcs");
+    branchInstructions.push_back("beq");
+    branchInstructions.push_back("bge");
+    branchInstructions.push_back("bgt");
+    branchInstructions.push_back("bhi");
+    branchInstructions.push_back("bhs");
+    branchInstructions.push_back("ble");
+    branchInstructions.push_back("blo");
+    branchInstructions.push_back("bls");
+    branchInstructions.push_back("blt");
+    branchInstructions.push_back("bmi");
+    branchInstructions.push_back("bne");
+    branchInstructions.push_back("bpl");
+    branchInstructions.push_back("bvc");
+    branchInstructions.push_back("bvs");
+  
+    branchInstructions.sort();
+
   }
 
   Target_m68k::~Target_m68k()
