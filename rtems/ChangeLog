@@ -1,3 +1,9 @@
+2010-05-04	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* bit_all_bsps: New file.
+	* bit_all: Removed.
+	File names are now unique considering case.
+
 2009-09-18	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* check_endof: Improve to only pay attention to .exe and .ralf files.
