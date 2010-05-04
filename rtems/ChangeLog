@@ -1,5 +1,9 @@
 2010-05-04	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* bit_all_bsps: For 4.10 determine the list of BSPs on the fly.
+
+2010-05-04	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* bit_all_bsps: New file.
 	* bit_all: Removed.
 	File names are now unique considering case.

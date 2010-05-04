@@ -44,117 +44,110 @@ fi
 rm -rf ticker-executables
 mkdir ticker-executables
 
-# Now cycle through all the CPUs selected
-for CPU in ${CPUS} 
-do
-  #
-  #  Try to build RTEMS
-  #
-
-  if [ "x${RTEMS}" != "x" ] ; then
-
-    #
-    #  Calculate the set of BSPs which could be built
-    #
-    #  Pick up the minimum set and then see if we are doing everything.
-    #
-
+#
+#  Calculate the set of BSPs which could be built
+#
+#  Pick up the minimum set and then see if we are doing everything.
+#
+get_bsps()
+{
+  if [ -d ${RTEMS}/c/src/lib/libbsp/i386/pc386/make/custom ] ; then
+    ALL_BSPS=`ls -1 ${RTEMS}/c/src/lib/libbsp/${CPU}/*/make/custom/*cfg | \
+      while read f; do \
+        basename $f; done | sed -e 's/.cfg$//' `
+      
+  else
+    # RTEMS before 4.10
     case $CPU in   
       avr)     ALL_BSPS="avrtest" ;;
       bfin)    ALL_BSPS="eZKit533 bf537Stamp" ;;
       arm)     ALL_BSPS="csb336 csb337 csb637 edb7312 gba gp32 nds"
-               ALL_BSPS="${ALL_BSPS} rtl22xx rtl22xx_t smdk2410"
-               ALL_BSPS="${ALL_BSPS} lpc2478 gumstix" ;;
+	       ALL_BSPS="${ALL_BSPS} rtl22xx rtl22xx_t smdk2410"
+	       ALL_BSPS="${ALL_BSPS} lpc2478 gumstix" ;;
       h8300)   ALL_BSPS="h8sim" ;;
       i386)    ALL_BSPS="i386ex pc386 pc386dx pc486 pc586 pc686"
-               ALL_BSPS="${ALL_BSPS} ts_386ex" ;;
+	       ALL_BSPS="${ALL_BSPS} ts_386ex" ;;
       lm32)    ALL_BSPS="lm32_evr" ;;
       m32c)    ALL_BSPS="m32csim" ;;
       m32r)    ALL_BSPS="m32rsim" ;;
       m68k)    ALL_BSPS="gen68360 gen68360_040 mvme136 mvme147 mvme147s"
-               ALL_BSPS="${ALL_BSPS} mvme162 mvme162lx mvme167 ods68302"
-               ALL_BSPS="${ALL_BSPS} sim68000 mcf5206elite "
-               ALL_BSPS="${ALL_BSPS} uC5282 mcf52235 mcf5329"
-               ALL_BSPS="${ALL_BSPS} gen68302 csb360 simcpu32 mrm332 av5282"
-               ALL_BSPS="${ALL_BSPS} gen68340 mcf5235 idp pgh360" 
-               ALL_BSPS="${ALL_BSPS} m5484FireEngine" ;;
+	       ALL_BSPS="${ALL_BSPS} mvme162 mvme162lx mvme167 ods68302"
+	       ALL_BSPS="${ALL_BSPS} sim68000 mcf5206elite "
+	       ALL_BSPS="${ALL_BSPS} uC5282 mcf52235 mcf5329"
+	       ALL_BSPS="${ALL_BSPS} gen68302 csb360 simcpu32 mrm332 av5282"
+	       ALL_BSPS="${ALL_BSPS} gen68340 mcf5235 idp pgh360" 
+	       ALL_BSPS="${ALL_BSPS} m5484FireEngine" ;;
       mips)    ALL_BSPS="jmr3904 genmongoosev csb350 hurricane"
-               ALL_BSPS="${ALL_BSPS} rbtx4925 rbtx4938" ;;
+	       ALL_BSPS="${ALL_BSPS} rbtx4925 rbtx4938" ;;
       nios2)   ALL_BSPS="nios2_iss" ;;
       powerpc) ALL_BSPS="psim score603e mcp750 mvme2100 mvme2307 mvme3100"
-               ALL_BSPS="${ALL_BSPS} mpc8260ads ss555 mvme5500 ep1a"
-               ALL_BSPS="${ALL_BSPS} pm520_cr825 pm520_ze30"
-               ALL_BSPS="${ALL_BSPS} mbx821_001 mbx821_002 mbx821_002b"
-               ALL_BSPS="${ALL_BSPS} mbx860_1b mbx860_001b mbx860_002"
-               ALL_BSPS="${ALL_BSPS} mbx860_005b mtx603e brs5l icecube"
-               ALL_BSPS="${ALL_BSPS} virtex mpc8349eamds hsc_cm01 haleakala"
-               ALL_BSPS="${ALL_BSPS} mpc8313erdb mpc5566evb"
-               ALL_BSPS="${ALL_BSPS} pghplus tqm8xx_stk8xx" ;;
+	       ALL_BSPS="${ALL_BSPS} mpc8260ads ss555 mvme5500 ep1a"
+	       ALL_BSPS="${ALL_BSPS} pm520_cr825 pm520_ze30"
+	       ALL_BSPS="${ALL_BSPS} mbx821_001 mbx821_002 mbx821_002b"
+	       ALL_BSPS="${ALL_BSPS} mbx860_1b mbx860_001b mbx860_002"
+	       ALL_BSPS="${ALL_BSPS} mbx860_005b mtx603e brs5l icecube"
+	       ALL_BSPS="${ALL_BSPS} virtex mpc8349eamds hsc_cm01 haleakala"
+	       ALL_BSPS="${ALL_BSPS} mpc8313erdb mpc5566evb"
+	       ALL_BSPS="${ALL_BSPS} pghplus tqm8xx_stk8xx" ;;
       sh)      ALL_BSPS="gensh1 gensh2 gensh4"
-               ALL_BSPS="${ALL_BSPS} simsh1 simsh2 simsh4" ;;
+	       ALL_BSPS="${ALL_BSPS} simsh1 simsh2 simsh4" ;;
       sparc)   ALL_BSPS="sis erc32 leon2 leon3" ;;
       tic4x)   ALL_BSPS="c3xsim c4xsim" ;;
       unix)    ALL_BSPS="posix"
 
-        supported=no
-        # check to see if this host has a simulator port
-        case `${RTEMS}/config.guess` in
-          i[3456]86-pc-linux*)  supported=yes ;;
-          sparc-sun-solaris*)   supported=yes ;;
-          i[3456]86-*freebsd2*) supported=yes ;;
-          *hpux*)
-             echo "You are on a platform which needs to be tested".
-             echo "HPUX has not been tested with the autoconf configuration."
-             exit 0
-             ;;
-        esac
-        ;;
+	supported=no
+	# check to see if this host has a simulator port
+	case `${RTEMS}/config.guess` in
+	  i[3456]86-pc-linux*)  supported=yes ;;
+	  sparc-sun-solaris*)   supported=yes ;;
+	  i[3456]86-*freebsd2*) supported=yes ;;
+	  *hpux*)
+	     echo "You are on a platform which needs to be tested".
+	     echo "HPUX has not been tested with the autoconf configuration."
+	     exit 0
+	     ;;
+	esac
+	;;
       *)
-        echo "UNKNOWN CPU ${CPU} -- add to bit_all"
-        ;;
+	echo "UNKNOWN CPU ${CPU} -- add to bit_all"
+	;;
     esac
 
-    if [ ${do_barebsps} = yes ] ; then
-      case $CPU in
-       i386)        ALL_BSPS="${ALL_BSPS} \
-                      bare-i386_fp bare-i386_nofp bare-i486dx \
-                      bare-i486sx bare-pentium" ;;
-       m68k)        ALL_BSPS="${ALL_BSPS} \
-                     bare-m68000 bare-m68020 bare-m68020nofp \
-                     bare-m68040 bare-m68040nofp \
-                     bare-m68060 bare-m68060nofp \
-                     bare-m68302 bare-cpu32 bare-cpu32+ bare-m5200" ;;
-       powerpc)     ALL_BSPS="${ALL_BSPS} bare-ppc403 bare-ppc603e" ;;
-       sh)          ALL_BSPS="${ALL_BSPS} bare-sh7032" ;;
-      esac
-    fi
+  fi
+}
 
-    #
-    #  Decide to cycle over all the BSPs
-    #
-    if [ ${BSP} = "all" ] ; then
-      BSPS_TO_TEST="${ALL_BSPS}"
-    else
-      BSPS_TO_TEST="${BSP}"
-    fi 
 
-    if [ "X${BSPS_TO_TEST}" != "X" ] ; then
-      for BSP_TO_TEST in ${BSPS_TO_TEST}
-      do
-        echo "Building RTEMS targetting ${CPU} for the ${BSP_TO_TEST} board"
-        logfile=log/${CPU}-${BSP_TO_TEST}.log
-        if [ ${verbose} = yes ] ; then
-           echo "./bit_rtems $CPU $BSP_TO_TEST >${logfile} 2>&1"
-        fi
-        if [ ${testing} = no ] ; then
-          BUILDDIR=build-${CPU}-${BSP_TO_TEST}-rtems
-          ./bit_rtems $CPU $BSP_TO_TEST >${logfile} 2>&1
-          # mv ${BUILDDIR}/${BSP_TO_TEST}/test*/*.log log 2>/dev/null
-          du -s -k ${BUILDDIR}
-          rm -rf ${BUILDDIR}
-        fi
-      done
-    fi
+# Now cycle through all the CPUs selected
+for CPU in ${CPUS} 
+do
+
+
+  #
+  #  Decide to cycle over all the BSPs
+  #
+  if [ ${BSP} = "all" ] ; then
+    get_bsps
+    BSPS_TO_TEST="${ALL_BSPS}"
+  else
+    BSPS_TO_TEST="${BSP}"
+  fi 
+
+  if [ "X${BSPS_TO_TEST}" != "X" ] ; then
+    for BSP_TO_TEST in ${BSPS_TO_TEST}
+    do
+      echo "Building RTEMS targetting ${CPU} for the ${BSP_TO_TEST} board"
+      logfile=log/${CPU}-${BSP_TO_TEST}.log
+      if [ ${verbose} = yes ] ; then
+	 echo "./bit_rtems $CPU $BSP_TO_TEST >${logfile} 2>&1"
+      fi
+      if [ ${testing} = no ] ; then
+	BUILDDIR=build-${CPU}-${BSP_TO_TEST}-rtems
+	./bit_rtems $CPU $BSP_TO_TEST >${logfile} 2>&1
+	mv ${BUILDDIR}/${BSP_TO_TEST}/test*/*.log log 2>/dev/null
+	du -s -k ${BUILDDIR}
+	rm -rf ${BUILDDIR}
+      fi
+    done
   fi
 
 done
