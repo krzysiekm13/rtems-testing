@@ -3,10 +3,11 @@
 #
 
 INSTALL_DIR=../bin
-CXXFLAGS=-g -Wall -O0 -march=native -mtune=native
-PROGRAMS=covoar qemu-dump-trace trace-converter
+CXXFLAGS=-g -Wall -O3 -march=native -mtune=native
+PROGRAMS=covoar qemu-dump-trace trace-converter configfile-test
 
 COMMON_OBJS= app_common.o \
+  ConfigFile.o \
   CoverageFactory.o \
   CoverageMap.o \
   CoverageMapBase.o \
@@ -49,6 +50,10 @@ COVOAR_OBJS = \
   $(COMMON_OBJS) \
   covoar.o
 
+CONFIGFILE_TEST_OBJS = \
+  $(COMMON_OBJS) \
+  configfile_test.cc
+
 INSTALLED= \
     ../bin/qemu-dump-trace \
     ../bin/trace-converter
@@ -74,6 +79,9 @@ covoar: $(COVOAR_OBJS)
 
 trace-converter: $(TRACECONVERTER_OBJS)
 	$(CXX) $(CXXFLAGS) -o $(@) $(TRACECONVERTER_OBJS)
+
+configfile-test: $(CONFIGFILE_TEST_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(@) $(CONFIGFILE_TEST_OBJS)
 
 #  DEPENDENCIES ON SINGLE OBJECTS
 app_common.o: app_common.h app_common.cc

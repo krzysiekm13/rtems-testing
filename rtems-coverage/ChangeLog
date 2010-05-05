@@ -1,3 +1,10 @@
+2010-05-05	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* .cvsignore, Makefile, covoar.cc: Add very basic configuration file
+	support.
+	* ConfigFile.cc, ConfigFile.h, configFile.txt, configfile_test.cc:
+	New files.
+
 2010-04-30	Jennifer Averett
 
 	* Target_arm.cc, Target_m68k.cc, Target_powerpc.cc, Target_sparc.cc:

@@ -39,12 +39,13 @@ char*                                executable = NULL;
 char*                                executableExtension = NULL;
 int                                  executableExtensionLength = 0;
 std::list<Coverage::ExecutableInfo*> executablesToAnalyze;
-char*                                explanations = NULL;
+const char*                          explanations = NULL;
 char*                                progname;
 bool                                 singleExecutable = false;
 const char*                          sizeReportFile = "sizes.txt";
 const char*                          symbolsFile = NULL;
-char*                                target = NULL;
+const char*                          target = NULL;
+const char*                          format = NULL;
 
 
 /*
@@ -67,6 +68,7 @@ void usage()
     "  -1 EXECUTABLE             - name of executable to get symbols from\n"
     "  -e EXE_EXTENSION          - extension of the executables to analyze\n"
     "  -c COVERAGEFILE_EXTENSION - extension of the coverage files to analyze\n"
+    "  -C ConfigurationFileName  - name of configuration file\n"
     "\n",
     progname,
     progname
@@ -75,6 +77,62 @@ void usage()
 
 #define PrintableString(_s) \
        ((!(_s)) ? "NOT SET" : (_s))
+
+/*
+ *  Configuration File Support
+ */
+#include "ConfigFile.h"
+Configuration::FileReader *CoverageConfiguration;
+
+Configuration::Options_t Options[] = {
+  { "explanations", NULL },
+  { "format",       NULL },
+  { "symbolsFile ", NULL },
+  { "target",       NULL },
+  { "verbose",      NULL },
+  { NULL,           NULL }
+};
+
+bool isTrue(const char *value)
+{
+  if ( !value )                  return false;
+  if ( !strcmp(value, "true") )  return true;
+  if ( !strcmp(value, "TRUE") )  return true;
+  if ( !strcmp(value, "yes") )   return true;
+  if ( !strcmp(value, "YES") )   return true;
+  return false;
+}
+
+#define GET_BOOL(_opt, _val) \
+  if (isTrue(CoverageConfiguration->getOption(_opt))) \
+    _val = true;
+
+#define GET_STRING(_opt, _val) \
+  do { \
+    const char *_t; \
+    _t = CoverageConfiguration->getOption(_opt); \
+    if ( _t ) _val = _t; \
+  } while(0)
+  
+
+void check_configuration(void)
+{
+  GET_BOOL( "verbose", Verbose );
+
+  GET_STRING( "format",       format );
+  GET_STRING( "target",       target );
+  GET_STRING( "explanations", explanations );
+  GET_STRING( "symbolsFile",  symbolsFile );
+
+  // Now calculate some values
+  if ( coverageFileExtension )
+    coverageExtensionLength = strlen( coverageFileExtension );
+
+  if ( executableExtension )
+    executableExtensionLength = strlen( executableExtension );
+  if ( format )
+    coverageFormat = Coverage::CoverageFormatToEnum(optarg);
+}
 
 int main(
   int    argc,
@@ -85,16 +143,17 @@ int main(
   std::string                                    coverageFileName;
   std::list<Coverage::ExecutableInfo*>::iterator eitr;
   Coverage::ExecutableInfo*                      executableInfo = NULL;
-  char*                                          format = NULL;
   int                                            i;
   int                                            opt;
 
+  CoverageConfiguration = new Configuration::FileReader(Options);
+  
   //
   // Process command line options.
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "1:e:c:E:f:s:T:v")) != -1) {
+  while ((opt = getopt(argc, argv, "1:e:c:E:f:s:T:vC:")) != -1) {
     switch (opt) {
       case '1':
         singleExecutable = true;
@@ -103,25 +162,25 @@ int main(
         break;
       case 'e':
         executableExtension = optarg;
-        executableExtensionLength = strlen( executableExtension );
         break;
       case 'c':
          coverageFileExtension = optarg;
-         coverageExtensionLength = strlen( coverageFileExtension );
+         break;
+      case 'C':
+         CoverageConfiguration->processFile( optarg );
          break;
       case 'E': explanations          = optarg;  break;
       case 's': symbolsFile           = optarg;  break;
       case 'T': target                = optarg;  break;
       case 'v': Verbose               = true;    break;
-      case 'f':
-        format = optarg;
-        coverageFormat = Coverage::CoverageFormatToEnum(optarg);
-        break;
+      case 'f': format                = optarg;  break;
       default: /* '?' */
         usage();
         exit( -1 );
     }
   }
+
+  check_configuration();
 
   // If a single executable was specified, process the remaining
   // arguments as coverage file names.

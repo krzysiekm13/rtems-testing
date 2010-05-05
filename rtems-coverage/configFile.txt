@@ -1,0 +1,13 @@
+#
+#  This is a comment.
+#
+#  $Id$
+#
+verbose = no   
+
+verbose
+
+verbose     yes   
+
+bad_option no
+
