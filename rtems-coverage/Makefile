@@ -25,7 +25,8 @@ COMMON_OBJS= app_common.o \
   ExecutableInfo.o \
   Explanations.o \
   ObjdumpProcessor.o \
-  Reports.o \
+  ReportsBase.o \
+  ReportsText.o \
   SymbolTable.o \
   Target_arm.o  \
   TargetBase.o  \
@@ -118,8 +119,9 @@ ExecutableInfo.o: ExecutableInfo.cc ExecutableInfo.h CoverageMap.h \
 Explanations.o: Explanations.cc Explanations.h
 ObjdumpProcessor.o: ObjdumpProcessor.cc ObjdumpProcessor.h ExecutableInfo.h \
   TargetBase.h TargetFactory.h
-Reports.o: Reports.cc Reports.h CoverageRanges.h DesiredSymbols.h \
+ReportsBase.o: ReportsBase.cc ReportsBase.h CoverageRanges.h DesiredSymbols.h \
   Explanations.h ObjdumpProcessor.h
+ReportsText.o: ReportsBase.h ReportsText.cc
 SymbolTable.o: SymbolTable.cc SymbolTable.h
 Target_arm.o: Target_arm.cc Target_arm.h TargetBase.h
 TargetBase.o: TargetBase.cc TargetBase.h

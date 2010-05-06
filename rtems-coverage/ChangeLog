@@ -1,3 +1,12 @@
+2010-05-06	Jennifer.Averett <Jennifer.Averett>
+
+	* Makefile, covoar.cc: Split Reports into a Report Base and Report Text
+	file to make room for a design allowing multiple types of reported
+	files.
+	* ReportsBase.cc, ReportsBase.h, ReportsText.cc, ReportsText.h: New
+	files.
+	* Reports.cc, Reports.h: Removed.
+
 2010-05-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* covoar.cc: Fix typo that gives core dump.

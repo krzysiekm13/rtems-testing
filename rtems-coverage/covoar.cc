@@ -23,18 +23,16 @@
 #include "ExecutableInfo.h"
 #include "Explanations.h"
 #include "ObjdumpProcessor.h"
-#include "Reports.h"
+#include "ReportsBase.h"
 
 /*
  *  Variables to control general behavior
  */
-const char*                          branchReportFile = "branch.txt";
 char*                                coverageFileExtension = NULL;
 std::list<std::string>               coverageFileNames;
 int                                  coverageExtensionLength = 0;
 Coverage::CoverageFormats_t          coverageFormat;
 Coverage::CoverageReaderBase*        coverageReader = NULL;
-const char*                          coverageReportFile = "uncovered.txt";
 char*                                executable = NULL;
 char*                                executableExtension = NULL;
 int                                  executableExtensionLength = 0;
@@ -42,7 +40,6 @@ std::list<Coverage::ExecutableInfo*> executablesToAnalyze;
 const char*                          explanations = NULL;
 char*                                progname;
 bool                                 singleExecutable = false;
-const char*                          sizeReportFile = "sizes.txt";
 const char*                          symbolsFile = NULL;
 const char*                          target = NULL;
 const char*                          format = NULL;
@@ -365,26 +362,7 @@ int main(
   //
   // Report the coverage data.
   //
-
-  // Generate report of ranges not executed.
-  if (Verbose)
-    fprintf( stderr, "Writing coverage report (%s)\n", coverageReportFile );
-  Coverage::WriteCoverageReport( coverageReportFile );
-
-  // Generate report of branches taken/not taken.
-  if (Verbose)
-    fprintf( stderr, "Writing branch report (%s)\n", branchReportFile );
-  Coverage::WriteBranchReport( branchReportFile );
-
-  // Generate report of range sizes.
-  if (Verbose)
-    fprintf( stderr, "Writing size report (%s)\n", sizeReportFile );
-  Coverage::WriteSizeReport( sizeReportFile );
-
-  // Generate annotated assembly file
-  if (Verbose)
-    fprintf( stderr, "Writing annotated report (%s)\n", "annotated.txt" );
-  Coverage::WriteAnnotatedReport( "annotated.txt" );
+  Coverage::GenerateReports();
 
   // Write explanations that were not found.
   if ( explanations ) {
