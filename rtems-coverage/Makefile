@@ -88,7 +88,7 @@ configfile-test: $(CONFIGFILE_TEST_OBJS)
 app_common.o: app_common.h app_common.cc
 
 covoar.o: covoar.cc CoverageFactory.h CoverageMap.h DesiredSymbols.h \
-  ExecutableInfo.h Explanations.h ObjdumpProcessor.h Reports.h
+  ExecutableInfo.h Explanations.h ObjdumpProcessor.h ReportsBase.h
 
 CoverageFactory.o: CoverageFactory.cc CoverageFactory.h \
   CoverageReaderBase.h CoverageReaderQEMU.h CoverageReaderRTEMS.h \
