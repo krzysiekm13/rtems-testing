@@ -1,3 +1,7 @@
+2010-05-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* covoar.cc: Fix typo that gives core dump.
+
 2010-05-05	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* .cvsignore, Makefile, covoar.cc: Add very basic configuration file

@@ -130,8 +130,9 @@ void check_configuration(void)
 
   if ( executableExtension )
     executableExtensionLength = strlen( executableExtension );
+
   if ( format )
-    coverageFormat = Coverage::CoverageFormatToEnum(optarg);
+    coverageFormat = Coverage::CoverageFormatToEnum( format );
 }
 
 int main(
