@@ -342,10 +342,10 @@ int main(
       eitr++;
   }
 
-  // Do necessary preprocessing uncovered ranges and branches
+  // Do necessary preprocessing of uncovered ranges and branches
   if (Verbose)
-     fprintf( stderr, "Preprocess uncovered ranges and branches\n" );
-  SymbolsToAnalyze->Preprocess();
+    fprintf( stderr, "Preprocess uncovered ranges and branches\n" );
+  SymbolsToAnalyze->preprocess();
 
   // Determine the uncovered ranges and branches.
   if (Verbose)

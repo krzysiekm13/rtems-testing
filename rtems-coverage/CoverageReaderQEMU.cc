@@ -14,8 +14,8 @@
 #include <sys/stat.h>
 
 #include "CoverageReaderQEMU.h"
-#include "ExecutableInfo.h"
 #include "CoverageMap.h"
+#include "ExecutableInfo.h"
 
 /* XXX really not always right */
 typedef uint32_t target_ulong;

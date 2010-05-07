@@ -19,10 +19,60 @@
 
 #include "ObjdumpProcessor.h"
 #include "app_common.h"
+#include "CoverageMap.h"
 #include "ExecutableInfo.h"
+#include "SymbolTable.h"
 #include "TargetFactory.h"
 
 namespace Coverage {
+
+  void finalizeSymbol(
+    ExecutableInfo* const            executableInfo,
+    std::string&                     symbolName,
+    uint32_t                         lowAddress,
+    uint32_t                         highAddress,
+    ObjdumpProcessor::objdumpLines_t instructions,
+    SymbolInformation*               symbolInfo
+  ) {
+
+    CoverageMapBase*                           aCoverageMap = NULL;
+    ObjdumpProcessor::objdumpLines_t::iterator itr;
+    SymbolTable*                               theSymbolTable;
+
+    // If there are NOT already saved instructions, save them.
+    if (symbolInfo->instructions.empty()) {
+      symbolInfo->sourceFile = executableInfo->getFileName();
+      symbolInfo->baseAddress = lowAddress;
+      symbolInfo->instructions = instructions;
+    }
+
+    // Add the symbol to this executable's symbol table.
+    theSymbolTable = executableInfo->getSymbolTable();
+    theSymbolTable->addSymbol(
+      symbolName, lowAddress, highAddress - lowAddress + 1
+    );
+
+    // Create a coverage map for the symbol.
+    aCoverageMap = executableInfo->createCoverageMap(
+      symbolName, lowAddress, highAddress
+    );
+
+    if (aCoverageMap) {
+
+      // Mark the start of each instruction in the coverage map.
+      for (itr = instructions.begin();
+           itr != instructions.end();
+           itr++ ) {
+
+        aCoverageMap->setIsStartOfInstruction( itr->address );
+      }
+
+      // Create a unified coverage map for the symbol.
+      SymbolsToAnalyze->createCoverageMap(
+        symbolName, highAddress - lowAddress + 1
+      );
+    }
+  }
 
   ObjdumpProcessor::ObjdumpProcessor()
   {
@@ -90,7 +140,7 @@ namespace Coverage {
     if ( FileIsNewer( exeFileName.c_str(), dumpFile )) {
       sprintf(
         buffer,
-        "%s -da --source %s | sed -e \'s/ *$//\' >%s",
+        "%s -da --section=.text --source %s | sed -e \'s/ *$//\' >%s",
         Tools->getObjdump(),
          exeFileName.c_str(),
         dumpFile
@@ -100,7 +150,7 @@ namespace Coverage {
       if (status) {
         fprintf(
           stderr,
-          "ERROR: ObjdumpProcessor::load - command (%s) failed with %d\n",
+          "ERROR: ObjdumpProcessor::getFile - command (%s) failed with %d\n",
           buffer,
           status
         );
@@ -113,7 +163,7 @@ namespace Coverage {
     if (!objdumpFile) {
       fprintf(
         stderr,
-        "ERROR: ObjdumpProcessor::load - unable to open %s\n",
+        "ERROR: ObjdumpProcessor::getFile - unable to open %s\n",
         dumpFile
       );
       exit(-1);
@@ -175,26 +225,26 @@ namespace Coverage {
     }
   }
 
-
   void ObjdumpProcessor::load(
     ExecutableInfo* const executableInformation
   )
   {
-    uint32_t           baseAddress;
+    uint32_t           address;
+    uint32_t           baseAddress = 0;
     char               buffer[ 512 ];
     char*              cStatus;
-    uint32_t           endAddress = 0xffffffff;
+    std::string        currentSymbol = "";
     uint32_t           instructionAddress;
     int                items;
     objdumpLine_t      lineInfo;
     FILE*              objdumpFile;
     bool               processSymbol = false;
-    bool               saveInstructionDump = false;
     char               symbol[ 100 ];
-    SymbolInformation* symbolInfo = NULL;
+    SymbolInformation* symbolInformation = NULL;
     char               terminator;
+    objdumpLines_t     theInstructions;
 
-
+    // Obtain the objdump file.
     objdumpFile = getFile( executableInformation->getFileName() );
 
     // Process all lines from the objdump file.
@@ -203,8 +253,29 @@ namespace Coverage {
       // Get the line.
       cStatus = fgets( buffer, 512, objdumpFile );
       if (cStatus == NULL) {
+
+        // If we are currently processing a symbol, finalize it.
+        if ((processSymbol) && (symbolInformation)) {
+          finalizeSymbol(
+            executableInformation,
+            currentSymbol,
+            baseAddress,
+            address,  // XXX fix to determine corrent end address
+            theInstructions,
+            symbolInformation
+          );
+          fprintf(
+            stderr,
+            "WARNING: ObjdumpProcessor::load - analysis of symbol %s \n"
+            "         may be incorrect.  It was the last symbol in %s\n"
+            "         and the length of its last instruction is assumed to be one.\n",
+            currentSymbol.c_str(),
+            executableInformation->getFileName().c_str()
+          );
+        }
         break;
       }
+
       buffer[ strlen(buffer) - 1] = '\0';
 
       lineInfo.line          = buffer;
@@ -215,40 +286,42 @@ namespace Coverage {
       lineInfo.isBranch      = false;
 
       // Look for the start of a symbol's objdump and extract
-      // address and symbol.
+      // address and symbol (i.e. address <symbolname>:).
       items = sscanf(
         buffer,
         "%x <%[^>]>%c",
-        &baseAddress, symbol, &terminator
+        &address, symbol, &terminator
       );
 
-      // If all items found ...
+      // If all items found, we are at the beginning of a symbol's objdump.
       if ((items == 3) && (terminator == ':')) {
 
-        // we are at the beginning of a symbol's objdump and
-        // must end any processing of the previous symbol.
+        // If we are currently processing a symbol, finalize it.
+        if ((processSymbol) && (symbolInformation)) {
+          finalizeSymbol(
+            executableInformation,
+            currentSymbol,
+            baseAddress,
+            address - 1,
+            theInstructions,
+            symbolInformation
+          );
+        }
+
+        // Start processing of a new symbol.
+        baseAddress = 0;
+        currentSymbol = "";
         processSymbol = false;
-        saveInstructionDump = false;
+        theInstructions.clear();
 
-        // See if the symbol is one that we care about.
-        symbolInfo = SymbolsToAnalyze->find( symbol );
+        // See if the new symbol is one that we care about.
+        symbolInformation = SymbolsToAnalyze->find( symbol );
 
-        // If it is, ...
-        if (symbolInfo) {
-
-          // indicate that we are processing a symbols objdump and
-          // compute the ending address for termination.
+        if (symbolInformation) {
+          baseAddress = address;
+          currentSymbol = symbol;
           processSymbol = true;
-          endAddress = baseAddress +
-           executableInformation->getSymbolTable()->getLength( symbol ) - 1;
-
-          // If there are NOT already instructions available, indicate that they
-          // are to be saved.
-          if (symbolInfo->instructions.empty()) {
-            saveInstructionDump = true;
-            symbolInfo->sourceFile = executableInformation->getFileName();
-            symbolInfo->baseAddress = baseAddress;
-          }
+          theInstructions.push_back( lineInfo );
         }
       }
 
@@ -264,36 +337,16 @@ namespace Coverage {
         // If it looks like an instruction ...
         if ((items == 2) && (terminator == ':')) {
 
-          // and we are NOT beyond the end of the symbol's objdump,
-          if (instructionAddress <= endAddress) {
-
-            // update the line's information and ...
-            lineInfo.address       = instructionAddress;
-            lineInfo.isInstruction = true;
-            lineInfo.isNop         = isNop( buffer, lineInfo.nopSize );
-            lineInfo.isBranch      = isBranchLine( buffer );
-
-            // mark the address as the beginning of an instruction.
-            executableInformation->markStartOfInstruction( instructionAddress );
-          }
-
-          // If we are beyond the end of the symbol's objdump,
-          // it's time to end processing of this symbol.
-          else {
-            processSymbol = false;
-            saveInstructionDump = false;
-          }
+          // update the line's information, save it and ...
+          lineInfo.address       = instructionAddress;
+          lineInfo.isInstruction = true;
+          lineInfo.isNop         = isNop( buffer, lineInfo.nopSize );
+          lineInfo.isBranch      = isBranchLine( buffer );
         }
-      }
 
-      // If we are processing a symbol, ...
-      if (processSymbol && saveInstructionDump) {
-
-        // add line to the current symbol's information and ...
-        symbolInfo->instructions.push_back( lineInfo );
-
+        // Always save the line.
+        theInstructions.push_back( lineInfo );
       }
     }
   }
-
 }

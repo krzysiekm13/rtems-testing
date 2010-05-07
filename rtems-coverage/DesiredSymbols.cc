@@ -106,12 +106,12 @@ namespace Coverage {
     #undef MAX_LINE_LENGTH
   }
 
-  void DesiredSymbols::Preprocess( void )
+  void DesiredSymbols::preprocess( void )
   {
-    CoverageMapBase*                                             theCoverageMap;
-    std::list<ObjdumpProcessor::objdumpLine_t>::reverse_iterator itr;
-    std::list<ObjdumpProcessor::objdumpLine_t>::iterator         fitr;
-    DesiredSymbols::symbolSet_t::iterator                        sitr;
+    ObjdumpProcessor::objdumpLines_t::iterator         fitr;
+    ObjdumpProcessor::objdumpLines_t::reverse_iterator itr;
+    DesiredSymbols::symbolSet_t::iterator              sitr;
+    CoverageMapBase*                                   theCoverageMap;
 
     // Look at each symbol.
     for (sitr = SymbolsToAnalyze->set.begin();
@@ -145,26 +145,28 @@ namespace Coverage {
           break;
       }
 
-      for (fitr = sitr->second.instructions.begin(), fitr++;
+      // Mark any branch instructions.
+      for (fitr = sitr->second.instructions.begin();
            fitr != sitr->second.instructions.end();
            fitr++) {
         if (fitr->isBranch) {
-           theCoverageMap->setIsBranch( fitr->address -  sitr->second.baseAddress );
+           theCoverageMap->setIsBranch(
+             fitr->address - sitr->second.baseAddress
+           );
         }
       }
-
     }
   }
 
   void DesiredSymbols::computeUncovered( void )
   {
-    uint32_t                                             a, la, ha;
-    uint32_t                                             endAddress;
-    std::list<ObjdumpProcessor::objdumpLine_t>::reverse_iterator itr;
-    DesiredSymbols::symbolSet_t::iterator                sitr;
-    CoverageRanges*                                      theBranches;
-    CoverageMapBase*                                     theCoverageMap;
-    CoverageRanges*                                      theRanges;
+    uint32_t                                           a, la, ha;
+    uint32_t                                           endAddress;
+    ObjdumpProcessor::objdumpLines_t::reverse_iterator itr;
+    DesiredSymbols::symbolSet_t::iterator              sitr;
+    CoverageRanges*                                    theBranches;
+    CoverageMapBase*                                   theCoverageMap;
+    CoverageRanges*                                    theRanges;
 
     // Look at each symbol.
     for (sitr = SymbolsToAnalyze->set.begin();

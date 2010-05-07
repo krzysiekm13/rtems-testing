@@ -72,6 +72,8 @@ namespace Coverage {
 
     } objdumpLine_t;
 
+    typedef std::list<objdumpLine_t> objdumpLines_t;
+
     typedef std::list<uint32_t> objdumpFile_t;
 
     /*!
@@ -132,8 +134,7 @@ namespace Coverage {
   private:
 
     objdumpFile_t       objdumpList;
-    Target::TargetBase  *target_m;
-
+    Target::TargetBase* target_m;
 
     /*!
      *  This method determines whether the specified line is a

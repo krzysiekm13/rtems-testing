@@ -210,10 +210,10 @@ namespace Coverage {
     );
 
     /*!
-     *  This method preprocess each symbols coverage map to marking nop
+     *  This method preprocesses each symbol's coverage map to mark nop
      *  and branch information.
      */
-    void Preprocess( void );
+    void preprocess( void );
 
   private:
 

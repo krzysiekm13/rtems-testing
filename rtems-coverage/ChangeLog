@@ -1,3 +1,13 @@
+2010-05-07	Glenn Humphrey
+
+	* CoverageReaderQEMU.cc, CoverageReaderRTEMS.cc,
+	CoverageReaderSkyeye.cc, CoverageReaderTSIM.cc, DesiredSymbols.cc,
+	DesiredSymbols.h, ExecutableInfo.cc, ExecutableInfo.h,
+	ObjdumpProcessor.cc, ObjdumpProcessor.h, SymbolTable.cc,
+	SymbolTable.h, covoar.cc: Removed the use of nm to generate the
+	symbol for each executable. Modified the ObjdumpProcessor to populate
+	the symbol table and create the coverage maps.
+
 2010-05-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_coverage: Pick up style sheet for reports.

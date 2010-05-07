@@ -27,6 +27,29 @@ namespace Coverage {
   {
   }
 
+  void SymbolTable::addSymbol(
+    const std::string& symbol,
+    const uint32_t     start,
+    const uint32_t     length
+  )
+  {
+    uint32_t       end = 0;
+    symbol_entry_t entry;
+    symbolInfo     symbolData;
+
+    // Add an entry to the address map.
+    end = start + length - 1;
+    entry.low = start;
+    entry.high = end;
+    entry.symbol = symbol;
+    contents[ end ] = entry;
+
+    // Add an entry to the symbol information map.
+    symbolData.startingAddress = start;
+    symbolData.length = length;
+    info[ symbol ] = symbolData;
+  }
+
   SymbolTable::symbolInfo* SymbolTable::getInfo(
     const std::string& symbol
   )
@@ -55,116 +78,22 @@ namespace Coverage {
     uint32_t address
   )
   {
-    contents_t::iterator it = contents.end();
+    contents_t::iterator it;
 
+    // Ensure that the symbol table is not empty.
     if ( contents.size() == 0 )
       return "";
 
-    it--;
-    if (address > ((*it).first)) {
-      return "";
-    }
-
+    // Find the first entry whose end address is greater
+    // than the specified address.
     it = contents.lower_bound( address );
-    if (((*it).second).min <= address ) {
-      return ((*it).second).symbol;
-    } else {
-      return "";
-    }
-  }
 
-  bool SymbolTable::load(
-    const std::string& executableName
-  )
-  {
-    char        buffer[512];
-    char       *cStatus;
-    uint32_t    end = 0;
-    int         items;
-    uint32_t    length = 0;
-    FILE       *nmFile = NULL;
-    uint32_t    start = 0;
-    char        symbol[ 100 ];
-    symbolInfo  symbolData;
-    char        nmName[128];
+    // If an entry was found and its low address is less than or
+    // equal to the specified address, then return the symbol.
+    if ((it != contents.end()) && ((it->second).low <= address ))
+      return (it->second).symbol;
 
-
-    sprintf(
-      nmName,
-      "%s.nm",
-      executableName.c_str()
-    );
-
-    // Generate the nm output
-    if (FileIsNewer(executableName.c_str(), nmName )){
-
-      sprintf( buffer, "%s -n -f sysv %s | sed -e \'s/ *$//\' >%s",
-        Tools->getNm(), executableName.c_str(), nmName );
-
-      if ( system( buffer ) ) {
-        fprintf(
-          stderr,
-          "ERROR: SymbolTable::load - command (%s) failed\n",
-          buffer
-        );
-        exit( -1 );
-      }
-    }
-
-    // Read the file and process each desired symbol
-    nmFile = fopen( nmName, "r" );
-    if ( !nmFile ) {
-      fprintf(
-        stderr,
-        "ERROR: SymbolTable::load - unable to open %s\n",
-        nmName
-      );
-      exit(-1);
-    }
-
-    // Process all lines from the nm file.
-    while ( 1 ) {
-
-      // Get the line.
-      cStatus = fgets( buffer, 512, nmFile );
-      if ( cStatus == NULL ) {
-        break;
-      }
-      buffer[ strlen(buffer) - 1] = '\0';
-
-      // Extract the symbol, start address and length.
-      items = sscanf(
-        buffer,
-        "%[^| ] |%x|%*[^|]| FUNC|%x",
-        symbol, &start, &length
-      );
-
-      // If all items found ...
-      if (items == 3) {
-
-        // and it is a desired symbol, ...
-        if (SymbolsToAnalyze->isDesired( symbol )) {
-
-          // add the symbol information to the symbol table.
-          end = start + length - 1;
-          symbol_entry_t entry = { start, end, symbol };
-          contents[end] = entry;
-
-          symbolData.startingAddress = start;
-          symbolData.length = length;
-          info[ symbol ] = symbolData;
-
-          // Also create a coverage map for the results of the analysis.
-          SymbolsToAnalyze->createCoverageMap( symbol, length );
-        }
-      }
-    }
-
-    fclose( nmFile );
-
-    // Remove temporary file
-    // (void) system( "rm -f nm.tmp" );
-    return true;
+    return "";
   }
 
 }

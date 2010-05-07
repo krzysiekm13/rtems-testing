@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 
 #include "CoverageReaderSkyeye.h"
+#include "CoverageMap.h"
 #include "ExecutableInfo.h"
 #include "skyeye_header.h"
 
@@ -32,14 +33,15 @@ namespace Coverage {
     ExecutableInfo* const executableInformation
   )
   {
-    uintptr_t     baseAddress;
-    uint8_t       cover;
-    FILE*         coverageFile;
-    prof_header_t header;
-    uintptr_t     i;
-    uintptr_t     length;
-    struct stat   statbuf;
-    int           status;
+    CoverageMapBase* aCoverageMap = NULL;
+    uintptr_t        baseAddress;
+    uint8_t          cover;
+    FILE*            coverageFile;
+    prof_header_t    header;
+    uintptr_t        i;
+    uintptr_t        length;
+    struct stat      statbuf;
+    int              status;
 
     //
     // Verify that the coverage file has a non-zero size.
@@ -100,17 +102,32 @@ namespace Coverage {
         break;
       }
 
+      //
+      // Obtain the coverage map containing the address and
+      // mark the address as executed.
+      //
+      // NOTE: This method ONLY works for Skyeye in 32-bit mode.
+      //
       if (cover & 0x01) {
-        executableInformation->markWasExecuted( baseAddress + i );
-        executableInformation->markWasExecuted( baseAddress + i + 1 );
-        executableInformation->markWasExecuted( baseAddress + i + 2 );
-        executableInformation->markWasExecuted( baseAddress + i + 3 );
+        aCoverageMap = executableInformation->getCoverageMap( baseAddress + i );
+        if (aCoverageMap) {
+          aCoverageMap->setWasExecuted( baseAddress + i );
+          aCoverageMap->setWasExecuted( baseAddress + i + 1 );
+          aCoverageMap->setWasExecuted( baseAddress + i + 2 );
+          aCoverageMap->setWasExecuted( baseAddress + i + 3 );
+        }
       }
+
       if (cover & 0x10) {
-        executableInformation->markWasExecuted( baseAddress + i + 4 );
-        executableInformation->markWasExecuted( baseAddress + i + 5 );
-        executableInformation->markWasExecuted( baseAddress + i + 6 );
-        executableInformation->markWasExecuted( baseAddress + i + 7 );
+        aCoverageMap = executableInformation->getCoverageMap(
+          baseAddress + i + 4
+        );
+        if (aCoverageMap) {
+          aCoverageMap->setWasExecuted( baseAddress + i + 4 );
+          aCoverageMap->setWasExecuted( baseAddress + i + 5 );
+          aCoverageMap->setWasExecuted( baseAddress + i + 6 );
+          aCoverageMap->setWasExecuted( baseAddress + i + 7 );
+        }
       }
     }
 

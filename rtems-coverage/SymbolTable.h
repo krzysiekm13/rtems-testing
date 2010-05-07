@@ -46,6 +46,21 @@ namespace Coverage {
     virtual ~SymbolTable();
 
     /*!
+     *  This method adds the specified symbol information to the
+     *  symbol table.
+     *
+     *  @param[in] symbol specifies the symbol to add
+     *  @param[in] start specifies the symbol's start address
+     *  @param[in] length specifies the symbol's length
+     *
+     */
+    void addSymbol(
+      const std::string& symbol,
+      const uint32_t     start,
+      const uint32_t     length
+    );
+
+    /*!
      *  This method returns the symbol information for the specified symbol.
      *
      *  @param[in] symbol specifies the symbol for which to obtain information
@@ -78,32 +93,19 @@ namespace Coverage {
       uint32_t address
     );
 
-    /*!
-     *  This method loads the symbol table from the specified executable.
-     *
-     *  @param[in] executableName specifies the file name of the executable
-     *
-     *  @return Returns TRUE if the symbol table was loaded and
-     *          FALSE otherwise.
-     */
-    bool load(
-      const std::string& executableName
-    );
-
   private:
 
     /*!
-     *  This map associates each address from an executable
-     *  with the symbol that contains the address.
+     *  This map associates the end address of a symbol's address
+     *  range with the symbol's address range definition.
      */
     typedef struct {
-       uint32_t min;
-       uint32_t max;
+       uint32_t    low;
+       uint32_t    high;
        std::string symbol;
     } symbol_entry_t;
     typedef std::map< uint32_t, symbol_entry_t > contents_t;
     contents_t contents;
-
 
     /*!
      *  This map associates each symbol from an executable with

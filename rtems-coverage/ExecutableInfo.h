@@ -77,45 +77,18 @@ namespace Coverage {
     void initialize( void );
 
     /*!
-     *  This method marks the specified address of the executable
-     *  as a branch instruction and indicates that it was NOT taken.
+     *  This method creates a coverage map for the specified symbol.
      *
-     *  @param[in] address indicates the address of the branch instruction
-     *             that was NOT taken
-     */
-    void markBranchNotTaken(
-      uint32_t address
-    );
-
-    /*!
-     *  This method marks the specified address of the executable
-     *  as a branch instruction and indicates that it was taken.
+     *  @param[in] symbolName specifies the name of the symbol
+     *  @param[in] lowAddress specifies the low address of the coverage map
+     *  @param[in] highAddress specifies the high address of the coverage map
      *
-     *  @param[in] address indicates the address of the branch instruction
-     *             that was taken
+     *  @return Returns a pointer to the coverage map
      */
-    void markBranchTaken(
-      uint32_t address
-    );
-
-    /*!
-     *  This method marks the specified address of the executable
-     *  as the starting address for an instruction.
-     *
-     *  @param[in] address indicates the address of the start of an instruction
-     */
-    void markStartOfInstruction(
-      uint32_t address
-    );
-
-    /*!
-     *  This method marks the specified address of the executable
-     *  as an address that was executed.
-     *
-     *  @param[in] address indicates the address that was executed
-     */
-    void markWasExecuted(
-      uint32_t address
+    CoverageMapBase* createCoverageMap (
+      const std::string& symbolName,
+      uint32_t           lowAddress,
+      uint32_t           highAddress
     );
 
     /*!
