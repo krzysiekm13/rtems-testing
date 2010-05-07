@@ -1,5 +1,9 @@
 2010-05-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* do_coverage: Pick up style sheet for reports.
+
+2010-05-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* ReportsBase.cc: Fix name of coverage report.
 
 2010-05-07	Jennifer Averett <Jennifer.Averett>

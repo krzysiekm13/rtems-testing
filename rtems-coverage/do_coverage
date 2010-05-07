@@ -355,7 +355,7 @@ generate_reports()
   mkdir ${results_dir}
   cp annotated.txt branch.txt configuration.txt sizes.txt summary.txt \
      uncovered.txt row.html ${results_dir}
-  cp ${COVBASE}/Explanations.txt.NotFound ${results_dir}
+  cp ${COVBASE}/Explanations.txt.NotFound ${COVBASE}/covoar.css ${results_dir}
   echo "Results saved in ${results_dir}.tar.bz2"
   tar cjf ${results_dir}.tar.bz2 ${results_dir}
   rm -rf ${results_dir}
