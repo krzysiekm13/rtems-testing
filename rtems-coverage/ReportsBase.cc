@@ -14,6 +14,7 @@
 
 
 #include "ReportsText.h"
+#include "ReportsHtml.h"
 
 namespace Coverage {
 
@@ -153,20 +154,21 @@ void ReportsBase::WriteAnnotatedReport(
          itr++ ) {
 
       std::string  annotation = "";
-      std::string  line; 
+      std::string  line;
+      char         textLine[100];
 
       state = A_SOURCE;
 
       if ( itr->isInstruction ) {
         if (!theCoverageMap->wasExecuted( itr->address - bAddress )){
-          annotation = "\t<== NOT EXECUTED";
+          annotation = "<== NOT EXECUTED";
           state = A_NEVER_EXECUTED;
         } else if (theCoverageMap->isBranch( itr->address - bAddress )) {
           if (theCoverageMap->wasAlwaysTaken( itr->address - bAddress )){
-            annotation = "\t<== ALWAYS TAKEN";
+            annotation = "<== ALWAYS TAKEN";
             state = A_BRANCH_TAKEN;
           } else if (theCoverageMap->wasNeverTaken( itr->address - bAddress )){
-            annotation = "\t<== NEVER TAKEN";
+            annotation = "<== NEVER TAKEN";
             state = A_BRANCH_NOT_TAKEN;
           }
         } else {
@@ -174,8 +176,9 @@ void ReportsBase::WriteAnnotatedReport(
         }
       }
 
+      sprintf( textLine, "%-70s", itr->line.c_str() );
+      line = textLine + annotation;
       
-      line = itr->line + annotation;
       PutAnnotatedLine( aFile, state, line); 
     }
   }
@@ -193,6 +196,7 @@ void ReportsBase::WriteBranchReport(
   FILE*                                           report = NULL;
   Coverage::CoverageRanges::ranges_t::iterator    ritr;
   Coverage::CoverageRanges*                       theBranches;
+  unsigned int                                    count;
 
   // Open the branch report file
   report = OpenBranchFile( fileName );
@@ -207,6 +211,7 @@ void ReportsBase::WriteBranchReport(
   else {
 
     // Process uncovered branches for each symbol.
+    count = 0;
     for (ditr = SymbolsToAnalyze->set.begin();
          ditr != SymbolsToAnalyze->set.end();
          ditr++) {
@@ -218,7 +223,8 @@ void ReportsBase::WriteBranchReport(
         for (ritr =  theBranches->set.begin() ;
              ritr != theBranches->set.end() ;
              ritr++ ) {
-          PutBranchEntry( report, ditr, ritr );
+          count++;
+          PutBranchEntry( report, count, ditr, ritr );
         }
       }
     }
@@ -237,15 +243,16 @@ void ReportsBase::WriteCoverageReport(
   FILE*                                           report;
   Coverage::CoverageRanges::ranges_t::iterator    ritr;
   Coverage::CoverageRanges*                       theRanges;
+  unsigned int                                    count;
 
   // Open the coverage report file.
-  report = fopen( fileName, "w" );
+  report = OpenCoverageFile( fileName );
   if ( !report ) {
-    fprintf( stderr, "Unable to open %s\n\n", fileName );
     return;
   }
 
   // Process uncovered ranges for each symbol.
+  count = 0;
   for (ditr = SymbolsToAnalyze->set.begin();
        ditr != SymbolsToAnalyze->set.end();
        ditr++) {
@@ -257,21 +264,20 @@ void ReportsBase::WriteCoverageReport(
     // desired symbols list or with the executables so put something
     // in the report.
     if (theRanges == NULL) {
-      putCoverageNoRange( report, ditr->first );
-    }
-
-    else if (!theRanges->set.empty()) {
+      putCoverageNoRange( report, count, ditr->first );
+      count++;
+    }  else if (!theRanges->set.empty()) {
 
       for (ritr =  theRanges->set.begin() ;
            ritr != theRanges->set.end() ;
            ritr++ ) {
-
-        PutCoverageLine( report, ditr, ritr );
+        PutCoverageLine( report, count, ditr, ritr );
+        count++;
       }
     }
   }
 
-  fclose( report );
+  CloseCoverageFile( report );
 }
 
 /*
@@ -285,6 +291,7 @@ void ReportsBase::WriteSizeReport(
   FILE*                                           report;
   Coverage::CoverageRanges::ranges_t::iterator    ritr;
   Coverage::CoverageRanges*                       theRanges;
+  unsigned int                                    count;
 
   // Open the report file.
   report = OpenSizeFile( fileName );
@@ -293,6 +300,7 @@ void ReportsBase::WriteSizeReport(
   }
 
   // Process uncovered ranges for each symbol.
+  count = 0;
   for (ditr = SymbolsToAnalyze->set.begin();
        ditr != SymbolsToAnalyze->set.end();
        ditr++) {
@@ -304,7 +312,8 @@ void ReportsBase::WriteSizeReport(
       for (ritr =  theRanges->set.begin() ;
            ritr != theRanges->set.end() ;
            ritr++ ) {
-        PutSizeLine( report, ditr, ritr );
+        PutSizeLine( report, count, ditr, ritr );
+        count++;
       }
     }
   }
@@ -323,7 +332,8 @@ void GenerateReports()
 
   reports = new ReportsText();
   reportList.push_back(reports);
-
+  reports = new ReportsHtml();
+  reportList.push_back(reports);
 
   for (ritr = reportList.begin(); ritr != reportList.end(); ritr++ ) {
     reports = *ritr;

@@ -31,7 +31,7 @@ void ReportsText::PutAnnotatedLine(
 }
 
 bool ReportsText::PutNoBranchInfo(
-  FILE* report
+  FILE*           report
 )
 {
   fprintf( report, "No branch information found\n" );
@@ -41,6 +41,7 @@ bool ReportsText::PutNoBranchInfo(
 
 bool ReportsText::PutBranchEntry(
   FILE*   report,
+  unsigned int                                     number,
   Coverage::DesiredSymbols::symbolSet_t::iterator  symbolPtr,
   Coverage::CoverageRanges::ranges_t::iterator     rangePtr
 )
@@ -109,8 +110,9 @@ bool ReportsText::PutBranchEntry(
 }
 
 void ReportsText::putCoverageNoRange(
-  FILE*       report,
-  std::string symbol
+  FILE*         report,
+  unsigned int  number,
+  std::string   symbol
 )
 {
       fprintf(
@@ -129,6 +131,7 @@ void ReportsText::putCoverageNoRange(
 
 bool ReportsText::PutCoverageLine(
   FILE*                                       report,
+  unsigned int                                     number,
   Coverage::DesiredSymbols::symbolSet_t::iterator ditr,
   Coverage::CoverageRanges::ranges_t::iterator    ritr
 )
@@ -181,6 +184,7 @@ bool ReportsText::PutCoverageLine(
 
 bool  ReportsText::PutSizeLine(
   FILE*                                      report,
+  unsigned int                                     number,
   Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
   Coverage::CoverageRanges::ranges_t::iterator    range
 )
@@ -194,5 +198,7 @@ bool  ReportsText::PutSizeLine(
   );
   return true;
 }
+
+
 
 }

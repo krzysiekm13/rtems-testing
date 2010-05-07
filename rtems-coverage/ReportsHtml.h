@@ -10,19 +10,19 @@
  *  the analysis results.
  */
 
-#ifndef __REPORTSTEXT_H__
-#define __REPORTSTEXT_H__
+#ifndef __REPORTSHTML_H__
+#define __REPORTSHTML_H__
 
 #include <stdint.h>
 #include "ReportsBase.h"
 
 namespace Coverage {
 
-class ReportsText: public ReportsBase {
+class ReportsHtml: public ReportsBase {
 
   public:
-    ReportsText();
-   ~ReportsText();
+    ReportsHtml();
+   ~ReportsHtml();
 
   /*!
    *  This method produces a report that contains information about each
@@ -55,6 +55,36 @@ class ReportsText: public ReportsBase {
   );
 
   protected:
+
+    AnnotatedLineState_t lastState_m;
+
+    virtual FILE* OpenBranchFile(
+      const char* const fileName
+    );
+
+    virtual FILE* OpenCoverageFile(
+      const char* const fileName
+    );
+
+    virtual FILE* OpenSizeFile(
+      const char* const fileName
+    );
+
+    virtual void CloseAnnotatedFile(
+      FILE*  aFile
+    );
+
+    virtual void CloseBranchFile(
+      FILE*  aFile
+    );
+
+    virtual void CloseCoverageFile(
+      FILE*  aFile
+    );
+
+    virtual void CloseSizeFile(
+      FILE*  aFile
+    );
 
     virtual void PutAnnotatedLine( 
       FILE*                aFile, 
@@ -93,7 +123,9 @@ class ReportsText: public ReportsBase {
       Coverage::CoverageRanges::ranges_t::iterator    range
     );
 
-
+    virtual FILE* OpenFile(
+      const char* const fileName
+    );
 
 };
 

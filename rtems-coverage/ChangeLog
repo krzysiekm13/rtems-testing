@@ -1,3 +1,9 @@
+2010-05-07	Jennifer Averett <Jennifer.Averett>
+
+	* Makefile, ReportsBase.cc, ReportsBase.h, ReportsText.cc,
+	ReportsText.h: Added HTML reports.
+	* ReportsHtml.cc, ReportsHtml.h, covoar.css: New files.
+
 2010-05-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile: Account for file rename.
