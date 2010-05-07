@@ -344,7 +344,7 @@ void GenerateReports()
     reportName = "branch" + reports->ReportExtension();
     reports->WriteBranchReport(reportName.c_str() );
 
-    reportName = "coverage" + reports->ReportExtension();
+    reportName = "uncovered" + reports->ReportExtension();
     reports->WriteCoverageReport(reportName.c_str() );
 
     reportName = "sizes" + reports->ReportExtension();
