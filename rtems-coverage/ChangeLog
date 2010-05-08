@@ -1,3 +1,8 @@
+2010-05-08	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* do_coverage: Add ON_SIMULATOR for lm32_evr. Copy all .txt and .html
+	files into tarball.
+
 2010-05-07	Glenn Humphrey
 
 	* CoverageReaderQEMU.cc, CoverageReaderRTEMS.cc,
