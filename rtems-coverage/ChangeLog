@@ -1,3 +1,7 @@
+2010-05-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* TargetBase.cc: Not a fatal error to not find instruction.
+
 2010-05-08	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* do_coverage: Add ON_SIMULATOR for lm32_evr. Copy all .txt and .html

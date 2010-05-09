@@ -30,6 +30,8 @@ namespace Target {
       const char* const instruction
   )
   {
+    std::list <std::string>::iterator i;
+
     if (branchInstructions.empty()) {
       fprintf( 
         stderr,
@@ -38,13 +40,10 @@ namespace Target {
        exit( -1 );    
     }
     
-    if ( find(
-           branchInstructions.begin(), 
-           branchInstructions.end(), 
-           instruction 
-        ) == branchInstructions.end()
-    )
+    i = find(branchInstructions.begin(), branchInstructions.end(), instruction);
+    if ( i  == branchInstructions.end() )
       return false;
+
     return true;
   }
 
@@ -52,6 +51,7 @@ namespace Target {
     const char* const line
   )
   {
+    #define METHOD "ERROR: TargetBase::isBranchLine - "
     const char *ch;
     char instruction[120];
     int  result;
@@ -66,9 +66,10 @@ namespace Target {
     if (*ch != '\t') {
       fprintf( 
         stderr,
-        "ERROR: TargetBase::isBranchLine - Unable to find instruction\n"
+        METHOD "(1) Unable to find instruction in: %s\n",
+        line
       );
-      exit( -1 );    
+      return false;
     }
     ch++;
 
@@ -78,20 +79,23 @@ namespace Target {
     if (*ch != '\t') {
       fprintf( 
         stderr,
-        "ERROR: TargetBase::isBranchLine - Unable to find instruction\n"
+        METHOD "(2) Unable to find instruction in %s\n", 
+        line
       );
-      exit( -1 );    
+      return false;
     }
     ch++;
 
-    // Grab the instruction which is the next word in the buffer after the second tab.
+    // Grab the instruction which is the next word in the buffer
+    // after the second tab.
     result = sscanf( ch, "%s", instruction );
     if (result != 1) {
         fprintf(
           stderr,
-          "ERROR: TargetBase::isBranchLine - Unable to find instruction\n"
+          METHOD "(3) Unable to find instruction in %s\n",
+          line 
         );
-        exit( -1 );
+        return false;
     }
 
     return isBranch( instruction );
