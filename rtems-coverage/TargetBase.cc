@@ -51,7 +51,9 @@ namespace Target {
     const char* const line
   )
   {
-    #define METHOD "ERROR: TargetBase::isBranchLine - "
+    #define WARNING \
+        "WARNING: TargetBase::isBranchLine - (%d) " \
+        "Unable to find instruction in: %s\n"
     const char *ch;
     char instruction[120];
     int  result;
@@ -64,11 +66,7 @@ namespace Target {
       ch++;
     }
     if (*ch != '\t') {
-      fprintf( 
-        stderr,
-        METHOD "(1) Unable to find instruction in: %s\n",
-        line
-      );
+      fprintf( stderr, WARNING, 1, line );
       return false;
     }
     ch++;
@@ -77,11 +75,7 @@ namespace Target {
     while ((*ch != '\t') && (*ch != '\0')) 
       ch++;
     if (*ch != '\t') {
-      fprintf( 
-        stderr,
-        METHOD "(2) Unable to find instruction in %s\n", 
-        line
-      );
+      fprintf( stderr, WARNING, 2, line) ;
       return false;
     }
     ch++;
@@ -90,11 +84,7 @@ namespace Target {
     // after the second tab.
     result = sscanf( ch, "%s", instruction );
     if (result != 1) {
-        fprintf(
-          stderr,
-          METHOD "(3) Unable to find instruction in %s\n",
-          line 
-        );
+        fprintf( stderr, WARNING, 3, line );
         return false;
     }
 

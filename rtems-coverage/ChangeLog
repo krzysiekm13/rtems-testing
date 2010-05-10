@@ -1,3 +1,7 @@
+2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* TargetBase.cc: Really a warning since returns false.
+
 2010-05-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* TargetBase.cc: Not a fatal error to not find instruction.
