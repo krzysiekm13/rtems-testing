@@ -71,7 +71,7 @@ if [ ! -d ${1} ] ; then
 fi
 
 
-print_doc_top()
+print_index()
 {
 cat <<EOF
 <HTML>
@@ -94,18 +94,17 @@ echo ${RTEMS_VERSION}" Coverage Results</div>"
 echo "<div class=\"datetime\">"`date`"</div>"
 
 cat << EOF
-<div class="info">For more information on coverage analysis in general visit
-<a href="http://www.rtems.org/wiki/index.php/Coverage_Analysis_Theory">
-Coverage Analysis Theory</a>.  For information on how the RTEMS Project
-views coverage analysis, visit
-<a href="http://www.rtems.org/wiki/index.php/RTEMS_Coverage_Analysis">
-RTEMS Coverage Testing</a>.
-</div>
 </div>
 </HEAD>
 <body>
 <br>
-<br>
+<p class="body">For more information on coverage analysis in general visit
+<a href="http://www.rtems.org/wiki/index.php/Coverage_Analysis_Theory">
+Coverage Analysis Theory</a>.</p>
+<p class="body">For information on how the RTEMS Project
+views coverage analysis, visit
+<a href="http://www.rtems.org/wiki/index.php/RTEMS_Coverage_Analysis">
+RTEMS Coverage Testing</a>.</p>
 <strong>BSPs with Coverage Results</strong>
 <ul>
 EOF
@@ -113,11 +112,37 @@ for bsp in $BSPs
 do
   cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
 	sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
-  echo "<li><a href=\"#${bsp}\">${cpu}/${bsp}</li>"
+  echo "<li><a href=\"${bsp}.html\">${cpu}/${bsp}</li>"
 done
 cat <<EOF
 </ul>
-<br>
+EOF
+}
+
+print_doc_top()
+{
+cat <<EOF
+<HTML>
+<HEAD>
+<TITLE>RTEMS 
+EOF
+
+echo "${RTEMS_VERSION} Coverage Reports for ${1} </TITLE>"
+cat <<EOF
+<meta http-equiv="Content-Language" content="English" />
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+<link rel="stylesheet" type="text/css" href="rtems/style.css" media="screen" />
+<div class="heading">
+<div class="heading-title">RTEMS
+EOF
+
+echo ${RTEMS_VERSION}" Coverage Results for ${1}</div>"
+echo "<div class=\"datetime\">"`date`"</div>"
+
+cat << EOF
+</div>
+</HEAD>
+<body>
 <br>
 <table class="stats-table" $cellspacing="1" cellpadding="2">
 EOF
@@ -138,42 +163,51 @@ print_heading()
 
 doit()
 {
-  print_doc_top
+  BSP=${1}
+  cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
+        sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
 
-  # now cat rows
-  for bsp in ${BSPs} 
+  print_doc_top ${cpu}/${BSP}
+
+  echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
+  # echo "<tr class=\"stats-table-target\">"
+  # echo "<td colspan=\"10\">"
+  # echo "<strong>${cpu}/${bsp}</strong>"
+  # echo "</td>"
+  # echo "</tr>"
+  echo "<tr class=\"stats-table-top\">"
+  ### generate header
+  print_heading Day
+  print_heading Time
+  print_heading Optimization
+  print_heading POSIX Enabled
+  print_heading Developmental Enabled
+  print_heading Uncovered Ranges
+  # skip Uncovered Percentage
+  print_heading Covered Percentage
+  print_heading Uncovered Bytes
+  print_heading Total Bytes
+  print_heading Results
+
+  #cat ${bsp}-*-*-*/row.html | sed -e 's/<TD>/<TD><CENTER>/g' \
+  #   -e 's/<\/TD>/<\/CENTER><\/TD>/g'
+
+  # 1   2      3      4
+  #bsp-opt-yyyymmdd-hhmm.tar.bz2
+  # sort 1,2 alphabetically, sort 3,4 reverse "version"
+  first="yes"
+  for build in O2pd O2pD O2Pd O2PD Ospd OspD OsPd OsPD
   do
-    cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
-          sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
-    echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
-    echo "<tr class=\"stats-table-target\">"
-    echo "<a name=\"${bsp}\">"
-    echo "<td colspan=\"10\"> "
-    echo "<strong>${cpu}/${bsp}</strong>"
-    echo "</td>"
-    echo "</a>"
-    echo "</tr>"
-    echo "<tr class=\"stats-table-top\">"
-    ### generate header
-    print_heading Day
-    print_heading Time
-    print_heading Optimization
-    print_heading POSIX Enabled
-    print_heading Developmental Enabled
-    print_heading Uncovered Ranges
-    # skip Uncovered Percentage
-    print_heading Covered Percentage
-    print_heading Uncovered Bytes
-    print_heading Total Bytes
-    print_heading Results
-
-    #cat ${bsp}-*-*-*/row.html | sed -e 's/<TD>/<TD><CENTER>/g' \
-    #   -e 's/<\/TD>/<\/CENTER><\/TD>/g'
-
-    # 1   2      3      4
-    #bsp-opt-yyyymmdd-hhmm.tar.bz2
-    # sort 1,2 alphabetically, sort 3,4 reverse "version"
-    ls -1 ${bsp}-*-*-*/row.html | sort -t -  -k 1,2 -k 3,4Vr | while read row
+    if [ ${first} = "no" ] ; then
+      echo "<tr class=\"stats-table-target\">"
+      echo "<td colspan=\"10\">"
+      echo "<strong></br></strong>"
+      echo "</td>"
+      echo "</tr>"
+    fi
+    first=no
+    ls -1 ${bsp}-${build}-*-*/row.html | sort -t -  -k 1,2 -k 3,4Vr | \
+    while read row
     do
      sed \
       -e '2,2s/<TD>\(20[0-9][0-9]\)\([0-1][0-9]\)\([0-9][0-9]\)/<TD>\1-\2-\3/' \
@@ -245,5 +279,12 @@ BSPs=`genBSPList`
 # Let them grow for a while
 # cleanup
 
-doit >index.html
+print_index >index.html
+
+# now generate a page per BSP
+for bsp in ${BSPs} 
+do
+  doit ${bsp} >${bsp}.html
+done
+
 exit 0

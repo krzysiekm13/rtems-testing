@@ -1,5 +1,9 @@
 2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* generate_coverage_html: Generate separate html files for each BSP.
+
+2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* do_coverage: Initial output directory support.
 
 2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
