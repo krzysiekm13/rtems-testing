@@ -148,7 +148,11 @@ void ReportsHtml::PutAnnotatedLine(
 )
 {
   std::string stateText;
+  char        number[10];
+
   
+  sprintf(number,"%d", id);
+
   // Set the stateText based upon the current state.
   switch (state) {
     case  A_SOURCE:
@@ -159,20 +163,20 @@ void ReportsHtml::PutAnnotatedLine(
       break;
     case  A_NEVER_EXECUTED:
       stateText = "</pre>\n";
-      stateText += "<a name=\"notExecuted";
-      stateText += ('0' + id);
+      stateText += "<a name=\"range";
+      stateText += number;
       stateText += "\"></a><pre class=\"codeNotExecuted\">\n";
       break;
     case  A_BRANCH_TAKEN:
       stateText = "</pre>\n";
-      stateText += "<a name=\"branches";
-      stateText += ('0' + id);
+      stateText += "<a name=\"range";
+      stateText += number;
       stateText += "\"></a><pre class=\"codeAlwaysTaken\">\n";
       break;
     case  A_BRANCH_NOT_TAKEN:
       stateText = "</pre>\n";
-      stateText += "<a name=\"branches";
-      stateText += ('0' + id);
+      stateText += "<a name=\"range";
+      stateText += number;
       stateText += "\"></a><pre class=\"codeNeverTaken\">\n";
       break;
     default:
@@ -230,7 +234,7 @@ bool ReportsHtml::PutBranchEntry(
   // index
   fprintf( 
     report, 
-    "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#branches%d\">%d</td>\n",
+    "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%d</td>\n",
      rangePtr->id,
      rangePtr->id
    );
@@ -397,7 +401,7 @@ bool ReportsHtml::PutCoverageLine(
   // index
   fprintf( 
     report, 
-    "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#notExecuted%d\">%d</td>\n",
+    "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%d</td>\n",
      rangePtr->id,
      rangePtr->id
    );

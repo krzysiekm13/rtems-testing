@@ -89,10 +89,6 @@ namespace Coverage {
  
     protected:
 
-      /*!
-       *  This member variable tracks a unique index for the ranges_t block.
-       */
-      uint32_t  id_m;
 
   };
 

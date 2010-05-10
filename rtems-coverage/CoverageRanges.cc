@@ -14,9 +14,13 @@
 
 namespace Coverage {
 
+  /*!
+   *  This member variable tracks a unique index for the ranges_t block.
+   */
+  uint32_t  id_m = 0;
+
   CoverageRanges::CoverageRanges()
   {
-    id_m = 0;
   }
 
   CoverageRanges::~CoverageRanges()
