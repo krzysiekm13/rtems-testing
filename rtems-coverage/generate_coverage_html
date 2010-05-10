@@ -151,7 +151,6 @@ EOF
 print_doc_bottom()
 {
 cat <<EOF
-</table>
 </body>
 EOF
 }
@@ -169,25 +168,19 @@ doit()
 
   print_doc_top ${cpu}/${BSP}
 
-  echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
-  # echo "<tr class=\"stats-table-target\">"
-  # echo "<td colspan=\"10\">"
-  # echo "<strong>${cpu}/${bsp}</strong>"
-  # echo "</td>"
-  # echo "</tr>"
-  echo "<tr class=\"stats-table-top\">"
-  ### generate header
-  print_heading Day
-  print_heading Time
-  print_heading Optimization
-  print_heading POSIX Enabled
-  print_heading Developmental Enabled
-  print_heading Uncovered Ranges
-  # skip Uncovered Percentage
-  print_heading Covered Percentage
-  print_heading Uncovered Bytes
-  print_heading Total Bytes
-  print_heading Results
+  cat <<EOF
+<ul>
+<li><a href="#O2pd">Results for-O2, POSIX Disabled, Core Only</a></li>
+<li><a href="#O2pD">Results for-O2, POSIX Disabled, Developmental</a></li>
+<li><a href="#O2Pd">Results for-O2, POSIX Enabled, Core Only</a></li>
+<li><a href="#O2PD">Results for-O2, POSIX Enabled, Developmental</a></li>
+<li><a href="#Ospd">Results for-Os, POSIX Disabled, Core Only</a></li>
+<li><a href="#OspD">Results for-Os, POSIX Disabled, Developmental</a></li>
+<li><a href="#OsPd">Results for-Os, POSIX Enabled, Core Only</a></li>
+<li><a href="#OsPD">Results for-Os, POSIX Enabled, Developmental</a></li>
+</ul>
+</br>
+EOF
 
   #cat ${bsp}-*-*-*/row.html | sed -e 's/<TD>/<TD><CENTER>/g' \
   #   -e 's/<\/TD>/<\/CENTER><\/TD>/g'
@@ -198,13 +191,27 @@ doit()
   first="yes"
   for build in O2pd O2pD O2Pd O2PD Ospd OspD OsPd OsPD
   do
-    if [ ${first} = "no" ] ; then
-      echo "<tr class=\"stats-table-target\">"
-      echo "<td colspan=\"10\">"
-      echo "<strong></br></strong>"
-      echo "</td>"
-      echo "</tr>"
-    fi
+    echo "<a name=\"${build}\"></a>"
+    echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
+    echo "<tr class=\"stats-table-target\">"
+    echo "<td colspan=\"10\">"
+    echo "<strong>${cpu}/${bsp} (${build})</strong>"
+    echo "</td>"
+    echo "</tr>"
+    echo "<tr class=\"stats-table-top\">"
+    ### generate header
+    print_heading Day
+    print_heading Time
+    print_heading Optimization
+    print_heading POSIX Enabled
+    print_heading Developmental Enabled
+    print_heading Uncovered Ranges
+    # skip Uncovered Percentage
+    print_heading Covered Percentage
+    print_heading Uncovered Bytes
+    print_heading Total Bytes
+    print_heading Results
+
     first=no
     ls -1 ${bsp}-${build}-*-*/row.html | sort -t -  -k 1,2 -k 3,4Vr | \
     while read row
@@ -219,6 +226,8 @@ doit()
       -e '8d' \
       <$row
     done
+    echo "</table>"
+    echo "</br>"
   done
   print_doc_bottom
 }

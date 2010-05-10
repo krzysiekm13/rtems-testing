@@ -1,5 +1,10 @@
 2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* generate_coverage_html: Individual tables per configuration. List of
+	links to individual tables.
+
+2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* generate_coverage_html: Generate separate html files for each BSP.
 
 2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
