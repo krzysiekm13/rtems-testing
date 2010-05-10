@@ -24,7 +24,7 @@ runARGS()
      COVERAGE_ARG="-trace ${1}.tra"
   fi
 
-  echo "-M lm32-evr -nographic ${COVERAGE_ARG} -kernel ${1}"
+  echo "-M lm32-evr -nographic ${COVERAGE_ARG} -global lm32,sys.enabled=1 -kernel ${1}"
 }
 
 checkBSPFaults()
@@ -39,7 +39,8 @@ bspLimit()
     *stackchk*)limit=5 ;;
     *fatal*)   limit=1 ;;
     *minimum*) limit=1 ;;
-    *psxtime*) limit=270 ;;
+    *sp20*)    limit=180 ;;  # 2 min 32 seconds on Joel's laptop
+    *psxtime*) limit=390 ;;  # 6 min  2 seconds on Joel's laptop
     *)         limit=60 ;;
   esac
   echo ${limit}

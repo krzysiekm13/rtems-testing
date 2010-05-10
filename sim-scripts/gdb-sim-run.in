@@ -320,8 +320,8 @@ runtest()
   do
     # sleep 10ms at a time waiting for job to finish or timer to expire
     # if job has exited, then we exit, too.
-    usleep 25000  # twenty five milliseconds
-    milliseconds=`expr ${milliseconds} + 25`
+    usleep 50000  # fifty milliseconds
+    milliseconds=`expr ${milliseconds} + 50`
     kill -0 $pid 2> /dev/null
     running=$?
     if [ $running -eq 0 ] ; then

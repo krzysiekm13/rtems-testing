@@ -1,3 +1,9 @@
+2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* gdb-sim-run.in: Use 50 millisecond per period.
+	* pc386.in: Switch from 486 to qemu32 CPU model.
+	* qemu-lm32_evr.in: Increase time limits on some tests.
+
 2010-04-20	Joel Sherrill <joel.sherrilL@oarcorp.com>
 
 	* .cvsignore, Makefile, bf537Stamp.in, ezkit533.in: Move current
