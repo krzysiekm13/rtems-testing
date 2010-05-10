@@ -1,5 +1,9 @@
 2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* do_coverage: Initial output directory support.
+
+2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* app_common.h, covoar.cc: Add output directory option.
 
 2010-05-10	Jennifer Averett <Jennifer.Averett@OARcorp.com>

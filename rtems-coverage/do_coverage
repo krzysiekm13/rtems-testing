@@ -332,7 +332,12 @@ generate_reports()
     echo "POSIX Enabled      : " ${do_posix} ; \
     echo "Developmental Code : " ${do_developmental} ; \
   ) >summary.txt
+  rm -rf ${results_dir}
+  # XXX temporary until output directory really supported
+  mkdir ${results_dir}
+  # XXX end of temporary
   ${COVBASE}/covoar \
+    -O ${results_dir} \
     -T ${TARGET} \
     -f ${COVERAGE_FORMAT} \
     -s rtems.syms \
@@ -352,13 +357,18 @@ generate_reports()
   cat summary.txt
 
   # Now create the archive of information
-  rm -rf ${results_dir}
-  mkdir ${results_dir}
+
+  # XXX temporary until output directory really supported
   cp *.txt *.html ${results_dir}
-  cp ${COVBASE}/Explanations.txt.NotFound ${COVBASE}/covoar.css ${results_dir}
+  # XXX end of temporary
+
+  # XXX temporary until generated into output directory
+  cp ${COVBASE}/Explanations.txt.NotFound ${results_dir}
+  # XXX end of temporary
+
+  cp ${COVBASE}/covoar.css ${results_dir}
   echo "Results saved in ${results_dir}.tar.bz2"
   tar cjf ${results_dir}.tar.bz2 ${results_dir}
-  rm -rf ${results_dir}
 }
 
 # This grabs the list of methods from a library or object file
