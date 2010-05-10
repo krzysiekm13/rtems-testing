@@ -16,6 +16,7 @@ extern Coverage::ObjdumpProcessor*  objdumpProcessor;
 extern Coverage::DesiredSymbols*    SymbolsToAnalyze;
 extern Coverage::Toolnames*         Tools;
 extern bool                         Verbose;
+extern const char*                  outputDirectory;
 
 bool FileIsNewer( const char *f1, const char *f2 ); 
 bool ReadUntilFound( FILE *file, const char *line );

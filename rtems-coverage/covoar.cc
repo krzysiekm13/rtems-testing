@@ -43,7 +43,7 @@ bool                                 singleExecutable = false;
 const char*                          symbolsFile = NULL;
 const char*                          target = NULL;
 const char*                          format = NULL;
-
+const char*                          outputDirectory = ".";
 
 /*
  *  Print program usage message
@@ -66,6 +66,7 @@ void usage()
     "  -e EXE_EXTENSION          - extension of the executables to analyze\n"
     "  -c COVERAGEFILE_EXTENSION - extension of the coverage files to analyze\n"
     "  -C ConfigurationFileName  - name of configuration file\n"
+    "  -O Output_Directory       - name of output directory (default=."
     "\n",
     progname,
     progname
@@ -116,10 +117,11 @@ void check_configuration(void)
 {
   GET_BOOL( "verbose", Verbose );
 
-  GET_STRING( "format",       format );
-  GET_STRING( "target",       target );
-  GET_STRING( "explanations", explanations );
-  GET_STRING( "symbolsFile",  symbolsFile );
+  GET_STRING( "format",           format );
+  GET_STRING( "target",           target );
+  GET_STRING( "explanations",     explanations );
+  GET_STRING( "symbolsFile",      symbolsFile );
+  GET_STRING( "outputDirectory",  outputDirectory );
 
   // Now calculate some values
   if ( coverageFileExtension )
@@ -151,7 +153,7 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "1:e:c:E:f:s:T:vC:")) != -1) {
+  while ((opt = getopt(argc, argv, "1:e:c:E:f:s:T:vC:O:")) != -1) {
     switch (opt) {
       case '1':
         singleExecutable = true;
@@ -172,6 +174,7 @@ int main(
       case 'T': target                = optarg;  break;
       case 'v': Verbose               = true;    break;
       case 'f': format                = optarg;  break;
+      case 'O': outputDirectory       = optarg;  break;
       default: /* '?' */
         usage();
         exit( -1 );
