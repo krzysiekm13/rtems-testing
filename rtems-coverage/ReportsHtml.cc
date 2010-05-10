@@ -67,6 +67,7 @@ FILE* ReportsHtml::OpenBranchFile(
   fprintf( aFile, "<table class=\"covoar-table\">\n");
   fprintf( aFile, "<tbody class=\"covoar-tbody\">\n");
   fprintf( aFile, "<tr class=\"covoar-tr covoar-tr-first\">\n");
+  fprintf( aFile, "<th class=\"covoar-th\">Index</th>\n");
   fprintf( aFile, "<th class=\"covoar-th\">Symbol</th>\n");
   fprintf( aFile, "<th class=\"covoar-th\">Line</th>\n");
   fprintf( aFile, "<th class=\"covoar-th\">Size</th>\n");
@@ -103,6 +104,7 @@ FILE*  ReportsHtml::OpenCoverageFile(
   fprintf( aFile, "<table class=\"covoar-table\">\n");
   fprintf( aFile, "<tbody class=\"covoar-tbody\">\n");
   fprintf( aFile, "<tr class=\"covoar-tr covoar-tr-first\">\n");
+  fprintf( aFile, "<th class=\"covoar-th\">Index</th>\n");
   fprintf( aFile, "<th class=\"covoar-th\">Symbol</th>\n");
   fprintf( aFile, "<th class=\"covoar-th\">Range</th>\n");
   fprintf( aFile, "<th class=\"covoar-th\">Size</br>Bytes</th>\n");
@@ -141,7 +143,8 @@ FILE*  ReportsHtml::OpenSizeFile(
 void ReportsHtml::PutAnnotatedLine( 
   FILE*                aFile, 
   AnnotatedLineState_t state, 
-  std::string          line 
+  std::string          line, 
+  uint32_t             id 
 )
 {
   std::string stateText;
@@ -155,13 +158,22 @@ void ReportsHtml::PutAnnotatedLine(
       stateText = "</pre>\n<pre class=\"codeExecuted\">\n";
       break;
     case  A_NEVER_EXECUTED:
-      stateText = "</pre>\n<pre class=\"codeNotExecuted\">\n";
+      stateText = "</pre>\n";
+      stateText += "<a name=\"notExecuted";
+      stateText += ('0' + id);
+      stateText += "\"></a><pre class=\"codeNotExecuted\">\n";
       break;
     case  A_BRANCH_TAKEN:
-      stateText = "</pre>\n<pre class=\"codeAlwaysTaken\">\n";
+      stateText = "</pre>\n";
+      stateText += "<a name=\"branches";
+      stateText += ('0' + id);
+      stateText += "\"></a><pre class=\"codeAlwaysTaken\">\n";
       break;
     case  A_BRANCH_NOT_TAKEN:
-      stateText = "</pre>\n<pre class=\"codeNeverTaken\">\n";
+      stateText = "</pre>\n";
+      stateText += "<a name=\"branches";
+      stateText += ('0' + id);
+      stateText += "\"></a><pre class=\"codeNeverTaken\">\n";
       break;
     default:
       fprintf(stderr, "ERROR:  ReportsHtml::PutAnnotatedLine Unknown state\n");
@@ -214,6 +226,14 @@ bool ReportsHtml::PutBranchEntry(
     fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
   else
     fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+
+  // index
+  fprintf( 
+    report, 
+    "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#branches%d\">%d</td>\n",
+     rangePtr->id,
+     rangePtr->id
+   );
 
   // symbol
   fprintf( 
@@ -309,6 +329,12 @@ void ReportsHtml::putCoverageNoRange(
   else
     fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
 
+  // index
+  fprintf( 
+    report, 
+    "<td class=\"covoar-td\" align=\"center\"></td>\n"
+   );
+
   // symbol
   fprintf( 
     report, 
@@ -367,6 +393,14 @@ bool ReportsHtml::PutCoverageLine(
     fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
   else
     fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+
+  // index
+  fprintf( 
+    report, 
+    "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#notExecuted%d\">%d</td>\n",
+     rangePtr->id,
+     rangePtr->id
+   );
 
   // symbol
   fprintf( 

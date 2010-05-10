@@ -10,11 +10,13 @@
  */
 
 #include "CoverageRanges.h"
+#include <stdio.h>
 
 namespace Coverage {
 
   CoverageRanges::CoverageRanges()
   {
+    id_m = 0;
   }
 
   CoverageRanges::~CoverageRanges()
@@ -29,9 +31,29 @@ namespace Coverage {
   {
     coverageRange_t c;
 
+    id_m++;
+    c.id          = id_m;
     c.lowAddress  = lowAddressArg;
     c.highAddress = highAddressArg;
     c.reason      = why;
     set.push_back(c);
   }
+
+  uint32_t  CoverageRanges::getId( uint32_t lowAddress )
+  {
+    Coverage::CoverageRanges::ranges_t::iterator    ritr;
+    uint32_t                                        result = 0;
+
+    for (ritr =  set.begin() ;
+         ritr != set.end() ;
+         ritr++ ) {
+      if ( ritr->lowAddress == lowAddress ) {
+        result = ritr->id;
+        break;
+      }
+    }
+
+    return result;
+  }
+
 }

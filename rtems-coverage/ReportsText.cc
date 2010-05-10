@@ -24,7 +24,8 @@ ReportsText::ReportsText():
 void ReportsText::PutAnnotatedLine( 
   FILE*                aFile, 
   AnnotatedLineState_t state, 
-  std::string          line 
+  std::string          line, 
+  uint32_t             id 
 )
 {
   fprintf( aFile, "%s\n", line.c_str());
@@ -141,10 +142,12 @@ bool ReportsText::PutCoverageLine(
   fprintf(
     report,
     "============================================\n"
+    "Index         : %d\n"
     "Symbol        : %s (0x%x)\n"
     "Starting Line : %s (0x%x)\n"
     "Ending Line   : %s (0x%x)\n"
     "Size in Bytes : %d\n\n",
+    ritr->id,
     ditr->first.c_str(),
     ditr->second.baseAddress,
     ritr->lowSourceLine.c_str(),

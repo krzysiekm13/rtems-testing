@@ -202,7 +202,8 @@ class ReportsBase {
     virtual void PutAnnotatedLine( 
       FILE*                aFile, 
       AnnotatedLineState_t state, 
-      std::string          line 
+      std::string          line,
+      uint32_t             id 
     )=0;
 
   /*!

@@ -59,7 +59,8 @@ class ReportsText: public ReportsBase {
     virtual void PutAnnotatedLine( 
       FILE*                aFile, 
       AnnotatedLineState_t state, 
-      std::string          line 
+      std::string          line, 
+      uint32_t             id 
     );
 
     virtual bool PutNoBranchInfo(

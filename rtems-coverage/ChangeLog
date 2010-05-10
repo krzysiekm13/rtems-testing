@@ -1,3 +1,10 @@
+2010-05-10	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* CoverageRanges.cc, CoverageRanges.h, ReportsBase.cc, ReportsBase.h,
+	ReportsHtml.cc, ReportsHtml.h, ReportsText.cc, ReportsText.h: Added
+	anchors and links between branch-annotated and uncovered-annotated
+	reports.
+
 2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* TargetBase.cc: Really a warning since returns false.

@@ -115,13 +115,15 @@ void  ReportsBase::CloseSizeFile(
 void ReportsBase::WriteAnnotatedReport(
   const char* const fileName
 ) {
-  FILE*                                           aFile = NULL;
-  Coverage::DesiredSymbols::symbolSet_t::iterator ditr;
-  std::list<Coverage::ObjdumpProcessor::objdumpLine_t>* theInstructions;
+  FILE*                                                          aFile = NULL;
+  Coverage::DesiredSymbols::symbolSet_t::iterator                ditr;
+  Coverage::CoverageRanges*                                      theBranches;
+  Coverage::CoverageRanges*                                      theRanges;
+  Coverage::CoverageMapBase*                                     theCoverageMap = NULL;
+  uint32_t                                                       bAddress = 0;
+  AnnotatedLineState_t                                           state;
+  std::list<Coverage::ObjdumpProcessor::objdumpLine_t>*          theInstructions;
   std::list<Coverage::ObjdumpProcessor::objdumpLine_t>::iterator itr;
-  Coverage::CoverageMapBase*                      theCoverageMap = NULL;
-  uint32_t                                        bAddress = 0;
-  AnnotatedLineState_t                            state;
 
   aFile = OpenAnnotatedFile(fileName);
   if (!aFile)
@@ -147,12 +149,15 @@ void ReportsBase::WriteAnnotatedReport(
     theCoverageMap = ditr->second.unifiedCoverageMap;
     bAddress = ditr->second.baseAddress;
     theInstructions = &(ditr->second.instructions);
+    theRanges = ditr->second.uncoveredRanges;
+    theBranches = ditr->second.uncoveredBranches;
 
     // Add annotations to each line where necessary
     for (itr = theInstructions->begin();
          itr != theInstructions->end();
          itr++ ) {
 
+      uint32_t     id = 0;
       std::string  annotation = "";
       std::string  line;
       char         textLine[100];
@@ -161,9 +166,11 @@ void ReportsBase::WriteAnnotatedReport(
 
       if ( itr->isInstruction ) {
         if (!theCoverageMap->wasExecuted( itr->address - bAddress )){
-          annotation = "<== NOT EXECUTED";
+          annotation = "<== NOT EXECUTED";           
           state = A_NEVER_EXECUTED;
+          id = theRanges->getId( itr->address );
         } else if (theCoverageMap->isBranch( itr->address - bAddress )) {
+          id = theBranches->getId( itr->address );
           if (theCoverageMap->wasAlwaysTaken( itr->address - bAddress )){
             annotation = "<== ALWAYS TAKEN";
             state = A_BRANCH_TAKEN;
@@ -179,7 +186,7 @@ void ReportsBase::WriteAnnotatedReport(
       sprintf( textLine, "%-70s", itr->line.c_str() );
       line = textLine + annotation;
       
-      PutAnnotatedLine( aFile, state, line); 
+      PutAnnotatedLine( aFile, state, line, id); 
     }
   }
 

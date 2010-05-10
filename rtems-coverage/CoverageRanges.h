@@ -42,6 +42,7 @@ namespace Coverage {
      *  This type defines the information kept for each range.
      */
     typedef struct {
+      uint32_t          id;
       uint32_t          lowAddress;
       std::string       lowSourceLine;
       uint32_t          highAddress;
@@ -78,6 +79,20 @@ namespace Coverage {
       uint32_t          highAddressArg,
       uncoveredReason_t why
     );
+ 
+
+    /*!
+     *  This method returns the index of a range given the low address.
+     *  Upon failure on finding the adress 0 is returned.
+     */
+    uint32_t getId( uint32_t lowAddress );
+ 
+    protected:
+
+      /*!
+       *  This member variable tracks a unique index for the ranges_t block.
+       */
+      uint32_t  id_m;
 
   };
 
