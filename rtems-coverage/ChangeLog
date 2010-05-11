@@ -1,3 +1,7 @@
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* ReportsBase.h: Spacing.
+
 2010-05-11	Glenn Humphrey
 
 	* ReportsBase.cc: Fixed buffer overflow problem.

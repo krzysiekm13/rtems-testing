@@ -86,119 +86,118 @@ class ReportsBase {
       A_NEVER_EXECUTED,
       A_BRANCH_TAKEN,
       A_BRANCH_NOT_TAKEN
-    }AnnotatedLineState_t;
+    } AnnotatedLineState_t;
 
     /*!
      *  This member variable contains the extension used for all reports.
      */
     std::string reportExtension_m;
 
-
-  /*!
-   *  This method Opens a report file and verifies that it opended
-   *  correctly.  Upon failure NULL is returned.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method Opens a report file and verifies that it opended
+     *  correctly.  Upon failure NULL is returned.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
      virtual FILE* OpenFile(
       const char* const fileName
     );
 
-  /*!
-   *  This method d Opens a report file and verifies that it opended.
-   *  Then appedns any necessary header information onto the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method d Opens a report file and verifies that it opended.
+     *  Then appedns any necessary header information onto the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual FILE* OpenAnnotatedFile(
       const char* const fileName
     );
 
-  /*!
-   *  This method d Opens a report file and verifies that it opended.
-   *  Then appedns any necessary header information onto the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method d Opens a report file and verifies that it opended.
+     *  Then appedns any necessary header information onto the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual FILE* OpenBranchFile(
       const char* const fileName
     );
 
-  /*!
-   *  This method d Opens a report file and verifies that it opended.
-   *  Then appedns any necessary header information onto the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method d Opens a report file and verifies that it opended.
+     *  Then appedns any necessary header information onto the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual FILE* OpenCoverageFile(
       const char* const fileName
     );
 
-  /*!
-   *  This method d Opens a report file and verifies that it opended.
-   *  Then appedns any necessary header information onto the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method d Opens a report file and verifies that it opended.
+     *  Then appedns any necessary header information onto the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual FILE* OpenSizeFile(
       const char* const fileName
     );
 
-  /*!
-   *  This method Closes a report file. 
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method Closes a report file. 
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     void CloseFile(
       FILE*  aFile
     );
 
-  /*!
-   *  This method puts any necessary footer information into
-   *  the report then closes the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts any necessary footer information into
+     *  the report then closes the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual void CloseAnnotatedFile(
       FILE*  aFile
     );
 
-  /*!
-   *  This method puts any necessary footer information into
-   *  the report then closes the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts any necessary footer information into
+     *  the report then closes the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual void CloseBranchFile(
       FILE*  aFile
     );
 
-  /*!
-   *  This method puts any necessary footer information into
-   *  the report then closes the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts any necessary footer information into
+     *  the report then closes the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual void CloseCoverageFile(
       FILE*  aFile
     );
 
-  /*!
-   *  This method puts any necessary footer information into
-   *  the report then closes the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts any necessary footer information into
+     *  the report then closes the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual void CloseSizeFile(
       FILE*  aFile
     );
 
-  /*!
-   *  This method puts any necessary footer information into
-   *  the report then closes the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts any necessary footer information into
+     *  the report then closes the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual void PutAnnotatedLine( 
       FILE*                aFile, 
       AnnotatedLineState_t state, 
@@ -206,21 +205,21 @@ class ReportsBase {
       uint32_t             id 
     )=0;
 
-  /*!
-   *  This method puts any necessary footer information into
-   *  the report then closes the file.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts any necessary footer information into
+     *  the report then closes the file.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual bool PutNoBranchInfo(
       FILE* report
     ) = 0;
 
-  /*!
-   *  This method puts a branch entry into the branch report. 
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts a branch entry into the branch report. 
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual bool PutBranchEntry(
       FILE*                                            report,
       unsigned int                                     number,
@@ -228,23 +227,23 @@ class ReportsBase {
       Coverage::CoverageRanges::ranges_t::iterator     rangePtr
     )=0;
 
-  /*!
-   *  This method reports when no range is available for 
-   *  a symbol in the coverage report.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method reports when no range is available for 
+     *  a symbol in the coverage report.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual void putCoverageNoRange(
       FILE*        report,
       unsigned int number,
       std::string  symbol
     )=0;
 
-  /*!
-   *  This method puts a line in the coverage report.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method puts a line in the coverage report.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual bool PutCoverageLine(
       FILE*                                           report,
       unsigned int                                    number,
@@ -252,11 +251,11 @@ class ReportsBase {
       Coverage::CoverageRanges::ranges_t::iterator    ritr
     )=0;
 
-  /*!
-   *  This method method puts a line into the size report.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
+    /*!
+     *  This method method puts a line into the size report.
+     *
+     *  @param[in] fileName identifies the size report file name
+     */
     virtual bool PutSizeLine(
       FILE*                                           report,
       unsigned int                                    number,
