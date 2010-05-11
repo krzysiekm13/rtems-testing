@@ -173,7 +173,7 @@ void ReportsBase::WriteAnnotatedReport(
       uint32_t     id = 0;
       std::string  annotation = "";
       std::string  line;
-      char         textLine[100];
+      char         textLine[150];
 
       state = A_SOURCE;
 
