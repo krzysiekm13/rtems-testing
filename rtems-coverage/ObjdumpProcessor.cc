@@ -35,9 +35,51 @@ namespace Coverage {
     SymbolInformation*               symbolInfo
   ) {
 
-    CoverageMapBase*                           aCoverageMap = NULL;
-    ObjdumpProcessor::objdumpLines_t::iterator itr;
-    SymbolTable*                               theSymbolTable;
+    CoverageMapBase*                                   aCoverageMap = NULL;
+    uint32_t                                           endAddress = highAddress;
+    ObjdumpProcessor::objdumpLines_t::iterator         itr, fnop, lnop;
+    ObjdumpProcessor::objdumpLines_t::reverse_iterator ritr;
+    SymbolTable*                                       theSymbolTable;
+
+    //
+    // Remove trailing nop instructions.
+    //
+
+    // First find the last instruction.
+    for (ritr = instructions.rbegin();
+         ritr != instructions.rend();
+         ritr++) {
+      if (ritr->isInstruction)
+        break;
+    }
+
+    // If an instruction was found and it is a nop, ...
+    if ((ritr != instructions.rend()) && (ritr->isNop)) {
+
+      // save it as the last nop.  Note that we must account for
+      // the difference between a forward and a reverse iterator.
+      lnop = ritr.base();
+      lnop--;
+      endAddress -= lnop->nopSize;
+
+      // Now look for the first nop in the sequence of trailing nops.
+      fnop = lnop;
+      ritr++;
+      for (; ritr != instructions.rend(); ritr++) {
+        if (ritr->isNop) {
+          fnop = ritr.base();
+          fnop--;
+          endAddress -= fnop->nopSize;
+        }
+        else
+          break;
+      }
+
+      // Erase trailing nops.  The erase operation wants the first
+      // parameter to point to the first item to erase and the second
+      // parameter to point to the item beyond the last item to erase.
+      instructions.erase( fnop, ++lnop );
+    }
 
     // If there are NOT already saved instructions, save them.
     if (symbolInfo->instructions.empty()) {
@@ -49,12 +91,12 @@ namespace Coverage {
     // Add the symbol to this executable's symbol table.
     theSymbolTable = executableInfo->getSymbolTable();
     theSymbolTable->addSymbol(
-      symbolName, lowAddress, highAddress - lowAddress + 1
+      symbolName, lowAddress, endAddress - lowAddress + 1
     );
 
     // Create a coverage map for the symbol.
     aCoverageMap = executableInfo->createCoverageMap(
-      symbolName, lowAddress, highAddress
+      symbolName, lowAddress, endAddress
     );
 
     if (aCoverageMap) {
@@ -69,7 +111,7 @@ namespace Coverage {
 
       // Create a unified coverage map for the symbol.
       SymbolsToAnalyze->createCoverageMap(
-        symbolName, highAddress - lowAddress + 1
+        symbolName, endAddress - lowAddress + 1
       );
     }
   }
@@ -240,7 +282,8 @@ namespace Coverage {
     bool               processSymbol = false;
     char               symbol[ 100 ];
     SymbolInformation* symbolInformation = NULL;
-    char               terminator;
+    char               terminator1;
+    char               terminator2;
     objdumpLines_t     theInstructions;
 
     // Obtain the objdump file.
@@ -259,7 +302,7 @@ namespace Coverage {
             executableInformation,
             currentSymbol,
             baseAddress,
-            address,  // XXX fix to determine corrent end address
+            address,  // XXX fix to determine correct end address
             theInstructions,
             symbolInformation
           );
@@ -289,11 +332,11 @@ namespace Coverage {
       items = sscanf(
         buffer,
         "%x <%[^>]>%c",
-        &address, symbol, &terminator
+        &address, symbol, &terminator1
       );
 
       // If all items found, we are at the beginning of a symbol's objdump.
-      if ((items == 3) && (terminator == ':')) {
+      if ((items == 3) && (terminator1 == ':')) {
 
         // If we are currently processing a symbol, finalize it.
         if ((processSymbol) && (symbolInformation)) {
@@ -329,12 +372,12 @@ namespace Coverage {
         // See if it is the dump of an instruction.
         items = sscanf(
           buffer,
-          "%x%c",
-          &instructionAddress, &terminator
+          "%x%c\t%*[^\t]%c",
+          &instructionAddress, &terminator1, &terminator2
         );
 
         // If it looks like an instruction ...
-        if ((items == 2) && (terminator == ':')) {
+        if ((items == 3) && (terminator1 == ':') && (terminator2 == '\t')) {
 
           // update the line's information, save it and ...
           lineInfo.address       = instructionAddress;

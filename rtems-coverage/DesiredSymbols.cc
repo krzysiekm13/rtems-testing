@@ -108,10 +108,9 @@ namespace Coverage {
 
   void DesiredSymbols::preprocess( void )
   {
-    ObjdumpProcessor::objdumpLines_t::iterator         fitr;
-    ObjdumpProcessor::objdumpLines_t::reverse_iterator itr;
-    DesiredSymbols::symbolSet_t::iterator              sitr;
-    CoverageMapBase*                                   theCoverageMap;
+    ObjdumpProcessor::objdumpLines_t::iterator fitr;
+    DesiredSymbols::symbolSet_t::iterator      sitr;
+    CoverageMapBase*                           theCoverageMap;
 
     // Look at each symbol.
     for (sitr = SymbolsToAnalyze->set.begin();
@@ -123,27 +122,6 @@ namespace Coverage {
       theCoverageMap = sitr->second.unifiedCoverageMap;
       if (!theCoverageMap)
         continue;
-
-      // Mark any trailing nops as executed.  Some targets use nops to
-      // force alignment of the next method but still include the nops
-      // in the symbol size.
-      //
-      // Mark all branches as isBranch.
-      //
-      // NOTE: If nop's are used for alignment inside a method, this 
-      //       will not mark them!!!
-      for (itr = sitr->second.instructions.rbegin(), itr++;
-           itr != sitr->second.instructions.rend();
-           itr++) {
-        if (itr->isNop) {
-          for ( int a=0; a < itr->nopSize ; a++ ) {
-            theCoverageMap->setWasExecuted(
-              itr->address - sitr->second.baseAddress + a
-            );
-          }
-        } else
-          break;
-      }
 
       // Mark any branch instructions.
       for (fitr = sitr->second.instructions.begin();
@@ -160,13 +138,12 @@ namespace Coverage {
 
   void DesiredSymbols::computeUncovered( void )
   {
-    uint32_t                                           a, la, ha;
-    uint32_t                                           endAddress;
-    ObjdumpProcessor::objdumpLines_t::reverse_iterator itr;
-    DesiredSymbols::symbolSet_t::iterator              sitr;
-    CoverageRanges*                                    theBranches;
-    CoverageMapBase*                                   theCoverageMap;
-    CoverageRanges*                                    theRanges;
+    uint32_t                              a, la, ha;
+    uint32_t                              endAddress;
+    DesiredSymbols::symbolSet_t::iterator sitr;
+    CoverageRanges*                       theBranches;
+    CoverageMapBase*                      theCoverageMap;
+    CoverageRanges*                       theRanges;
 
     // Look at each symbol.
     for (sitr = SymbolsToAnalyze->set.begin();

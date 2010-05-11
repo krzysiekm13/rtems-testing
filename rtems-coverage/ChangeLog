@@ -1,3 +1,9 @@
+2010-05-11	Glenn Humphrey
+
+	* DesiredSymbols.cc, ObjdumpProcessor.cc: Due to differences in nops
+	used for alignment, had to move the trimming of trailing nops to the
+	objdump processing.
+
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* DesiredSymbols.cc, Makefile, ObjdumpProcessor.cc, TargetBase.cc,
