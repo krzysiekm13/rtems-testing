@@ -43,7 +43,6 @@ bool                                 singleExecutable = false;
 const char*                          symbolsFile = NULL;
 const char*                          target = NULL;
 const char*                          format = NULL;
-const char*                          outputDirectory = ".";
 
 /*
  *  Print program usage message
@@ -369,11 +368,15 @@ int main(
 
   // Write explanations that were not found.
   if ( explanations ) {
-    std::string str = explanations;
-    str = str + ".NotFound";
+    std::string notFound;
+
+    notFound = outputDirectory;
+    notFound += "/";
+    notFound += "ExplanationsNotFound.txt";
+
     if (Verbose)
-      fprintf( stderr, "Writing Not Found Report (%s)\n", str.c_str() );
-    AllExplanations->writeNotFound(str.c_str());
+      fprintf( stderr, "Writing Not Found Report (%s)\n", notFound.c_str() );
+    AllExplanations->writeNotFound( notFound.c_str() );
   }
 
   // Calculate coverage statistics and output results.

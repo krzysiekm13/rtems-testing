@@ -1,3 +1,9 @@
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* DesiredSymbols.cc: Remove range1.tmp and ranges2.tmp.
+	* ReportsBase.cc, app_common.cc, covoar.cc, do_coverage: Generate
+	files into user specified output directory.
+
 2010-05-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* generate_coverage_html: Individual tables per configuration. List of

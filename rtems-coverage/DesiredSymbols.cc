@@ -439,6 +439,8 @@ namespace Coverage {
     }
 
     fclose( tmpfile );
+    unlink( "ranges1.tmp" );
+    unlink( "ranges2.tmp" );
   }
 
   SymbolInformation* DesiredSymbols::find(

@@ -4,6 +4,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "ReportsBase.h"
 #include "app_common.h"
@@ -11,7 +14,6 @@
 #include "DesiredSymbols.h"
 #include "Explanations.h"
 #include "ObjdumpProcessor.h"
-
 
 #include "ReportsText.h"
 #include "ReportsHtml.h"
@@ -32,14 +34,25 @@ FILE* ReportsBase::OpenFile(
   const char* const fileName
 )
 {
-  FILE*  aFile;
+  int          sc;
+  FILE        *aFile;
+  std::string  file;
+
+  // Create the output directory if it does not already exist
+  sc = mkdir( outputDirectory,0755 );
+  if ( (sc == -1) && (errno != EEXIST) ) {
+    fprintf(stderr, "Unable to create output directory %s\n", outputDirectory);
+    return NULL;
+  }
+
+  file = outputDirectory;
+  file += "/";
+  file += fileName;
 
   // Open the file.
-  aFile = fopen( fileName, "w" );
+  aFile = fopen( file.c_str(), "w" );
   if ( !aFile ) {
-    fprintf(
-      stderr, "Unable to open %s\n", fileName
-    );
+    fprintf( stderr, "Unable to open %s\n", file.c_str() );
   }
   return aFile;
 }

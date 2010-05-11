@@ -22,7 +22,7 @@ Coverage::ObjdumpProcessor* objdumpProcessor = NULL;
 Coverage::DesiredSymbols*   SymbolsToAnalyze = NULL;
 Coverage::Toolnames*        Tools            = NULL;
 bool                        Verbose          = false;
-
+const char*                 outputDirectory = ".";
 
 bool FileIsNewer( const char *f1, const char *f2 ) {
   struct stat buf1, buf2;
@@ -45,7 +45,7 @@ bool ReadUntilFound( FILE *file, const char *line )
   size_t  len = strlen( line );
 
   do { 
-    if (! fgets( discardBuff, 99, file ) )
+    if ( !fgets( discardBuff, 99, file ) )
       return false;
 
     if ( strncmp( discardBuff, line, len ) == 0 ) 
