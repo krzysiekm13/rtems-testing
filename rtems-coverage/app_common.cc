@@ -17,12 +17,13 @@
 /*
  *  Global variables for the program
  */
-Coverage::Explanations*     AllExplanations  = NULL;
-Coverage::ObjdumpProcessor* objdumpProcessor = NULL;
-Coverage::DesiredSymbols*   SymbolsToAnalyze = NULL;
-Coverage::Toolnames*        Tools            = NULL;
-bool                        Verbose          = false;
-const char*                 outputDirectory = ".";
+Coverage::Explanations*     AllExplanations     = NULL;
+Coverage::ObjdumpProcessor* objdumpProcessor    = NULL;
+Coverage::DesiredSymbols*   SymbolsToAnalyze    = NULL;
+Coverage::Toolnames*        Tools               = NULL;
+bool                        Verbose             = false;
+const char*                 outputDirectory     = ".";
+bool                        BranchInfoAvailable = false;
 
 bool FileIsNewer( const char *f1, const char *f2 ) {
   struct stat buf1, buf2;

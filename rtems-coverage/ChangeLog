@@ -1,5 +1,11 @@
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* CoverageReaderQEMU.cc, ReportsBase.cc, app_common.cc, app_common.h,
+	covoar.cc: Now properly know when a trace or coverage format includes
+	or does not include branch information.
+
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* DesiredSymbols.cc: Remove range1.tmp and ranges2.tmp.
 	* ReportsBase.cc, app_common.cc, covoar.cc, do_coverage: Generate
 	files into user specified output directory.

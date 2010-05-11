@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include "app_common.h"
 #include "CoverageReaderQEMU.h"
 #include "CoverageMap.h"
 #include "ExecutableInfo.h"
@@ -35,6 +36,7 @@ namespace Coverage {
 
   CoverageReaderQEMU::CoverageReaderQEMU()
   {
+    BranchInfoAvailable = true;
   }
 
   CoverageReaderQEMU::~CoverageReaderQEMU()

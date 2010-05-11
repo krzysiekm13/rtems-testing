@@ -421,9 +421,10 @@ int main(
       "Uncovered ranges found   : %d\n",
       SymbolsToAnalyze->getNumberUncoveredRanges()
     );
-    if (SymbolsToAnalyze->getNumberBranchesFound() == 0)
-      printf( "MAIN No branch information found\n" );
-    else {
+    if ((SymbolsToAnalyze->getNumberBranchesFound() == 0) || 
+        (BranchInfoAvailable == false) ) {
+      printf( "No branch information available\n" );
+    } else {
       printf(
         "Total branches found     : %d\n",
         SymbolsToAnalyze->getNumberBranchesFound()

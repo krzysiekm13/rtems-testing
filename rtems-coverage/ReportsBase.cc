@@ -220,15 +220,16 @@ void ReportsBase::WriteBranchReport(
 
   // Open the branch report file
   report = OpenBranchFile( fileName );
+
   if (!report)
     return;
 
-  // If no branches were found, then branch coverage is not supported
-  if (SymbolsToAnalyze->getNumberBranchesFound() == 0)
+  // If no branches were found of branch coverage is not supported
+  if ((SymbolsToAnalyze->getNumberBranchesFound() == 0) || 
+      (BranchInfoAvailable == false) ) {
     PutNoBranchInfo(report);
-
-  // If branches were found, ...
-  else {
+    // If branches were found, ...
+  } else {
 
     // Process uncovered branches for each symbol.
     count = 0;
