@@ -118,9 +118,11 @@ class ReportsBase {
      *  Then appedns any necessary header information onto the file.
      *
      *  @param[in] fileName identifies the size report file name
+     *  @param[in] hasBranches indicates if there are branches to report
      */
     virtual FILE* OpenBranchFile(
-      const char* const fileName
+      const char* const fileName,
+      bool              hasBranches
     );
 
     /*!
@@ -167,9 +169,11 @@ class ReportsBase {
      *  the report then closes the file.
      *
      *  @param[in] fileName identifies the size report file name
+     *  @param[in] hasBranches indicates if there are branches to report
      */
     virtual void CloseBranchFile(
-      FILE*  aFile
+      FILE*  aFile,
+      bool   hasBranches
     );
 
     /*!

@@ -1,5 +1,12 @@
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* ReportsBase.cc, ReportsBase.h, ReportsHtml.cc, ReportsHtml.h,
+	ReportsText.cc: Properly report on no branch information available.
+	Distinguish between no branch information available and 100% branch
+	coverage.
+
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* ReportsBase.h: Spacing.
 
 2010-05-11	Glenn Humphrey

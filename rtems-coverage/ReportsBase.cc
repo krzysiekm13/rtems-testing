@@ -65,7 +65,8 @@ FILE* ReportsBase::OpenAnnotatedFile(
 }
 
 FILE* ReportsBase::OpenBranchFile(
-  const char* const fileName
+  const char* const fileName,
+  bool              hasBranches
 )
 {
   return OpenFile(fileName);
@@ -101,7 +102,8 @@ void ReportsBase::CloseAnnotatedFile(
 }
 
 void ReportsBase::CloseBranchFile(
-  FILE*  aFile
+  FILE*  aFile,
+  bool   hasBranches
 )
 {
   CloseFile( aFile );
@@ -217,17 +219,23 @@ void ReportsBase::WriteBranchReport(
   Coverage::CoverageRanges::ranges_t::iterator    ritr;
   Coverage::CoverageRanges*                       theBranches;
   unsigned int                                    count;
+  bool                                            hasBranches = true;
+
+  if ((SymbolsToAnalyze->getNumberBranchesFound() == 0) || 
+      (BranchInfoAvailable == false) )
+     hasBranches = false;
 
   // Open the branch report file
-  report = OpenBranchFile( fileName );
-
+  report = OpenBranchFile( fileName, hasBranches );
   if (!report)
     return;
 
   // If no branches were found of branch coverage is not supported
   if ((SymbolsToAnalyze->getNumberBranchesFound() == 0) || 
       (BranchInfoAvailable == false) ) {
+
     PutNoBranchInfo(report);
+
     // If branches were found, ...
   } else {
 
@@ -251,7 +259,7 @@ void ReportsBase::WriteBranchReport(
     }
   }
 
-  CloseBranchFile( report );
+  CloseBranchFile( report, hasBranches );
 }
 
 /*

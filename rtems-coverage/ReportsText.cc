@@ -35,7 +35,10 @@ bool ReportsText::PutNoBranchInfo(
   FILE*           report
 )
 {
-  fprintf( report, "No branch information found\n" );
+  if ( BranchInfoAvailable )
+    fprintf( report, "All branch paths taken.\n" );
+  else
+    fprintf( report, "No branch information found.\n" );
   return true;
 }
 

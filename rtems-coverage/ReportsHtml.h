@@ -59,7 +59,8 @@ class ReportsHtml: public ReportsBase {
     AnnotatedLineState_t lastState_m;
 
     virtual FILE* OpenBranchFile(
-      const char* const fileName
+      const char* const fileName,
+      bool              hasBranches
     );
 
     virtual FILE* OpenCoverageFile(
@@ -75,7 +76,8 @@ class ReportsHtml: public ReportsBase {
     );
 
     virtual void CloseBranchFile(
-      FILE*  aFile
+      FILE*  aFile,
+      bool   hasBranches
     );
 
     virtual void CloseCoverageFile(

@@ -55,7 +55,8 @@ FILE* ReportsHtml::OpenFile(
 }
 
 FILE* ReportsHtml::OpenBranchFile(
-  const char* const fileName
+  const char* const fileName,
+  bool              hasBranches
 )
 {
   FILE *aFile;
@@ -63,29 +64,31 @@ FILE* ReportsHtml::OpenBranchFile(
   // Open the file
   aFile = OpenFile(fileName);
 
-  // Put header information into the file
-  fprintf( aFile, "<table class=\"covoar-table\">\n");
-  fprintf( aFile, "<tbody class=\"covoar-tbody\">\n");
-  fprintf( aFile, "<tr class=\"covoar-tr covoar-tr-first\">\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Index</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Symbol</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Line</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Size</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Size</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Reason</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Classification</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Explanation</th>\n");
-  fprintf( aFile, "</tr>\n");
+  if ( hasBranches ) {
+    // Put header information into the file
+    fprintf( aFile, "<table class=\"covoar-table\">\n");
+    fprintf( aFile, "<tbody class=\"covoar-tbody\">\n");
+    fprintf( aFile, "<tr class=\"covoar-tr covoar-tr-first\">\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Index</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Symbol</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Line</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Size</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Size</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Reason</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Classification</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Explanation</th>\n");
+    fprintf( aFile, "</tr>\n");
 
-  fprintf( aFile, "<tr class=\"covoar-tr covoar-tr-first\">\n");
-  fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Bytes</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\">Instructions</th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
-  fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
-  fprintf( aFile, "</tr>\n");
+    fprintf( aFile, "<tr class=\"covoar-tr covoar-tr-first\">\n");
+    fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Bytes</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\">Instructions</th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
+    fprintf( aFile, "<th class=\"covoar-th\"></th>\n");
+    fprintf( aFile, "</tr>\n");
+  }
  
   return aFile;
 }
@@ -98,7 +101,6 @@ FILE*  ReportsHtml::OpenCoverageFile(
 
   // Open the file
   aFile = OpenFile(fileName);
-
 
   // Put header information into the file
   fprintf( aFile, "<table class=\"covoar-table\">\n");
@@ -125,7 +127,6 @@ FILE*  ReportsHtml::OpenSizeFile(
   // Open the file
   aFile = OpenFile(fileName);
 
-
   // Put header information into the file
   fprintf( aFile, "<table class=\"covoar-table\">\n");
   fprintf( aFile, "<tbody class=\"covoar-tbody\">\n");
@@ -134,8 +135,6 @@ FILE*  ReportsHtml::OpenSizeFile(
   fprintf( aFile, "<th class=\"covoar-th\">Symbol</th>\n");
   fprintf( aFile, "<th class=\"covoar-th\">File</th>\n");
   fprintf( aFile, "</tr>\n");
-
-
 
   return aFile;
 }
@@ -209,10 +208,12 @@ bool ReportsHtml::PutNoBranchInfo(
   FILE* report
 )
 {
-  fprintf( report, "No branch information found\n" );
+  if ( BranchInfoAvailable )
+    fprintf( report, "All branch paths taken.\n" );
+  else
+    fprintf( report, "No branch information found.\n" );
   return true;
 }
-
 
 bool ReportsHtml::PutBranchEntry(
   FILE*                                            report,
@@ -523,11 +524,14 @@ void ReportsHtml::CloseAnnotatedFile(
 }
 
 void ReportsHtml::CloseBranchFile(
-  FILE*  aFile
+  FILE*  aFile,
+  bool   hasBranches
 )
 {
-  fprintf( aFile, "</tbody>\n" );
-  fprintf( aFile, "</table>\n" );
+  if ( hasBranches ) {
+    fprintf( aFile, "</tbody>\n" );
+    fprintf( aFile, "</table>\n" );
+  }
   fprintf( aFile, "</pre>\n" );
   fprintf( aFile, "</body>\n");
   fprintf( aFile, "</html>");
