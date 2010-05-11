@@ -29,13 +29,52 @@ namespace Target {
 
     /*!
      *  This method constructs an TargetBase instance.
+     *
+     *  @param[in] targetName specifies the desired target
      */
-    TargetBase( std::string targetName );
+    TargetBase(
+      std::string targetName
+    );
 
     /*!
      *  This method destructs an TargetBase instance.
      */
     virtual ~TargetBase();
+
+    /*!
+     *  This method returns the program name for addr2line.
+     *
+     *  @return Returns the target specific addr2line program name
+     */
+    const char* getAddr2line( void ) const;
+
+    /*!
+     *  This method returns the CPU name.
+     *
+     *  @return Returns the target cpu name
+     */
+    const char* getCPU( void ) const;
+
+    /*!
+     *  This method returns the program name for nm.
+     *
+     *  @return Returns the target specific nm program name
+     */
+    const char* getNm( void ) const;
+
+    /*!
+     *  This method returns the program name for objdump.
+     *
+     *  @return Returns the target specific objdump program name
+     */
+    const char* getObjdump( void ) const;
+
+    /*!
+     *  This method returns the target name.
+     *
+     *  @return Returns the target name
+     */
+    const char* getTarget( void ) const;
 
     /*!
      *  This method determines whether the specified line from a 
@@ -111,6 +150,31 @@ namespace Target {
      * for this target.
      */
     std::list <std::string> branchInstructions;
+
+  private:
+
+    /*!
+     * This member variable contains the name of the host program
+     * which reports the source line for the specified program address.
+     */
+    std::string addr2line_m;
+
+    /*!
+     * This member variable contains the name of the target cpu architecture.
+     */
+    std::string cpu_m;
+
+    /*!
+     * This member variable contains the name of the host program
+     * which produces a symbol table.
+     */
+    std::string nm_m;
+
+    /*!
+     * This member variable contains the name of the host program
+     * which disassembles an executable or library.
+     */
+    std::string objdump_m;
   };
 }
 #endif

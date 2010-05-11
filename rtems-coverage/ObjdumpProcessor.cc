@@ -140,7 +140,7 @@ namespace Coverage {
       sprintf(
         buffer,
         "%s -da --section=.text --source %s | sed -e \'s/ *$//\' >%s",
-        Tools->getObjdump(),
+        TargetInfo->getObjdump(),
          exeFileName.c_str(),
         dumpFile
       );

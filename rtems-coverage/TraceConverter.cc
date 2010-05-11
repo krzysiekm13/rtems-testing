@@ -20,7 +20,6 @@
 #include "TraceWriterQEMU.h"
 #include "TraceList.h"
 #include "ObjdumpProcessor.h"
-#include "Toolnames.h"
 #include "app_common.h"
 #include "TargetFactory.h"
 
@@ -82,7 +81,6 @@ int main(
   }
 
   // Create toolnames.
-  Tools = new Coverage::Toolnames( cpuname );
   TargetInfo = Target::TargetFactory( cpuname );
 
   objdumpProcessor = new Coverage::ObjdumpProcessor();

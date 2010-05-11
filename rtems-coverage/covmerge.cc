@@ -47,7 +47,6 @@ char *progname;
 Coverage::CoverageMapBase    *CoverageMap      = NULL;
 Coverage::CoverageReaderBase *CoverageReader   = NULL;
 Coverage::CoverageWriterBase *CoverageWriter   = NULL;
-Coverage::Toolnames          *Tools            = NULL;
 Coverage::ObjdumpProcessor   *ObjdumpProcessor = NULL;
 Coverage::CoverageRanges     *Ranges           = NULL;
 Coverage::Explanations       *Explanations     = NULL;
@@ -352,7 +351,7 @@ int main(
   /*
    *  Create toolnames based on target
    */
-  Tools = new Coverage::Toolnames( target );
+  TargetInfo = Target::TargetFactory( target );
 
   /*
    *  Create a ranges set

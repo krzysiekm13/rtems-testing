@@ -37,7 +37,6 @@ COMMON_OBJS= app_common.o \
   Target_m68k.o  \
   Target_powerpc.o \
   Target_sparc.o \
-  Toolnames.o 
 
 TRACECONVERTER_OBJS = \
   $(COMMON_OBJS) \
@@ -134,7 +133,6 @@ Target_lm32.o: Target_lm32.cc Target_lm32.h TargetBase.h
 Target_m68k.o: Target_m68k.cc Target_m68k.h TargetBase.h
 Target_powerpc.o: Target_powerpc.cc Target_powerpc.h TargetBase.h
 Target_sparc.o: Target_sparc.cc Target_sparc.h TargetBase.h
-Toolnames.o: Toolnames.cc Toolnames.h
 
 TraceConverter.o: TraceConverter.cc TraceReaderBase.h TraceList.h
 TraceList.o: TraceList.cc TraceList.h

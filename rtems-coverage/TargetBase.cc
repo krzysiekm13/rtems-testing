@@ -22,10 +22,49 @@ namespace Target {
   ):
     targetName_m( targetName )
   {
+    int i;
+    std::string front = "";
+
+    for (i=0 ; targetName_m[i] && targetName_m[i] != '-' ; ) {
+      cpu_m[i]   = targetName_m[i];
+      cpu_m[++i] = '\0';
+    }
+    if (targetName_m[i] == '-')
+      front = targetName_m + "-";
+
+
+    addr2line_m = front + "addr2line";
+    nm_m        = front + "nm";
+    objdump_m   = front + "objdump";
   }
 
   TargetBase::~TargetBase()
   {
+  }
+
+  const char* TargetBase::getAddr2line() const
+  {
+    return addr2line_m.c_str();
+  }
+
+  const char* TargetBase::getCPU( void ) const
+  {
+    return cpu_m.c_str();
+  }
+
+  const char* TargetBase::getNm() const
+  {
+    return nm_m.c_str();
+  }
+
+  const char* TargetBase::getObjdump() const
+  {
+    return objdump_m.c_str();
+  }
+
+  const char* TargetBase::getTarget( void ) const
+  {
+    return targetName_m.c_str();
   }
 
   bool TargetBase::isBranch(

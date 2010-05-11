@@ -272,7 +272,6 @@ int main(
   //
 
   // Create toolnames based on target.
-  Tools      = new Coverage::Toolnames( target );
   TargetInfo = Target::TargetFactory( target );
 
   // Create the set of desired symbols.

@@ -371,7 +371,7 @@ namespace Coverage {
     sprintf(
       command,
       "%s -e %s <%s | dos2unix >%s",
-      Tools->getAddr2line(),
+      TargetInfo->getAddr2line(),
       executableFileName.c_str(),
       "ranges1.tmp",
       "ranges2.tmp"

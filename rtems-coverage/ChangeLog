@@ -1,5 +1,12 @@
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* DesiredSymbols.cc, Makefile, ObjdumpProcessor.cc, TargetBase.cc,
+	TargetBase.h, TraceConverter.cc, app_common.cc, app_common.h,
+	covmerge.cc, covoar.cc: Merge Toolname into Target.
+	* Toolnames.cc, Toolnames.h: Removed.
+
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* CoverageReaderQEMU.cc, ObjdumpProcessor.cc, ObjdumpProcessor.h,
 	TargetBase.cc, TargetBase.h, TraceConverter.cc, TraceWriterQEMU.cc,
 	app_common.cc, app_common.h, covoar.cc, qemu-traces.h: Allow each

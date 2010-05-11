@@ -11,7 +11,6 @@
 
 #include "app_common.h"
 #include "DesiredSymbols.h"
-#include "Toolnames.h"
 #include "Explanations.h"
 
 /*
@@ -20,7 +19,6 @@
 Coverage::Explanations*     AllExplanations     = NULL;
 Coverage::ObjdumpProcessor* objdumpProcessor    = NULL;
 Coverage::DesiredSymbols*   SymbolsToAnalyze    = NULL;
-Coverage::Toolnames*        Tools               = NULL;
 bool                        Verbose             = false;
 const char*                 outputDirectory     = ".";
 bool                        BranchInfoAvailable = false;
