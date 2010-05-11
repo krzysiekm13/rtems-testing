@@ -18,9 +18,6 @@
 #include "CoverageMap.h"
 #include "ExecutableInfo.h"
 
-/* XXX really not always right */
-typedef uint32_t target_ulong;
-
 #include "qemu-traces.h"
 
 /* hack so this can compile on the RH7 RTEMS 4.5 host */
@@ -53,6 +50,13 @@ namespace Coverage {
     struct STAT         statbuf;
     int                 status;
     FILE*               traceFile;
+    uint8_t             taken;
+    uint8_t             notTaken;
+    uint8_t             branchInfo;
+
+    taken    = TargetInfo->qemuTakenBit();
+    notTaken = TargetInfo->qemuNotTakenBit();
+    branchInfo = taken | notTaken;
 
     //
     // Verify that the coverage file has a non-zero size.
@@ -145,13 +149,13 @@ namespace Coverage {
         }
 
         // Determine if additional branch information is available.
-       if ( (entry->op & (TRACE_OP_TAKEN|TRACE_OP_NOT_TAKEN)) != 0 ) {
+       if ( (entry->op & branchInfo) != 0 ) {
           unsigned int a = entry->pc + entry->size - 1;
           while (!aCoverageMap->isStartOfInstruction(a))
             a--;
-          if (entry->op & TRACE_OP_TAKEN) {
+          if (entry->op & taken) {
             aCoverageMap->setWasTaken( a );
-          } else if (entry->op & TRACE_OP_NOT_TAKEN) {
+          } else if (entry->op & notTaken) {
 	    aCoverageMap->setWasNotTaken( a );
           }
 	}

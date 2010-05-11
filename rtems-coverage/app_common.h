@@ -10,6 +10,7 @@
 #include "DesiredSymbols.h"
 #include "Explanations.h"
 #include "Toolnames.h"
+#include "TargetBase.h"
 
 extern Coverage::Explanations*      AllExplanations;
 extern Coverage::ObjdumpProcessor*  objdumpProcessor;
@@ -18,6 +19,7 @@ extern Coverage::Toolnames*         Tools;
 extern bool                         Verbose;
 extern const char*                  outputDirectory;
 extern bool                         BranchInfoAvailable;
+extern Target::TargetBase*          TargetInfo;
 
 bool FileIsNewer( const char *f1, const char *f2 ); 
 bool ReadUntilFound( FILE *file, const char *line );

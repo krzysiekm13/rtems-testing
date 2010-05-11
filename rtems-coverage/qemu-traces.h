@@ -31,6 +31,10 @@
 #ifndef QEMU_TRACE_H
 #define QEMU_TRACE_H
 
+/* XXX really not always right */
+/* XXX Added for covoar so this compiles */
+typedef uint32_t target_ulong;
+
 /* File header definition.  */
 struct trace_header
 {
@@ -97,9 +101,6 @@ struct trace_entry64
 #define TRACE_OP_BR1 0x02 /* Branch taken "in direction 1". */
 #define TRACE_OP_BR2 0x04
 #define TRACE_OP_BR3 0x08
-
-#define TRACE_OP_TAKEN     TRACE_OP_BR0 /* Branch not taken at pc.  */
-#define TRACE_OP_NOT_TAKEN TRACE_OP_BR1 /* Branch taken at pc. */
 
 /*
  * Decision map operations

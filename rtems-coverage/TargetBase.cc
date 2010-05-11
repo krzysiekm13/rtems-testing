@@ -8,7 +8,10 @@
  *  This file contains the implementation of the base class for 
  *  functions supporting target unique functionallity.
  */
+
 #include "TargetBase.h"
+#include "qemu-traces.h"
+
 #include <algorithm>
 #include <stdio.h>
 
@@ -24,7 +27,6 @@ namespace Target {
   TargetBase::~TargetBase()
   {
   }
-
 
   bool TargetBase::isBranch(
       const char* const instruction
@@ -90,4 +92,15 @@ namespace Target {
 
     return isBranch( instruction );
   }
+
+  uint8_t TargetBase::qemuTakenBit(void)
+  {
+    return TRACE_OP_BR0;
+  }
+
+  uint8_t TargetBase::qemuNotTakenBit(void)
+  {
+    return TRACE_OP_BR1;
+  }
+
 }

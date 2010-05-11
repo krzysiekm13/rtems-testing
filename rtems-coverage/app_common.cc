@@ -24,6 +24,7 @@ Coverage::Toolnames*        Tools               = NULL;
 bool                        Verbose             = false;
 const char*                 outputDirectory     = ".";
 bool                        BranchInfoAvailable = false;
+Target::TargetBase*         TargetInfo          = NULL;
 
 bool FileIsNewer( const char *f1, const char *f2 ) {
   struct stat buf1, buf2;

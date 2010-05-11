@@ -134,7 +134,6 @@ namespace Coverage {
   private:
 
     objdumpFile_t       objdumpList;
-    Target::TargetBase* target_m;
 
     /*!
      *  This method determines whether the specified line is a

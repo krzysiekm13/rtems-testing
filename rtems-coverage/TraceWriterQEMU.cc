@@ -51,6 +51,11 @@ namespace Trace {
     struct trace_header header;
     int                 status;
     FILE*               traceFile;
+    uint8_t             taken;
+    uint8_t             notTaken;
+
+    taken    = TargetInfo->qemuTakenBit();
+    notTaken = TargetInfo->qemuNotTakenBit();
 
     //
     // Verify that the TraceList has a non-zero size.
@@ -114,10 +119,10 @@ namespace Trace {
       entry.op   = TRACE_OP_BLOCK;
       switch (itr->exitReason) {
         case TraceList::EXIT_REASON_BRANCH_TAKEN:
-          entry.op |= TRACE_OP_TAKEN;
+          entry.op |= taken;
           break;
         case TraceList::EXIT_REASON_BRANCH_NOT_TAKEN:
-          entry.op |= TRACE_OP_NOT_TAKEN;
+          entry.op |= notTaken;
           break;
         case TraceList::EXIT_REASON_OTHER:
           break;
@@ -127,7 +132,7 @@ namespace Trace {
           break;
        }
        
-      if (Verbose )
+      if ( Verbose )
         fprintf(stderr, "%x %x %x\n", entry.pc, entry.size, entry.op);
 
       status = fwrite( &entry, sizeof(entry), 1, traceFile );

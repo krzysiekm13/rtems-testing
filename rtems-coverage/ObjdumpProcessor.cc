@@ -17,8 +17,8 @@
 #include <string.h>
 #include <algorithm>
 
-#include "ObjdumpProcessor.h"
 #include "app_common.h"
+#include "ObjdumpProcessor.h"
 #include "CoverageMap.h"
 #include "ExecutableInfo.h"
 #include "SymbolTable.h"
@@ -76,7 +76,6 @@ namespace Coverage {
 
   ObjdumpProcessor::ObjdumpProcessor()
   {
-    target_m = Target::TargetFactory(Tools->getTarget());
   }
 
   ObjdumpProcessor::~ObjdumpProcessor()
@@ -87,26 +86,26 @@ namespace Coverage {
     const char *instruction 
   )
   { 
-    if (!target_m) {
+    if ( !TargetInfo ) {
       fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
       assert(0);
       return false;
     }
 
-    return target_m->isBranch( instruction );
+    return TargetInfo->isBranch( instruction );
   }
 
   bool ObjdumpProcessor::isBranchLine(
     const char* const line
   )
   {
-    if (!target_m) {
+    if ( !TargetInfo ) {
       fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
       assert(0);
       return false;
     }
 
-    return  target_m->isBranchLine( line );
+    return  TargetInfo->isBranchLine( line );
   }
 
   bool ObjdumpProcessor::isNop(
@@ -115,14 +114,14 @@ namespace Coverage {
   )
   {
 
-    if (!target_m){
+    if ( !TargetInfo ){
       fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
       fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
       assert(0);
       return false;
     }
 
-    return target_m->isNopLine( line, size );
+    return TargetInfo->isNopLine( line, size );
   }
 
   FILE* ObjdumpProcessor::getFile( 

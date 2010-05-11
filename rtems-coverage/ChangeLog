@@ -1,5 +1,12 @@
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* CoverageReaderQEMU.cc, ObjdumpProcessor.cc, ObjdumpProcessor.h,
+	TargetBase.cc, TargetBase.h, TraceConverter.cc, TraceWriterQEMU.cc,
+	app_common.cc, app_common.h, covoar.cc, qemu-traces.h: Allow each
+	Qemu target architecture to define its own taken and not taken bits.
+
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* CoverageReaderQEMU.cc, ReportsBase.cc, app_common.cc, app_common.h,
 	covoar.cc: Now properly know when a trace or coverage format includes
 	or does not include branch information.

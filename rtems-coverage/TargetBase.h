@@ -13,15 +13,15 @@
 
 #include <list>
 #include <string>
-
+#include <stdint.h>
 
 namespace Target {
 
   /*! @class TargetBase
    *
    *  This class is the base class for all Target classes.  Each
-   *  target class contains routines that are specific to the target in question.
-   *
+   *  target class contains routines that are specific to the target
+   *  in question.
    */
   class TargetBase {
 
@@ -73,6 +73,18 @@ namespace Target {
     bool isBranch(
       const char* const instruction
     );
+
+    /*!
+     *  This method returns the bit set by Qemu in the trace record
+     *  when a branch is taken.
+     */
+    virtual uint8_t qemuTakenBit(void);
+
+    /*!
+     *  This method returns the bit set by Qemu in the trace record
+     *  when a branch is taken.
+     */
+    virtual uint8_t qemuNotTakenBit(void);
 
   protected:
 

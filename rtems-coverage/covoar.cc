@@ -24,6 +24,7 @@
 #include "Explanations.h"
 #include "ObjdumpProcessor.h"
 #include "ReportsBase.h"
+#include "TargetFactory.h"
 
 /*
  *  Variables to control general behavior
@@ -271,7 +272,8 @@ int main(
   //
 
   // Create toolnames based on target.
-  Tools = new Coverage::Toolnames( target );
+  Tools      = new Coverage::Toolnames( target );
+  TargetInfo = Target::TargetFactory( target );
 
   // Create the set of desired symbols.
   SymbolsToAnalyze = new Coverage::DesiredSymbols();
