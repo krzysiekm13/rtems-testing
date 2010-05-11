@@ -192,7 +192,7 @@ int main(
     }
   }
 
-  // If not envoked with a single executable, process the remaining
+  // If not invoked with a single executable, process the remaining
   // arguments as executables and derive the coverage file names.
   else {
     for (i = optind; i < argc; i++) {

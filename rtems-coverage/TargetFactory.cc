@@ -74,7 +74,7 @@ namespace Target {
     // Iterate over the table trying to find an entry with a matching name
     for ( i=0 ; i < sizeof(FactoryTable) / sizeof(FactoryEntry_t); i++ ) {
       if ( !strcmp(FactoryTable[i].theTarget, cpu.c_str() ) )
-        return FactoryTable[i].theCtor( cpu );
+        return FactoryTable[i].theCtor( targetName );
     }
 
     fprintf(
