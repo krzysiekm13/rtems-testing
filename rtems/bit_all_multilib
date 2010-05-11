@@ -4,13 +4,27 @@
   # c4x is temporary out.
   #ALL_CPUS="a29k arm c4x h8300 i386 m68k mips mips64orion \
   #      or32 powerpc sh sparc"
-ALL_CPUS="arm avr h8300 i386 m32c m32r m68k mips powerpc sh sparc"
+ALL_CPUS="arm avr bfin h8300 i386 m32c m32r m68k mips powerpc sh sparc"
 
+
+if [ $# -eq 0 ] ; then
+  CPUS=${ALL_CPUS}
+else
+  CPUS=$*
+fi
+
+echo "Multilib build for: ${CPUS}"
+
+BUILDDIR=`pwd`
 start=`date`
-for cpu in ${ALL_CPUS}
+for cpu in ${CPUS}
 do
+  cd $BUILDDIR
+  rm -rf build-${cpu}-multilib-*rtems*
   ./bit_rtems ${cpu} multilib >log/${cpu}-multilib.log 2>&1 
-  rm -rf build-${cpu}-multilib-rtems
+  
+  du -s -k build-${cpu}-multilib-*rtems*
+  rm -rf build-${cpu}-multilib-*rtems*
 done
 stop=`date`
 echo "Multilibs started at:" $start

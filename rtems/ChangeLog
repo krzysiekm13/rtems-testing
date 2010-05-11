@@ -1,3 +1,7 @@
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* bit_ALL, bit_all_multilib: Merge updates.
+
 2010-05-04	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* bit_all_bsps: For 4.10 determine the list of BSPs on the fly.

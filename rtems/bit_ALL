@@ -4,7 +4,7 @@
 #
 
 all_confs=no
-do_cvs_update=no
+do_cvs_update=yes
 
 testdir=`pwd`
 
@@ -12,10 +12,13 @@ testdir=`pwd`
 if [ ${do_cvs_update} = yes ] ; then
   cd ${testdir}/rtems
   cvs up -Pd 2>&1 | grep -v cvs
-  for addon in class-examples examples rtems-addon-packages network-demos
+  for addon in class-examples examples examples-v2 rtems-addon-packages \
+      network-demos ada-examples
   do
-    cd ${testdir}/${addon}
-    cvs up -Pd 2>&1 | grep -v cvs
+    if [ -d ${addon} ] ; then
+      cd ${testdir}/${addon}
+      cvs up -Pd 2>&1 | grep -v cvs
+    fi
   done
 fi
 
@@ -31,18 +34,10 @@ cd $testdir
 rm -f log/*
 
 # build all standard BSPs non-multilib
-./bit_all
+./bit_all_bsps
 
 # build all of the multilibs
-# sh -x ./bit_all_multilib
-
-# build the native configuration
-#./bit_rtems unix posix >log/unix.log 2>&1
-#rm -rf build-unix-rtems
-
-# build a bare bsp
-#./bit_rtems m68k bare-m5200 >log/m68k-bare-m5200.log 2>&1
-#rm -rf build-m68k-rtems
+sh -x ./bit_all_multilib
 
 # build the documentation
 ./bit_docs >log/docs.log
