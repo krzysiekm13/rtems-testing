@@ -402,7 +402,7 @@ int main(
 
         endAddress = itr->second.size - 1;
 
-        for (a = 0; a < endAddress; a++) {
+        for (a = 0; a <= endAddress; a++) {
           totalBytes++;
           if (!theCoverageMap->wasExecuted( a ))
             notExecuted++;
