@@ -364,7 +364,7 @@ generate_reports()
   cat ${results_dir}/summary.txt ${results_dir}/testsWithNoEndOfTest.txt
 
   # Now create the archive of information
-  cp ${COVBASE}/covoar.css ${results_dir}
+  cp ${COVBASE}/covoar.css ${COVBASE}/*gif ${COVBASE}/table.js ${results_dir}
   echo "Results saved in ${results_dir}.tar.bz2"
   tar cjf ${results_dir}.tar.bz2 ${results_dir}
 }

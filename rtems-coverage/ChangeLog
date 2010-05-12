@@ -1,5 +1,10 @@
 2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* ReportsHtml.cc: Fix typo.
+	* do_coverage: Copy .js and gif files for table magic.
+
+2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* .cvsignore: Updated.
 
 2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>

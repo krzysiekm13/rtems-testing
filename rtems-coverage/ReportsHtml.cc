@@ -32,12 +32,12 @@ namespace Coverage {
        fprintf( \
          aFile, \
          "<li>%s (<a href=\"%s.html\">html</a> or "\
-         "<a href=\"%s.txt\">text</a>)</li>", \
+         "<a href=\"%s.txt\">text</a>)</li>\n", \
         _t, _n, _n );
     #define PRINT_TEXT_ITEM( _t, _n ) \
        fprintf( \
          aFile, \
-         "<li>%s (<a href=\"%s\">text</a>)", \
+         "<li>%s (<a href=\"%s\">text</a>)\n", \
         _t, _n );
 
     FILE*  aFile;
@@ -45,7 +45,7 @@ namespace Coverage {
     // Open the file
     aFile = OpenFile( fileName );
 
-    fprintf( aFile, "<strong>Reports Available</string>\n" );
+    fprintf( aFile, "<strong>Reports Available</strong>\n" );
     fprintf( aFile, "<ul>\n" );
 
     PRINT_ITEM( "Coverage Report",      "uncovered" );
