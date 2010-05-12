@@ -123,8 +123,8 @@ namespace Coverage {
         "<tr>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">Line</th>\n"
-        "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Bytes</th>\n"
-        "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Instructions</th>\n"
+        "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Bytes</th>\n"
+        "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Instructions</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Reason</th>\n"
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
@@ -153,8 +153,8 @@ namespace Coverage {
       "<tr>\n"
       "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
       "<th class=\"table-sortable:default\" align=\"left\">Range</th>\n"
-      "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Bytes</th>\n"
-      "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Instructions</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Bytes</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Instructions</th>\n"
       "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
       "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
       "</tr>\n"
@@ -479,7 +479,7 @@ namespace Coverage {
     // Range
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%s</br>%s</td>\n",
+      "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%s </br>%s</td>\n",
       rangePtr->id,    
       rangePtr->lowSourceLine.c_str(),
       rangePtr->highSourceLine.c_str()
