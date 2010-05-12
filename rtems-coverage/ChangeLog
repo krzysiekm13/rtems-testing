@@ -1,5 +1,9 @@
 2010-05-12	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* covoar.cc: Process single executable file name differently.
+
+2010-05-12	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* ReportsHtml.cc, ReportsHtml.h, do_coverage: Tidy up reports.
 
 2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>

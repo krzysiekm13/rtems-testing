@@ -40,7 +40,6 @@ int                                  executableExtensionLength = 0;
 std::list<Coverage::ExecutableInfo*> executablesToAnalyze;
 const char*                          explanations = NULL;
 char*                                progname;
-bool                                 singleExecutable = false;
 const char*                          symbolsFile = NULL;
 const char*                          target = NULL;
 const char*                          format = NULL;
@@ -145,6 +144,7 @@ int main(
   Coverage::ExecutableInfo*                      executableInfo = NULL;
   int                                            i;
   int                                            opt;
+  const char*                                    singleExecutable = NULL;
 
   CoverageConfiguration = new Configuration::FileReader(Options);
   
@@ -155,20 +155,10 @@ int main(
 
   while ((opt = getopt(argc, argv, "1:e:c:E:f:s:T:vC:O:")) != -1) {
     switch (opt) {
-      case '1':
-        singleExecutable = true;
-        executableInfo = new Coverage::ExecutableInfo( optarg );
-        executablesToAnalyze.push_back( executableInfo );
-        break;
-      case 'e':
-        executableExtension = optarg;
-        break;
-      case 'c':
-         coverageFileExtension = optarg;
-         break;
-      case 'C':
-         CoverageConfiguration->processFile( optarg );
-         break;
+      case 'C': CoverageConfiguration->processFile( optarg ); break;
+      case '1': singleExecutable = optarg;       break;
+      case 'e': executableExtension = optarg;    break;
+      case 'c': coverageFileExtension = optarg;  break;
       case 'E': explanations          = optarg;  break;
       case 's': symbolsFile           = optarg;  break;
       case 'T': target                = optarg;  break;
@@ -181,11 +171,16 @@ int main(
     }
   }
 
+  // Do not trust any arguments until after this point.
   check_configuration();
+
+  // XXX We need to verify that all of the needed arguments are non-NULL.
 
   // If a single executable was specified, process the remaining
   // arguments as coverage file names.
   if (singleExecutable) {
+    executableInfo = new Coverage::ExecutableInfo( singleExecutable );
+    executablesToAnalyze.push_back( executableInfo );
     for (i=optind; i < argc; i++) {
       coverageFileName = argv[i];
       coverageFileNames.push_back( coverageFileName );
