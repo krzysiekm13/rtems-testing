@@ -1,5 +1,10 @@
 2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* ReportsBase.cc, ReportsBase.h, ReportsHtml.cc, ReportsHtml.h: Add
+	index file to reports written.
+
+2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* ReportsBase.cc, ReportsBase.h, ReportsHtml.cc, ReportsHtml.h,
 	ReportsText.cc, ReportsText.h: Add initial Symbol Summary report as
 	copy of Size report.

@@ -24,6 +24,46 @@ namespace Coverage {
   {
   }
 
+  void ReportsHtml::WriteIndex(
+    const char* const fileName
+  )
+  {
+    #define PRINT_ITEM( _t, _n ) \
+       fprintf( \
+         aFile, \
+         "<li>%s (<a href=\"%s.html\">html</a> or "\
+         "<a href=\"%s.txt\">text</a>)</li>", \
+        _t, _n, _n );
+    #define PRINT_TEXT_ITEM( _t, _n ) \
+       fprintf( \
+         aFile, \
+         "<li>%s (<a href=\"%s\">text</a>)", \
+        _t, _n );
+
+    FILE*  aFile;
+    
+    // Open the file
+    aFile = OpenFile( fileName );
+
+    fprintf( aFile, "<strong>Reports Available</string>\n" );
+    fprintf( aFile, "<ul>\n" );
+
+    PRINT_ITEM( "Coverage Report",      "uncovered" );
+    PRINT_ITEM( "Branch Report",        "branch" );
+    PRINT_ITEM( "Annotated Assembly",   "annotated" );
+    PRINT_ITEM( "Symbol Summary",       "symbolSummary" );
+    PRINT_ITEM( "Size Report",          "sizes" );
+
+    PRINT_TEXT_ITEM( "Explanations Not Found", "ExplanationsNotFound.txt" );
+
+    fprintf( aFile, "</li>\n" );
+
+    CloseFile( aFile );
+
+    #undef PRINT_ITEM
+    #undef PRINT_TEXT_ITEM
+  }
+
   FILE* ReportsHtml::OpenFile(
     const char* const fileName
   )
@@ -43,7 +83,6 @@ namespace Coverage {
       "<body>\n"
       "<pre class=\"code\">\n"
     );
-
 
     return aFile;
   }

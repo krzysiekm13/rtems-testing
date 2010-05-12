@@ -27,6 +27,15 @@ class ReportsBase {
     ~ReportsBase();
 
     /*!
+     *  This method produces an index of the reports generated.
+     *
+     *  @param[in] fileName identifies the report file name
+     */
+    virtual void WriteIndex(
+      const char* const fileName
+    );
+
+    /*!
      *  This method produces an annotated assembly listing report containing
      *  the disassembly of each symbol that was not completely covered.
      *

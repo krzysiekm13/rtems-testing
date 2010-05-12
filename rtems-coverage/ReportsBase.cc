@@ -56,6 +56,12 @@ FILE* ReportsBase::OpenFile(
   return aFile;
 }
 
+void ReportsBase::WriteIndex(
+  const char* const fileName
+)
+{
+}
+
 FILE* ReportsBase::OpenAnnotatedFile(
   const char* const fileName
 )
@@ -415,6 +421,9 @@ void GenerateReports()
 
   for (ritr = reportList.begin(); ritr != reportList.end(); ritr++ ) {
     reports = *ritr;
+
+    reportName = "index" + reports->ReportExtension();
+    reports->WriteIndex( reportName.c_str() );
 
     reportName = "annotated" + reports->ReportExtension();
     reports->WriteAnnotatedReport( reportName.c_str() );

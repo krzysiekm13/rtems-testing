@@ -25,35 +25,44 @@ class ReportsHtml: public ReportsBase {
     ReportsHtml();
    ~ReportsHtml();
 
-  /*!
-   *  This method produces a report that contains information about each
-   *  uncovered branch statement.
-   *
-   *  @param[in] fileName identifies the branch report file name
-   */
-  void WriteBranchReport(
-    const char* const fileName
-  );
+   /*!
+    *  This method produces an index file.
+    *
+    *  @param[in] fileName identifies the file name.
+    */
+   void WriteIndex(
+     const char* const fileName
+   );
 
-  /*!
-   *  This method produces a report that contains information about each
-   *  uncovered range of bytes.
-   *
-   *  @param[in] fileName identifies the coverage report file name
-   */
-  void WriteCoverageReport(
-    const char* const fileName
-  );
+   /*!
+    *  This method produces a report that contains information about each
+    *  uncovered branch statement.
+    *
+    *  @param[in] fileName identifies the branch report file name
+    */
+   void WriteBranchReport(
+     const char* const fileName
+   );
 
-  /*!
-   *  This method produces a summary report that lists each uncovered
-   *  range of bytes.
-   *
-   *  @param[in] fileName identifies the size report file name
-   */
-  void WriteSizeReport(
-    const char* const fileName
-  );
+   /*!
+    *  This method produces a report that contains information about each
+    *  uncovered range of bytes.
+    *
+    *  @param[in] fileName identifies the coverage report file name
+    */
+   void WriteCoverageReport(
+     const char* const fileName
+   );
+
+   /*!
+    *  This method produces a summary report that lists each uncovered
+    *  range of bytes.
+    *
+    *  @param[in] fileName identifies the size report file name
+    */
+   void WriteSizeReport(
+     const char* const fileName
+   );
 
   protected:
 
