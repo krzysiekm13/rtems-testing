@@ -1,5 +1,9 @@
 2010-05-12	Glenn Humphrey
 
+	* covoar_flow.doc: New file.
+
+2010-05-12	Glenn Humphrey
+
 	* ObjdumpProcessor.cc: Simplified the finalizeSymbol function.
 
 2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
