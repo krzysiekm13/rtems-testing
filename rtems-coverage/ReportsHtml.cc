@@ -118,7 +118,6 @@ namespace Coverage {
       // Put header information into the file
       fprintf(
         aFile,
-        "<pre class=\"code\">\n"
         "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
         "<thead>\n"
         "<tr>\n"
@@ -149,7 +148,6 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
-      "<pre class=\"code\">\n"
       "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
       "<thead>\n"
       "<tr>\n"
@@ -178,13 +176,14 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
-      "<table class=\"covoar-table\">\n"
-      "<tbody class=\"covoar-tbody\">\n"
-      "<tr class=\"covoar-tr covoar-tr-first\">\n"
-      "<th class=\"covoar-th\">Size</th>\n"
-      "<th class=\"covoar-th\">Symbol</th>\n"
-      "<th class=\"covoar-th\">File</th>\n"
+      "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
+      "<thead>\n"
+      "<tr>\n"
+      "<th class=\"table-sortable:numeric\" align=\"left\">Size</th>\n"
+      "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
+      "<th class=\"table-sortable:default\" align=\"left\">File</th>\n"
       "</tr>\n"
+      "</thead>\n"
     );
     return aFile;
   }
@@ -412,7 +411,6 @@ namespace Coverage {
     );
 
     // Mark the background color different for odd and even lines.
-    fprintf( report, "</tr>\n");
     if ( ( count%2 ) == 0 )
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
     else
@@ -466,7 +464,6 @@ namespace Coverage {
 
 
     // Mark the background color different for odd and even lines.
-    fprintf( report, "</tr>\n");
     if ( ( count%2 ) == 0 )
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
     else
@@ -540,7 +537,6 @@ namespace Coverage {
   )
   {
     // Mark the background color different for odd and even lines.
-    fprintf( report, "</tr>\n");
     if ( ( count%2 ) == 0 )
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
     else
@@ -567,7 +563,7 @@ namespace Coverage {
       range->lowSourceLine.c_str()
     );
 
-
+    fprintf( report, "</tr>\n");
 
     return true;
   }
@@ -580,7 +576,6 @@ namespace Coverage {
   )
   {
     // Mark the background color different for odd and even lines.
-    fprintf( report, "</tr>\n");
     if ( ( count%2 ) == 0 )
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
     else
@@ -607,6 +602,7 @@ namespace Coverage {
       range->lowSourceLine.c_str()
     );
 
+    fprintf( report, "</tr>\n");
     return true;
   }
 
@@ -680,11 +676,21 @@ namespace Coverage {
     FILE*  aFile
   )
   {
-    fprintf( aFile, "</tbody>\n" );
-    fprintf( aFile, "</table>\n" );
-    fprintf( aFile, "</pre>\n" );
-    fprintf( aFile,"</body>\n");
-    fprintf( aFile,"</html>");
+    fprintf(
+      aFile,
+      "<tfoot>\n"
+      "<tr>\n"
+      "<td class=\"table-page:previous\" style=\"cursor:pointer;\">&lt; &lt; Previous</td>\n"
+      "<td colspan=\"1\" style=\"text-align:center;\">Page <span id=\"pagenum\"></span>&nbsp;of <span id=\"pages\"></span></td>\n"
+      "<td class=\"table-page:next\" style=\"cursor:pointer;\">Next &gt; &gt;</td>\n"
+      "</tr>\n"
+      "</tfoot>\n"
+      "</tbody>\n"
+      "</table>\n" 
+      "</pre>\n" 
+      "</body>\n"
+      "</html>"
+    );
 
     CloseFile( aFile );
   }

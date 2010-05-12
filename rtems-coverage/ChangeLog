@@ -1,3 +1,8 @@
+2010-05-12	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* ReportsHtml.cc: Added sort ability to size report. Resolved a bug
+	that resulted in mal-formed html.
+
 2010-05-12	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* covoar.cc: Process single executable file name differently.
