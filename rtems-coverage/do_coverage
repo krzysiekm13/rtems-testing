@@ -92,9 +92,10 @@ do_run_tests="no"
 do_reports="no"
 do_publish="no"
 do_save_tarballs="no"
+outputDir=""
 BSP="not_set"
 
-while getopts vB:PSmAucbCLrRft OPT
+while getopts vB:PSmAucbCLrRftO: OPT
 do
     case "$OPT" in
         A)
@@ -109,6 +110,7 @@ do
           do_reports="yes"
           ;;
         B) BSP="${OPTARG}";;
+        O) outputDir="${OPTARG}";;
         v) verbose=`toggle ${verbose}` ;;
         m) do_covmerge=`toggle ${do_covmerge}` ;;
         P) do_posix=`toggle ${do_posix}` ;;
@@ -619,7 +621,11 @@ if [ ${do_reports} = "yes" ] ; then
       echo "Processing coverage for core source configuration ..."
       EXT=${EXTENSION}d
     fi
-    results_dir=${BSP}${EXT}-${day}-${hour}${minute}
+    if [ "X${outputDir}" = "X" ] ; then
+      results_dir=${BSP}${EXT}-${day}-${hour}${minute}
+    else
+      results_dir=${outputDir}
+    endif
 
     generate_symbols >${BASEDIR}/${BSP}-tests/rtems.syms
     syms=`cat ${BASEDIR}/${BSP}-tests/rtems.syms | wc -l`
