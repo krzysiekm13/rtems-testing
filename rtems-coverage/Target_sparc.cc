@@ -49,7 +49,7 @@ namespace Target {
   )
   {
     if (!strcmp( &line[strlen(line)-3], "nop")) {
-      size = 2;
+      size = 4;
       return true;
     }
 

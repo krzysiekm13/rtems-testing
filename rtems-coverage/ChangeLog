@@ -1,3 +1,7 @@
+2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* Target_sparc.cc: Size of nop is 4 not 2.
+
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* Target_sparc.cc: Recognize unknown as a nop on SPARC.
