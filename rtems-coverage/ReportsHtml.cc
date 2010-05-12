@@ -82,6 +82,22 @@ namespace Coverage {
       "<link rel=\"stylesheet\" type=\"text/css\" href=\"covoar.css\" media=\"screen\" >\n"
       "<script type=\"text/javascript\" src=\"table.js\"></script>\n"
       "<body>\n"
+    );
+
+    return aFile;
+  }
+
+  FILE* ReportsHtml::OpenAnnotatedFile(
+    const char* const fileName
+  )
+  {
+    FILE *aFile;
+
+    // Open the file
+    aFile = OpenFile(fileName);
+
+    fprintf(
+      aFile,
       "<pre class=\"code\">\n"
     );
 
@@ -387,10 +403,12 @@ namespace Coverage {
     Coverage::Explanation explanation;
 
     explanation.explanation.push_back(
+      "<html><p>\n"
       "This symbol was never referenced by an analyzed executable.  "
       "Therefore there is no size or disassembly for this symbol.  "
-      "This could be due to symbol misspelling or lack of a test for"
+      "This could be due to symbol misspelling or lack of a test for "
       "this symbol."
+      "</p></html>\n"
     );
 
     // Mark the background color different for odd and even lines.

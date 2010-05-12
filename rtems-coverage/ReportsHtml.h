@@ -68,6 +68,10 @@ class ReportsHtml: public ReportsBase {
 
     AnnotatedLineState_t lastState_m;
 
+    virtual FILE* OpenAnnotatedFile(
+      const char* const fileName
+    );
+
     virtual FILE* OpenBranchFile(
       const char* const fileName,
       bool              hasBranches

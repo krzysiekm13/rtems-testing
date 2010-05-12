@@ -625,7 +625,7 @@ if [ ${do_reports} = "yes" ] ; then
       results_dir=${BSP}${EXT}-${day}-${hour}${minute}
     else
       results_dir=${outputDir}
-    endif
+    fi
 
     generate_symbols >${BASEDIR}/${BSP}-tests/rtems.syms
     syms=`cat ${BASEDIR}/${BSP}-tests/rtems.syms | wc -l`
