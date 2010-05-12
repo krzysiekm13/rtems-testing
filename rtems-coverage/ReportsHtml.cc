@@ -336,6 +336,14 @@ namespace Coverage {
     std::string   symbol
   )
   {
+    Coverage::Explanation explanation;
+
+    explanation.explanation.push_back(
+      "This symbol was never referenced by an analyzed executable.  "
+      "Therefore there is no size or disassembly for this symbol.  "
+      "This could be due to symbol misspelling or lack of a test for"
+      "this symbol."
+    );
 
     // Mark the background color different for odd and even lines.
     fprintf( report, "</tr>\n");
@@ -378,16 +386,11 @@ namespace Coverage {
     // See if an explanation is available
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\"></td>\n"
-    );
-    fprintf( 
-      report, 
+      "<td class=\"covoar-td\" align=\"center\">No Classification</td>\n"
       "<td class=\"covoar-td\" align=\"center\">"
-      "This symbol was never referenced by an analyzed executable.  "
-      "Therefore there is no size or disassembly for this symbol.  "
-      "This could be due to symbol misspelling or lack of a test for"
-      "this symbol.</td>\n"
+      "<a href=\"NotReferenced.html\">Explanation</a></td>\n"
     );
+    WriteExplationFile( "NotReferenced.html", &explanation );
 
     fprintf( report, "</tr>\n");
   }

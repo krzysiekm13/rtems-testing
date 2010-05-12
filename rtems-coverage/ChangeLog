@@ -1,5 +1,9 @@
 2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* ReportsHtml.cc: Not referenced explanation now in file.
+
+2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* ReportsHtml.cc, ReportsHtml.h: Add separate html file for each
 	explanation and link to it from the tables.
 
