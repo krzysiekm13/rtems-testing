@@ -31,14 +31,14 @@ namespace Coverage {
     std::string&                     symbolName,
     uint32_t                         lowAddress,
     uint32_t                         highAddress,
-    ObjdumpProcessor::objdumpLines_t instructions,
-    SymbolInformation*               symbolInfo
+    ObjdumpProcessor::objdumpLines_t instructions
   ) {
 
     CoverageMapBase*                                   aCoverageMap = NULL;
     uint32_t                                           endAddress = highAddress;
     ObjdumpProcessor::objdumpLines_t::iterator         itr, fnop, lnop;
     ObjdumpProcessor::objdumpLines_t::reverse_iterator ritr;
+    SymbolInformation*                                 symbolInfo = NULL;
     SymbolTable*                                       theSymbolTable;
 
     //
@@ -82,6 +82,7 @@ namespace Coverage {
     }
 
     // If there are NOT already saved instructions, save them.
+    symbolInfo = SymbolsToAnalyze->find( symbolName );
     if (symbolInfo->instructions.empty()) {
       symbolInfo->sourceFile = executableInfo->getFileName();
       symbolInfo->baseAddress = lowAddress;
@@ -281,7 +282,6 @@ namespace Coverage {
     FILE*              objdumpFile;
     bool               processSymbol = false;
     char               symbol[ 100 ];
-    SymbolInformation* symbolInformation = NULL;
     char               terminator1;
     char               terminator2;
     objdumpLines_t     theInstructions;
@@ -297,14 +297,13 @@ namespace Coverage {
       if (cStatus == NULL) {
 
         // If we are currently processing a symbol, finalize it.
-        if ((processSymbol) && (symbolInformation)) {
+        if (processSymbol) {
           finalizeSymbol(
             executableInformation,
             currentSymbol,
             baseAddress,
             address,  // XXX fix to determine correct end address
-            theInstructions,
-            symbolInformation
+            theInstructions
           );
           fprintf(
             stderr,
@@ -339,14 +338,13 @@ namespace Coverage {
       if ((items == 3) && (terminator1 == ':')) {
 
         // If we are currently processing a symbol, finalize it.
-        if ((processSymbol) && (symbolInformation)) {
+        if (processSymbol) {
           finalizeSymbol(
             executableInformation,
             currentSymbol,
             baseAddress,
             address - 1,
-            theInstructions,
-            symbolInformation
+            theInstructions
           );
         }
 
@@ -357,9 +355,7 @@ namespace Coverage {
         theInstructions.clear();
 
         // See if the new symbol is one that we care about.
-        symbolInformation = SymbolsToAnalyze->find( symbol );
-
-        if (symbolInformation) {
+        if (SymbolsToAnalyze->isDesired( symbol )) {
           baseAddress = address;
           currentSymbol = symbol;
           processSymbol = true;

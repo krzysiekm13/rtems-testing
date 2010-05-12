@@ -1,3 +1,7 @@
+2010-05-12	Glenn Humphrey
+
+	* ObjdumpProcessor.cc: Simplified the finalizeSymbol function.
+
 2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* ReportsHtml.cc: Not referenced explanation now in file.
