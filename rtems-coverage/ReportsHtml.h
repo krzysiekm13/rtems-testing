@@ -72,6 +72,10 @@ class ReportsHtml: public ReportsBase {
       const char* const fileName
     );
 
+    virtual FILE* OpenSymbolSummaryFile(
+      const char* const fileName
+    );
+
     virtual void CloseAnnotatedFile(
       FILE*  aFile
     );
@@ -86,6 +90,10 @@ class ReportsHtml: public ReportsBase {
     );
 
     virtual void CloseSizeFile(
+      FILE*  aFile
+    );
+
+    virtual void CloseSymbolSummaryFile(
       FILE*  aFile
     );
 
@@ -121,6 +129,13 @@ class ReportsHtml: public ReportsBase {
     );
 
     virtual bool PutSizeLine(
+      FILE*                                           report,
+      unsigned int                                    number,
+      Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
+      Coverage::CoverageRanges::ranges_t::iterator    range
+    );
+
+    virtual bool PutSymbolSummaryLine(
       FILE*                                           report,
       unsigned int                                    number,
       Coverage::DesiredSymbols::symbolSet_t::iterator symbol,

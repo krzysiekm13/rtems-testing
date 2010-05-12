@@ -29,7 +29,6 @@ ReportsBase::~ReportsBase()
 {
 }
 
-
 FILE* ReportsBase::OpenFile(
   const char* const fileName
 )
@@ -86,6 +85,12 @@ FILE* ReportsBase::OpenSizeFile(
   return OpenFile(fileName);
 }
 
+FILE* ReportsBase::OpenSymbolSummaryFile(
+  const char* const fileName
+)
+{
+  return OpenFile(fileName);
+}
 
 void ReportsBase::CloseFile(
   FILE*  aFile
@@ -123,6 +128,12 @@ void  ReportsBase::CloseSizeFile(
   CloseFile( aFile );
 }
 
+void  ReportsBase::CloseSymbolSummaryFile(
+  FILE*  aFile
+)
+{
+  CloseFile( aFile );
+}
 
 /*
  *  Write annotated report
@@ -350,6 +361,44 @@ void ReportsBase::WriteSizeReport(
   CloseSizeFile( report );
 }
 
+void ReportsBase::WriteSymbolSummaryReport(
+  const char* const fileName
+)
+{
+  Coverage::DesiredSymbols::symbolSet_t::iterator ditr;
+  FILE*                                           report;
+  Coverage::CoverageRanges::ranges_t::iterator    ritr;
+  Coverage::CoverageRanges*                       theRanges;
+  unsigned int                                    count;
+
+  // Open the report file.
+  report = OpenSymbolSummaryFile( fileName );
+  if ( !report ) {
+    return;
+  }
+
+  // Process uncovered ranges for each symbol.
+  count = 0;
+  for (ditr = SymbolsToAnalyze->set.begin();
+       ditr != SymbolsToAnalyze->set.end();
+       ditr++) {
+
+    theRanges = ditr->second.uncoveredRanges;
+
+    if (theRanges && !theRanges->set.empty()) {
+
+      for (ritr =  theRanges->set.begin() ;
+           ritr != theRanges->set.end() ;
+           ritr++ ) {
+        PutSymbolSummaryLine( report, count, ditr, ritr );
+        count++;
+      }
+    }
+  }
+
+  CloseSymbolSummaryFile( report );
+}
+
 void GenerateReports()
 {
   typedef std::list<ReportsBase *> reportList_t;
@@ -379,6 +428,8 @@ void GenerateReports()
     reportName = "sizes" + reports->ReportExtension();
     reports->WriteSizeReport(reportName.c_str() );
 
+    reportName = "symbolSummary" + reports->ReportExtension();
+    reports->WriteSizeReport(reportName.c_str() );
   }
 
   for (ritr = reportList.begin(); ritr != reportList.end(); ritr++ ) {

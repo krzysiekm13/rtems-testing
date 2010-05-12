@@ -94,7 +94,12 @@ class ReportsText: public ReportsBase {
       Coverage::CoverageRanges::ranges_t::iterator    range
     );
 
-
+    virtual bool PutSymbolSummaryLine(
+      FILE*                                           report,
+      unsigned int                                    number,
+      Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
+      Coverage::CoverageRanges::ranges_t::iterator    range
+    );
 
 };
 

@@ -141,6 +141,29 @@ namespace Coverage {
     return aFile;
   }
 
+  FILE*  ReportsHtml::OpenSymbolSummaryFile(
+    const char* const fileName
+  )
+  {
+    FILE *aFile;
+
+    // Open the file
+    aFile = OpenFile(fileName);
+
+    // Put header information into the file
+    fprintf(
+      aFile,
+      "<table class=\"covoar-table\">\n"
+      "<tbody class=\"covoar-tbody\">\n"
+      "<tr class=\"covoar-tr covoar-tr-first\">\n"
+      "<th class=\"covoar-th\">Size</th>\n"
+      "<th class=\"covoar-th\">Symbol</th>\n"
+      "<th class=\"covoar-th\">File</th>\n"
+      "</tr>\n"
+    );
+    return aFile;
+  }
+
   void ReportsHtml::PutAnnotatedLine( 
     FILE*                aFile, 
     AnnotatedLineState_t state, 
@@ -521,6 +544,44 @@ namespace Coverage {
     return true;
   }
 
+  bool  ReportsHtml::PutSymbolSummaryLine(
+    FILE*                                           report,
+    unsigned int                                    count,
+    Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
+    Coverage::CoverageRanges::ranges_t::iterator    range
+  )
+  {
+    // Mark the background color different for odd and even lines.
+    fprintf( report, "</tr>\n");
+    if ( ( count%2 ) == 0 )
+      fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
+    else
+      fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+
+    // size
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      range->highAddress - range->lowAddress + 1
+    );
+
+    // symbol
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      symbol->first.c_str()
+    );
+
+    // file
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      range->lowSourceLine.c_str()
+    );
+
+    return true;
+  }
+
   void ReportsHtml::CloseAnnotatedFile(
     FILE*  aFile
   )
@@ -580,6 +641,18 @@ namespace Coverage {
     fprintf( aFile, "</tbody>\n" );
     fprintf( aFile, "</table>\n" );
     fprintf( aFile, "</pre>\n" );
+    fprintf( aFile,"</body>\n");
+    fprintf( aFile,"</html>");
+
+    CloseFile( aFile );
+  }
+
+  void ReportsHtml::CloseSymbolSummaryFile(
+    FILE*  aFile
+  )
+  {
+    fprintf( aFile, "</tbody>\n" );
+    fprintf( aFile, "</table>\n" );
     fprintf( aFile, "</pre>\n" );
     fprintf( aFile,"</body>\n");
     fprintf( aFile,"</html>");

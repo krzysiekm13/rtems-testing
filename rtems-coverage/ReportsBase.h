@@ -60,9 +60,19 @@ class ReportsBase {
      *  This method produces a summary report that lists each uncovered
      *  range of bytes.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     void WriteSizeReport(
+      const char* const fileName
+    );
+
+    /*!
+     *  This method produces a summary report that lists information on
+     *  each symbol which did not achieve 100% coverage
+     *
+     *  @param[in] fileName identifies the report file name
+     */
+    void WriteSymbolSummaryReport(
       const char* const fileName
     );
 
@@ -71,7 +81,7 @@ class ReportsBase {
      *  type.  If the extension is ".txt" files will be 
      *  named "annotated.txt", "branch.txt" ......
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     std::string ReportExtension() { return reportExtension_m; }
 
@@ -94,30 +104,30 @@ class ReportsBase {
     std::string reportExtension_m;
 
     /*!
-     *  This method Opens a report file and verifies that it opended
+     *  This method Opens a report file and verifies that it opened
      *  correctly.  Upon failure NULL is returned.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
      virtual FILE* OpenFile(
       const char* const fileName
     );
 
     /*!
-     *  This method d Opens a report file and verifies that it opended.
+     *  This method opens a report file and verifies that it opened.
      *  Then appedns any necessary header information onto the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual FILE* OpenAnnotatedFile(
       const char* const fileName
     );
 
     /*!
-     *  This method d Opens a report file and verifies that it opended.
+     *  This method opens a report file and verifies that it opened.
      *  Then appedns any necessary header information onto the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      *  @param[in] hasBranches indicates if there are branches to report
      */
     virtual FILE* OpenBranchFile(
@@ -126,29 +136,39 @@ class ReportsBase {
     );
 
     /*!
-     *  This method d Opens a report file and verifies that it opended.
+     *  This method opens a report file and verifies that it opened.
      *  Then appedns any necessary header information onto the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual FILE* OpenCoverageFile(
       const char* const fileName
     );
 
     /*!
-     *  This method d Opens a report file and verifies that it opended.
+     *  This method opens a report file and verifies that it opened.
      *  Then appedns any necessary header information onto the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual FILE* OpenSizeFile(
       const char* const fileName
     );
 
     /*!
+     *  This method opens a report file and verifies that it opened.
+     *  Then appedns any necessary header information onto the file.
+     *
+     *  @param[in] fileName identifies the report file name
+     */
+    virtual FILE* OpenSymbolSummaryFile(
+      const char* const fileName
+    );
+
+    /*!
      *  This method Closes a report file. 
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     void CloseFile(
       FILE*  aFile
@@ -158,7 +178,7 @@ class ReportsBase {
      *  This method puts any necessary footer information into
      *  the report then closes the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual void CloseAnnotatedFile(
       FILE*  aFile
@@ -168,7 +188,7 @@ class ReportsBase {
      *  This method puts any necessary footer information into
      *  the report then closes the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      *  @param[in] hasBranches indicates if there are branches to report
      */
     virtual void CloseBranchFile(
@@ -180,7 +200,7 @@ class ReportsBase {
      *  This method puts any necessary footer information into
      *  the report then closes the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual void CloseCoverageFile(
       FILE*  aFile
@@ -190,7 +210,7 @@ class ReportsBase {
      *  This method puts any necessary footer information into
      *  the report then closes the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual void CloseSizeFile(
       FILE*  aFile
@@ -200,7 +220,17 @@ class ReportsBase {
      *  This method puts any necessary footer information into
      *  the report then closes the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
+     */
+    virtual void CloseSymbolSummaryFile(
+      FILE*  aFile
+    );
+
+    /*!
+     *  This method puts any necessary footer information into
+     *  the report then closes the file.
+     *
+     *  @param[in] fileName identifies the report file name
      */
     virtual void PutAnnotatedLine( 
       FILE*                aFile, 
@@ -213,7 +243,7 @@ class ReportsBase {
      *  This method puts any necessary footer information into
      *  the report then closes the file.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual bool PutNoBranchInfo(
       FILE* report
@@ -222,7 +252,7 @@ class ReportsBase {
     /*!
      *  This method puts a branch entry into the branch report. 
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual bool PutBranchEntry(
       FILE*                                            report,
@@ -235,7 +265,7 @@ class ReportsBase {
      *  This method reports when no range is available for 
      *  a symbol in the coverage report.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual void putCoverageNoRange(
       FILE*        report,
@@ -246,7 +276,7 @@ class ReportsBase {
     /*!
      *  This method puts a line in the coverage report.
      *
-     *  @param[in] fileName identifies the size report file name
+     *  @param[in] fileName identifies the report file name
      */
     virtual bool PutCoverageLine(
       FILE*                                           report,
@@ -261,6 +291,18 @@ class ReportsBase {
      *  @param[in] fileName identifies the size report file name
      */
     virtual bool PutSizeLine(
+      FILE*                                           report,
+      unsigned int                                    number,
+      Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
+      Coverage::CoverageRanges::ranges_t::iterator    range
+    )=0;
+
+    /*!
+     *  This method method puts a line into the symbol summary report.
+     *
+     *  @param[in] fileName identifies the report file name
+     */
+    virtual bool PutSymbolSummaryLine(
       FILE*                                           report,
       unsigned int                                    number,
       Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
