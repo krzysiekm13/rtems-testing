@@ -123,6 +123,80 @@ a:active {
     text-align: center;
 }
 
+table.covoar {
+	border:1px solid black;
+	border-collapse:collapse;
+}
+table.covoar th, table.covoar td {
+	border:1px solid #aaaaaa;
+	padding: 2px 15px 2px 15px;
+}
+table.covoar thead th {
+	background-color:#A4BC92;
+}
+table.covoar tfoot td {
+	background-color:#A4BC92;
+}
+
+table.covoar tr.tbody_header {
+	font-weight:bold;
+	text-align:center;
+	background-color:#dddddd;
+}
+
+table.covoar a.pagelink {
+	padding-left:5px;
+	padding-right:5px;
+	border:1px solid #666666;
+	margin:0px 5px 0px 5px;
+}
+table.covoar a.currentpage {
+	background-color:yellow;
+}
+
+/* Sorting */
+th.table-sortable {
+    border:1px solid black;
+    color: #F8F8F8;
+    background: #A4BC92;
+	cursor:pointer;
+	background-image:url("05_unsorted.gif");
+	background-position:center left;
+	background-repeat:no-repeat;
+	padding-left:12px;
+}
+th.table-sorted-asc {
+	background-image:url("05_ascending.gif");
+	background-position:center left;
+	background-repeat:no-repeat;
+}
+th.table-sorted-desc {
+	background-image:url("05_descending.gif");
+	background-position:center left;
+	background-repeat:no-repeat;
+}
+th.table-filtered {
+	background-image:url("filter.gif");
+	background-position:center left;
+	background-repeat:no-repeat;
+}
+select.table-autofilter {
+	font-size:smaller;
+}
+
+/* Icons box */
+.iconset {
+	margin:5px;
+	border:1px solid #cccccc;
+	border-color:#cccccc #666666 #666666 #cccccc;
+	text-align:center;
+	cursor:pointer;
+	width:100px;
+}
+.iconset img {
+	margin:3px;
+}
+
 .covoar-tr-first {
     color: #F8F8F8;
     background: #A4BC92;

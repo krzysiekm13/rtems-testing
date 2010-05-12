@@ -80,6 +80,7 @@ namespace Coverage {
       "<meta http-equiv=\"Content-Language\" content=\"English\" >\n"
       "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=us-ascii\" >\n"
       "<link rel=\"stylesheet\" type=\"text/css\" href=\"covoar.css\" media=\"screen\" >\n"
+      "<script type=\"text/javascript\" src=\"table.js\"></script>\n"
       "<body>\n"
       "<pre class=\"code\">\n"
     );
@@ -101,28 +102,19 @@ namespace Coverage {
       // Put header information into the file
       fprintf(
         aFile,
-        "<table class=\"covoar-table\">\n"
-        "<tbody class=\"covoar-tbody\">\n"
-        "<tr class=\"covoar-tr covoar-tr-first\">\n"
-        "<th class=\"covoar-th\">Index</th>\n"
-        "<th class=\"covoar-th\">Symbol</th>\n"
-        "<th class=\"covoar-th\">Line</th>\n"
-        "<th class=\"covoar-th\">Size</th>\n"
-        "<th class=\"covoar-th\">Size</th>\n"
-        "<th class=\"covoar-th\">Reason</th>\n"
-        "<th class=\"covoar-th\">Classification</th>\n"
-        "<th class=\"covoar-th\">Explanation</th>\n"
+        "<pre class=\"code\">\n"
+        "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
+        "<thead>\n"
+        "<tr>\n"
+        "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
+        "<th class=\"table-filterable table-sortable:default\" align=\"left\">Line</th>\n"
+        "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Bytes</th>\n"
+        "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Instructions</th>\n"
+        "<th class=\"table-sortable:default\" align=\"left\">Reason</th>\n"
+        "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
+        "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
         "</tr>\n"
-
-        "<tr class=\"covoar-tr covoar-tr-first\">\n"
-        "<th class=\"covoar-th\"></th>\n"
-        "<th class=\"covoar-th\"></th>\n"
-        "<th class=\"covoar-th\">Bytes</th>\n"
-        "<th class=\"covoar-th\">Instructions</th>\n"
-        "<th class=\"covoar-th\"></th>\n"
-        "<th class=\"covoar-th\"></th>\n"
-        "<th class=\"covoar-th\"></th>\n"
-        "</tr>\n"
+        "</thead>\n"
       );
     }
    
@@ -141,18 +133,19 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
-      "<table class=\"covoar-table\">\n"
-      "<tbody class=\"covoar-tbody\">\n"
-      "<tr class=\"covoar-tr covoar-tr-first\">\n"
-      "<th class=\"covoar-th\">Index</th>\n"
-      "<th class=\"covoar-th\">Symbol</th>\n"
-      "<th class=\"covoar-th\">Range</th>\n"
-      "<th class=\"covoar-th\">Size</br>Bytes</th>\n"
-      "<th class=\"covoar-th\">Size</br>Instructions</th>\n"
-      "<th class=\"covoar-th\">Classification</th>\n"
-      "<th class=\"covoar-th\">Explanation</th>\n"
+      "<pre class=\"code\">\n"
+      "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
+      "<thead>\n"
+      "<tr>\n"
+      "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
+      "<th class=\"table-sortable:default\" align=\"left\">Range</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Bytes</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"left\">Size</br>Instructions</th>\n"
+      "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
+      "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
       "</tr>\n"
-    );
+      "</thead>\n"
+     );
 
     return aFile;
   }
@@ -289,20 +282,10 @@ namespace Coverage {
     const Coverage::Explanation* explanation;
 
     // Mark the background color different for odd and even lines.
-    fprintf( report, "</tr>\n");
     if ( ( count%2 ) == 0 )
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
     else
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
-
-    // index
-    fprintf( 
-      report, 
-      "<td class=\"covoar-td\" align=\"center\">"
-      "<a href =\"annotated.html#range%d\">%d</td>\n",
-      rangePtr->id,
-      rangePtr->id
-     );
 
     // symbol
     fprintf( 
@@ -314,7 +297,8 @@ namespace Coverage {
     // line
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%s</td>\n",     
+      rangePtr->id,
       rangePtr->lowSourceLine.c_str()
     );
     
@@ -345,16 +329,18 @@ namespace Coverage {
         "<td class=\"covoar-td\" align=\"center\">Never Taken</td>\n"
       );
 
-    // See if an explanation is available
+    // See if an explanation is available and write the Classification and
+    // the Explination Columns.
     explanation = AllExplanations->lookupExplanation( rangePtr->lowSourceLine );
     if ( !explanation ) {
+      // Write Classification
       fprintf( 
         report, 
+        "<td class=\"covoar-td\" align=\"center\">NONE</td>\n"
         "<td class=\"covoar-td\" align=\"center\">No Explanation</td>\n"
       );
     } else {
       char explanationFile[48];
-
       sprintf( explanationFile, "explanation%d.html", rangePtr->id );
       fprintf( 
         report, 
@@ -414,12 +400,6 @@ namespace Coverage {
     else
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
 
-    // index
-    fprintf( 
-      report, 
-      "<td class=\"covoar-td\" align=\"center\"></td>\n"
-     );
-
     // symbol
     fprintf( 
       report, 
@@ -448,7 +428,7 @@ namespace Coverage {
     // See if an explanation is available
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">No Classification</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">NONE</td>\n"
       "<td class=\"covoar-td\" align=\"center\">"
       "<a href=\"NotReferenced.html\">Explanation</a></td>\n"
     );
@@ -474,14 +454,6 @@ namespace Coverage {
     else
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
 
-    // index
-    fprintf( 
-      report, 
-      "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%d</td>\n",
-       rangePtr->id,
-       rangePtr->id
-     );
-
     // symbol
     fprintf( 
       report, 
@@ -489,14 +461,13 @@ namespace Coverage {
       symbolPtr->first.c_str()
     );
 
-    // starting line
+    // Range
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">%s(0x%x)</br>%s(0x%x)</td>\n",
+      "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%s</br>%s</td>\n",
+      rangePtr->id,    
       rangePtr->lowSourceLine.c_str(),
-      rangePtr->lowAddress,
-      rangePtr->highSourceLine.c_str(),
-      rangePtr->highAddress
+      rangePtr->highSourceLine.c_str()
      );
      
     // Size in bytes
@@ -643,6 +614,13 @@ namespace Coverage {
     if ( hasBranches ) {
       fprintf(
         aFile,
+        "<tfoot>\n"
+        "<tr>\n"
+        "<td class=\"table-page:previous\" style=\"cursor:pointer;\">&lt; &lt; Previous</td>\n"
+        "<td colspan=\"5\" style=\"text-align:center;\">Page <span id=\"pagenum\"></span>&nbsp;of <span id=\"pages\"></span></td>\n"
+        "<td class=\"table-page:next\" style=\"cursor:pointer;\">Next &gt; &gt;</td>\n"
+        "</tr>\n"
+        "</tfoot>\n"
         "</tbody>\n"
         "</table>\n" 
       );
@@ -663,7 +641,14 @@ namespace Coverage {
   {
     fprintf(
       aFile,
-      "</tbody>\n" 
+      "<tfoot>\n"
+      "<tr>\n"
+      "<td class=\"table-page:previous\" style=\"cursor:pointer;\">&lt; &lt; Previous</td>\n"
+      "<td colspan=\"4\" style=\"text-align:center;\">Page <span id=\"pagenum\"></span>&nbsp;of <span id=\"pages\"></span></td>\n"
+      "<td class=\"table-page:next\" style=\"cursor:pointer;\">Next &gt; &gt;</td>\n"
+      "</tr>\n"
+      "</tfoot>\n"
+      "</tbody>\n"
       "</table>\n" 
       "</pre>\n" 
       "</body>\n"
