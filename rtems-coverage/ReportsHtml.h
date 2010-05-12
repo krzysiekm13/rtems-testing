@@ -15,6 +15,7 @@
 
 #include <stdint.h>
 #include "ReportsBase.h"
+#include "Explanations.h"
 
 namespace Coverage {
 
@@ -130,7 +131,11 @@ class ReportsHtml: public ReportsBase {
       const char* const fileName
     );
 
-};
+    virtual bool WriteExplationFile(
+      const char*                  fileName,
+      const Coverage::Explanation* explanation
+    );
+  };
 
 }
 
