@@ -309,7 +309,8 @@ namespace Coverage {
             stderr,
             "WARNING: ObjdumpProcessor::load - analysis of symbol %s \n"
             "         may be incorrect.  It was the last symbol in %s\n"
-            "         and the length of its last instruction is assumed to be one.\n",
+            "         and the length of its last instruction is assumed "
+		"to be one.\n",
             currentSymbol.c_str(),
             executableInformation->getFileName().c_str()
           );
