@@ -4,8 +4,8 @@
 
 
 
-/*! @file FileReader.h
- *  @brief FileReader Specification
+/*! @file ConfigFile.h
+ *  @brief Configuration File Reader Specification
  *
  *  This file contains the specification of the FileReader class.
  */

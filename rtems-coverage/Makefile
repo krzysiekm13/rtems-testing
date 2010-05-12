@@ -142,7 +142,7 @@ TraceWriterBase.o: TraceWriterBase.cc TraceWriterBase.h
 TraceWriterQEMU.o: TraceWriterQEMU.cc TraceWriterQEMU.h TraceWriterBase.h TraceReaderLogQEMU.h TraceList.h
 
 clean:
-	rm -rf $(PROGRAMS) *.o doxy html latex *.exe *~
+	rm -rf $(PROGRAMS) *.o doxy html latex *.exe *~ warnings.log
 
 doxygen:
 	doxygen Doxyfile

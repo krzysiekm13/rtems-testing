@@ -2,8 +2,8 @@
  *   $Id$
  */
 
-/*! @file Reports.h
- *  @brief Reports Specification
+/*! @file ReportsHtml.h
+ *  @brief Reports in HTML Specification
  *
  *  This file contains the specification of the Reports methods.  This
  *  collection of methods is used to generate the various reports of

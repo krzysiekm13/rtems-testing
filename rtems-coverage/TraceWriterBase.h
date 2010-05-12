@@ -2,7 +2,7 @@
  *  $Id$
  */
 
-/*! @file TraceWiterBase.h
+/*! @file TraceWriterBase.h
  *  @brief TraceWriterBase Specification
  *
  *  This file contains the specification of the TraceWriterBase class.

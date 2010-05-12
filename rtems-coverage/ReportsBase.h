@@ -2,8 +2,8 @@
  *   $Id$
  */
 
-/*! @file Reports.h
- *  @brief Reports Specification
+/*! @file ReportsBase.h
+ *  @brief Reports Base Class Specification
  *
  *  This file contains the specification of the Reports methods.  This
  *  collection of methods is used to generate the various reports of

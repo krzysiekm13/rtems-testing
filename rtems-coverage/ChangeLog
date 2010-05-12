@@ -1,3 +1,8 @@
+2010-05-12	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* ConfigFile.h, Doxyfile, Makefile, ReportsBase.h, ReportsHtml.h,
+	ReportsText.h, TraceWriterBase.h: Doxygen update.
+
 2010-05-12	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* ReportsHtml.cc, covoar.css: Added sort, filter, and paging to branch
