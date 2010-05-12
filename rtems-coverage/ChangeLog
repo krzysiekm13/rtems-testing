@@ -1,5 +1,9 @@
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* Target_sparc.cc: Recognize unknown as a nop on SPARC.
+
+2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* TargetFactory.cc, covoar.cc: Fix tool/cpu/target name issues.
 
 2010-05-11	Joel Sherrill <joel.sherrilL@OARcorp.com>

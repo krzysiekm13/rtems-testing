@@ -53,6 +53,10 @@ namespace Target {
       return true;
     }
 
+    if (!strcmp( &line[strlen(line)-7], "unknown")) {
+      size = 4; 
+      return true;
+    } 
     #define GNU_LD_FILLS_ALIGNMENT_WITH_RTS
     #if defined(GNU_LD_FILLS_ALIGNMENT_WITH_RTS)
       // Until binutils 2.20, binutils would fill with rts not nop
