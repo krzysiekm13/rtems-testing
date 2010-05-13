@@ -222,13 +222,23 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
-      "<table class=\"covoar-table\">\n"
-      "<tbody class=\"covoar-tbody\">\n"
-      "<tr class=\"covoar-tr covoar-tr-first\">\n"
-      "<th class=\"covoar-th\">Size</th>\n"
-      "<th class=\"covoar-th\">Symbol</th>\n"
-      "<th class=\"covoar-th\">File</th>\n"
+      "<table class=\"covoar table-autosort:0 table-autofilter"
+           TABLE_HEADER_CLASS "\">\n"
+      "<thead>\n"
+      "<tr>\n"
+      "<th class=\"table-sortable:default\" align=\"center\">Symbol</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"center\">Total</br>Size</br>Bytes</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"center\">Total</br>Size</br>Instr</th>\n"
+      "<th class=\"table-sortable:default\" align=\"center\">#</br>Ranges</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"center\">Uncovered</br>Size</br>Bytes</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"center\">Uncovered</br>Size</br>Instr</th>\n"
+      "<th class=\"table-sortable:default\" align=\"center\">#</br>Branches</th>\n"
+      "<th class=\"table-sortable:default\" align=\"center\">#</br>Always</br>Taken</th>\n"
+      "<th class=\"table-sortable:default\" align=\"center\">#</br>Never</br>Taken</th>\n"
+      "<th class=\"table-sortable:default\" align=\"center\">Percent</br>Uncovered</br>Instructions</th>\n"
+      "<th class=\"table-sortable:default\" align=\"center\">Percent</br>Uncovered</br>Bytes</th>\n"
       "</tr>\n"
+      "</thead>\n"
     );
     return aFile;
   }
@@ -448,27 +458,27 @@ namespace Coverage {
     // starting line
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\"></td>\n"
+      "<td class=\"covoar-td\" align=\"center\">???</td>\n"
      );
      
     // Size in bytes
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\"></td>\n"
+      "<td class=\"covoar-td\" align=\"center\">???</td>\n"
     );
 
     // Size in instructions
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\"></td>\n"
+      "<td class=\"covoar-td\" align=\"center\">???</td>\n"
     ); 
 
     // See if an explanation is available
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">NONE</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">Unknown</td>\n"
       "<td class=\"covoar-td\" align=\"center\">"
-      "<a href=\"NotReferenced.html\">Explanation</a></td>\n"
+      "<a href=\"NotReferenced.html\">No data</a></td>\n"
     );
     WriteExplationFile( "NotReferenced.html", &explanation );
 
@@ -603,13 +613,6 @@ namespace Coverage {
     else
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
 
-    // size
-    fprintf( 
-      report, 
-      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
-      range->highAddress - range->lowAddress + 1
-    );
-
     // symbol
     fprintf( 
       report, 
@@ -617,11 +620,67 @@ namespace Coverage {
       symbol->first.c_str()
     );
 
-    // file
+    // Total Size in Bytes
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
-      range->lowSourceLine.c_str()
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+    );
+
+    // Total Size in Instructions 
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+    );
+
+    // Total Uncovered Ranges
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",     
+      symbol->second.uncoveredRanges->set.size()
+    );
+
+    // Uncovered Size in Bytes
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+    );
+
+    // Uncovered Size in Instructions 
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+    );
+
+    // Total number of branches
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",     
+      symbol->second.uncoveredBranches->set.size()
+    );
+
+    // Total Always Taken
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+    );
+
+    // Total Never Taken
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+    );
+
+
+    // % Uncovered Instructions 
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+    );
+
+    // % Uncovered Bytes
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
     );
 
     fprintf( report, "</tr>\n");
@@ -703,13 +762,17 @@ namespace Coverage {
     FILE*  aFile
   )
   {
-    fprintf( aFile, "</tbody>\n" );
-    fprintf( aFile, "</table>\n" );
-    fprintf( aFile, "</pre>\n" );
-    fprintf( aFile,"</body>\n");
-    fprintf( aFile,"</html>");
+    fprintf(
+      aFile,
+      TABLE_FOOTER
+       "</tbody>\n"
+      "</table>\n" 
+      "</pre>\n" 
+      "</body>\n"
+      "</html>"
+    );
 
-    CloseFile( aFile );
+     CloseFile( aFile );
   }
 
 }

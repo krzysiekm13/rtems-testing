@@ -438,7 +438,7 @@ void GenerateReports()
     reports->WriteSizeReport(reportName.c_str() );
 
     reportName = "symbolSummary" + reports->ReportExtension();
-    reports->WriteSizeReport(reportName.c_str() );
+    reports->WriteSymbolSummaryReport(reportName.c_str() );
   }
 
   for (ritr = reportList.begin(); ritr != reportList.end(); ritr++ ) {

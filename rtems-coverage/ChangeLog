@@ -1,3 +1,8 @@
+2010-05-13	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* ReportsBase.cc, ReportsHtml.cc: Added correct table structure for
+	Summary table.
+
 2010-05-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* ReportsHtml.cc: Fix table header for disabled pagination.
