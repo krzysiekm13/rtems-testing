@@ -1,3 +1,9 @@
+2010-05-13	Jennifer Averett <Jennifer.Averett@OARcorp.com
+
+	* DesiredSymbols.cc, DesiredSymbols.h, covoar.cc: Added a statistics
+	class to consilidate statistical information. Note, that all new
+	values are still 0 and are not yet calculated.
+
 2010-05-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* do_coverage: Provide capability to only analyze one configuration.

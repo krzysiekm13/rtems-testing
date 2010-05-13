@@ -395,7 +395,7 @@ int main(
       theCoverageMap = itr->second.unifiedCoverageMap;
       if (theCoverageMap) {
 
-        endAddress = itr->second.sizeInBytes - 1;
+        endAddress = itr->second.stats.sizeInBytes - 1;
 
         for (a = 0; a <= endAddress; a++) {
           totalBytes++;

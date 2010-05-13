@@ -24,10 +24,6 @@ namespace Coverage {
 
   DesiredSymbols::DesiredSymbols()
   {
-    branchesAlwaysTaken = 0;
-    branchesFound = 0;
-    branchesNeverTaken = 0;
-    uncoveredRanges = 0;
   }
 
   DesiredSymbols::~DesiredSymbols()
@@ -163,7 +159,7 @@ namespace Coverage {
       sitr->second.uncoveredBranches = theBranches;
 
       // Now scan through the coverage map of this symbol.
-      endAddress = sitr->second.sizeInBytes - 1;
+      endAddress = sitr->second.stats.sizeInBytes - 1;
       a = 0;
       while (a <= endAddress) {
 
@@ -177,7 +173,7 @@ namespace Coverage {
             ;
           ha--;
 
-          uncoveredRanges++;
+          stats.uncoveredRanges++;
           theRanges->add(
             sitr->second.baseAddress + la,
             sitr->second.baseAddress + ha,
@@ -189,7 +185,7 @@ namespace Coverage {
         // If an address is a branch instruction, add any uncovered branches
         // to the uncoverd branches.
         else if (theCoverageMap->isBranch( a )) {
-          branchesFound++;
+          stats.branchesFound++;
           la = a;
           for (ha=a+1;
                ha<=endAddress && !theCoverageMap->isStartOfInstruction( ha );
@@ -198,7 +194,7 @@ namespace Coverage {
           ha--;
 
           if (theCoverageMap->wasAlwaysTaken( la )) {
-            branchesAlwaysTaken++;
+            stats.branchesAlwaysTaken++;
             theBranches->add(
               sitr->second.baseAddress + la,
               sitr->second.baseAddress + ha,
@@ -215,7 +211,7 @@ namespace Coverage {
           }
 
           else if (theCoverageMap->wasNeverTaken( la )) {
-            branchesNeverTaken++;
+            stats.branchesNeverTaken++;
             theBranches->add(
               sitr->second.baseAddress + la,
               sitr->second.baseAddress + ha,
@@ -265,7 +261,7 @@ namespace Coverage {
     if (itr->second.unifiedCoverageMap) {
 
       // ensure that the specified size matches the existing size.
-      if (itr->second.sizeInBytes != size) {
+      if (itr->second.stats.sizeInBytes != size) {
 
         fprintf(
           stderr,
@@ -301,7 +297,7 @@ namespace Coverage {
           symbolName.c_str(), 0, highAddress
         );
       itr->second.unifiedCoverageMap = aCoverageMap;
-      itr->second.sizeInBytes = size;
+      itr->second.stats.sizeInBytes = size;
     }
   }
 
@@ -480,19 +476,19 @@ namespace Coverage {
   }
 
   uint32_t DesiredSymbols::getNumberBranchesAlwaysTaken( void ) const {
-    return branchesAlwaysTaken;
+    return stats.branchesAlwaysTaken;
   };
 
   uint32_t DesiredSymbols::getNumberBranchesFound( void ) const {
-    return branchesFound;
+    return stats.branchesFound;
   };
 
   uint32_t DesiredSymbols::getNumberBranchesNeverTaken( void ) const {
-    return branchesNeverTaken;
+    return stats.branchesNeverTaken;
   };
 
   uint32_t DesiredSymbols::getNumberUncoveredRanges( void ) const {
-    return uncoveredRanges;
+    return stats.uncoveredRanges;
   };
 
   bool DesiredSymbols::isDesired (
@@ -540,7 +536,7 @@ namespace Coverage {
 
     // Ensure that the source and destination coverage maps
     // are the same size.
-    dMapSize = itr->second.sizeInBytes;
+    dMapSize = itr->second.stats.sizeInBytes;
     sBaseAddress = sourceCoverageMap->getLowAddress();
     sMapSize = sourceCoverageMap->getHighAddress() - sBaseAddress + 1;
     if (dMapSize != sMapSize) {

@@ -22,6 +22,90 @@
 
 namespace Coverage {
 
+
+  /*! @class Stats
+   * 
+   *  This class defines the statistics that are tracked.
+   */
+  class Statistics {
+    public:
+
+    /*!
+     *  This member variable contains the total number of branches always
+     *  taken.
+     */
+    int branchesAlwaysTaken;
+
+    /*!
+     *  This member variable contains the total number of branches found.
+     */
+    int branchesFound;
+
+    /*!
+     *  This member variable contains the total number of branches never
+     *  taken.
+     */
+    int branchesNeverTaken;
+
+    /*!
+     *  This member contains the size in Bytes.
+     */
+    uint32_t sizeInBytes;
+    
+    /*!
+     *  This member contains the size in Bytes.
+     */
+    uint32_t sizeInInstructions;
+
+    /*!
+     *  This member variable contains the total number of uncovered bytes.
+     */
+    int uncoveredBytes;
+
+    /*!
+     *  This member variable contains the total number of uncovered assembly
+     *  instructions.
+     */
+    int uncoveredInstructions;
+
+    /*!
+     *  This member variable contains the total number of uncovered ranges.
+     */
+    int uncoveredRanges;
+
+    /*!
+     *  This method returns the percentage of uncovered instructions.
+     *
+     *  @return Returns the percent uncovered instructions
+     */
+    uint32_t getPercentUncoveredInstructions( void ) const;
+
+    /*!
+     *  This method returns the percentage of uncovered bytes.
+     *
+     *  @return Returns the percent uncovered bytes
+     */
+     uint32_t getPercentUncoveredBytes( void ) const;
+
+    /*!
+     *  This method constructs a Statistics instance.
+     */   
+     Statistics():
+       branchesAlwaysTaken(0),
+       branchesFound(0),
+       branchesNeverTaken(0),
+       sizeInBytes(0),
+       sizeInInstructions(0),
+       uncoveredBytes(0),
+       uncoveredInstructions(0),
+       uncoveredRanges(0)
+     {
+     }
+
+
+      
+  };
+
   /*! @class SymbolInformation
    *
    *  This class defines the information kept for each symbol that is
@@ -36,10 +120,6 @@ namespace Coverage {
      */
     uint32_t baseAddress;
 
-    /*!
-     *  This member contains the size of the symbol.
-     */
-    uint32_t sizeInBytes;
 
     /*!
      *  This member contains the disassembly associated with a symbol.
@@ -51,6 +131,11 @@ namespace Coverage {
      *  generate the disassembled instructions.
      */
     std::string sourceFile;
+
+    /*!
+     *  This member contains the statistics kept on each symbol.
+     */    
+    Statistics stats;
 
     /*!
      *  This member contains information about the branch instructions of
@@ -75,7 +160,6 @@ namespace Coverage {
      */
     SymbolInformation() :
       baseAddress( 0 ),
-      sizeInBytes( 0 ),
       uncoveredBranches( NULL ),
       uncoveredRanges( NULL ),
       unifiedCoverageMap( NULL )
@@ -215,31 +299,12 @@ namespace Coverage {
      */
     void preprocess( void );
 
+    /*!
+     *  This member contains the statistics kept on each symbol.
+     */    
+    Statistics stats;
+
   private:
-
-    /*!
-     *  This member variable contains the total number of branches always
-     *  taken for all analyzed symbols.
-     */
-    int branchesAlwaysTaken;
-
-    /*!
-     *  This member variable contains the total number of branches found
-     *  for all analyzed symbols.
-     */
-    int branchesFound;
-
-    /*!
-     *  This member variable contains the total number of branches never
-     *  taken for all analyzed symbols.
-     */
-    int branchesNeverTaken;
-
-    /*
-     *  This member variable contains the total number of uncovered ranges
-     *  for all analyzed symbols.
-     */
-    int uncoveredRanges;
 
     /*!
      *  This method uses the specified executable file to determine the
