@@ -39,7 +39,7 @@ namespace Coverage {
     /*!
      *  This member contains the size of the symbol.
      */
-    uint32_t size;
+    uint32_t sizeInBytes;
 
     /*!
      *  This member contains the disassembly associated with a symbol.
@@ -75,7 +75,7 @@ namespace Coverage {
      */
     SymbolInformation() :
       baseAddress( 0 ),
-      size( 0 ),
+      sizeInBytes( 0 ),
       uncoveredBranches( NULL ),
       uncoveredRanges( NULL ),
       unifiedCoverageMap( NULL )

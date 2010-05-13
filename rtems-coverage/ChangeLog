@@ -1,5 +1,9 @@
 2010-05-13	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
+	* DesiredSymbols.cc, DesiredSymbols.h, covoar.cc: Changed Symbol
+
+2010-05-13	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
 	* ReportsBase.cc, ReportsHtml.cc: Added correct table structure for
 	Summary table.
 

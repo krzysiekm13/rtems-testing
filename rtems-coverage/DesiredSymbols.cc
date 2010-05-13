@@ -163,7 +163,7 @@ namespace Coverage {
       sitr->second.uncoveredBranches = theBranches;
 
       // Now scan through the coverage map of this symbol.
-      endAddress = sitr->second.size - 1;
+      endAddress = sitr->second.sizeInBytes - 1;
       a = 0;
       while (a <= endAddress) {
 
@@ -265,7 +265,7 @@ namespace Coverage {
     if (itr->second.unifiedCoverageMap) {
 
       // ensure that the specified size matches the existing size.
-      if (itr->second.size != size) {
+      if (itr->second.sizeInBytes != size) {
 
         fprintf(
           stderr,
@@ -301,7 +301,7 @@ namespace Coverage {
           symbolName.c_str(), 0, highAddress
         );
       itr->second.unifiedCoverageMap = aCoverageMap;
-      itr->second.size = size;
+      itr->second.sizeInBytes = size;
     }
   }
 
@@ -540,7 +540,7 @@ namespace Coverage {
 
     // Ensure that the source and destination coverage maps
     // are the same size.
-    dMapSize = itr->second.size;
+    dMapSize = itr->second.sizeInBytes;
     sBaseAddress = sourceCoverageMap->getLowAddress();
     sMapSize = sourceCoverageMap->getHighAddress() - sBaseAddress + 1;
     if (dMapSize != sMapSize) {
