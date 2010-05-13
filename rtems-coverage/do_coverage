@@ -25,6 +25,8 @@ progname=${0##*/}        # fast basename hack for ksh, bash
 USAGE="
 usage: $progname [ -opts ]
         -v        -- verbose (default=no)
+        -d        -- analyze Core Configuration (default=yes)
+        -D        -- analyze Developmental Configuration (default=yes)
         -A        -- Execute all steps (default=no)
         -B BSP    -- Specify BSP to test
         -P        -- Enable POSIX API (default=yes)
@@ -39,13 +41,12 @@ usage: $progname [ -opts ]
         -R        -- generate reports (default=no)
         -f        -- publish the results to ftp site (default=no)
         -t        -- save the results locally (default=no)
+        -O        -- output directory (default=BSP-CONF-YYYYMMDD-HHMM)
 
 Notes:  + There are currently NO checks at each step to determine if
           the previous steps were performed!!!
         + Use of each option toggles the setting.  For example, \"-v -v -A -u\"
-          results in verbose=no and all steps done except CVS update on RTEMS.
-
-"
+          results in verbose=no and all steps done except CVS update on RTEMS."
 
 #   log an error to stderr
 prerr()
@@ -92,10 +93,12 @@ do_run_tests="no"
 do_reports="no"
 do_publish="no"
 do_save_tarballs="no"
+do_core="yes"
+do_developmental="yes"
 outputDir=""
 BSP="not_set"
 
-while getopts vB:PSmAucbCLrRftO: OPT
+while getopts vB:PSmAucbCLrRftO:dD OPT
 do
     case "$OPT" in
         A)
@@ -109,6 +112,8 @@ do
           do_run_tests="yes"
           do_reports="yes"
           ;;
+        d) do_core=`toggle ${do_core}` ;;
+        D) do_developmental=`toggle ${do_developmental}` ;;
         B) BSP="${OPTARG}";;
         O) outputDir="${OPTARG}";;
         v) verbose=`toggle ${verbose}` ;;
@@ -209,6 +214,7 @@ print_verbose()
   echo "do_optimize_size:     " ${do_optimize_size}
   echo "Optimization Level:   " ${c_opt}
   echo "POSIX Enabled:        " ${do_posix}
+  echo "Core Configuration    " ${do_core}
   echo "Developmental Code:   " ${do_developmental}
   echo "do_all:               " ${do_all}
   echo "do_covmerge           " ${do_covmerge}
@@ -230,6 +236,10 @@ if [ ${do_optimize_size} = yes ] ; then
  c_opt=-Os
 else
  c_opt=-O2
+fi
+
+if [ ${do_core} = "no" -a ${do_developmental} = "no" ]; then
+  fatal "No symbol configurations to analyze selected"
 fi
 
 if [ ${verbose} = "yes" ] ; then
@@ -304,7 +314,7 @@ generate_html()
     print_element ${hour}:${minute}
     print_element ${c_opt}
     print_element ${do_posix}
-    print_element ${do_developmental}
+    print_element ${analyze_developmental}
     print_element `grep "Uncovered range" ${summary} | cut -d ':' -f2`
     print_element `grep "age Not Exec" ${summary} | cut -d ':' -f2`
     print_element `grep "age Exec" ${summary} | cut -d ':' -f2`
@@ -409,7 +419,7 @@ generate_symbols()
       filter_nm wrapup/posix/o-optimize/libposix.a
     fi
 
-    if [ ${do_developmental} = "yes" ] ; then
+    if [ ${analyze_developmental} = "yes" ] ; then
       filter_nm ../lib/libc/${subd}libcsupport.a
       filter_nm ../lib/libmisc/wrapup/${subd}libmisc.a
     fi
@@ -427,7 +437,7 @@ generate_symbols()
 
     # Now add developmental libraries
     # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
-    if [ ${do_developmental} = "yes" ] ; then
+    if [ ${analyze_developmental} = "yes" ] ; then
       # filter_nm libfs/${subd}librfs.a
       # filter_nm libfs/${subd}libdosfs.a
       filter_nm libfs/${subd}libimfs.a
@@ -612,9 +622,17 @@ if [ ${do_reports} = "yes" ] ; then
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
-  for do_developmental in no yes
+  to_analyze=""
+  if [ ${do_core} = "yes" ] ; then
+    to_analyze="${to_analyze} no"
+  fi
+  if [ ${do_developmental} = "yes" ]; then
+    to_analyze="${to_analyze} yes"
+  fi
+
+  for analyze_developmental in ${to_analyze}
   do
-    if [ ${do_developmental} = yes ] ; then
+    if [ ${analyze_developmental} = yes ] ; then
       echo "Processing coverage for developmental configuration ..."
       EXT=${EXTENSION}D
     else

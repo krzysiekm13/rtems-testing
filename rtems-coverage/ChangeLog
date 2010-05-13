@@ -1,3 +1,7 @@
+2010-05-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* do_coverage: Provide capability to only analyze one configuration.
+
 2010-05-13	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* DesiredSymbols.cc, DesiredSymbols.h, covoar.cc: Changed Symbol
