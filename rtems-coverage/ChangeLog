@@ -1,3 +1,7 @@
+2010-05-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* ReportsHtml.cc: Make table pagination conditionally compiled.
+
 2010-05-12	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ReportsHtml.cc: Add a space before a </br> so ok on elinks.

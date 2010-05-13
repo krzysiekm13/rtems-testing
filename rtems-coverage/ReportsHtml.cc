@@ -12,6 +12,22 @@
 #include "DesiredSymbols.h"
 #include "ObjdumpProcessor.h"
 
+#if 0
+#define TABLE_FOOTER \
+   "<tfoot>\n" \
+   "<tr>\n" \
+   "<td class=\"table-page:previous\" " \
+      "style=\"cursor:pointer;\">&lt; &lt; Previous</td>\n" \
+   "<td colspan=\"4\" style=\"text-align:center;\">Page " \
+      "<span id=\"pagenum\"></span>&nbsp;of <span id=\"pages\"></span></td>\n" \
+   "<td class=\"table-page:next\" " \
+     "style=\"cursor:pointer;\">Next &gt; &gt;</td>\n" \
+   "</tr>\n" \
+   "</tfoot>\n"
+#else
+#define TABLE_FOOTER 
+#endif
+
 namespace Coverage {
 
   ReportsHtml::ReportsHtml():
@@ -628,13 +644,7 @@ namespace Coverage {
     if ( hasBranches ) {
       fprintf(
         aFile,
-        "<tfoot>\n"
-        "<tr>\n"
-        "<td class=\"table-page:previous\" style=\"cursor:pointer;\">&lt; &lt; Previous</td>\n"
-        "<td colspan=\"5\" style=\"text-align:center;\">Page <span id=\"pagenum\"></span>&nbsp;of <span id=\"pages\"></span></td>\n"
-        "<td class=\"table-page:next\" style=\"cursor:pointer;\">Next &gt; &gt;</td>\n"
-        "</tr>\n"
-        "</tfoot>\n"
+        TABLE_FOOTER
         "</tbody>\n"
         "</table>\n" 
       );
@@ -655,13 +665,7 @@ namespace Coverage {
   {
     fprintf(
       aFile,
-      "<tfoot>\n"
-      "<tr>\n"
-      "<td class=\"table-page:previous\" style=\"cursor:pointer;\">&lt; &lt; Previous</td>\n"
-      "<td colspan=\"4\" style=\"text-align:center;\">Page <span id=\"pagenum\"></span>&nbsp;of <span id=\"pages\"></span></td>\n"
-      "<td class=\"table-page:next\" style=\"cursor:pointer;\">Next &gt; &gt;</td>\n"
-      "</tr>\n"
-      "</tfoot>\n"
+      TABLE_FOOTER
       "</tbody>\n"
       "</table>\n" 
       "</pre>\n" 
@@ -678,13 +682,7 @@ namespace Coverage {
   {
     fprintf(
       aFile,
-      "<tfoot>\n"
-      "<tr>\n"
-      "<td class=\"table-page:previous\" style=\"cursor:pointer;\">&lt; &lt; Previous</td>\n"
-      "<td colspan=\"1\" style=\"text-align:center;\">Page <span id=\"pagenum\"></span>&nbsp;of <span id=\"pages\"></span></td>\n"
-      "<td class=\"table-page:next\" style=\"cursor:pointer;\">Next &gt; &gt;</td>\n"
-      "</tr>\n"
-      "</tfoot>\n"
+      TABLE_FOOTER
       "</tbody>\n"
       "</table>\n" 
       "</pre>\n" 
