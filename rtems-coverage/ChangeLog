@@ -1,5 +1,9 @@
 2010-05-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* ReportsHtml.cc: Fix table header for disabled pagination.
+
+2010-05-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* ReportsHtml.cc: Make table pagination conditionally compiled.
 
 2010-05-12	Joel Sherrill <joel.sherrill@oarcorp.com>

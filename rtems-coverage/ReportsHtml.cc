@@ -13,6 +13,8 @@
 #include "ObjdumpProcessor.h"
 
 #if 0
+#define TABLE_HEADER_CLASS \
+  " table-autopage:10 table-page-number:pagenum table-page-count:pages "
 #define TABLE_FOOTER \
    "<tfoot>\n" \
    "<tr>\n" \
@@ -25,6 +27,7 @@
    "</tr>\n" \
    "</tfoot>\n"
 #else
+#define TABLE_HEADER_CLASS
 #define TABLE_FOOTER 
 #endif
 
@@ -134,7 +137,8 @@ namespace Coverage {
       // Put header information into the file
       fprintf(
         aFile,
-        "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
+        "<table class=\"covoar table-autosort:0 table-autofilter"
+           TABLE_HEADER_CLASS "\">\n"
         "<thead>\n"
         "<tr>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
@@ -164,7 +168,8 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
-      "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
+      "<table class=\"covoar table-autosort:0 table-autofilter"
+           TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
       "<tr>\n"
       "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
@@ -192,7 +197,8 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
-      "<table class=\"covoar table-autosort:0 table-autofilter table-autopage:10 table-page-number:pagenum table-page-count:pages\">\n"
+      "<table class=\"covoar table-autosort:0 table-autofilter"
+           TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
       "<tr>\n"
       "<th class=\"table-sortable:numeric\" align=\"left\">Size</th>\n"
