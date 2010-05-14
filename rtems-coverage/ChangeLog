@@ -1,5 +1,9 @@
 2010-05-14	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
+	* ReportsText.cc: Modified text report data to match html report data.
+
+2010-05-14	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
 	* CoverageRanges.cc, CoverageRanges.h, DesiredSymbols.cc,
 	DesiredSymbols.h, ReportsBase.cc, ReportsBase.h, ReportsHtml.cc,
 	ReportsHtml.h, ReportsText.cc, ReportsText.h, covoar.cc, covoar.css:

@@ -145,11 +145,12 @@ bool ReportsText::PutCoverageLine(
   fprintf(
     report,
     "============================================\n"
-    "Index         : %d\n"
-    "Symbol        : %s (0x%x)\n"
-    "Starting Line : %s (0x%x)\n"
-    "Ending Line   : %s (0x%x)\n"
-    "Size in Bytes : %d\n\n",
+    "Index                : %d\n"
+    "Symbol               : %s (0x%x)\n"
+    "Starting Line        : %s (0x%x)\n"
+    "Ending Line          : %s (0x%x)\n"
+    "Size in Bytes        : %d\n"
+    "Size in Instructions : %d\n\n",
     ritr->id,
     ditr->first.c_str(),
     ditr->second.baseAddress,
@@ -157,7 +158,8 @@ bool ReportsText::PutCoverageLine(
     ritr->lowAddress,
     ritr->highSourceLine.c_str(),
     ritr->highAddress,
-    ritr->highAddress - ritr->lowAddress + 1
+    ritr->highAddress - ritr->lowAddress + 1,
+    ritr->instructionCount
   );
 
   explanation = AllExplanations->lookupExplanation( ritr->lowSourceLine );
@@ -211,6 +213,43 @@ bool  ReportsText::PutSymbolSummaryLine(
   Coverage::DesiredSymbols::symbolSet_t::iterator symbol
 )
 {
+  float uncoveredBytes;
+  float uncoveredInstructions;
+
+  if ( symbol->second.stats.sizeInInstructions == 0 )
+    uncoveredInstructions = 0;
+  else
+    uncoveredInstructions = (symbol->second.stats.uncoveredInstructions*100.0)/
+                            symbol->second.stats.sizeInInstructions;
+
+  if ( symbol->second.stats.sizeInBytes == 0 )
+    uncoveredBytes = 0;
+  else
+    uncoveredBytes = (symbol->second.stats.uncoveredBytes*100.0)/
+                     symbol->second.stats.sizeInBytes;
+
+  fprintf(
+    report,
+    "============================================\n"
+    "Symbol                            : %s\n"
+    "Total Size in Bytes               : %d\n"
+    "Total Size in Instructions        : %d\n"
+    "Total number Branches             : %d\n"
+    "Total Always Taken                : %d\n"
+    "Total Never Taken                 : %d\n"
+    "Percentage Uncovered Instructions : %.2f\n"
+    "Percentage Uncovered Bytes        : %.2f\n",
+    symbol->first.c_str(),
+    symbol->second.stats.sizeInBytes,
+    symbol->second.stats.sizeInInstructions,
+    symbol->second.stats.branchesNotExecuted +  symbol->second.stats.branchesExecuted,
+    symbol->second.stats.branchesAlwaysTaken,
+    symbol->second.stats.branchesNeverTaken,
+    uncoveredInstructions,
+    uncoveredBytes
+  );
+
+  fprintf(report, "============================================\n");
   return true;
 }
 
