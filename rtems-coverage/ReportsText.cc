@@ -206,19 +206,11 @@ bool  ReportsText::PutSizeLine(
 }
 
 bool  ReportsText::PutSymbolSummaryLine(
-  FILE*                                      report,
-  unsigned int                                     number,
-  Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
-  Coverage::CoverageRanges::ranges_t::iterator    range
+  FILE*                                           report,
+  unsigned int                                    number,
+  Coverage::DesiredSymbols::symbolSet_t::iterator symbol
 )
 {
-  fprintf(
-    report,
-    "%d\t%s\t%s\n",
-    range->highAddress - range->lowAddress + 1,
-    symbol->first.c_str(),
-    range->lowSourceLine.c_str()
-  );
   return true;
 }
 

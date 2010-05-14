@@ -47,6 +47,7 @@ namespace Coverage {
       std::string       lowSourceLine;
       uint32_t          highAddress;
       std::string       highSourceLine;
+      uint32_t          instructionCount;
       uncoveredReason_t reason;
     } coverageRange_t;
 
@@ -77,7 +78,8 @@ namespace Coverage {
     void add(
       uint32_t          lowAddressArg,
       uint32_t          highAddressArg,
-      uncoveredReason_t why
+      uncoveredReason_t why,
+      uint32_t          numInstructions
     );
  
 

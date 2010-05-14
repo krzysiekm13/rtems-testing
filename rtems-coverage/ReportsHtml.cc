@@ -100,7 +100,6 @@ namespace Coverage {
       "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=us-ascii\" >\n"
       "<link rel=\"stylesheet\" type=\"text/css\" href=\"covoar.css\" media=\"screen\" >\n"
       "<script type=\"text/javascript\" src=\"table.js\"></script>\n"
-      "<body>\n"
     );
 
     return aFile;
@@ -117,6 +116,8 @@ namespace Coverage {
 
     fprintf(
       aFile,
+      "<pre class=\"heading-title\">Annotated Report</pre>\n"
+      "<body>\n"
       "<pre class=\"code\">\n"
     );
 
@@ -137,7 +138,9 @@ namespace Coverage {
       // Put header information into the file
       fprintf(
         aFile,
-        "<table class=\"covoar table-autosort:0 table-autofilter"
+        "<pre class=\"heading-title\">Branch Report</pre>\n"
+        "<body>\n"
+         "<table class=\"covoar table-autosort:0 table-autofilter"
            TABLE_HEADER_CLASS "\">\n"
         "<thead>\n"
         "<tr>\n"
@@ -168,6 +171,8 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
+        "<pre class=\"heading-title\">Coverage Report</pre>\n"
+        "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter"
            TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
@@ -197,6 +202,8 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
+      "<pre class=\"heading-title\">Size Report</pre>\n"
+      "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter"
            TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
@@ -222,6 +229,8 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
+      "<pre class=\"heading-title\">Symbol Summary Report</pre>\n"
+      "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter"
            TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
@@ -359,7 +368,8 @@ namespace Coverage {
     // Size in instructions
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      rangePtr->instructionCount
     ); 
 
     // Reason Branch was uncovered
@@ -527,7 +537,8 @@ namespace Coverage {
     // Size in instructions
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      rangePtr->instructionCount
     ); 
 
     // See if an explanation is available
@@ -603,10 +614,10 @@ namespace Coverage {
   bool  ReportsHtml::PutSymbolSummaryLine(
     FILE*                                           report,
     unsigned int                                    count,
-    Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
-    Coverage::CoverageRanges::ranges_t::iterator    range
+    Coverage::DesiredSymbols::symbolSet_t::iterator symbol
   )
   {
+ 
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) == 0 )
       fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
@@ -623,65 +634,86 @@ namespace Coverage {
     // Total Size in Bytes
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      symbol->second.stats.sizeInBytes
     );
 
     // Total Size in Instructions 
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      symbol->second.stats.sizeInInstructions
     );
 
     // Total Uncovered Ranges
     fprintf( 
       report, 
       "<td class=\"covoar-td\" align=\"center\">%d</td>\n",     
-      symbol->second.uncoveredRanges->set.size()
+      symbol->second.stats.uncoveredRanges
     );
 
     // Uncovered Size in Bytes
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      symbol->second.stats.uncoveredBytes
     );
 
     // Uncovered Size in Instructions 
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+       symbol->second.stats.uncoveredInstructions
     );
 
     // Total number of branches
     fprintf( 
       report, 
       "<td class=\"covoar-td\" align=\"center\">%d</td>\n",     
-      symbol->second.uncoveredBranches->set.size()
+      symbol->second.stats.branchesNotExecuted +  symbol->second.stats.branchesExecuted
     );
 
     // Total Always Taken
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      symbol->second.stats.branchesAlwaysTaken
     );
 
     // Total Never Taken
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
-    );
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      symbol->second.stats.branchesNeverTaken
+     );
 
-
-    // % Uncovered Instructions 
-    fprintf( 
-      report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
-    );
+    // % Uncovered Instructions
+    if ( symbol->second.stats.sizeInInstructions == 0 )
+      fprintf( 
+        report, 
+        "<td class=\"covoar-td\" align=\"center\">N/A</td>\n"
+      );
+    else     
+      fprintf( 
+        report, 
+        "<td class=\"covoar-td\" align=\"center\">%.2f</td>\n",
+        (symbol->second.stats.uncoveredInstructions*100.0)/
+         symbol->second.stats.sizeInInstructions
+      );
 
     // % Uncovered Bytes
-    fprintf( 
-      report, 
-      "<td class=\"covoar-td\" align=\"center\">XXX</td>\n"
-    );
+    if ( symbol->second.stats.sizeInBytes == 0 )
+      fprintf( 
+        report, 
+        "<td class=\"covoar-td\" align=\"center\">N/A</td>\n"
+      );
+    else     
+      fprintf( 
+        report, 
+        "<td class=\"covoar-td\" align=\"center\">%.2f</td>\n",
+        (symbol->second.stats.uncoveredBytes*100.0)/
+         symbol->second.stats.sizeInBytes
+      );
 
     fprintf( report, "</tr>\n");
     return true;

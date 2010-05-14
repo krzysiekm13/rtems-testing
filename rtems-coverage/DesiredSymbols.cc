@@ -132,10 +132,71 @@ namespace Coverage {
     }
   }
 
+  void DesiredSymbols::caculateStatistics( void )
+  {
+    uint32_t                              a;
+    uint32_t                              endAddress;
+    DesiredSymbols::symbolSet_t::iterator sitr;
+    CoverageMapBase*                      theCoverageMap;
+
+    // Look at each symbol.
+    for (sitr = SymbolsToAnalyze->set.begin();
+         sitr != SymbolsToAnalyze->set.end();
+         sitr++) {
+
+      // If the unified coverage map does not exist, the symbol was
+      // never referenced by any executable.  Just skip it.
+      theCoverageMap = sitr->second.unifiedCoverageMap;
+      if (!theCoverageMap)
+        continue;
+
+      // Increment the total sizeInBytes byt the bytes in the symbol
+      stats.sizeInBytes += sitr->second.stats.sizeInBytes;
+
+      // Now scan through the coverage map of this symbol.
+      endAddress = sitr->second.stats.sizeInBytes - 1;
+      a = 0;
+      while (a <= endAddress) {
+
+        // If we are at the start of instruction increment
+        // instruction type counters as needed. 
+        if ( theCoverageMap->isStartOfInstruction( a ) ) {
+
+          stats.sizeInInstructions++;
+          sitr->second.stats.sizeInInstructions++;
+
+          if (!theCoverageMap->wasExecuted( a ) ) {
+            stats.uncoveredInstructions++;
+            sitr->second.stats.uncoveredInstructions++;
+
+            if ( theCoverageMap->isBranch( a )) {
+              stats.branchesNotExecuted++;
+              sitr->second.stats.branchesNotExecuted++;
+             }
+          } else if (theCoverageMap->isBranch( a )) {
+            stats.branchesExecuted++;
+            sitr->second.stats.branchesExecuted++;
+          }
+ 
+        }
+
+ 
+        if (!theCoverageMap->wasExecuted( a )) {
+          stats.uncoveredBytes++;
+          sitr->second.stats.uncoveredBytes++;
+        }       
+        a++;
+
+      }
+    }
+  }
+
+
   void DesiredSymbols::computeUncovered( void )
   {
     uint32_t                              a, la, ha;
     uint32_t                              endAddress;
+    uint32_t                              count;
     DesiredSymbols::symbolSet_t::iterator sitr;
     CoverageRanges*                       theBranches;
     CoverageMapBase*                      theCoverageMap;
@@ -162,22 +223,29 @@ namespace Coverage {
       endAddress = sitr->second.stats.sizeInBytes - 1;
       a = 0;
       while (a <= endAddress) {
-
+        
         // If an address was NOT executed, find consecutive unexecuted
         // addresses and add them to the uncovered ranges.
         if (!theCoverageMap->wasExecuted( a )) {
+
           la = a;
+          count = 1;
           for (ha=a+1;
                ha<=endAddress && !theCoverageMap->wasExecuted( ha );
                ha++)
-            ;
+          {
+            if ( theCoverageMap->isStartOfInstruction( ha ) )
+              count++;
+          }
           ha--;
 
           stats.uncoveredRanges++;
+          sitr->second.stats.uncoveredRanges++;
           theRanges->add(
             sitr->second.baseAddress + la,
             sitr->second.baseAddress + ha,
-            CoverageRanges::UNCOVERED_REASON_NOT_EXECUTED
+            CoverageRanges::UNCOVERED_REASON_NOT_EXECUTED,
+            count
           );
           a = ha + 1;
         }
@@ -185,7 +253,6 @@ namespace Coverage {
         // If an address is a branch instruction, add any uncovered branches
         // to the uncoverd branches.
         else if (theCoverageMap->isBranch( a )) {
-          stats.branchesFound++;
           la = a;
           for (ha=a+1;
                ha<=endAddress && !theCoverageMap->isStartOfInstruction( ha );
@@ -195,10 +262,12 @@ namespace Coverage {
 
           if (theCoverageMap->wasAlwaysTaken( la )) {
             stats.branchesAlwaysTaken++;
+            sitr->second.stats.branchesAlwaysTaken++;
             theBranches->add(
               sitr->second.baseAddress + la,
               sitr->second.baseAddress + ha,
-              CoverageRanges::UNCOVERED_REASON_BRANCH_ALWAYS_TAKEN
+              CoverageRanges::UNCOVERED_REASON_BRANCH_ALWAYS_TAKEN,
+              1
             );
             if (Verbose)
               fprintf(
@@ -212,10 +281,12 @@ namespace Coverage {
 
           else if (theCoverageMap->wasNeverTaken( la )) {
             stats.branchesNeverTaken++;
+            sitr->second.stats.branchesNeverTaken++;
             theBranches->add(
               sitr->second.baseAddress + la,
               sitr->second.baseAddress + ha,
-              CoverageRanges::UNCOVERED_REASON_BRANCH_NEVER_TAKEN
+              CoverageRanges::UNCOVERED_REASON_BRANCH_NEVER_TAKEN,
+              1
             );
             if (Verbose)
               fprintf(
@@ -233,6 +304,7 @@ namespace Coverage {
       }
     }
   }
+
 
   void DesiredSymbols::createCoverageMap(
     const std::string& symbolName,
@@ -480,7 +552,7 @@ namespace Coverage {
   };
 
   uint32_t DesiredSymbols::getNumberBranchesFound( void ) const {
-    return stats.branchesFound;
+    return (stats.branchesNotExecuted + stats.branchesExecuted);
   };
 
   uint32_t DesiredSymbols::getNumberBranchesNeverTaken( void ) const {

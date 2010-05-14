@@ -373,7 +373,6 @@ void ReportsBase::WriteSymbolSummaryReport(
 {
   Coverage::DesiredSymbols::symbolSet_t::iterator ditr;
   FILE*                                           report;
-  Coverage::CoverageRanges::ranges_t::iterator    ritr;
   Coverage::CoverageRanges*                       theRanges;
   unsigned int                                    count;
 
@@ -383,23 +382,14 @@ void ReportsBase::WriteSymbolSummaryReport(
     return;
   }
 
-  // Process uncovered ranges for each symbol.
+  // Process each symbol.
   count = 0;
   for (ditr = SymbolsToAnalyze->set.begin();
        ditr != SymbolsToAnalyze->set.end();
        ditr++) {
 
-    theRanges = ditr->second.uncoveredRanges;
-
-    if (theRanges && !theRanges->set.empty()) {
-
-      for (ritr =  theRanges->set.begin() ;
-           ritr != theRanges->set.end() ;
-           ritr++ ) {
-        PutSymbolSummaryLine( report, count, ditr, ritr );
-        count++;
-      }
-    }
+    PutSymbolSummaryLine( report, count, ditr );
+    count++;
   }
 
   CloseSymbolSummaryFile( report );
@@ -423,21 +413,45 @@ void GenerateReports()
     reports = *ritr;
 
     reportName = "index" + reports->ReportExtension();
+    if (Verbose)
+      fprintf(
+        stderr, "Generate %s\n", reportName.c_str()
+      );
     reports->WriteIndex( reportName.c_str() );
 
     reportName = "annotated" + reports->ReportExtension();
+    if (Verbose)
+      fprintf(
+        stderr, "Generate %s\n", reportName.c_str()
+      );
     reports->WriteAnnotatedReport( reportName.c_str() );
 
     reportName = "branch" + reports->ReportExtension();
+    if (Verbose)
+      fprintf(
+        stderr, "Generate %s\n", reportName.c_str()
+      );
     reports->WriteBranchReport(reportName.c_str() );
 
     reportName = "uncovered" + reports->ReportExtension();
+    if (Verbose)
+      fprintf(
+        stderr, "Generate %s\n", reportName.c_str()
+      );
     reports->WriteCoverageReport(reportName.c_str() );
 
     reportName = "sizes" + reports->ReportExtension();
+    if (Verbose)
+      fprintf(
+        stderr, "Generate %s\n", reportName.c_str()
+      );
     reports->WriteSizeReport(reportName.c_str() );
 
     reportName = "symbolSummary" + reports->ReportExtension();
+    if (Verbose)
+      fprintf(
+        stderr, "Generate %s\n", reportName.c_str()
+      );
     reports->WriteSymbolSummaryReport(reportName.c_str() );
   }
 

@@ -30,16 +30,18 @@ namespace Coverage {
   void CoverageRanges::add(
     uint32_t          lowAddressArg,
     uint32_t          highAddressArg,
-    uncoveredReason_t why
+    uncoveredReason_t why,
+    uint32_t          numInstructions
   )
   {
     coverageRange_t c;
 
     id_m++;
-    c.id          = id_m;
-    c.lowAddress  = lowAddressArg;
-    c.highAddress = highAddressArg;
-    c.reason      = why;
+    c.id               = id_m;
+    c.lowAddress       = lowAddressArg;
+    c.highAddress      = highAddressArg;
+    c.reason           = why;
+    c.instructionCount = numInstructions;
     set.push_back(c);
   }
 

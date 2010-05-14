@@ -151,8 +151,7 @@ class ReportsHtml: public ReportsBase {
     virtual bool PutSymbolSummaryLine(
       FILE*                                           report,
       unsigned int                                    number,
-      Coverage::DesiredSymbols::symbolSet_t::iterator symbol,
-      Coverage::CoverageRanges::ranges_t::iterator    range
+      Coverage::DesiredSymbols::symbolSet_t::iterator symbol
     );
 
     virtual FILE* OpenFile(

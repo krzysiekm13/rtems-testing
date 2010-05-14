@@ -1,3 +1,14 @@
+2010-05-14	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* CoverageRanges.cc, CoverageRanges.h, DesiredSymbols.cc,
+	DesiredSymbols.h, ReportsBase.cc, ReportsBase.h, ReportsHtml.cc,
+	ReportsHtml.h, ReportsText.cc, ReportsText.h, covoar.cc, covoar.css:
+	Added an instruction count to the range information. Added method
+	calculateStatistics to fill in missing statistics information.
+	Modified branch stat info to include branchesExecuted and
+	branchesNotExecuted. Added verbose output to report generation. Added
+	heading to html reports.
+
 2010-05-13	Jennifer Averett <Jennifer.Averett@OARcorp.com
 
 	* DesiredSymbols.cc, DesiredSymbols.h, covoar.cc: Added a statistics

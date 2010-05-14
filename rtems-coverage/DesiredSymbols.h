@@ -37,15 +37,22 @@ namespace Coverage {
     int branchesAlwaysTaken;
 
     /*!
-     *  This member variable contains the total number of branches found.
+     *  This member variable contains the total number of branches where 
+     *  one or more paths were executed.
      */
-    int branchesFound;
+    int branchesExecuted;
 
     /*!
      *  This member variable contains the total number of branches never
      *  taken.
      */
     int branchesNeverTaken;
+
+    /*!
+     *  This member variable contains the total number of branches not
+     *  executed AT ALL.
+     */
+    int branchesNotExecuted;
 
     /*!
      *  This member contains the size in Bytes.
@@ -92,8 +99,9 @@ namespace Coverage {
      */   
      Statistics():
        branchesAlwaysTaken(0),
-       branchesFound(0),
+       branchesExecuted(0),
        branchesNeverTaken(0),
+       branchesNotExecuted(0),
        sizeInBytes(0),
        sizeInInstructions(0),
        uncoveredBytes(0),
@@ -102,8 +110,6 @@ namespace Coverage {
      {
      }
 
-
-      
   };
 
   /*! @class SymbolInformation
@@ -192,6 +198,13 @@ namespace Coverage {
      *  This method destructs a DesiredSymbols instance.
      */
     ~DesiredSymbols();
+
+    /*!
+     *  This method loops through the coverage map and
+     *  calculates the statistics that have not already 
+     *  been filled in.
+     */
+    void caculateStatistics( void );
 
     /*!
      *  This method analyzes each symbols coverage map to determine any

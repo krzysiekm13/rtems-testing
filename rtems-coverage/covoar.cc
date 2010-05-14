@@ -350,6 +350,11 @@ int main(
     fprintf( stderr, "Computing uncovered ranges and branches\n" );
   SymbolsToAnalyze->computeUncovered();
 
+  // Calculate remainder of statistics.
+  if (Verbose)
+    fprintf( stderr, "Calculate statistics\n" );
+  SymbolsToAnalyze->caculateStatistics();
+
   // Look up the source lines for any uncovered ranges and branches.
   if (Verbose)
     fprintf(
@@ -360,6 +365,10 @@ int main(
   //
   // Report the coverage data.
   //
+  if (Verbose)
+    fprintf(
+      stderr, "Generate Reports\n"
+    );
   Coverage::GenerateReports();
 
   // Write explanations that were not found.
