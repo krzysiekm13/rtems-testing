@@ -1,3 +1,8 @@
+2010-05-17	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* ReportsBase.cc, ReportsHtml.cc: Removed issues resulting in compile
+	warnings.
+
 2010-05-17	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* generate_coverage_html: Fix typo.

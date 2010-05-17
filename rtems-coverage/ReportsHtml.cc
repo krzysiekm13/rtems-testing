@@ -460,19 +460,19 @@ namespace Coverage {
     // starting line
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">???</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">unknown</td>\n"
      );
      
     // Size in bytes
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">???</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">unknown</td>\n"
     );
 
     // Size in instructions
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">???</td>\n"
+      "<td class=\"covoar-td\" align=\"center\">unknown</td>\n"
     ); 
 
     // See if an explanation is available

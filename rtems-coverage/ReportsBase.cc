@@ -373,7 +373,6 @@ void ReportsBase::WriteSymbolSummaryReport(
 {
   Coverage::DesiredSymbols::symbolSet_t::iterator ditr;
   FILE*                                           report;
-  Coverage::CoverageRanges*                       theRanges;
   unsigned int                                    count;
 
   // Open the report file.
