@@ -1,3 +1,8 @@
+2010-05-17	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* ReportsHtml.cc, covoar.css: Resolved alternate stripe on html tables
+	such that it works when sorted various ways.
+
 2010-05-14	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* ReportsText.cc: Modified text report data to match html report data.

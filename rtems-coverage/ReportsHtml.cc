@@ -140,7 +140,7 @@ namespace Coverage {
         aFile,
         "<pre class=\"heading-title\">Branch Report</pre>\n"
         "<body>\n"
-         "<table class=\"covoar table-autosort:0 table-autofilter"
+         "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
         "<thead>\n"
         "<tr>\n"
@@ -153,6 +153,7 @@ namespace Coverage {
         "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
         "</tr>\n"
         "</thead>\n"
+        "<tbody>\n"
       );
     }
    
@@ -173,7 +174,7 @@ namespace Coverage {
       aFile,
         "<pre class=\"heading-title\">Coverage Report</pre>\n"
         "<body>\n"
-      "<table class=\"covoar table-autosort:0 table-autofilter"
+      "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
       "<tr>\n"
@@ -185,6 +186,7 @@ namespace Coverage {
       "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
       "</tr>\n"
       "</thead>\n"
+      "<tbody>\n"
      );
 
     return aFile;
@@ -204,7 +206,7 @@ namespace Coverage {
       aFile,
       "<pre class=\"heading-title\">Size Report</pre>\n"
       "<body>\n"
-      "<table class=\"covoar table-autosort:0 table-autofilter"
+      "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
       "<tr>\n"
@@ -213,6 +215,7 @@ namespace Coverage {
       "<th class=\"table-sortable:default\" align=\"left\">File</th>\n"
       "</tr>\n"
       "</thead>\n"
+      "<tbody>\n"
     );
     return aFile;
   }
@@ -231,7 +234,7 @@ namespace Coverage {
       aFile,
       "<pre class=\"heading-title\">Symbol Summary Report</pre>\n"
       "<body>\n"
-      "<table class=\"covoar table-autosort:0 table-autofilter"
+      "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
       "<tr>\n"
@@ -248,6 +251,7 @@ namespace Coverage {
       "<th class=\"table-sortable:default\" align=\"center\">Percent</br>Uncovered</br>Bytes</th>\n"
       "</tr>\n"
       "</thead>\n"
+      "<tbody>\n"
     );
     return aFile;
   }
@@ -338,10 +342,8 @@ namespace Coverage {
     const Coverage::Explanation* explanation;
 
     // Mark the background color different for odd and even lines.
-    if ( ( count%2 ) == 0 )
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
-    else
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+    if ( ( count%2 ) != 0 )
+      fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
 
     // symbol
     fprintf( 
@@ -453,10 +455,8 @@ namespace Coverage {
     );
 
     // Mark the background color different for odd and even lines.
-    if ( ( count%2 ) == 0 )
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
-    else
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+    if ( ( count%2 ) != 0 )
+      fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
 
     // symbol
     fprintf( 
@@ -506,10 +506,8 @@ namespace Coverage {
 
 
     // Mark the background color different for odd and even lines.
-    if ( ( count%2 ) == 0 )
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
-    else
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+    if ( ( count%2 ) != 0 )
+      fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
 
     // symbol
     fprintf( 
@@ -580,10 +578,8 @@ namespace Coverage {
   )
   {
     // Mark the background color different for odd and even lines.
-    if ( ( count%2 ) == 0 )
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
-    else
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+    if ( ( count%2 ) != 0 )
+      fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
 
     // size
     fprintf( 
@@ -619,10 +615,8 @@ namespace Coverage {
   {
  
     // Mark the background color different for odd and even lines.
-    if ( ( count%2 ) == 0 )
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-even\">\n");
-    else
-      fprintf( report, "<tr class=\"covoar-tr covoar-tr-odd\">\n");
+    if ( ( count%2 ) != 0 )
+      fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
 
     // symbol
     fprintf( 

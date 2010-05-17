@@ -202,6 +202,15 @@ select.table-autofilter {
     background: #A4BC92;
 }
 
+tr.alternate {
+    background: #CBE4B1;
+}
+
+/* Examples which stray from the default */
+table.altstripe tr.alternate2 {
+	background-color:#CBE4B1;
+}
+
 .covoar-tr-odd {
     background: #CBE4B1;
 }
