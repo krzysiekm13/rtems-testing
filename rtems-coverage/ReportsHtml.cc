@@ -147,7 +147,6 @@ namespace Coverage {
         "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">Line</th>\n"
         "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Bytes</th>\n"
-        "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Instructions</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Reason</th>\n"
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
@@ -247,8 +246,8 @@ namespace Coverage {
       "<th class=\"table-sortable:default\" align=\"center\">#</br>Branches</th>\n"
       "<th class=\"table-sortable:default\" align=\"center\">#</br>Always</br>Taken</th>\n"
       "<th class=\"table-sortable:default\" align=\"center\">#</br>Never</br>Taken</th>\n"
-      "<th class=\"table-sortable:default\" align=\"center\">Percent</br>Uncovered</br>Instructions</th>\n"
-      "<th class=\"table-sortable:default\" align=\"center\">Percent</br>Uncovered</br>Bytes</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"center\">Percent</br>Uncovered</br>Instructions</th>\n"
+      "<th class=\"table-sortable:numeric\" align=\"center\">Percent</br>Uncovered</br>Bytes</th>\n"
       "</tr>\n"
       "</thead>\n"
       "<tbody>\n"
@@ -366,13 +365,6 @@ namespace Coverage {
       "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
       rangePtr->highAddress - rangePtr->lowAddress + 1
     );
-
-    // Size in instructions
-    fprintf( 
-      report, 
-      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
-      rangePtr->instructionCount
-    ); 
 
     // Reason Branch was uncovered
     if (rangePtr->reason ==
@@ -685,7 +677,7 @@ namespace Coverage {
     if ( symbol->second.stats.sizeInInstructions == 0 )
       fprintf( 
         report, 
-        "<td class=\"covoar-td\" align=\"center\">N/A</td>\n"
+        "<td class=\"covoar-td\" align=\"center\">100.00</td>\n"
       );
     else     
       fprintf( 
@@ -699,7 +691,7 @@ namespace Coverage {
     if ( symbol->second.stats.sizeInBytes == 0 )
       fprintf( 
         report, 
-        "<td class=\"covoar-td\" align=\"center\">N/A</td>\n"
+        "<td class=\"covoar-td\" align=\"center\">100.00</td>\n"
       );
     else     
       fprintf( 

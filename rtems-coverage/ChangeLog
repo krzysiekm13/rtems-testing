@@ -1,5 +1,10 @@
 2010-05-17	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
+	* ReportsHtml.cc: Resolved sorting issue in summary report for
+	percentages and changed N/A to 100.00%.
+
+2010-05-17	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
 	* ReportsHtml.cc, covoar.css: Resolved alternate stripe on html tables
 	such that it works when sorted various ways.
 
