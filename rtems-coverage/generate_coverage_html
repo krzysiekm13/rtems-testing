@@ -170,14 +170,14 @@ doit()
 
   cat <<EOF
 <ul>
-<li><a href="#O2pd">Results for-O2, POSIX Disabled, Core Only</a></li>
-<li><a href="#O2pD">Results for-O2, POSIX Disabled, Developmental</a></li>
-<li><a href="#O2Pd">Results for-O2, POSIX Enabled, Core Only</a></li>
-<li><a href="#O2PD">Results for-O2, POSIX Enabled, Developmental</a></li>
-<li><a href="#Ospd">Results for-Os, POSIX Disabled, Core Only</a></li>
-<li><a href="#OspD">Results for-Os, POSIX Disabled, Developmental</a></li>
-<li><a href="#OsPd">Results for-Os, POSIX Enabled, Core Only</a></li>
-<li><a href="#OsPD">Results for-Os, POSIX Enabled, Developmental</a></li>
+<li><a href="#O2pd">Results for -O2, POSIX Disabled, Core Only</a></li>
+<li><a href="#O2pD">Results for -O2, POSIX Disabled, Developmental</a></li>
+<li><a href="#O2Pd">Results for -O2, POSIX Enabled, Core Only</a></li>
+<li><a href="#O2PD">Results for -O2, POSIX Enabled, Developmental</a></li>
+<li><a href="#Ospd">Results for -Os, POSIX Disabled, Core Only</a></li>
+<li><a href="#OspD">Results for -Os, POSIX Disabled, Developmental</a></li>
+<li><a href="#OsPd">Results for -Os, POSIX Enabled, Core Only</a></li>
+<li><a href="#OsPD">Results for -Os, POSIX Enabled, Developmental</a></li>
 </ul>
 </br>
 EOF
