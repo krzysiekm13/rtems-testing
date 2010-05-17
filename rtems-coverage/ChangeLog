@@ -1,3 +1,12 @@
+2010-05-17	Glenn Humphrey
+
+	* CoverageReaderBase.h, CoverageReaderQEMU.cc, CoverageReaderQEMU.h,
+	CoverageReaderRTEMS.cc, CoverageReaderRTEMS.h,
+	CoverageReaderSkyeye.cc, CoverageReaderSkyeye.h,
+	CoverageReaderTSIM.cc, CoverageReaderTSIM.h, app_common.cc,
+	app_common.h, covoar.cc: Verified that the executable files and the
+	coverage files were readable before performing any analysis.
+
 2010-05-17	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* ReportsHtml.cc: Added summary report to index.

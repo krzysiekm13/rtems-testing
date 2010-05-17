@@ -38,7 +38,7 @@ TBD
     virtual ~CoverageReaderRTEMS();
 
     /* Inherit documentation from base class. */
-    bool processFile(
+    void processFile(
       const char* const     file,
       ExecutableInfo* const executableInformation
     );

@@ -22,10 +22,8 @@
 
 /* hack so this can compile on the RH7 RTEMS 4.5 host */
 #if (__GNUC__ <= 2)
-#define STAT stat
 #define OPEN fopen
 #else
-#define STAT stat64
 #define OPEN fopen64
 #endif
 
@@ -40,14 +38,13 @@ namespace Coverage {
   {
   }
 
-  bool CoverageReaderQEMU::processFile(
+  void CoverageReaderQEMU::processFile(
     const char* const     file,
     ExecutableInfo* const executableInformation
   )
   {
     struct trace_header header;
     uintptr_t           i;
-    struct STAT         statbuf;
     int                 status;
     FILE*               traceFile;
     uint8_t             taken;
@@ -59,33 +56,27 @@ namespace Coverage {
     branchInfo = taken | notTaken;
 
     //
-    // Verify that the coverage file has a non-zero size.
-    //
-    // NOTE: We prefer stat64 because some of the coverage files are HUGE!
-    status = STAT( file, &statbuf );
-    if (status == -1) {
-      fprintf( stderr, "Unable to stat %s\n", file );
-      return false;
-    }
-
-    if (statbuf.st_size == 0) {
-      fprintf( stderr, "%s is 0 bytes long\n", file );
-      return false;
-    }
-
-    //
     // Open the coverage file and read the header.
     //
     traceFile = OPEN( file, "r" );
     if (!traceFile) {
-      fprintf( stderr, "Unable to open %s\n", file );
-      return false;
+      fprintf(
+        stderr,
+        "ERROR: CoverageReaderQEMU::processFile - Unable to open %s\n",
+        file
+      );
+      exit( -1 );
     }
 
     status = fread( &header, sizeof(trace_header), 1, traceFile );
     if (status != 1) {
-      fprintf( stderr, "Unable to read header from %s\n", file );
-      return false;
+      fprintf(
+        stderr,
+        "ERROR: CoverageReaderQEMU::processFile - "
+        "Unable to read header from %s\n",
+        file
+      );
+      exit( -1 );
     }
 
     #if 0
@@ -163,6 +154,5 @@ namespace Coverage {
     }
 
     fclose( traceFile );
-    return true;
   }
 }

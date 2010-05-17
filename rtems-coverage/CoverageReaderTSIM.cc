@@ -27,7 +27,7 @@ namespace Coverage {
   {
   }
 
-  bool CoverageReaderTSIM::processFile(
+  void CoverageReaderTSIM::processFile(
     const char* const     file,
     ExecutableInfo* const executableInformation
   )
@@ -37,30 +37,19 @@ namespace Coverage {
     int              cover;
     FILE*            coverageFile;
     int              i;
-    struct stat      statbuf;
     int              status;
-
-    //
-    // Verify that the coverage file has a non-zero size.
-    //
-    status = stat( file, &statbuf );
-    if (status == -1) {
-      fprintf( stderr, "Unable to stat %s\n", file );
-      return false;
-    }
-
-    if (statbuf.st_size == 0) {
-      fprintf( stderr, "%s is 0 bytes long\n", file );
-      return false;
-    }
 
     //
     // Open the coverage file.
     //
     coverageFile = fopen( file, "r" );
     if (!coverageFile) {
-      fprintf( stderr, "Unable to open %s\n", file );
-      return false;
+      fprintf(
+        stderr,
+        "ERROR: CoverageReaderTSIM::processFile - Unable to open %s\n",
+        file
+      );
+      exit( -1 );
     }
 
     //
@@ -103,6 +92,5 @@ namespace Coverage {
     }
 
     fclose( coverageFile );
-    return true;
   }
 }

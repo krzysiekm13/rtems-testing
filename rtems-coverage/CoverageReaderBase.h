@@ -41,10 +41,8 @@ namespace Coverage {
      *  @param[in] file is the coverage file to process
      *  @param[in] executableInformation is the information for an
      *             associated executable
-     *
-     *  @return Returns TRUE if the method succeeded and FALSE if it failed.
      */
-    virtual bool processFile(
+    virtual void processFile(
       const char* const     file,
       ExecutableInfo* const executableInformation
     ) = 0;

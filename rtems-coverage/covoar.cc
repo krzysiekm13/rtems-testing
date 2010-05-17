@@ -153,18 +153,18 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "1:e:c:E:f:s:T:vC:O:")) != -1) {
+  while ((opt = getopt(argc, argv, "C:1:e:c:E:f:s:T:O:v")) != -1) {
     switch (opt) {
       case 'C': CoverageConfiguration->processFile( optarg ); break;
-      case '1': singleExecutable = optarg;       break;
-      case 'e': executableExtension = optarg;    break;
-      case 'c': coverageFileExtension = optarg;  break;
-      case 'E': explanations          = optarg;  break;
-      case 's': symbolsFile           = optarg;  break;
-      case 'T': target                = optarg;  break;
-      case 'v': Verbose               = true;    break;
-      case 'f': format                = optarg;  break;
-      case 'O': outputDirectory       = optarg;  break;
+      case '1': singleExecutable      = optarg; break;
+      case 'e': executableExtension   = optarg; break;
+      case 'c': coverageFileExtension = optarg; break;
+      case 'E': explanations          = optarg; break;
+      case 'f': format                = optarg; break;
+      case 's': symbolsFile           = optarg; break;
+      case 'T': target                = optarg; break;
+      case 'O': outputDirectory       = optarg; break;
+      case 'v': Verbose               = true;   break;
       default: /* '?' */
         usage();
         exit( -1 );
@@ -179,11 +179,39 @@ int main(
   // If a single executable was specified, process the remaining
   // arguments as coverage file names.
   if (singleExecutable) {
-    executableInfo = new Coverage::ExecutableInfo( singleExecutable );
-    executablesToAnalyze.push_back( executableInfo );
-    for (i=optind; i < argc; i++) {
-      coverageFileName = argv[i];
-      coverageFileNames.push_back( coverageFileName );
+
+    // Ensure that the executable is readable.
+    if (!FileIsReadable( singleExecutable )) {
+      fprintf(
+        stderr,
+        "WARNING: Unable to read executable %s\n",
+        singleExecutable
+      );
+    }
+
+    else {
+
+      for (i=optind; i < argc; i++) {
+
+        // Ensure that the coverage file is readable.
+        if (!FileIsReadable( argv[i] )) {
+          fprintf(
+            stderr,
+            "WARNING: Unable to read coverage file %s\n",
+            argv[i]
+          );
+        }
+
+        else
+          coverageFileNames.push_back( argv[i] );
+      }
+
+      // If there was at least one coverage file, create the
+      // executable information.
+      if (!coverageFileNames.empty()) {
+        executableInfo = new Coverage::ExecutableInfo( singleExecutable );
+        executablesToAnalyze.push_back( executableInfo );
+      }
     }
   }
 
@@ -191,16 +219,47 @@ int main(
   // arguments as executables and derive the coverage file names.
   else {
     for (i = optind; i < argc; i++) {
-      executableInfo = new Coverage::ExecutableInfo( argv[i] );
-      executablesToAnalyze.push_back( executableInfo );
-      coverageFileName = executableInfo->getFileName();
-      coverageFileName.replace(
-        coverageFileName.length() - executableExtensionLength,
-        executableExtensionLength,
-        coverageFileExtension
-      );
-      coverageFileNames.push_back( coverageFileName );
+
+      // Ensure that the executable is readable.
+      if (!FileIsReadable( argv[i] )) {
+        fprintf(
+          stderr,
+          "WARNING: Unable to read executable %s\n",
+          argv[i]
+        );
+      }
+
+      else {
+        coverageFileName = argv[i];
+        coverageFileName.replace(
+          coverageFileName.length() - executableExtensionLength,
+          executableExtensionLength,
+          coverageFileExtension
+        );
+
+        if (!FileIsReadable( coverageFileName.c_str() )) {
+          fprintf(
+            stderr,
+            "WARNING: Unable to read coverage file %s\n",
+            coverageFileName.c_str()
+          );
+        }
+
+        else {
+          executableInfo = new Coverage::ExecutableInfo( argv[i] );
+          executablesToAnalyze.push_back( executableInfo );
+          coverageFileNames.push_back( coverageFileName );
+        }
+      }
     }
+  }
+
+  // Ensure that there is at least one executable to process.
+  if (executablesToAnalyze.empty()) {
+    fprintf(
+      stderr, "ERROR: No information to analyze\n"
+    );
+    exit( -1 );
   }
 
   if (Verbose) {
@@ -266,7 +325,7 @@ int main(
   // Create data to support analysis.
   //
 
-  // Create toolnames based on target.
+  // Create data based on target.
   TargetInfo = Target::TargetFactory( target );
 
   // Create the set of desired symbols.
@@ -329,12 +388,11 @@ int main(
         ((*eitr)->getFileName()).c_str()
       );
 
-    // along with its coverage file.
-    if (coverageReader->processFile( (*citr).c_str(), *eitr )) {
+    // Process its coverage file.
+    coverageReader->processFile( (*citr).c_str(), *eitr );
 
-      // Merge each symbols coverage map into a unified coverage map.
-      (*eitr)->mergeCoverage();
-    }
+    // Merge each symbols coverage map into a unified coverage map.
+    (*eitr)->mergeCoverage();
 
     if (!singleExecutable)
       eitr++;

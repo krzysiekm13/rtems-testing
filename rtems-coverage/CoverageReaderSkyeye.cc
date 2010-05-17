@@ -28,7 +28,7 @@ namespace Coverage {
   {
   }
 
-  bool CoverageReaderSkyeye::processFile(
+  void CoverageReaderSkyeye::processFile(
     const char* const     file,
     ExecutableInfo* const executableInformation
   )
@@ -40,36 +40,30 @@ namespace Coverage {
     prof_header_t    header;
     uintptr_t        i;
     uintptr_t        length;
-    struct stat      statbuf;
     int              status;
-
-    //
-    // Verify that the coverage file has a non-zero size.
-    //
-    status = stat( file, &statbuf );
-    if (status == -1) {
-      fprintf( stderr, "Unable to stat %s\n", file );
-      return false;
-    }
-
-    if (statbuf.st_size == 0) {
-      fprintf( stderr, "%s is 0 bytes long\n", file );
-      return false;
-    }
 
     //
     // Open the coverage file and read the header.
     //
     coverageFile = fopen( file, "r" );
     if (!coverageFile) {
-      fprintf( stderr, "Unable to open %s\n", file );
-      return false;
+      fprintf(
+        stderr,
+        "ERROR: CoverageReaderSkyeye::processFile - Unable to open %s\n",
+        file
+      );
+      exit( -1 );
     }
 
     status = fread( &header, sizeof(header), 1, coverageFile );
     if (status != 1) {
-      fprintf( stderr, "Unable to read header from %s\n", file );
-      return false;
+      fprintf(
+        stderr,
+        "ERROR: CoverageReaderSkyeye::processFile - "
+        "Unable to read header from %s\n",
+        file
+      );
+      exit( -1 );
     }
 
     baseAddress = header.prof_start;
@@ -132,6 +126,5 @@ namespace Coverage {
     }
 
     fclose( coverageFile );
-    return true;
   }
 }
