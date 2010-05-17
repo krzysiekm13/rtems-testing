@@ -51,6 +51,17 @@ namespace Target {
       int&              size
     );
 
+    /*!
+     *  This method returns the bit set by Qemu in the trace record
+     *  when a branch is taken.
+     */
+    virtual uint8_t qemuTakenBit(void);
+
+    /*!
+     *  This method returns the bit set by Qemu in the trace record
+     *  when a branch is taken.
+     */
+    virtual uint8_t qemuNotTakenBit(void);
   private:
   };
 

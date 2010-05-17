@@ -1,3 +1,8 @@
+2010-05-17	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* Target_i386.cc, Target_i386.h: Qemu i386 branch bits were backwards.
+	Branch info now looks correct but may still have issues.
+
 2010-05-17	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* ReportsBase.cc, ReportsHtml.cc: Removed issues resulting in compile

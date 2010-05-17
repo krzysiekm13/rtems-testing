@@ -10,6 +10,7 @@
  */
 
 #include "Target_i386.h"
+#include "qemu-traces.h"
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -92,6 +93,16 @@ namespace Target {
     }
 
     return false;
+  }
+
+  uint8_t Target_i386::qemuTakenBit(void)
+  {
+    return TRACE_OP_BR1;
+  }
+
+  uint8_t Target_i386::qemuNotTakenBit(void)
+  {
+    return TRACE_OP_BR0;
   }
 
 
