@@ -56,13 +56,14 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "c:e:l:t:v")) != -1) {
+  while ((opt = getopt(argc, argv, "c:e:l:L:t:v")) != -1) {
     switch (opt) {
-      case 'c': cpuname = optarg;    break;
-      case 'e': executable = optarg; break;
-      case 'l': logname = optarg;    break;
-      case 't': tracefile = optarg;  break;
-      case 'v': Verbose = true;      break;
+      case 'c': cpuname = optarg;        break;
+      case 'e': executable = optarg;     break;
+      case 'l': logname = optarg;        break;
+      case 'L': dynamicLibrary = optarg; break;
+      case 't': tracefile = optarg;      break;
+      case 'v': Verbose = true;          break;
       default:  usage();
     }
   }
@@ -87,9 +88,7 @@ int main(
   TargetInfo = Target::TargetFactory( cpuname );
 
   if (dynamicLibrary)
-    executableInfo = new Coverage::ExecutableInfo(
-      executable, dynamicLibrary
-    );
+    executableInfo = new Coverage::ExecutableInfo( executable, dynamicLibrary );
   else
     executableInfo = new Coverage::ExecutableInfo( executable );
 
