@@ -1,3 +1,7 @@
+2010-05-18	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* app_common.cc: Style.
+
 2010-05-17	Glenn Humphrey
 
 	* CoverageReaderBase.h, CoverageReaderQEMU.cc, CoverageReaderQEMU.h,

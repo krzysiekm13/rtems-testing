@@ -33,7 +33,11 @@ const char*                 outputDirectory     = ".";
 bool                        BranchInfoAvailable = false;
 Target::TargetBase*         TargetInfo          = NULL;
 
-bool FileIsNewer( const char *f1, const char *f2 ) {
+bool FileIsNewer(
+  const char *f1,
+  const char *f2
+)
+{
   struct STAT buf1, buf2;
 
    if (STAT( f2, &buf2 ) == -1)
@@ -48,7 +52,8 @@ bool FileIsNewer( const char *f1, const char *f2 ) {
   return false;
 }
 
-bool FileIsReadable( const char *f1 ) {
+bool FileIsReadable( const char *f1 )
+{
   struct STAT buf1;
 
   if (STAT( f1, &buf1 ) == -1)
