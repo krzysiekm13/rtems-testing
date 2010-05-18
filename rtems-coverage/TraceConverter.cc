@@ -23,7 +23,6 @@
 #include "app_common.h"
 #include "TargetFactory.h"
 
-//const char* dynamicLibrary = "libfuncs.so";
 const char* dynamicLibrary = NULL;
 char*       progname;
 
