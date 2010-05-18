@@ -34,6 +34,7 @@ std::list<std::string>               coverageFileNames;
 int                                  coverageExtensionLength = 0;
 Coverage::CoverageFormats_t          coverageFormat;
 Coverage::CoverageReaderBase*        coverageReader = NULL;
+const char*                          dynamicLibrary = NULL;
 char*                                executable = NULL;
 char*                                executableExtension = NULL;
 int                                  executableExtensionLength = 0;
@@ -153,10 +154,11 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "C:1:e:c:E:f:s:T:O:v")) != -1) {
+  while ((opt = getopt(argc, argv, "C:1:L:e:c:E:f:s:T:O:v")) != -1) {
     switch (opt) {
       case 'C': CoverageConfiguration->processFile( optarg ); break;
       case '1': singleExecutable      = optarg; break;
+      case 'L': dynamicLibrary        = optarg; break;
       case 'e': executableExtension   = optarg; break;
       case 'c': coverageFileExtension = optarg; break;
       case 'E': explanations          = optarg; break;
@@ -209,7 +211,13 @@ int main(
       // If there was at least one coverage file, create the
       // executable information.
       if (!coverageFileNames.empty()) {
-        executableInfo = new Coverage::ExecutableInfo( singleExecutable );
+        if (dynamicLibrary)
+          executableInfo = new Coverage::ExecutableInfo(
+            singleExecutable, dynamicLibrary
+          );
+        else
+          executableInfo = new Coverage::ExecutableInfo( singleExecutable );
+
         executablesToAnalyze.push_back( executableInfo );
       }
     }
@@ -351,7 +359,7 @@ int main(
   // Create the objdump processor.
   objdumpProcessor = new Coverage::ObjdumpProcessor();
 
-  // Process each executable to analyze.
+  // Prepare each executable for analysis.
   for (eitr = executablesToAnalyze.begin();
        eitr != executablesToAnalyze.end();
        eitr++) {
@@ -363,8 +371,11 @@ int main(
         ((*eitr)->getFileName()).c_str()
       );
 
-    // Create the executable information.
-    (*eitr)->initialize();
+    // If a dynamic library was specified, determine the load address.
+    if (dynamicLibrary)
+      (*eitr)->setLoadAddress(
+        objdumpProcessor->determineLoadAddress( *eitr )
+      );
 
     // Load the objdump for the symbols in this executable.
     objdumpProcessor->load( *eitr );

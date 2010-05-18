@@ -375,13 +375,15 @@ namespace Coverage {
 
   void DesiredSymbols::determineSourceLines(
     CoverageRanges* const theRanges,
-    const std::string&    executableFileName
+    ExecutableInfo* const theExecutable
+
   )
   {
     char*                              base;
     char                               buffer[512];
     char*                              cStatus;
     char                               command[512];
+    std::string                        fileName;
     CoverageRanges::ranges_t::iterator ritr;
     char                               rpath[PATH_MAX];
     FILE*                              tmpfile;
@@ -405,19 +407,24 @@ namespace Coverage {
       fprintf(
         tmpfile,
         "0x%08x\n0x%08x\n",
-        ritr->lowAddress,
-        ritr->highAddress
+        ritr->lowAddress - theExecutable->getLoadAddress(),
+        ritr->highAddress - theExecutable->getLoadAddress()
       );
     }
 
     fclose( tmpfile );
 
     // Invoke addr2line to generate the source lines for each address.
+    if (theExecutable->hasDynamicLibrary())
+      fileName = theExecutable->getLibraryName();
+    else
+      fileName = theExecutable->getFileName();
+
     sprintf(
       command,
       "%s -e %s <%s | dos2unix >%s",
       TargetInfo->getAddr2line(),
-      executableFileName.c_str(),
+      fileName.c_str(),
       "ranges1.tmp",
       "ranges2.tmp"
     );

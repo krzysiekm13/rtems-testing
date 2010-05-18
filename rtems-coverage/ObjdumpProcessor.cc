@@ -84,7 +84,7 @@ namespace Coverage {
     // If there are NOT already saved instructions, save them.
     symbolInfo = SymbolsToAnalyze->find( symbolName );
     if (symbolInfo->instructions.empty()) {
-      symbolInfo->sourceFile = executableInfo->getFileName();
+      symbolInfo->sourceFile = executableInfo;
       symbolInfo->baseAddress = lowAddress;
       symbolInfo->instructions = instructions;
     }
@@ -125,12 +125,146 @@ namespace Coverage {
   {
   }
 
+  uint32_t ObjdumpProcessor::determineLoadAddress(
+    ExecutableInfo* theExecutable
+  )
+  {
+#if 0
+    char         buffer[ 512 ];
+    char*        cStatus;
+    static FILE* gdbCommands = NULL;
+    int          items;
+    uint32_t     loadAddress;
+    FILE*        loadAddressFile = NULL;
+    FILE*        objdumpFile = NULL;
+    uint32_t     offset;
+    int          status;
+    char         terminator;
+
+    // This method should only be call for a dynamic library.
+    if (!theExecutable->hasDynamicLibrary())
+      return 0;
+
+    //
+    // Invoke gdb to determine the physical load address
+    // of the .text section.
+    //
+
+    // Create a gdb input commands file.
+    if (!gdbCommands) {
+
+      gdbCommands = fopen( "gdbCommands", "w" );
+      if (!gdbCommands) {
+        fprintf(
+          stderr,
+          "ERROR: ObjdumpProcessor::determineLoadAddress - "
+          "unable to create gdbCommands\n"
+        );
+        exit( -1 );
+      }
+
+      fprintf(
+        gdbCommands,
+        "set pagination off\n"
+        "b main\n"
+        "r\n"
+        "info sharedlibrary\n"
+        "quit\n"
+      );
+
+      fclose( gdbCommands );
+    }
+
+    // Invoke gdb.
+    sprintf(
+      buffer,
+      "gdb -x gdbCommands %s | grep %s | cut -d ' ' -f1 > %s",
+      (theExecutable->getFileName()).c_str(),
+      (theExecutable->getLibraryName()).c_str(),
+      "library_addr.tmp"
+    );
+
+    status = system( buffer );
+    if (status) {
+      fprintf(
+        stderr,
+        "ERROR: ObjdumpProcessor::determineLoadAddress - "
+        "command (%s) failed with %d\n",
+        buffer,
+        status
+      );
+      exit( -1 );
+    }
+
+    // Read load address.
+    loadAddressFile = fopen( "library_addr.tmp", "r" );
+    if (!loadAddressFile) {
+      fprintf(
+        stderr,
+        "ERROR: ObjdumpProcessor::determineLoadAddress - "
+        "unable to open library_addr.tmp\n"
+      );
+      exit( -1 );
+    }
+
+    cStatus = fgets( buffer, 512, loadAddressFile );
+    items = sscanf(
+      buffer, "%x", &loadAddress
+    );
+
+    fclose( loadAddressFile );
+    unlink( "library_addr.tmp" );
+
+    //
+    // Partially process an objdump of the library to determine the first
+    // symbol's offset from the physical load address of the library.
+    //
+
+    // Obtain the objdump file.
+    objdumpFile = getFile( theExecutable->getLibraryName() );
+
+    // Process the objdump file.
+    while ( 1 ) {
+
+      // Get a line.
+      cStatus = fgets( buffer, 512, objdumpFile );
+      if (cStatus == NULL) {
+        fprintf(
+          stderr,
+          "ERROR: ObjdumpProcessor::determineLoadAddress - "
+          "no symbol found in objdump file\n"
+        );
+        exit( -1 );
+      }
+
+      // Look for the start of a symbol's objdump and extract
+      // address and symbol (i.e. address <symbolname>:).
+      items = sscanf(
+        buffer,
+        "%x <%*[^>]>%c",
+        &offset, &terminator
+      );
+
+      // If all items found, we have found the first symbol's objdump.
+      if ((items == 2) && (terminator == ':')) {
+        break;
+      }
+    }
+
+    return (loadAddress - offset);
+# endif
+    return 0x42084000;
+  }
+
   bool ObjdumpProcessor::IsBranch(
     const char *instruction 
   )
   { 
     if ( !TargetInfo ) {
-      fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
+      fprintf(
+        stderr,
+        "ERROR: ObjdumpProcessor::IsBranch - unknown architecture\n"
+      );
       assert(0);
       return false;
     }
@@ -143,7 +277,10 @@ namespace Coverage {
   )
   {
     if ( !TargetInfo ) {
-      fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
+      fprintf(
+        stderr,
+        "ERROR: ObjdumpProcessor::isBranchLine - unknown architecture\n"
+      );
       assert(0);
       return false;
     }
@@ -156,10 +293,11 @@ namespace Coverage {
     int&              size
   )
   {
-
     if ( !TargetInfo ){
-      fprintf( stderr, "ERROR!!! unknown architecture!!!\n");
-      fprintf( stderr, "HOW LARGE IS NOP ON THIS ARCHITECTURE? -- fix me\n" );
+      fprintf(
+        stderr,
+        "ERROR: ObjdumpProcessor::isNop - unknown architecture\n"
+      );
       assert(0);
       return false;
     }
@@ -167,24 +305,22 @@ namespace Coverage {
     return TargetInfo->isNopLine( line, size );
   }
 
-  FILE* ObjdumpProcessor::getFile( 
-    std::string exeFileName 
-  ) 
+  FILE* ObjdumpProcessor::getFile( std::string fileName ) 
   {
     char               dumpFile[128];
     FILE*              objdumpFile;
     char               buffer[ 512 ];
     int                status;
 
-    sprintf(dumpFile,"%s.dmp", exeFileName.c_str() );
+    sprintf( dumpFile, "%s.dmp", fileName.c_str() );
       
     // Generate the objdump.
-    if ( FileIsNewer( exeFileName.c_str(), dumpFile )) {
+    if (FileIsNewer( fileName.c_str(), dumpFile )) {
       sprintf(
         buffer,
         "%s -da --section=.text --source %s | sed -e \'s/ *$//\' >%s",
         TargetInfo->getObjdump(),
-         exeFileName.c_str(),
+        fileName.c_str(),
         dumpFile
       );
 
@@ -232,16 +368,22 @@ namespace Coverage {
 
   }
 
-  void ObjdumpProcessor::loadAddressTable (std::string executableFileName )
+  void ObjdumpProcessor::loadAddressTable (
+    ExecutableInfo* const executableInformation
+  )
   {
     char               buffer[ 512 ];
     char*              cStatus;
-    uint32_t           instructionAddress;
     int                items;
     FILE*              objdumpFile;
+    uint32_t           offset;
     char               terminator;
 
-    objdumpFile = getFile( executableFileName );
+    // Obtain the objdump file.
+    if (!executableInformation->hasDynamicLibrary())
+      objdumpFile = getFile( executableInformation->getFileName() );
+    else
+      objdumpFile = getFile( executableInformation->getLibraryName() );
 
     // Process all lines from the objdump file.
     while ( 1 ) {
@@ -257,12 +399,14 @@ namespace Coverage {
       items = sscanf(
         buffer,
         "%x%c",
-        &instructionAddress, &terminator
+        &offset, &terminator
       );
 
       // If it looks like an instruction ...
       if ((items == 2) && (terminator == ':')){
-        objdumpList.push_back(instructionAddress);
+        objdumpList.push_back(
+          executableInformation->getLoadAddress() + offset
+        );
       }
     }
   }
@@ -271,23 +415,27 @@ namespace Coverage {
     ExecutableInfo* const executableInformation
   )
   {
-    uint32_t           address;
-    uint32_t           baseAddress = 0;
     char               buffer[ 512 ];
     char*              cStatus;
     std::string        currentSymbol = "";
-    uint32_t           instructionAddress;
+    uint32_t           endAddress;
+    uint32_t           instructionOffset;
     int                items;
     objdumpLine_t      lineInfo;
     FILE*              objdumpFile;
+    uint32_t           offset;
     bool               processSymbol = false;
+    uint32_t           startAddress = 0;
     char               symbol[ 100 ];
     char               terminator1;
     char               terminator2;
     objdumpLines_t     theInstructions;
 
     // Obtain the objdump file.
-    objdumpFile = getFile( executableInformation->getFileName() );
+    if (!executableInformation->hasDynamicLibrary())
+      objdumpFile = getFile( executableInformation->getFileName() );
+    else
+      objdumpFile = getFile( executableInformation->getLibraryName() );
 
     // Process all lines from the objdump file.
     while ( 1 ) {
@@ -301,8 +449,8 @@ namespace Coverage {
           finalizeSymbol(
             executableInformation,
             currentSymbol,
-            baseAddress,
-            address,  // XXX fix to determine correct end address
+            startAddress,
+            executableInformation->getLoadAddress() + offset,
             theInstructions
           );
           fprintf(
@@ -310,7 +458,7 @@ namespace Coverage {
             "WARNING: ObjdumpProcessor::load - analysis of symbol %s \n"
             "         may be incorrect.  It was the last symbol in %s\n"
             "         and the length of its last instruction is assumed "
-		"to be one.\n",
+            "         to be one.\n",
             currentSymbol.c_str(),
             executableInformation->getFileName().c_str()
           );
@@ -328,36 +476,38 @@ namespace Coverage {
       lineInfo.isBranch      = false;
 
       // Look for the start of a symbol's objdump and extract
-      // address and symbol (i.e. address <symbolname>:).
+      // offset and symbol (i.e. offset <symbolname>:).
       items = sscanf(
         buffer,
         "%x <%[^>]>%c",
-        &address, symbol, &terminator1
+        &offset, symbol, &terminator1
       );
 
       // If all items found, we are at the beginning of a symbol's objdump.
       if ((items == 3) && (terminator1 == ':')) {
+
+        endAddress = executableInformation->getLoadAddress() + offset - 1;
 
         // If we are currently processing a symbol, finalize it.
         if (processSymbol) {
           finalizeSymbol(
             executableInformation,
             currentSymbol,
-            baseAddress,
-            address - 1,
+            startAddress,
+            endAddress,
             theInstructions
           );
         }
 
         // Start processing of a new symbol.
-        baseAddress = 0;
+        startAddress = 0;
         currentSymbol = "";
         processSymbol = false;
         theInstructions.clear();
 
         // See if the new symbol is one that we care about.
         if (SymbolsToAnalyze->isDesired( symbol )) {
-          baseAddress = address;
+          startAddress = executableInformation->getLoadAddress() + offset;
           currentSymbol = symbol;
           processSymbol = true;
           theInstructions.push_back( lineInfo );
@@ -370,14 +520,15 @@ namespace Coverage {
         items = sscanf(
           buffer,
           "%x%c\t%*[^\t]%c",
-          &instructionAddress, &terminator1, &terminator2
+          &instructionOffset, &terminator1, &terminator2
         );
 
         // If it looks like an instruction ...
         if ((items == 3) && (terminator1 == ':') && (terminator2 == '\t')) {
 
           // update the line's information, save it and ...
-          lineInfo.address       = instructionAddress;
+          lineInfo.address =
+           executableInformation->getLoadAddress() + instructionOffset;
           lineInfo.isInstruction = true;
           lineInfo.isNop         = isNop( buffer, lineInfo.nopSize );
           lineInfo.isBranch      = isBranchLine( buffer );

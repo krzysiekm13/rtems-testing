@@ -19,10 +19,17 @@
 
 namespace Coverage {
 
-  ExecutableInfo::ExecutableInfo( const char* const executableName )
+  ExecutableInfo::ExecutableInfo(
+    const char* const theExecutableName,
+    const char* const theLibraryName
+  )
   {
-    fileName = executableName;
-    theSymbolTable = NULL;
+    executableName = theExecutableName;
+    loadAddress = 0;
+    libraryName = "";
+    if (theLibraryName)
+      libraryName = theLibraryName;
+    theSymbolTable = new SymbolTable();
   }
 
   ExecutableInfo::~ExecutableInfo()
@@ -58,18 +65,23 @@ namespace Coverage {
 
   std::string ExecutableInfo::getFileName ( void ) const
   {
-    return fileName;
+    return executableName;
   }
+
+  std::string ExecutableInfo::getLibraryName( void ) const
+  {
+    return libraryName;
+  }
+
+  uint32_t ExecutableInfo::getLoadAddress( void ) const
+  {
+    return loadAddress;
+  }
+
 
   SymbolTable* ExecutableInfo::getSymbolTable ( void ) const
   {
     return theSymbolTable;
-  }
-
-  void ExecutableInfo::initialize( void )
-  {
-    // Create the symbol table.
-    theSymbolTable = new SymbolTable();
   }
 
   CoverageMapBase* ExecutableInfo::createCoverageMap (
@@ -94,12 +106,22 @@ namespace Coverage {
     return theMap;
   }
 
+  bool ExecutableInfo::hasDynamicLibrary( void )
+  {
+     return (libraryName != "");
+  }
+
   void ExecutableInfo::mergeCoverage( void ) {
     ExecutableInfo::coverageMaps_t::iterator  itr;
 
     for (itr = coverageMaps.begin(); itr != coverageMaps.end(); itr++) {
       SymbolsToAnalyze->mergeCoverageMap( (*itr).first, (*itr).second );
     }
+  }
+
+  void ExecutableInfo::setLoadAddress( uint32_t address )
+  {
+    loadAddress = address;
   }
 
 }

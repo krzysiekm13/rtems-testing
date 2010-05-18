@@ -18,6 +18,7 @@
 
 #include "CoverageMapBase.h"
 #include "CoverageRanges.h"
+#include "ExecutableInfo.h"
 #include "ObjdumpProcessor.h"
 
 namespace Coverage {
@@ -133,10 +134,10 @@ namespace Coverage {
     std::list<ObjdumpProcessor::objdumpLine_t> instructions;
 
     /*!
-     *  This member contains the name of the file that was used to
+     *  This member contains the executable that was used to
      *  generate the disassembled instructions.
      */
-    std::string sourceFile;
+    ExecutableInfo* sourceFile;
 
     /*!
      *  This member contains the statistics kept on each symbol.
@@ -325,7 +326,7 @@ namespace Coverage {
      */
     void determineSourceLines(
       CoverageRanges* const theRanges,
-      const std::string&    executableFileName
+      ExecutableInfo* const theExecutable
     );
 
   };

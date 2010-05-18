@@ -23,7 +23,9 @@
 #include "app_common.h"
 #include "TargetFactory.h"
 
-char *progname;
+//const char* dynamicLibrary = "libfuncs.so";
+const char* dynamicLibrary = NULL;
+char*       progname;
 
 void usage()
 {
@@ -47,6 +49,7 @@ int main(
   const char                  *executable = "";
   const char                  *tracefile  =  "";
   const char                  *logname = "/tmp/qemu.log";
+  Coverage::ExecutableInfo*    executableInfo;
    
   //
   // Process command line options.
@@ -83,9 +86,22 @@ int main(
   // Create toolnames.
   TargetInfo = Target::TargetFactory( cpuname );
 
+  if (dynamicLibrary)
+    executableInfo = new Coverage::ExecutableInfo(
+      executable, dynamicLibrary
+    );
+  else
+    executableInfo = new Coverage::ExecutableInfo( executable );
+
   objdumpProcessor = new Coverage::ObjdumpProcessor();
  
-  objdumpProcessor->loadAddressTable( executable );
+  // If a dynamic library was specified, determine the load address.
+  if (dynamicLibrary)
+    executableInfo->setLoadAddress(
+      objdumpProcessor->determineLoadAddress( executableInfo )
+    );
+
+  objdumpProcessor->loadAddressTable( executableInfo );
 
   log.processFile( logname );
 

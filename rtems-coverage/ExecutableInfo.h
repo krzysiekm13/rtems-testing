@@ -32,9 +32,13 @@ namespace Coverage {
     /*!
      *  This method constructs an ExecutableInfo instance.
      *
-     *  @param[in] executableName specifies the filename of the executable
+     *  @param[in] theExecutableName specifies the name of the executable
+     *  @param[in] theLibraryName specifies the name of the executable
      */
-    ExecutableInfo( const char* const executableName );
+    ExecutableInfo(
+      const char* const theExecutableName,
+      const char* const theLibraryName = NULL
+    );
 
     /*!
      *  This method destructs an ExecutableInfo instance.
@@ -65,16 +69,25 @@ namespace Coverage {
     std::string getFileName( void ) const;
 
     /*!
+     *  This method returns the library name associated with the executable.
+     *
+     *  @return Returns the executable's library name
+     */
+    std::string getLibraryName( void ) const;
+
+    /*!
+     *  This method returns the load address of the dynamic library
+     *
+     *  @return Returns the load address of the dynamic library
+     */
+    uint32_t getLoadAddress( void ) const;
+
+    /*!
      *  This method returns a pointer to the executable's symbol table.
      *
      *  @return Returns a pointer to the symbol table.
      */
     SymbolTable* getSymbolTable( void ) const;
-
-    /*!
-     *  This method initializes the ExecutableInfo instance.
-     */
-    void initialize( void );
 
     /*!
      *  This method creates a coverage map for the specified symbol.
@@ -92,10 +105,26 @@ namespace Coverage {
     );
 
     /*!
+     *  This method indicates whether a dynamic library has been
+     *  associated with the executable.
+     *
+     *  @return Returns TRUE if 
+     */
+    bool hasDynamicLibrary( void );
+
+    /*!
      *  This method merges the coverage maps for this executable into
      *  the unified coverage map.
      */
     void mergeCoverage( void );
+
+    /*!
+     *  This method sets the load address of the dynamic library
+     *
+     *  @param[in] address specifies the load address of the dynamic
+     *             library
+     */
+    void setLoadAddress( uint32_t address );
 
   private:
 
@@ -106,13 +135,25 @@ namespace Coverage {
     coverageMaps_t coverageMaps;
 
     /*!
-     *  This member variable contains the filename of the executable.
+     *  This member variable contains the name of the executable.
      */
-    std::string fileName;
+    std::string executableName;
+
+    /*!
+     *  This member variable contains the name of a dynamic library
+     *  associated with the executable.
+     */
+    std::string libraryName;
+
+    /*!
+     *  This member variable contains the load address of a dynamic library
+     *  if one has been specified for the executable.
+     */
+    uint32_t loadAddress;
 
     /*!
      *  This member variable contains a pointer to the symbol table
-     *  of the executable.
+     *  of the executable or library.
      */
     SymbolTable* theSymbolTable;
 

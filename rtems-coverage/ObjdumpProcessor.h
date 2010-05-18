@@ -86,20 +86,22 @@ namespace Coverage {
      */
     virtual ~ObjdumpProcessor();
 
+    uint32_t determineLoadAddress(
+      ExecutableInfo* theExecutable
+    );
+
     /*!
      *  This method returns a file pointer to the objdump file
-     *  for the given executable file name.  
+     *  for the given file name.  
      */
-    FILE* getFile( 
-      std::string exeFileName 
-    ); 
+    FILE* getFile( std::string fileName ); 
 
     /*!
      *  This method fills the objdumpList list with all the 
      *  instruction addresses in the object dump file.
      */
     void loadAddressTable (
-      std::string executableFileName
+      ExecutableInfo* const executableInformation
     );
 
     /*!
