@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <algorithm>
+#include <string>
 
 #include "app_common.h"
 #include "ObjdumpProcessor.h"
@@ -129,21 +130,24 @@ namespace Coverage {
     ExecutableInfo* theExecutable
   )
   {
-#if 0
+    #define METHOD "ERROR: ObjdumpProcessor::determineLoadAddress - "
+    FILE*        loadAddressFile = NULL;
     char         buffer[ 512 ];
     char*        cStatus;
-    static FILE* gdbCommands = NULL;
-    int          items;
-    uint32_t     loadAddress;
-    FILE*        loadAddressFile = NULL;
-    FILE*        objdumpFile = NULL;
     uint32_t     offset;
-    int          status;
-    char         terminator;
 
     // This method should only be call for a dynamic library.
     if (!theExecutable->hasDynamicLibrary())
       return 0;
+
+#if 0
+    static FILE* gdbCommands = NULL;
+    int          items;
+    uint32_t     loadAddress;
+    FILE*        objdumpFile = NULL;
+    int          status;
+    char         terminator;
+
 
     //
     // Invoke gdb to determine the physical load address
@@ -253,7 +257,48 @@ namespace Coverage {
 
     return (loadAddress - offset);
 # endif
-    return 0x42084000;
+#if 1
+    std::string dlinfoName = theExecutable->getFileName();
+    uint32_t address;
+    char inLibName[128];
+    std::string Library = theExecutable->getLibraryName();
+
+    dlinfoName += ".dlinfo";
+    // Read load address.
+    loadAddressFile = fopen( dlinfoName.c_str(), "r" );
+    if (!loadAddressFile) {
+      fprintf( stderr, METHOD "unable to open %s\n", dlinfoName.c_str() );
+      exit( -1 );
+    }
+
+    // Process the dlinfo file.
+    while ( 1 ) {
+
+      // Get a line.
+      cStatus = fgets( buffer, 512, loadAddressFile );
+      if (cStatus == NULL) {
+        fprintf(
+          stderr,
+          METHOD "library %s not found in %s\n",
+          Library.c_str(),
+          dlinfoName.c_str()
+        );
+        fclose( loadAddressFile );
+        exit( -1 );
+      }
+      sscanf( buffer, "%s %x", inLibName, &offset );
+      std::string tmp = inLibName;
+      if ( tmp.find( Library ) != tmp.npos ) {
+        // fprintf( stderr, "%s - 0x%08x\n", inLibName, offset );
+        address = offset; 
+        break;
+      }
+    }
+
+    fclose( loadAddressFile );
+    return address;
+#endif
+    #undef METHOD
   }
 
   bool ObjdumpProcessor::IsBranch(
