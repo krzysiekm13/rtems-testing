@@ -1,5 +1,11 @@
 2010-05-19	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* ReportsHtml.cc, do_coverage: Can now add project specific reports to
+	the index.html. RTEMS does this.
+	* rtems_items.sed: New file.
+
+2010-05-19	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* Target_i386.cc, Target_i386.h: Spacing.
 	* Target_m68k.cc, Target_m68k.h, Target_powerpc.cc: Branch
 	information now correct on m68k and PowerPC.

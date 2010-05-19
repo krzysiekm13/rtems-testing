@@ -74,9 +74,13 @@ namespace Coverage {
     PRINT_ITEM( "Size Report",          "sizes" );
 
     PRINT_TEXT_ITEM( "Explanations Not Found", "ExplanationsNotFound.txt" );
-    PRINT_TEXT_ITEM( "Summary", "summary.txt" );
 
-    fprintf( aFile, "</li>\n" );
+    fprintf(
+      aFile,
+      "</li>\n"
+      "<!-- INSERT PROJECT SPECIFIC ITEMS HERE -->\n"
+      "</html>\n"
+    );
 
     CloseFile( aFile );
 

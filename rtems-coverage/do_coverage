@@ -353,8 +353,7 @@ generate_reports()
 
   rm -rf ${results_dir}
   mkdir  ${results_dir}
-  ${COVBASE}/covoar \
-    -C ${BASEDIR}/${BSP}-tests/config \
+  ${COVBASE}/covoar -C ${BASEDIR}/${BSP}-tests/config \
     *.exe > ${results_dir}/summary.txt
   check_status $? "covoar failed"
 
@@ -380,6 +379,11 @@ generate_reports()
   generate_html ${results_dir}/summary.txt >${results_dir}/row.html
 
   cat ${results_dir}/summary.txt ${results_dir}/testsWithNoEndOfTest.txt
+
+  cp ${results_dir}/index.html ${results_dir}/index.html.tmp
+  sed -f ${COVBASE}/rtems_items.sed  \
+    <${results_dir}/index.html.tmp \
+    >${results_dir}/index.html 
 
   # Now create the archive of information
   cp ${COVBASE}/covoar.css ${COVBASE}/*gif ${COVBASE}/table.js ${results_dir}
