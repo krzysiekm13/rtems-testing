@@ -59,6 +59,12 @@ namespace Target {
       const char* const instruction
     );
 
+    /* Documentation inherited from base class */
+    virtual uint8_t qemuTakenBit(void);
+
+    /* Documentation inherited from base class */
+    virtual uint8_t qemuNotTakenBit(void);
+
   private:
 
   };

@@ -19,9 +19,27 @@ namespace Target {
   Target_powerpc::Target_powerpc( std::string targetName ):
     TargetBase( targetName )
   {
-    branchInstructions.push_back("b");
-    branchInstructions.push_back("ba");
-    branchInstructions.push_back("bl");
+    // bl is actually branch and link which is a call
+    // branchInstructions.push_back("b");
+    // branchInstructions.push_back("ba");
+    branchInstructions.push_back("beq");
+    branchInstructions.push_back("beq+");
+    branchInstructions.push_back("beq-");
+    branchInstructions.push_back("bne");
+    branchInstructions.push_back("bne+");
+    branchInstructions.push_back("bne-");
+    branchInstructions.push_back("bge");
+    branchInstructions.push_back("bge+");
+    branchInstructions.push_back("bge-");
+    branchInstructions.push_back("bgt");
+    branchInstructions.push_back("bgt+");
+    branchInstructions.push_back("bgt-");
+    branchInstructions.push_back("ble");
+    branchInstructions.push_back("ble+");
+    branchInstructions.push_back("ble-");
+    branchInstructions.push_back("blt");
+    branchInstructions.push_back("blt+");
+    branchInstructions.push_back("blt-");
     branchInstructions.push_back("bla");
     branchInstructions.push_back("bc");
     branchInstructions.push_back("bca");

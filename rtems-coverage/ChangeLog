@@ -1,3 +1,9 @@
+2010-05-19	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* Target_i386.cc, Target_i386.h: Spacing.
+	* Target_m68k.cc, Target_m68k.h, Target_powerpc.cc: Branch
+	information now correct on m68k and PowerPC.
+
 2010-05-19	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* Target_powerpc.cc: Added missing branch instructions to table of

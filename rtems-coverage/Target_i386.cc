@@ -105,7 +105,6 @@ namespace Target {
     return TRACE_OP_BR0;
   }
 
-
   TargetBase *Target_i386_Constructor(
     std::string          targetName
   )
