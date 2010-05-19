@@ -19,12 +19,19 @@ namespace Target {
   Target_powerpc::Target_powerpc( std::string targetName ):
     TargetBase( targetName )
   {
+    branchInstructions.push_back("b");
+    branchInstructions.push_back("ba");
+    branchInstructions.push_back("bl");
+    branchInstructions.push_back("bla");
     branchInstructions.push_back("bc");
     branchInstructions.push_back("bca");
     branchInstructions.push_back("bcl");
     branchInstructions.push_back("bcla");
     branchInstructions.push_back("bcctr");
     branchInstructions.push_back("bcctrl");
+    branchInstructions.push_back("bclr");
+    branchInstructions.push_back("bclrl");
+
   
     branchInstructions.sort();    
   }

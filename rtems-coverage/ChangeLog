@@ -1,5 +1,10 @@
 2010-05-19	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
+	* Target_powerpc.cc: Added missing branch instructions to table of
+	branch instructions for powerpc.
+
+2010-05-19	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
 	* ConfigFile.h, CoverageRanges.h, DesiredSymbols.h, Doxyfile,
 	ObjdumpProcessor.h, ReportsBase.cc, ReportsBase.h, ReportsHtml.cc,
 	ReportsHtml.h, ReportsText.cc, ReportsText.h, Target_lm32.h,
