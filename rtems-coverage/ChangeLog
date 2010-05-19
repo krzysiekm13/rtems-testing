@@ -1,3 +1,10 @@
+2010-05-19	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* covoar.cc: Add executable and coverage file extension parameters
+	to configuration file.
+	* do_coverage: Use configuration file for RTEMS runs.
+	* rtems_config.in: New file.
+
 2010-05-18	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ObjdumpProcessor.cc: Now read dlinfo from file.

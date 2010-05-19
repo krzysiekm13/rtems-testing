@@ -340,15 +340,21 @@ generate_reports()
   cd ${BASEDIR}/${BSP}-tests/
   check_status $? "cd ${BSP}-tests"
 
+  sed -e "s/@FORMAT@/${COVERAGE_FORMAT}/" \
+      -e "s/@TARGET@/${TARGET}/" \
+      -e "s,@EXPLANATIONS@,${COVBASE}/Explanations.txt," \
+      -e "s,@SYMBOLS_FILE@,${BASEDIR}/${BSP}-tests/rtems.syms," \
+      -e "s,@OUTPUT_DIRECTORY@,${results_dir}," \
+      -e "s/@EXECUTABLE_EXTENSION@/exe/" \
+      -e "s/@COVERAGE_EXTENSION@/${RTEMSEXT}.${COVEXT}/" \
+      <${COVBASE}/rtems_config.in \
+      >${BASEDIR}/${BSP}-tests/config
+  check_status $? "Unable to generate COVOAR config file"
+
   rm -rf ${results_dir}
   mkdir  ${results_dir}
   ${COVBASE}/covoar \
-    -O ${results_dir} \
-    -T ${TARGET} \
-    -f ${COVERAGE_FORMAT} \
-    -s rtems.syms \
-    -E ${COVBASE}/Explanations.txt \
-    -e exe -c ${RTEMSEXT}.${COVEXT} \
+    -C ${BASEDIR}/${BSP}-tests/config \
     *.exe > ${results_dir}/summary.txt
   check_status $? "covoar failed"
 

@@ -29,14 +29,14 @@
 /*
  *  Variables to control general behavior
  */
-char*                                coverageFileExtension = NULL;
+const char*                          coverageFileExtension = NULL;
 std::list<std::string>               coverageFileNames;
 int                                  coverageExtensionLength = 0;
 Coverage::CoverageFormats_t          coverageFormat;
 Coverage::CoverageReaderBase*        coverageReader = NULL;
 const char*                          dynamicLibrary = NULL;
 char*                                executable = NULL;
-char*                                executableExtension = NULL;
+const char*                          executableExtension = NULL;
 int                                  executableExtensionLength = 0;
 std::list<Coverage::ExecutableInfo*> executablesToAnalyze;
 const char*                          explanations = NULL;
@@ -83,12 +83,15 @@ void usage()
 Configuration::FileReader *CoverageConfiguration;
 
 Configuration::Options_t Options[] = {
-  { "explanations", NULL },
-  { "format",       NULL },
-  { "symbolsFile ", NULL },
-  { "target",       NULL },
-  { "verbose",      NULL },
-  { NULL,           NULL }
+  { "explanations",         NULL },
+  { "format",               NULL },
+  { "symbolsFile",          NULL },
+  { "outputDirectory",      NULL },
+  { "executableExtension",  NULL },
+  { "coverageExtension",    NULL },
+  { "target",               NULL },
+  { "verbose",              NULL },
+  { NULL,                   NULL }
 };
 
 bool isTrue(const char *value)
@@ -117,11 +120,13 @@ void check_configuration(void)
 {
   GET_BOOL( "verbose", Verbose );
 
-  GET_STRING( "format",           format );
-  GET_STRING( "target",           target );
-  GET_STRING( "explanations",     explanations );
-  GET_STRING( "symbolsFile",      symbolsFile );
-  GET_STRING( "outputDirectory",  outputDirectory );
+  GET_STRING( "format",               format );
+  GET_STRING( "target",               target );
+  GET_STRING( "explanations",         explanations );
+  GET_STRING( "symbolsFile",          symbolsFile );
+  GET_STRING( "outputDirectory",      outputDirectory );
+  GET_STRING( "executableExtension",  executableExtension );
+  GET_STRING( "coverageExtension",    coverageFileExtension );
 
   // Now calculate some values
   if ( coverageFileExtension )
