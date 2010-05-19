@@ -380,7 +380,7 @@ generate_reports()
 
   cat ${results_dir}/summary.txt ${results_dir}/testsWithNoEndOfTest.txt
 
-  cp ${results_dir}/index.html ${results_dir}/index.html.tmp
+  mv ${results_dir}/index.html ${results_dir}/index.html.tmp
   sed -f ${COVBASE}/rtems_items.sed  \
     <${results_dir}/index.html.tmp \
     >${results_dir}/index.html 
