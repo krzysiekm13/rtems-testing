@@ -15,6 +15,11 @@
 
 namespace Configuration {
 
+  /*!
+   *  
+   *  This structure contains the configuration parameter
+   *  name and value pair.
+   */ 
   typedef struct {
     const char *option;
     const char *value;

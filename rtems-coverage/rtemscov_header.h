@@ -15,6 +15,11 @@
 
 #define MAX_DESC_STR 32
 
+/*!
+ *
+ *   This structure contains XXX
+ */
+
 typedef struct prof_header_s{
   /** the version of header file */
   int ver;

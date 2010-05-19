@@ -18,6 +18,10 @@
 
 namespace Coverage {
 
+/*!
+ *   This class contains all methods and data necessary to
+ *   produce all text style reports.
+ */
 class ReportsText: public ReportsBase {
 
   public:
@@ -76,6 +80,7 @@ class ReportsText: public ReportsBase {
 
     virtual void putCoverageNoRange(
       FILE*        report,
+      FILE*        noRangeFile,
       unsigned int number,
       std::string  symbol
     );

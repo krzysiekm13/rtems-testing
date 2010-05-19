@@ -84,6 +84,14 @@ FILE* ReportsBase::OpenCoverageFile(
   return OpenFile(fileName);
 }
 
+FILE* ReportsBase::OpenNoRangeFile(
+  const char* const fileName
+)
+{
+  return OpenFile(fileName);
+}
+
+
 FILE* ReportsBase::OpenSizeFile(
   const char* const fileName
 )
@@ -121,6 +129,13 @@ void ReportsBase::CloseBranchFile(
 }
 
 void  ReportsBase::CloseCoverageFile(
+  FILE*  aFile
+)
+{
+  CloseFile( aFile );
+}
+
+void  ReportsBase::CloseNoRangeFile(
   FILE*  aFile
 )
 {
@@ -289,7 +304,17 @@ void ReportsBase::WriteCoverageReport(
   FILE*                                           report;
   Coverage::CoverageRanges::ranges_t::iterator    ritr;
   Coverage::CoverageRanges*                       theRanges;
-  unsigned int                                    count;
+  unsigned int                                    count, count2;
+  FILE*                                           NoRangeFile;
+  std::string                                     NoRangeName;
+
+  // Open special file that captures NoRange informaiton
+  NoRangeName = "no_range_";
+  NoRangeName +=  fileName;
+  NoRangeFile = OpenNoRangeFile ( NoRangeName.c_str() );
+  if (!NoRangeFile) {
+    return;
+  }
 
   // Open the coverage report file.
   report = OpenCoverageFile( fileName );
@@ -310,7 +335,7 @@ void ReportsBase::WriteCoverageReport(
     // desired symbols list or with the executables so put something
     // in the report.
     if (theRanges == NULL) {
-      putCoverageNoRange( report, count, ditr->first );
+      putCoverageNoRange( report, NoRangeFile, count, ditr->first );
       count++;
     }  else if (!theRanges->set.empty()) {
 
@@ -323,7 +348,9 @@ void ReportsBase::WriteCoverageReport(
     }
   }
 
+  CloseNoRangeFile( NoRangeFile );
   CloseCoverageFile( report );
+
 }
 
 /*

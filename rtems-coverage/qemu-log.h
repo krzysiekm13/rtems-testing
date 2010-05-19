@@ -13,6 +13,10 @@
 #define QEMU_LOG_SECTION_END    "----------------"
 #define QEMU_LOG_IN_KEY         "IN: "
 
+/*!
+ *   This structure breaks apart the log line information
+ *   into the components address, instruction and data.
+ */
 typedef struct {
   unsigned long address;
   char          instruction[10];

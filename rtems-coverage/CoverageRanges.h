@@ -42,19 +42,54 @@ namespace Coverage {
      *  This type defines the information kept for each range.
      */
     typedef struct {
+      /*!
+       *  This member contains an identification number for this 
+       *  coverage range.
+       */
       uint32_t          id;
+
+      /*!
+       *  This member contains the low address of this coverage 
+       *  range.
+       */
       uint32_t          lowAddress;
+
+      /*!
+       *  This member contains the source line associated with the 
+       *  low address for this coverage range.
+       */
       std::string       lowSourceLine;
+
+      /*!
+       * This member contains the high address for this coverage range.
+       */
       uint32_t          highAddress;
+
+      /*!
+       *  This member contains the high source line for this coverage range.
+       */
       std::string       highSourceLine;
+
+      /*!
+       * This member contains an instruction count for this coverage 
+       * address range.
+       */
       uint32_t          instructionCount;
+
+      /*!
+       *  This member contains the reason that this area was uncovered.
+       */
       uncoveredReason_t reason;
     } coverageRange_t;
 
     /*!
-     *  This member variable contains a list of CoverageRange instances.
+     *  This type contains a list of CoverageRange instances.
      */
     typedef std::list<coverageRange_t> ranges_t;
+
+    /*!
+     *  This member contains a list of the CoverageRange instances.
+     */
     ranges_t set;
 
     /*! 

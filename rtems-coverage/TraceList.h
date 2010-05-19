@@ -25,6 +25,10 @@ namespace Trace {
 
   public:
 
+    /*!
+     *  This enumberated type defines an exit reason
+     *  for the end of a section.
+     */
     typedef enum {
       EXIT_REASON_BRANCH_TAKEN,
       EXIT_REASON_BRANCH_NOT_TAKEN,
@@ -35,8 +39,22 @@ namespace Trace {
      *  This type defines the information kept for each range.
      */
     typedef struct {
+      /*!
+       *  This member variable contains the low address for the
+       *  trace range.
+       */
       uint32_t          lowAddress;
+
+      /*!
+       *  This member variable contains the length of the trace
+       *  range.
+       */
       uint16_t          length;
+
+      /*!
+       *  This member variable contains the reason that this
+       *  trace range ended.
+       */
       exitReason_t      exitReason;
     } traceRange_t;
 
@@ -44,6 +62,11 @@ namespace Trace {
      *  This member variable contains a list of CoverageRange instances.
      */
     typedef std::list<traceRange_t> ranges_t;
+
+    /*!
+     *  This member variable contains a list of coverageRange
+     *  instaces.
+     */
     ranges_t set;
 
     /*! 

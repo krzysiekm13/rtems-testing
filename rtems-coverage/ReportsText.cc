@@ -115,6 +115,7 @@ bool ReportsText::PutBranchEntry(
 
 void ReportsText::putCoverageNoRange(
   FILE*         report,
+  FILE*         noRangeFile,
   unsigned int  number,
   std::string   symbol
 )
@@ -131,6 +132,7 @@ void ReportsText::putCoverageNoRange(
         "============================================\n",
         symbol.c_str()
       );
+      fprintf( noRangeFile, "%s\n", symbol.c_str() );
 }
 
 bool ReportsText::PutCoverageLine(

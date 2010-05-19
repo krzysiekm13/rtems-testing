@@ -72,8 +72,17 @@ namespace Coverage {
 
     } objdumpLine_t;
 
+    /*!
+     *  This object defines a list of object dump lines
+     *  for a file.
+     */
     typedef std::list<objdumpLine_t> objdumpLines_t;
 
+   
+    /*!
+     *  This object defines a list of instruction addresses
+     *  that will be extracted from the objdump file.
+     */ 
     typedef std::list<uint32_t> objdumpFile_t;
 
     /*!
@@ -135,6 +144,10 @@ namespace Coverage {
 
   private:
 
+    /*!
+     *  This variable consists of a list of all instruction addresses
+     *  extracted from the obj dump file.
+     */
     objdumpFile_t       objdumpList;
 
     /*!

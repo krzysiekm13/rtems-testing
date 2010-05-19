@@ -1,3 +1,12 @@
+2010-05-19	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* ConfigFile.h, CoverageRanges.h, DesiredSymbols.h, Doxyfile,
+	ObjdumpProcessor.h, ReportsBase.cc, ReportsBase.h, ReportsHtml.cc,
+	ReportsHtml.h, ReportsText.cc, ReportsText.h, Target_lm32.h,
+	Target_m68k.h, Target_powerpc.h, TraceList.h, qemu-log.h,
+	rtemscov_header.h: Resolved doxygen warnings. Added a NoRange report
+	which lists all symbols that are never accessed by an executable.
+
 2010-05-19	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* covoar.cc: Add executable and coverage file extension parameters

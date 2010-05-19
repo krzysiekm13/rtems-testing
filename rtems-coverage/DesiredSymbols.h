@@ -24,7 +24,7 @@
 namespace Coverage {
 
 
-  /*! @class Stats
+  /*! 
    * 
    *  This class defines the statistics that are tracked.
    */
@@ -188,6 +188,11 @@ namespace Coverage {
      *  This map associates each symbol with its symbol information.
      */
     typedef std::map<std::string, SymbolInformation> symbolSet_t;
+
+    /*!
+     *  This variable contains a map of ymbol sets for each 
+     *  symbol in the system keyed on the symbol name.
+     */
     symbolSet_t set;
 
     /*! 

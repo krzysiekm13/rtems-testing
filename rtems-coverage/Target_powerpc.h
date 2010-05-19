@@ -18,7 +18,7 @@
 
 namespace Target {
 
-  /*! @class TargetBase
+  /*!
    *
    *  This class is the class for the powerpc target.
    *

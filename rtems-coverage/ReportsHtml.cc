@@ -117,6 +117,7 @@ namespace Coverage {
 
     fprintf(
       aFile,
+      "<title>Annotated Report</title>\n"
       "<pre class=\"heading-title\">Annotated Report</pre>\n"
       "<body>\n"
       "<pre class=\"code\">\n"
@@ -139,6 +140,7 @@ namespace Coverage {
       // Put header information into the file
       fprintf(
         aFile,
+        "<title>Branch Report</title\n"
         "<pre class=\"heading-title\">Branch Report</pre>\n"
         "<body>\n"
          "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
@@ -172,6 +174,7 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
+        "<title>Coverage Report</title>\n"
         "<pre class=\"heading-title\">Coverage Report</pre>\n"
         "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
@@ -192,6 +195,36 @@ namespace Coverage {
     return aFile;
   }
 
+  FILE* ReportsHtml::OpenNoRangeFile(
+    const char* const fileName
+  )
+  {
+    FILE *aFile;
+
+    // Open the file
+    aFile = OpenFile(fileName);
+
+    // Put header information into the file
+    fprintf(
+      aFile,
+        "<title> Report</title>\n"
+        "<pre class=\"heading-title\">No Range Report</pre>\n"
+        "<body>\n"
+      "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
+           TABLE_HEADER_CLASS "\">\n"
+      "<thead>\n"
+      "<tr>\n"
+      "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
+      "</tr>\n"
+      "</thead>\n"
+      "<tbody>\n"
+     );
+
+    return aFile;
+   }
+
+
+
   FILE*  ReportsHtml::OpenSizeFile(
     const char* const fileName
   )
@@ -204,6 +237,7 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
+      "<title>Size Report</title>\n"
       "<pre class=\"heading-title\">Size Report</pre>\n"
       "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
@@ -232,6 +266,7 @@ namespace Coverage {
     // Put header information into the file
     fprintf(
       aFile,
+      "<title>Symbol Summary Report</title>\n"
       "<pre class=\"heading-title\">Symbol Summary Report</pre>\n"
       "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
@@ -344,6 +379,8 @@ namespace Coverage {
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
       fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
+    else
+      fprintf( report, "<tr>\n");
 
     // symbol
     fprintf( 
@@ -432,6 +469,7 @@ namespace Coverage {
 
   void ReportsHtml::putCoverageNoRange(
     FILE*         report,
+    FILE*         noRangeFile,
     unsigned int  count,
     std::string   symbol
   )
@@ -448,12 +486,22 @@ namespace Coverage {
     );
 
     // Mark the background color different for odd and even lines.
-    if ( ( count%2 ) != 0 )
+    if ( ( count%2 ) != 0 ){
       fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
+      fprintf( noRangeFile,  "<tr class=\"covoar-tr-odd\">\n");
+    } else {
+      fprintf( report, "<tr>\n");
+      fprintf( noRangeFile,  "<tr>\n");
+    }
 
     // symbol
     fprintf( 
       report, 
+      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      symbol.c_str()
+    );
+    fprintf( 
+      noRangeFile, 
       "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
       symbol.c_str()
     );
@@ -486,6 +534,7 @@ namespace Coverage {
     WriteExplationFile( "NotReferenced.html", &explanation );
 
     fprintf( report, "</tr>\n");
+    fprintf( noRangeFile, "</tr>\n");
   }
 
   bool ReportsHtml::PutCoverageLine(
@@ -501,6 +550,8 @@ namespace Coverage {
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
       fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
+    else
+      fprintf( report, "<tr>\n");
 
     // symbol
     fprintf( 
@@ -573,6 +624,8 @@ namespace Coverage {
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
       fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
+    else
+      fprintf( report, "<tr>\n");
 
     // size
     fprintf( 
@@ -610,6 +663,8 @@ namespace Coverage {
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
       fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
+    else
+      fprintf( report, "<tr>\n");
 
     // symbol
     fprintf( 
@@ -759,6 +814,24 @@ namespace Coverage {
 
     CloseFile(aFile);
   }
+
+  void ReportsHtml::CloseNoRangeFile(
+    FILE*  aFile
+  )
+  {
+    fprintf(
+      aFile,
+      TABLE_FOOTER
+      "</tbody>\n"
+      "</table>\n" 
+      "</pre>\n" 
+      "</body>\n"
+      "</html>"
+    );
+
+    CloseFile(aFile);
+  }
+
 
   void ReportsHtml::CloseSizeFile(
     FILE*  aFile
