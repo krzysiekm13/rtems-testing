@@ -385,6 +385,24 @@ generate_reports()
     <${results_dir}/index.html.tmp \
     >${results_dir}/index.html 
 
+  RTEMSLIB=${BASEDIR}/b-${BSP}/${TARGET}/${BSP}/lib/librtemscpu.a
+
+  if [ -r ${RTEMSLIB} ] ; then
+    while read symbol
+    do
+      line=`${TARGET}-nm --format=sysv \
+	${BASEDIR}/b-${BSP}/${TARGET}/${BSP}/lib/librtemscpu.a | \
+	grep FUNC | sed -e's/|/ | /g' | grep ${symbol}`
+      size=`echo ${line} | cut -d'|' -f5 | tr "[:lower:]" "[:upper:]"`
+      size=`echo 16 i ${size} p | dc`
+      echo "${size}	${symbol}	unknown"
+    done <${results_dir}/no_range_uncovered.txt | sort -n -r \
+         >${results_dir}/sizes_unreferenced.txt
+  fi
+
+  cat ${results_dir}/sizes_unreferenced.txt ${results_dir}/sizes.txt | \
+    sort -n -r >${results_dir}/sizes_all.txt
+
   # Now create the archive of information
   cp ${COVBASE}/covoar.css ${COVBASE}/*gif ${COVBASE}/table.js ${results_dir}
   echo "Results saved in ${results_dir}.tar.bz2"
