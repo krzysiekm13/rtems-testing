@@ -15,8 +15,8 @@
 
 namespace Coverage {
 
-ReportsText::ReportsText():
-  ReportsBase()
+ReportsText::ReportsText( time_t timestamp ):
+  ReportsBase( timestamp )
 {
   reportExtension_m = ".txt";
 }

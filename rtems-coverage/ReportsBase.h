@@ -15,6 +15,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <time.h>
 #include "DesiredSymbols.h"
 
 namespace Coverage {
@@ -27,7 +28,7 @@ namespace Coverage {
 class ReportsBase {
 
   public:
-    ReportsBase();
+    ReportsBase( time_t timestamp );
     ~ReportsBase();
 
     /*!
@@ -113,6 +114,11 @@ class ReportsBase {
      *  This member variable contains the extension used for all reports.
      */
     std::string reportExtension_m;
+
+    /*!
+     *  This member variable contains the timestamp for the report.
+     */
+    time_t timestamp_m;
 
     /*!
      *  This method Opens a report file and verifies that it opened

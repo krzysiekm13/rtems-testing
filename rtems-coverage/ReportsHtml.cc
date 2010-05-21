@@ -33,8 +33,8 @@
 
 namespace Coverage {
 
-  ReportsHtml::ReportsHtml():
-    ReportsBase()
+  ReportsHtml::ReportsHtml( time_t timestamp ):
+    ReportsBase( timestamp )
   {
     reportExtension_m = ".html";
   }
@@ -64,7 +64,26 @@ namespace Coverage {
     // Open the file
     aFile = OpenFile( fileName );
 
-    fprintf( aFile, "<strong>Reports Available</strong>\n" );
+    fprintf(
+      aFile,
+      "<title>Index</title>\n"
+      "<div class=\"heading-title\">"
+    );
+
+    if (projectName)
+      fprintf(
+        aFile,
+         "%s</br>",
+         projectName
+      );
+
+    fprintf(
+      aFile,
+      "Coverage Analysis Reports</div>\n"
+      "<div class =\"datetime\">%s</div>\n",
+      asctime( localtime(&timestamp_m) ) 
+    );
+
     fprintf( aFile, "<ul>\n" );
 
     PRINT_ITEM( "Coverage Report",      "uncovered" );
@@ -122,9 +141,23 @@ namespace Coverage {
     fprintf(
       aFile,
       "<title>Annotated Report</title>\n"
-      "<pre class=\"heading-title\">Annotated Report</pre>\n"
+      "<div class=\"heading-title\">"
+    );
+
+    if (projectName)
+      fprintf(
+        aFile,
+         "%s</br>",
+         projectName
+      );
+
+    fprintf(
+      aFile,
+      "Annotated Report</div>\n"
+      "<div class =\"datetime\">%s</div>\n"
       "<body>\n"
-      "<pre class=\"code\">\n"
+      "<pre class=\"code\">\n",
+      asctime( localtime(&timestamp_m) ) 
     );
 
     return aFile;
@@ -145,9 +178,22 @@ namespace Coverage {
       fprintf(
         aFile,
         "<title>Branch Report</title\n"
-        "<pre class=\"heading-title\">Branch Report</pre>\n"
+        "<div class=\"heading-title\">"
+      );
+
+      if (projectName)
+        fprintf(
+          aFile,
+          "%s</br>",
+          projectName
+        );
+
+      fprintf(
+        aFile,
+        "Branch Report</div>\n"
+        "<div class =\"datetime\">%s</div>\n"
         "<body>\n"
-         "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
+        "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
         "<thead>\n"
         "<tr>\n"
@@ -159,7 +205,8 @@ namespace Coverage {
         "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
         "</tr>\n"
         "</thead>\n"
-        "<tbody>\n"
+        "<tbody>\n",
+        asctime( localtime(&timestamp_m) ) 
       );
     }
    
@@ -179,9 +226,22 @@ namespace Coverage {
     fprintf(
       aFile,
         "<title>Coverage Report</title>\n"
-        "<pre class=\"heading-title\">Coverage Report</pre>\n"
-        "<body>\n"
-      "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
+        "<div class=\"heading-title\">"
+    );
+
+    if (projectName)
+      fprintf(
+        aFile,
+        "%s</br>",
+        projectName
+      );
+
+    fprintf(
+      aFile,
+       "Coverage Report</div>\n"
+       "<div class =\"datetime\">%s</div>\n"
+       "<body>\n"
+       "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
       "<thead>\n"
       "<tr>\n"
@@ -193,7 +253,9 @@ namespace Coverage {
       "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
       "</tr>\n"
       "</thead>\n"
-      "<tbody>\n"
+      "<tbody>\n",
+        asctime( localtime(&timestamp_m) ) 
+
      );
 
     return aFile;
@@ -212,7 +274,20 @@ namespace Coverage {
     fprintf(
       aFile,
         "<title> Report</title>\n"
-        "<pre class=\"heading-title\">No Range Report</pre>\n"
+        "<div class=\"heading-title\">"
+    );
+
+    if (projectName)
+      fprintf(
+        aFile,
+        "%s</br>",
+        projectName
+      );
+
+    fprintf(
+      aFile,
+       "No Range Report</div>\n"
+       "<div class =\"datetime\">%s</div>\n"
         "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
@@ -221,7 +296,9 @@ namespace Coverage {
       "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
       "</tr>\n"
       "</thead>\n"
-      "<tbody>\n"
+      "<tbody>\n",
+        asctime( localtime(&timestamp_m) ) 
+
      );
 
     return aFile;
@@ -242,7 +319,20 @@ namespace Coverage {
     fprintf(
       aFile,
       "<title>Size Report</title>\n"
-      "<pre class=\"heading-title\">Size Report</pre>\n"
+        "<div class=\"heading-title\">"
+    );
+
+    if (projectName)
+      fprintf(
+        aFile,
+        "%s</br>",
+        projectName
+      );
+
+    fprintf(
+      aFile,
+      "Size Report</div>\n"
+       "<div class =\"datetime\">%s</div>\n"
       "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
@@ -253,7 +343,9 @@ namespace Coverage {
       "<th class=\"table-sortable:default\" align=\"left\">File</th>\n"
       "</tr>\n"
       "</thead>\n"
-      "<tbody>\n"
+      "<tbody>\n",
+        asctime( localtime(&timestamp_m) ) 
+
     );
     return aFile;
   }
@@ -271,7 +363,20 @@ namespace Coverage {
     fprintf(
       aFile,
       "<title>Symbol Summary Report</title>\n"
-      "<pre class=\"heading-title\">Symbol Summary Report</pre>\n"
+      "<div class=\"heading-title\">"
+    );
+
+    if (projectName)
+      fprintf(
+        aFile,
+        "%s</br>",
+        projectName
+      );
+
+    fprintf(
+      aFile,
+      "Symbol Summary Report</div>\n"
+       "<div class =\"datetime\">%s</div>\n"
       "<body>\n"
       "<table class=\"covoar table-autosort:0 table-autofilter table-stripeclass:covoar-tr-odd"
            TABLE_HEADER_CLASS "\">\n"
@@ -290,7 +395,9 @@ namespace Coverage {
       "<th class=\"table-sortable:numeric\" align=\"center\">Percent</br>Uncovered</br>Bytes</th>\n"
       "</tr>\n"
       "</thead>\n"
-      "<tbody>\n"
+      "<tbody>\n",
+        asctime( localtime(&timestamp_m) ) 
+
     );
     return aFile;
   }

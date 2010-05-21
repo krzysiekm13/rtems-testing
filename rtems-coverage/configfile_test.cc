@@ -6,8 +6,9 @@
 #include <stdio.h>
 
 Configuration::Options_t Options[] = {
-  { "verbose",  NULL },
-  { NULL,       NULL }
+  { "projectName", NULL },
+  { "verbose",     NULL },
+  { NULL,          NULL }
 };
 
 int main(

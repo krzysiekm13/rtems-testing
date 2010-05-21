@@ -12,6 +12,7 @@
 #include "ConfigFile.h"
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 namespace Configuration {
 
@@ -31,11 +32,13 @@ namespace Configuration {
   )
   {
     #define METHOD "FileReader::processFile - "
-    FILE *in;
-    char  line[256];
-    char  option[256];
-    char  value[256];
-    int   line_no;
+    FILE *  in;
+    char    line[256];
+    char    option[256];
+    char    value[256];
+    int     line_no;
+    int     i;
+    int     j;
 
     if ( file == NULL ) {
       fprintf( stderr, METHOD "NULL filename\n" );
@@ -50,17 +53,89 @@ namespace Configuration {
 
     line_no = 0;
     while (fgets(line, sizeof(line), in) != NULL) {
+      size_t length;
 
       line_no++;
 
-      /* Ignore empty lines and comments */
-      if (line[0] == '#' || line[0] == '\n')
-        continue;
-
-      if (sscanf(line, "%s = %[^ \r\n#]", option, value) != 2) {
+      length = strlen( line );
+      if ( line[length - 1] != '\n' ) {
         fprintf(
           stderr,
-          "%s: line %d is invalid: %s",
+          "%s: line %d is too long",
+          file,
+          line_no
+        );
+        continue;
+      }
+
+      line[length - 1] = '\0';
+      length--;
+
+      /*
+       *  Strip off comments at end of line
+       *
+       *      LHS = RHS   # comment
+       */
+      for (i=0 ; i<length ; i++ ) {
+        if ( line[i] == '#' ) {
+          line[i] = '\0';
+          length = i;
+          break;
+        }
+      }
+
+      /*
+       *  Strip off trailing white space
+       */
+      for (i=length-1 ; i>=0 && isspace(line[i]) ; i-- )
+        ;
+
+      line[i+1] = '\0';
+      length = i+1;
+
+      /* Ignore empty lines.  We have stripped
+       * all comments and blanks therefore, only
+       * an empty string needs to be checked.
+       */
+      if (line[0] == '\0') 
+        continue;
+
+      if (sscanf(line, "%s", option) != 1) {
+        fprintf(
+          stderr,
+          "%s: line %d is invalid: %s\n",
+          file,
+          line_no,
+          line
+        );
+        continue;
+      }
+
+      for (i=0; ((line[i] != '=') && (i<length)); i++)
+        ;
+
+      if (i == length) {
+        fprintf(
+          stderr,
+          "%s: line %d is invalid: %s\n",
+          file,
+          line_no,
+          line
+        );
+        continue;
+      }
+
+      i++;
+      value[0] = '\0';
+      while ( isspace(line[i]) )
+        i++;
+      for (j=0; line[i] != '\0'; i++, j++ )
+        value[j] = line[i];
+      value[j] = '\0'; 
+      if (value[0] == '\0') {
+        fprintf(
+          stderr,
+          "%s: line %d is invalid: %s\n",
           file,
           line_no,
           line

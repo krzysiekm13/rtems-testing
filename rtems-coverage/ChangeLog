@@ -1,3 +1,12 @@
+2010-05-21	Jennifer.Averett@OARcorp.com
+
+	* ConfigFile.cc, Makefile, ReportsBase.cc, ReportsBase.h,
+	ReportsHtml.cc, ReportsHtml.h, ReportsText.cc, ReportsText.h,
+	TraceConverter.cc, app_common.cc, app_common.h, configFile.txt,
+	configfile_test.cc, covoar.cc, covoar.css, do_coverage,
+	rtems_config.in: Added ProjectName and timestamp to report heading.
+	Modified configuration to handle spaces in project name.
+
 2010-05-21	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* do_coverage, rtems_items.sed: Add report on size of unreferenced

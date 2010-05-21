@@ -57,7 +57,8 @@ CONFIGFILE_TEST_OBJS = \
 
 INSTALLED= \
     ../bin/qemu-dump-trace \
-    ../bin/trace-converter
+    ../bin/trace-converter \
+    ../bin/covoar
 
 all: $(PROGRAMS) ${INSTALL_DIR} $(INSTALLED)
 
@@ -70,6 +71,9 @@ ${INSTALL_DIR}:
 
 ../bin/trace-converter: trace-converter ${INSTALL_DIR}
 	cp trace-converter ../bin
+
+../bin/covoar: covoar ${INSTALL_DIR}
+	cp covoar ../bin
 
 #  EXECUTABLES
 qemu-dump-trace: qemu-dump-trace.c ${INSTALL_DIR}

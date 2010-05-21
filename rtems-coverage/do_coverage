@@ -42,6 +42,7 @@ usage: $progname [ -opts ]
         -f        -- publish the results to ftp site (default=no)
         -t        -- save the results locally (default=no)
         -O        -- output directory (default=BSP-CONF-YYYYMMDD-HHMM)
+        -p        -- project name (default empty)
 
 Notes:  + There are currently NO checks at each step to determine if
           the previous steps were performed!!!
@@ -347,13 +348,14 @@ generate_reports()
       -e "s,@OUTPUT_DIRECTORY@,${results_dir}," \
       -e "s/@EXECUTABLE_EXTENSION@/exe/" \
       -e "s/@COVERAGE_EXTENSION@/${RTEMSEXT}.${COVEXT}/" \
+      -e "s/@PROJECT_NAME@/RTEMS ${RTEMS_VERSION}/" \
       <${COVBASE}/rtems_config.in \
       >${BASEDIR}/${BSP}-tests/config
   check_status $? "Unable to generate COVOAR config file"
 
   rm -rf ${results_dir}
   mkdir  ${results_dir}
-  ${COVBASE}/covoar -C ${BASEDIR}/${BSP}-tests/config \
+  covoar -C ${BASEDIR}/${BSP}-tests/config \
     *.exe > ${results_dir}/summary.txt
   check_status $? "covoar failed"
 

@@ -34,7 +34,6 @@ std::list<std::string>               coverageFileNames;
 int                                  coverageExtensionLength = 0;
 Coverage::CoverageFormats_t          coverageFormat;
 Coverage::CoverageReaderBase*        coverageReader = NULL;
-const char*                          dynamicLibrary = NULL;
 char*                                executable = NULL;
 const char*                          executableExtension = NULL;
 int                                  executableExtensionLength = 0;
@@ -65,6 +64,7 @@ void usage()
     "  -1 EXECUTABLE             - name of executable to get symbols from\n"
     "  -e EXE_EXTENSION          - extension of the executables to analyze\n"
     "  -c COVERAGEFILE_EXTENSION - extension of the coverage files to analyze\n"
+    "  -p PROJECT_NAME           - name of the project\n"
     "  -C ConfigurationFileName  - name of configuration file\n"
     "  -O Output_Directory       - name of output directory (default=."
     "\n",
@@ -91,6 +91,7 @@ Configuration::Options_t Options[] = {
   { "coverageExtension",    NULL },
   { "target",               NULL },
   { "verbose",              NULL },
+  { "projectName",          NULL },
   { NULL,                   NULL }
 };
 
@@ -127,6 +128,7 @@ void check_configuration(void)
   GET_STRING( "outputDirectory",      outputDirectory );
   GET_STRING( "executableExtension",  executableExtension );
   GET_STRING( "coverageExtension",    coverageFileExtension );
+  GET_STRING( "projectName",          projectName );
 
   // Now calculate some values
   if ( coverageFileExtension )
@@ -159,7 +161,7 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "C:1:L:e:c:E:f:s:T:O:v")) != -1) {
+  while ((opt = getopt(argc, argv, "C:1:L:e:c:E:f:s:T:O:p:v")) != -1) {
     switch (opt) {
       case 'C': CoverageConfiguration->processFile( optarg ); break;
       case '1': singleExecutable      = optarg; break;
@@ -172,6 +174,7 @@ int main(
       case 'T': target                = optarg; break;
       case 'O': outputDirectory       = optarg; break;
       case 'v': Verbose               = true;   break;
+      case 'p': projectName           = optarg; break;
       default: /* '?' */
         usage();
         exit( -1 );

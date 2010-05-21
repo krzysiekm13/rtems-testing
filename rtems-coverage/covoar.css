@@ -233,7 +233,7 @@ table.altstripe tr.alternate2 {
 .heading-title {
     text-align:  center;
     color: rgb(0,0,0);
-    font-size: 4.0em;
+    font-size: 3.5em;
     font-weight: bold;
     line-height: 0.9;
     padding-top: 5px;
@@ -244,7 +244,7 @@ table.altstripe tr.alternate2 {
 
 .datetime {
     color: rgb(55,55,55);
-    font-size: 0.8em;
+    font-size: 1.0em;
     padding-top: 5px;
     padding-left: 0px;
     text-align:  center;

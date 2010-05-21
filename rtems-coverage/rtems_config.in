@@ -25,4 +25,6 @@ coverageExtension = @COVERAGE_EXTENSION@
 # This is the extension on the executable files.
 executableExtension = @EXECUTABLE_EXTENSION@
 
+# This is the project name.
+projectName = @PROJECT_NAME@
 

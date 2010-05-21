@@ -20,8 +20,9 @@
 
 namespace Coverage {
 
-ReportsBase::ReportsBase():
-  reportExtension_m("")
+ReportsBase::ReportsBase( time_t timestamp ):
+  reportExtension_m(""),
+  timestamp_m( timestamp )
 {
 }
 
@@ -421,6 +422,7 @@ void ReportsBase::WriteSymbolSummaryReport(
   CloseSymbolSummaryFile( report );
 }
 
+
 void GenerateReports()
 {
   typedef std::list<ReportsBase *> reportList_t;
@@ -430,9 +432,13 @@ void GenerateReports()
   std::string            reportName;
   ReportsBase*           reports;
 
-  reports = new ReportsText();
+  time_t timestamp;
+
+ 
+  timestamp = time(NULL); /* get current cal time */
+  reports = new ReportsText(timestamp);
   reportList.push_back(reports);
-  reports = new ReportsHtml();
+  reports = new ReportsHtml(timestamp);
   reportList.push_back(reports);
 
   for (ritr = reportList.begin(); ritr != reportList.end(); ritr++ ) {

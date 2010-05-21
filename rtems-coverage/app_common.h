@@ -18,6 +18,9 @@ extern bool                         Verbose;
 extern const char*                  outputDirectory;
 extern bool                         BranchInfoAvailable;
 extern Target::TargetBase*          TargetInfo;
+extern const char*                  dynamicLibrary;
+extern const char*                  projectName;
+
 
 bool FileIsNewer( const char *f1, const char *f2 ); 
 bool FileIsReadable( const char *f1 ); 

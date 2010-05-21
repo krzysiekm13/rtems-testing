@@ -25,7 +25,7 @@ namespace Coverage {
 class ReportsText: public ReportsBase {
 
   public:
-    ReportsText();
+    ReportsText( time_t timestamp );
    ~ReportsText();
 
   /*!

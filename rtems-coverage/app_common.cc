@@ -32,6 +32,9 @@ bool                        Verbose             = false;
 const char*                 outputDirectory     = ".";
 bool                        BranchInfoAvailable = false;
 Target::TargetBase*         TargetInfo          = NULL;
+const char*                 dynamicLibrary      = NULL;
+const char*                 projectName         = NULL;
+
 
 bool FileIsNewer(
   const char *f1,
