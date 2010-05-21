@@ -36,6 +36,12 @@ stamp-targetrun:
   ifeq ($(RTEMS_BSP),jmr3904)
 	echo "  jmr3904 -C -l 240 $$"'*' >> $@
   endif # jmr3904
+  ifeq ($(RTEMS_BSP),lm32_evr)
+	echo "  qemu-lm32_evr -C -l 240 $$"'*' >> $@
+  endif # lm32_evr
+  ifeq ($(RTEMS_BSP),m32rsim)
+	echo "  m32rsim -C -l 180 $$"'*' >> $@
+  endif # m32rsim
   ifeq ($(RTEMS_BSP),psim)
 	echo "  psim -C -l 180 $$"'*' >> $@
   endif # psim
@@ -61,9 +67,6 @@ stamp-targetrun:
 	echo "  uC5282 -C -l 90 $$"'*' >> $@
   endif # uC5282
   ifeq ($(RTEMS_BSP),mcf5206elite)
-	echo "  nosim $$"'*' >> $@
-  endif # mcf5206elite
-  ifeq ($(RTEMS_BSP),eZKit533)
 	echo "  nosim $$"'*' >> $@
   endif # mcf5206elite
 	echo "}" >>$@

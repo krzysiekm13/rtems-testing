@@ -613,14 +613,16 @@ if [ ${run_acats} = "yes" -a -d b-gcc2-${cpu} ] ; then
   cd ${GCCDIR}/gcc/testsuite/ada/acats/ || exit 1
 
   time ${ADASCRIPTDIR}/run_all_rtems.sh ${INSTALL} ${BSP_INSTALL} \
-   ${TARGET} ${bsp} >${LOGDIR}/${cpu}-acats-${bsp}-build.log 2>&1
-  if [ -r work-${bsp}/acats.log ] ; then
-    cp work-${bsp}/acats.log ${LOGDIR}/${cpu}-acats-${bsp}.log
-  fi
+    ${TARGET} ${bsp} >${LOGDIR}/${cpu}-acats-${bsp}-build.log 2>&1
+  if [ $? -eq 0 ] ; then
+    if [ -r work-${bsp}/acats.log ] ; then
+      cp work-${bsp}/acats.log ${LOGDIR}/${cpu}-acats-${bsp}.log
+    fi
 
-  if [ ${do_mail} = "yes" ] ; then
-    echo Sending ACATS test results to GCC community..
-    ${ADASCRIPTDIR}/rtems_generate_acats_email ${cpu} ${bsp} yes
+    if [ ${do_mail} = "yes" ] ; then
+      echo Sending ACATS test results to GCC community..
+      ${ADASCRIPTDIR}/rtems_generate_acats_email ${cpu} ${bsp} yes
+    fi
   fi
 
   cd ../../../../.. || exit 1

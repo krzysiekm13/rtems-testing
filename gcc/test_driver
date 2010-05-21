@@ -108,7 +108,7 @@ if [ ${verbose} = "yes" ] ; then
   echo "Build Ada            " ${doAda}
   echo "Email Results:       " ${doMail}
   echo "Run Tests:           " ${doTests}
-  if [ X${CPUs} = X ] ; then
+  if [ "X${CPUs}" = "X" ] ; then
     echo "CPUs to Build:       " ALL
   else
     echo "CPUs to Build:       " ${CPUs}
