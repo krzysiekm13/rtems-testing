@@ -1,5 +1,9 @@
 2010-05-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* do_one: Turn off -x.
+
+2010-05-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* do_one: Only send results if things ran OK.
 	* test_driver: Add quotes in terms of test.
 	* testsuite/ada/acats/Makefile.rtems: Add lm32_evr and m32rsim.

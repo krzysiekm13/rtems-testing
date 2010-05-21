@@ -1,4 +1,4 @@
-#! /bin/sh -x
+#! /bin/sh
 #
 # Execution Times (for sparc-rtems${RTEMS_VERSION})
 #
