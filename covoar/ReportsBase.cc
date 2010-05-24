@@ -300,12 +300,13 @@ void ReportsBase::WriteBranchReport(
  */
 void ReportsBase::WriteCoverageReport(
   const char* const fileName
-) {
+)
+{
   Coverage::DesiredSymbols::symbolSet_t::iterator ditr;
   FILE*                                           report;
   Coverage::CoverageRanges::ranges_t::iterator    ritr;
   Coverage::CoverageRanges*                       theRanges;
-  unsigned int                                    count, count2;
+  unsigned int                                    count;
   FILE*                                           NoRangeFile;
   std::string                                     NoRangeName;
 

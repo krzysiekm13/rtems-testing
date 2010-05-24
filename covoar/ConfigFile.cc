@@ -53,11 +53,11 @@ namespace Configuration {
 
     line_no = 0;
     while (fgets(line, sizeof(line), in) != NULL) {
-      size_t length;
+      int length;
 
       line_no++;
 
-      length = strlen( line );
+      length = (int) strlen( line );
       if ( line[length - 1] != '\n' ) {
         fprintf(
           stderr,
