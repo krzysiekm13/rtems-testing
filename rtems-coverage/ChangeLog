@@ -1,3 +1,8 @@
+2010-05-24	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* VERSIONS-COVERAGE, do_coverage: Created covoar directory with source
+	that will be moved from rtems-coverage.
+
 2010-05-24	Jennifer Averett <Jennifer,.Averett@OARcorp.com>
 
 	* ReportsHtml.cc: Added link to size report. Added a filterable File

@@ -406,7 +406,7 @@ generate_reports()
     sort -n -r >${results_dir}/sizes_all.txt
 
   # Now create the archive of information
-  cp ${COVBASE}/covoar.css ${COVBASE}/*gif ${COVBASE}/table.js ${results_dir}
+  cp ${COVOARBASE}/covoar.css ${COVOARBASE}/*gif ${COVOARBASE}/table.js ${results_dir}
   echo "Results saved in ${results_dir}.tar.bz2"
   tar cjf ${results_dir}.tar.bz2 ${results_dir}
 }
