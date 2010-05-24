@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include "app_common.h"
 #include "CoverageReaderTSIM.h"
 #include "CoverageMap.h"
 #include "ExecutableInfo.h"
@@ -21,6 +22,7 @@ namespace Coverage {
 
   CoverageReaderTSIM::CoverageReaderTSIM()
   {
+
   }
 
   CoverageReaderTSIM::~CoverageReaderTSIM()
@@ -62,6 +64,7 @@ namespace Coverage {
       }
 
       for (i=0; i < 0x80; i+=4) {
+        unsigned int a;
         status = fscanf( coverageFile, "%d", &cover );
 	if (status == EOF || status == 0) {
           fprintf(
@@ -77,15 +80,21 @@ namespace Coverage {
         // Obtain the coverage map containing the address and
         // mark the address as executed.
         //
+	a = baseAddress + i;
+	aCoverageMap = executableInformation->getCoverageMap( a );
+        if (!aCoverageMap)
+          continue;
         if (cover & 1) {
-          aCoverageMap = executableInformation->getCoverageMap(
-            baseAddress + i
-          );
-          if (aCoverageMap) {
-            aCoverageMap->setWasExecuted( baseAddress + i );
-            aCoverageMap->setWasExecuted( baseAddress + i + 1 );
-            aCoverageMap->setWasExecuted( baseAddress + i + 2 );
-            aCoverageMap->setWasExecuted( baseAddress + i + 3 );
+          aCoverageMap->setWasExecuted( a );
+          aCoverageMap->setWasExecuted( a + 1 );
+          aCoverageMap->setWasExecuted( a + 2 );
+          aCoverageMap->setWasExecuted( a + 3 );
+          if ( cover & 0x10 ) {
+	    aCoverageMap->setWasTaken( a );
+	    BranchInfoAvailable = true;
+          } else if ( cover & 0x20 ) {
+	    aCoverageMap->setWasNotTaken( a );
+	    BranchInfoAvailable = true;
           }
         }
       }
