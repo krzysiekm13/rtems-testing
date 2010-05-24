@@ -1,3 +1,8 @@
+2010-05-24	Jennifer Averett <Jennifer,.Averett@OARcorp.com>
+
+	* ReportsHtml.cc: Added link to size report. Added a filterable File
+	column to reports.
+
 2010-05-21	Jennifer.Averett@OARcorp.com
 
 	* ConfigFile.cc, Makefile, ReportsBase.cc, ReportsBase.h,

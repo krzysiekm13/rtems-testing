@@ -198,7 +198,8 @@ namespace Coverage {
         "<thead>\n"
         "<tr>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
-        "<th class=\"table-filterable table-sortable:default\" align=\"left\">Line</th>\n"
+        "<th class=\"table-sortable:default\" align=\"left\">Line</th>\n"
+        "<th class=\"table-filterable table-sortable:default\" align=\"left\">File</th>\n"
         "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Bytes</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Reason</th>\n"
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
@@ -247,6 +248,7 @@ namespace Coverage {
       "<tr>\n"
       "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
       "<th class=\"table-sortable:default\" align=\"left\">Range</th>\n"
+      "<th class=\"table-filterable table-sortable:default\" align=\"left\">File</th>\n"
       "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Bytes</th>\n"
       "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Instructions</th>\n"
       "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
@@ -340,7 +342,8 @@ namespace Coverage {
       "<tr>\n"
       "<th class=\"table-sortable:numeric\" align=\"left\">Size</th>\n"
       "<th class=\"table-sortable:default\" align=\"left\">Symbol</th>\n"
-      "<th class=\"table-sortable:default\" align=\"left\">File</th>\n"
+      "<th class=\"table-sortable:default\" align=\"left\">Line</th>\n"
+      "<th class=\"table-filterable table-sortable:default\" align=\"left\">File</th>\n"
       "</tr>\n"
       "</thead>\n"
       "<tbody>\n",
@@ -486,6 +489,8 @@ namespace Coverage {
   )
   {
     const Coverage::Explanation* explanation;
+    std::string                  temp;
+    int                          i;
 
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
@@ -507,7 +512,16 @@ namespace Coverage {
       rangePtr->id,
       rangePtr->lowSourceLine.c_str()
     );
-    
+
+    // File
+    i = rangePtr->lowSourceLine.find(":");
+    temp =  rangePtr->lowSourceLine.substr (0, i);
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      temp.c_str()
+    );
+  
     // Size in bytes
     fprintf( 
       report, 
@@ -623,7 +637,13 @@ namespace Coverage {
       "<td class=\"covoar-td\" align=\"center\">unknown</td>\n"
      );
      
-    // Size in bytes
+    // file
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">unknown</td>\n"
+     );
+     
+     // Size in bytes
     fprintf( 
       report, 
       "<td class=\"covoar-td\" align=\"center\">unknown</td>\n"
@@ -656,7 +676,8 @@ namespace Coverage {
   )
   {
     const Coverage::Explanation*   explanation;
-
+    std::string                    temp;
+    int                            i;
 
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
@@ -679,7 +700,16 @@ namespace Coverage {
       rangePtr->lowSourceLine.c_str(),
       rangePtr->highSourceLine.c_str()
      );
-     
+
+    // File
+    i = rangePtr->lowSourceLine.find(":");
+    temp =  rangePtr->lowSourceLine.substr (0, i);
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      temp.c_str()
+    );
+       
     // Size in bytes
     fprintf( 
       report, 
@@ -732,6 +762,9 @@ namespace Coverage {
     Coverage::CoverageRanges::ranges_t::iterator    range
   )
   {
+    std::string  temp;
+    int          i;
+
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
       fprintf( report, "<tr class=\"covoar-tr-odd\">\n");
@@ -752,13 +785,23 @@ namespace Coverage {
       symbol->first.c_str()
     );
 
-    // file
+    // line
     fprintf( 
       report, 
-      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      "<td class=\"covoar-td\" align=\"center\"><a href =\"annotated.html#range%d\">%s</td>\n",     
+      range->id,
       range->lowSourceLine.c_str()
     );
 
+    // File
+    i = range->lowSourceLine.find(":");
+    temp =  range->lowSourceLine.substr (0, i);
+    fprintf( 
+      report, 
+      "<td class=\"covoar-td\" align=\"center\">%s</td>\n",     
+      temp.c_str()
+    );
+    
     fprintf( report, "</tr>\n");
 
     return true;
