@@ -86,6 +86,7 @@ namespace Coverage {
 
     fprintf( aFile, "<ul>\n" );
 
+    PRINT_TEXT_ITEM( "Summary",         "summary.txt" );
     PRINT_ITEM( "Coverage Report",      "uncovered" );
     PRINT_ITEM( "Branch Report",        "branch" );
     PRINT_ITEM( "Annotated Assembly",   "annotated" );

@@ -423,6 +423,86 @@ void ReportsBase::WriteSymbolSummaryReport(
   CloseSymbolSummaryFile( report );
 }
 
+void  ReportsBase::WriteSummaryReport(
+  const char* const fileName
+)
+{
+    // Calculate coverage statistics and output results.
+  uint32_t                                        a;
+  uint32_t                                        endAddress;
+  Coverage::DesiredSymbols::symbolSet_t::iterator itr;
+  uint32_t                                        notExecuted = 0;
+  double                                          percentage;
+  Coverage::CoverageMapBase*                      theCoverageMap;
+  uint32_t                                        totalBytes = 0;
+  FILE*                                           report;
+
+  // Open the report file.
+  report = OpenFile( fileName );
+  if ( !report ) {
+    return;
+  }
+
+  // Look at each symbol.
+  for (itr = SymbolsToAnalyze->set.begin();
+       itr != SymbolsToAnalyze->set.end();
+       itr++) {
+
+    // If the symbol's unified coverage map exists, scan through it
+    // and count bytes.
+    theCoverageMap = itr->second.unifiedCoverageMap;
+    if (theCoverageMap) {
+
+      endAddress = itr->second.stats.sizeInBytes - 1;
+
+      for (a = 0; a <= endAddress; a++) {
+        totalBytes++;
+        if (!theCoverageMap->wasExecuted( a ))
+          notExecuted++;
+      }
+    }
+  }
+
+  percentage = (double) notExecuted;
+  percentage /= (double) totalBytes;
+  percentage *= 100.0;
+
+  fprintf( report, "Bytes Analyzed           : %d\n", totalBytes );
+  fprintf( report, "Bytes Not Executed       : %d\n", notExecuted );
+  fprintf( report, "Percentage Executed      : %5.4g\n", 100.0 - percentage  );
+  fprintf( report, "Percentage Not Executed  : %5.4g\n", percentage  );
+  fprintf(
+    report,
+    "Uncovered ranges found   : %d\n",
+    SymbolsToAnalyze->getNumberUncoveredRanges()
+  );
+  if ((SymbolsToAnalyze->getNumberBranchesFound() == 0) || 
+      (BranchInfoAvailable == false) ) {
+    fprintf( report, "No branch information available\n" );
+  } else {
+    fprintf(
+      report,
+      "Total branches found     : %d\n",
+      SymbolsToAnalyze->getNumberBranchesFound()
+    );
+    fprintf(
+      report,
+      "Uncovered branches found : %d\n",
+      SymbolsToAnalyze->getNumberBranchesAlwaysTaken() +
+       SymbolsToAnalyze->getNumberBranchesNeverTaken()
+    );
+    fprintf(
+      report,
+      "   %d branches always taken\n",
+      SymbolsToAnalyze->getNumberBranchesAlwaysTaken()
+    );
+    fprintf(
+      report,
+      "   %d branches never taken\n",
+      SymbolsToAnalyze->getNumberBranchesNeverTaken()
+    );
+  }
+}
 
 void GenerateReports()
 {
@@ -492,7 +572,8 @@ void GenerateReports()
     reports = *ritr;
     delete reports;
   }
-  
+
+  ReportsBase::WriteSummaryReport( "summary.txt" );
 }
 
 }

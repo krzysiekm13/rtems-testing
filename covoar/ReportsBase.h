@@ -91,6 +91,13 @@ class ReportsBase {
     );
 
     /*!
+     *  This method produces a sumary report for the overall test run.
+     */
+    static void  WriteSummaryReport(
+      const char* const fileName
+    );
+
+    /*!
      *  This method returns the unique extension for the Report
      *  type.  If the extension is ".txt" files will be 
      *  named "annotated.txt", "branch.txt" ......
@@ -126,7 +133,7 @@ class ReportsBase {
      *
      *  @param[in] fileName identifies the report file name
      */
-     virtual FILE* OpenFile(
+     static FILE* OpenFile(
       const char* const fileName
     );
 
@@ -197,7 +204,7 @@ class ReportsBase {
      *
      *  @param[in] aFile identifies the report file name
      */
-    void CloseFile(
+    static void CloseFile(
       FILE*  aFile
     );
 
