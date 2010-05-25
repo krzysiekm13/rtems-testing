@@ -34,8 +34,8 @@ namespace Target {
 
 
     addr2line_m = front + "addr2line";
-    nm_m        = front + "nm";
-    objdump_m   = front + "objdump";
+    nm_m        = front + "nm -C";
+    objdump_m   = front + "objdump -C";
   }
 
   TargetBase::~TargetBase()

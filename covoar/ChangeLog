@@ -1,3 +1,7 @@
+2010-05-25	Jennifer.Averett <Jennifer.Averett@OARcorp.com>
+
+	* TargetBase.cc: Added -C to objdump and nm calls.
+
 2010-05-25	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* ReportsBase.cc, ReportsBase.h, ReportsHtml.cc, covoar.cc: Moved the
