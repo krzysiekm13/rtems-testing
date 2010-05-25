@@ -1,5 +1,10 @@
 2010-05-25	Jennifer.Averett <Jennifer.Averett@OARcorp.com>
 
+	* ObjdumpProcessor.cc, TargetBase.cc, TargetBase.h: Removed nm and
+	moved -C on objdump call to point of system call.
+
+2010-05-25	Jennifer.Averett <Jennifer.Averett@OARcorp.com>
+
 	* TargetBase.cc: Added -C to objdump and nm calls.
 
 2010-05-25	Jennifer Averett <Jennifer.Averett@OARcorp.com>

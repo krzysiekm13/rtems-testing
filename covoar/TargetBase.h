@@ -56,13 +56,6 @@ namespace Target {
     const char* getCPU( void ) const;
 
     /*!
-     *  This method returns the program name for nm.
-     *
-     *  @return Returns the target specific nm program name
-     */
-    const char* getNm( void ) const;
-
-    /*!
      *  This method returns the program name for objdump.
      *
      *  @return Returns the target specific objdump program name
@@ -163,12 +156,6 @@ namespace Target {
      * This member variable contains the name of the target cpu architecture.
      */
     std::string cpu_m;
-
-    /*!
-     * This member variable contains the name of the host program
-     * which produces a symbol table.
-     */
-    std::string nm_m;
 
     /*!
      * This member variable contains the name of the host program

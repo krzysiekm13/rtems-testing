@@ -34,8 +34,7 @@ namespace Target {
 
 
     addr2line_m = front + "addr2line";
-    nm_m        = front + "nm -C";
-    objdump_m   = front + "objdump -C";
+    objdump_m   = front + "objdump";
   }
 
   TargetBase::~TargetBase()
@@ -50,11 +49,6 @@ namespace Target {
   const char* TargetBase::getCPU( void ) const
   {
     return cpu_m.c_str();
-  }
-
-  const char* TargetBase::getNm() const
-  {
-    return nm_m.c_str();
   }
 
   const char* TargetBase::getObjdump() const

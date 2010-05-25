@@ -363,7 +363,7 @@ namespace Coverage {
     if (FileIsNewer( fileName.c_str(), dumpFile )) {
       sprintf(
         buffer,
-        "%s -da --section=.text --source %s | sed -e \'s/ *$//\' >%s",
+        "%s -Cda --section=.text --source %s | sed -e \'s/ *$//\' >%s",
         TargetInfo->getObjdump(),
         fileName.c_str(),
         dumpFile
