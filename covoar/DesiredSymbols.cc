@@ -34,8 +34,6 @@ namespace Coverage {
     const char* const symbolsFile
   )
   {
-    #define MAX_LINE_LENGTH 512
-    char                    buffer[MAX_LINE_LENGTH];
     char*                   cStatus;
     bool                    done = false;
     FILE*                   sFile;
@@ -70,36 +68,35 @@ namespace Coverage {
 
       // Skip blank lines between symbols
       do { 
-        buffer[0] = '\0';
-        cStatus = fgets( buffer, MAX_LINE_LENGTH, sFile );
+        inputBuffer[0] = '\0';
+        cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, sFile );
         if ( cStatus == NULL ) {
           done = true;
         }
         else {
-          buffer[ strlen(buffer) - 1] = '\0';
+          inputBuffer[ strlen(inputBuffer) - 1] = '\0';
           line++;
         }
-      } while ( !done && (buffer[0] == '\0') );
+      } while ( !done && (inputBuffer[0] == '\0') );
 
       // Have we already seen this one?
       if ( !done ) {
-        if (set.find( buffer ) != set.end()) {
+        if (set.find( inputBuffer ) != set.end()) {
           fprintf(
             stderr,
             "File: %s, Line %d: Duplicate symbol: %s\n",
             symbolsFile,
             line,
-            buffer
+            inputBuffer
           );
         }
 
         // Add this to the set of symbols.
         else {
-          set[ buffer ] = *symInfo;
+          set[ inputBuffer ] = *symInfo;
         }
       }
     }
-    #undef MAX_LINE_LENGTH
   }
 
   void DesiredSymbols::preprocess( void )
@@ -380,7 +377,6 @@ namespace Coverage {
   )
   {
     char*                              base;
-    char                               buffer[512];
     char*                              cStatus;
     char                               command[512];
     std::string                        fileName;
@@ -455,7 +451,7 @@ namespace Coverage {
          ritr != theRanges->set.end();
          ritr++ ) {
 
-      cStatus = fgets( buffer, 512, tmpfile );
+      cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, tmpfile );
       if ( cStatus == NULL ) {
         fprintf(
           stderr,
@@ -464,15 +460,15 @@ namespace Coverage {
         );
         exit( -1 );
       }
-      buffer[ strlen(buffer) - 1] = '\0';
+      inputBuffer[ strlen(inputBuffer) - 1] = '\0';
 
       // Use only the base filename without directory path.
-      realpath( buffer, rpath );
+      realpath( inputBuffer, rpath );
       base = basename( rpath );
 
       ritr->lowSourceLine = std::string( base );
 
-      cStatus = fgets( buffer, 512, tmpfile );
+      cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, tmpfile );
       if ( cStatus == NULL ) {
         fprintf(
           stderr,
@@ -481,10 +477,10 @@ namespace Coverage {
         );
         exit( -1 );
       }
-      buffer[ strlen(buffer) - 1] = '\0';
+      inputBuffer[ strlen(inputBuffer) - 1] = '\0';
 
       // Use only the base filename without directory path.
-      realpath( buffer, rpath );
+      realpath( inputBuffer, rpath );
       base = basename( rpath );
 
       ritr->highSourceLine = std::string( base );

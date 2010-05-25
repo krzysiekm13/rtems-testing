@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "Explanations.h"
+#include "app_common.h"
 
 namespace Coverage {
 
@@ -32,7 +33,6 @@ namespace Coverage {
   {
     #define MAX_LINE_LENGTH 512
     FILE       *explain;
-    char        buffer[MAX_LINE_LENGTH];
     char        *cStatus;
     Explanation *e;
     int          line = 1;
@@ -55,33 +55,33 @@ namespace Coverage {
       // Read the starting line of this explanation and
       // skip blank lines between
       do {
-        buffer[0] = '\0';
-        cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
+        inputBuffer[0] = '\0';
+        cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, explain );
         if (cStatus == NULL) {
           goto done;
         }
-        buffer[ strlen(buffer) - 1] = '\0';
+        inputBuffer[ strlen(inputBuffer) - 1] = '\0';
         line++;
-      } while ( buffer[0] == '\0' );
+      } while ( inputBuffer[0] == '\0' );
 
       // Have we already seen this one?
-      if (set.find( buffer ) != set.end()) {
+      if (set.find( inputBuffer ) != set.end()) {
         fprintf(
           stderr,
           "ERROR: Explanations::load - line %d "
           "contains a duplicate explanation (%s)\n",
           line,
-          buffer
+          inputBuffer
         );
         exit( -1 );
       }
 
       // Add the starting line and file
-      e->startingPoint = std::string(buffer);
+      e->startingPoint = std::string(inputBuffer);
       e->found = false;
 
       // Get the classification 
-      cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
+      cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, explain );
       if (cStatus == NULL) {
         fprintf(
           stderr,
@@ -91,14 +91,14 @@ namespace Coverage {
         );
         exit( -1 );
       }
-      buffer[ strlen(buffer) - 1] = '\0';
-      e->classification = buffer;
+      inputBuffer[ strlen(inputBuffer) - 1] = '\0';
+      e->classification = inputBuffer;
       line++;
 
       // Get the explanation 
       while (1) {
-        cStatus = fgets( buffer, MAX_LINE_LENGTH, explain );
-        // fprintf( stderr, "%d - %s\n", line, buffer );
+        cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, explain );
+        // fprintf( stderr, "%d - %s\n", line, inputBuffer );
         if (cStatus == NULL) {
           fprintf(
             stderr,
@@ -108,15 +108,15 @@ namespace Coverage {
           );
           exit( -1 );
         }
-        buffer[ strlen(buffer) - 1] = '\0';
+        inputBuffer[ strlen(inputBuffer) - 1] = '\0';
         line++;
 
         const char delimiter[4] = "+++";
-        if (!strncmp( buffer, delimiter, 3 )) {
+        if (!strncmp( inputBuffer, delimiter, 3 )) {
           break;
         }
         // XXX only taking last line.  Needs to be a vector
-        e->explanation.push_back( buffer );
+        e->explanation.push_back( inputBuffer );
       }
 
       // Add this to the set of Explanations

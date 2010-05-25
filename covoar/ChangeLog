@@ -1,3 +1,10 @@
+2010-05-25	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* DesiredSymbols.cc, Explanations.cc, ObjdumpProcessor.cc,
+	TraceReaderLogQEMU.cc, app_common.cc, app_common.h: Added a
+	inputBuffer to app_common and modified all fgets calls to use this
+	buffer. This will allow for a size increase if necessary.
+
 2010-05-25	Jennifer.Averett <Jennifer.Averett@OARcorp.com>
 
 	* ObjdumpProcessor.cc, TargetBase.cc, TargetBase.h: Removed nm and

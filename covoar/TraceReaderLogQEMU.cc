@@ -59,7 +59,6 @@ namespace Trace {
     int                 status;
     FILE*               logFile;
     int                 result;
-    char                buffer[120];
 
     //
     // Verify that the log file has a non-zero size.
@@ -105,9 +104,9 @@ namespace Trace {
     //
     //  Read First Start Address
     //
-    fgets(buffer, 120, logFile );
+    fgets(inputBuffer, MAX_LINE_LENGTH, logFile );
     result = sscanf( 
-      buffer, 
+      inputBuffer, 
       "0x%08lx: %s %s\n", 
       &first.address, 
       first.instruction, 
@@ -125,9 +124,9 @@ namespace Trace {
    
       // Read until we get to the last instruction in the block.
       do {
-        fgets(buffer, 120, logFile );
+        fgets(inputBuffer, MAX_LINE_LENGTH, logFile );
         result = sscanf( 
-          buffer, 
+          inputBuffer, 
           "0x%08lx: %s %s\n", 
           &last.address, 
           last.instruction, 
@@ -141,9 +140,9 @@ namespace Trace {
         done = true;
         nextExecuted = last;
       } else {
-        fgets(buffer, 120, logFile );
+        fgets(inputBuffer, MAX_LINE_LENGTH, logFile );
         result = sscanf( 
-          buffer, 
+          inputBuffer, 
           "0x%08lx: %s %s\n", 
           &nextExecuted.address, 
           nextExecuted.instruction, 

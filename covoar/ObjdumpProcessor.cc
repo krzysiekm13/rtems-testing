@@ -132,7 +132,6 @@ namespace Coverage {
   {
     #define METHOD "ERROR: ObjdumpProcessor::determineLoadAddress - "
     FILE*        loadAddressFile = NULL;
-    char         buffer[ 512 ];
     char*        cStatus;
     uint32_t     offset;
 
@@ -140,124 +139,6 @@ namespace Coverage {
     if (!theExecutable->hasDynamicLibrary())
       return 0;
 
-#if 0
-    static FILE* gdbCommands = NULL;
-    int          items;
-    uint32_t     loadAddress;
-    FILE*        objdumpFile = NULL;
-    int          status;
-    char         terminator;
-
-
-    //
-    // Invoke gdb to determine the physical load address
-    // of the .text section.
-    //
-
-    // Create a gdb input commands file.
-    if (!gdbCommands) {
-
-      gdbCommands = fopen( "gdbCommands", "w" );
-      if (!gdbCommands) {
-        fprintf(
-          stderr,
-          "ERROR: ObjdumpProcessor::determineLoadAddress - "
-          "unable to create gdbCommands\n"
-        );
-        exit( -1 );
-      }
-
-      fprintf(
-        gdbCommands,
-        "set pagination off\n"
-        "b main\n"
-        "r\n"
-        "info sharedlibrary\n"
-        "quit\n"
-      );
-
-      fclose( gdbCommands );
-    }
-
-    // Invoke gdb.
-    sprintf(
-      buffer,
-      "gdb -x gdbCommands %s | grep %s | cut -d ' ' -f1 > %s",
-      (theExecutable->getFileName()).c_str(),
-      (theExecutable->getLibraryName()).c_str(),
-      "library_addr.tmp"
-    );
-
-    status = system( buffer );
-    if (status) {
-      fprintf(
-        stderr,
-        "ERROR: ObjdumpProcessor::determineLoadAddress - "
-        "command (%s) failed with %d\n",
-        buffer,
-        status
-      );
-      exit( -1 );
-    }
-
-    // Read load address.
-    loadAddressFile = fopen( "library_addr.tmp", "r" );
-    if (!loadAddressFile) {
-      fprintf(
-        stderr,
-        "ERROR: ObjdumpProcessor::determineLoadAddress - "
-        "unable to open library_addr.tmp\n"
-      );
-      exit( -1 );
-    }
-
-    cStatus = fgets( buffer, 512, loadAddressFile );
-    items = sscanf(
-      buffer, "%x", &loadAddress
-    );
-
-    fclose( loadAddressFile );
-    unlink( "library_addr.tmp" );
-
-    //
-    // Partially process an objdump of the library to determine the first
-    // symbol's offset from the physical load address of the library.
-    //
-
-    // Obtain the objdump file.
-    objdumpFile = getFile( theExecutable->getLibraryName() );
-
-    // Process the objdump file.
-    while ( 1 ) {
-
-      // Get a line.
-      cStatus = fgets( buffer, 512, objdumpFile );
-      if (cStatus == NULL) {
-        fprintf(
-          stderr,
-          "ERROR: ObjdumpProcessor::determineLoadAddress - "
-          "no symbol found in objdump file\n"
-        );
-        exit( -1 );
-      }
-
-      // Look for the start of a symbol's objdump and extract
-      // address and symbol (i.e. address <symbolname>:).
-      items = sscanf(
-        buffer,
-        "%x <%*[^>]>%c",
-        &offset, &terminator
-      );
-
-      // If all items found, we have found the first symbol's objdump.
-      if ((items == 2) && (terminator == ':')) {
-        break;
-      }
-    }
-
-    return (loadAddress - offset);
-# endif
-#if 1
     std::string dlinfoName = theExecutable->getFileName();
     uint32_t address;
     char inLibName[128];
@@ -275,7 +156,7 @@ namespace Coverage {
     while ( 1 ) {
 
       // Get a line.
-      cStatus = fgets( buffer, 512, loadAddressFile );
+      cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, loadAddressFile );
       if (cStatus == NULL) {
         fprintf(
           stderr,
@@ -286,7 +167,7 @@ namespace Coverage {
         fclose( loadAddressFile );
         exit( -1 );
       }
-      sscanf( buffer, "%s %x", inLibName, &offset );
+      sscanf( inputBuffer, "%s %x", inLibName, &offset );
       std::string tmp = inLibName;
       if ( tmp.find( Library ) != tmp.npos ) {
         // fprintf( stderr, "%s - 0x%08x\n", inLibName, offset );
@@ -297,7 +178,7 @@ namespace Coverage {
 
     fclose( loadAddressFile );
     return address;
-#endif
+
     #undef METHOD
   }
 
@@ -417,7 +298,6 @@ namespace Coverage {
     ExecutableInfo* const executableInformation
   )
   {
-    char               buffer[ 512 ];
     char*              cStatus;
     int                items;
     FILE*              objdumpFile;
@@ -434,15 +314,15 @@ namespace Coverage {
     while ( 1 ) {
 
       // Get the line.
-      cStatus = fgets( buffer, 512, objdumpFile );
+      cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, objdumpFile );
       if (cStatus == NULL) {
         break;
       }
-      buffer[ strlen(buffer) - 1] = '\0';
+      inputBuffer[ strlen(inputBuffer) - 1] = '\0';
 
       // See if it is the dump of an instruction.
       items = sscanf(
-        buffer,
+        inputBuffer,
         "%x%c",
         &offset, &terminator
       );
@@ -460,7 +340,6 @@ namespace Coverage {
     ExecutableInfo* const executableInformation
   )
   {
-    char               buffer[ 512 ];
     char*              cStatus;
     std::string        currentSymbol = "";
     uint32_t           endAddress;
@@ -486,7 +365,7 @@ namespace Coverage {
     while ( 1 ) {
 
       // Get the line.
-      cStatus = fgets( buffer, 512, objdumpFile );
+      cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, objdumpFile );
       if (cStatus == NULL) {
 
         // If we are currently processing a symbol, finalize it.
@@ -511,9 +390,9 @@ namespace Coverage {
         break;
       }
 
-      buffer[ strlen(buffer) - 1] = '\0';
+      inputBuffer[ strlen(inputBuffer) - 1] = '\0';
 
-      lineInfo.line          = buffer;
+      lineInfo.line          = inputBuffer;
       lineInfo.address       = 0xffffffff;
       lineInfo.isInstruction = false;
       lineInfo.isNop         = false;
@@ -523,7 +402,7 @@ namespace Coverage {
       // Look for the start of a symbol's objdump and extract
       // offset and symbol (i.e. offset <symbolname>:).
       items = sscanf(
-        buffer,
+        inputBuffer,
         "%x <%[^>]>%c",
         &offset, symbol, &terminator1
       );
@@ -563,7 +442,7 @@ namespace Coverage {
 
         // See if it is the dump of an instruction.
         items = sscanf(
-          buffer,
+          inputBuffer,
           "%x%c\t%*[^\t]%c",
           &instructionOffset, &terminator1, &terminator2
         );
@@ -575,8 +454,8 @@ namespace Coverage {
           lineInfo.address =
            executableInformation->getLoadAddress() + instructionOffset;
           lineInfo.isInstruction = true;
-          lineInfo.isNop         = isNop( buffer, lineInfo.nopSize );
-          lineInfo.isBranch      = isBranchLine( buffer );
+          lineInfo.isNop         = isNop( inputBuffer, lineInfo.nopSize );
+          lineInfo.isBranch      = isBranchLine( inputBuffer );
         }
 
         // Always save the line.
