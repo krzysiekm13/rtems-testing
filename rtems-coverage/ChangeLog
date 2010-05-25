@@ -1,3 +1,9 @@
+2010-05-25	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* do_coverage, rtems_items.sed: Moved the summary report to the covoar
+	common reports in the report class and out of the rtems specific
+	items in the report index.
+
 2010-05-24	TEAM
 
 	* covoar source split out to own directory.

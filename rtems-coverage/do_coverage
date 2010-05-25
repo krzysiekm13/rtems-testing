@@ -356,7 +356,7 @@ generate_reports()
   rm -rf ${results_dir}
   mkdir  ${results_dir}
   covoar -C ${BASEDIR}/${BSP}-tests/config \
-    *.exe > ${results_dir}/summary.txt
+    *.exe
   check_status $? "covoar failed"
 
   # This should be made obsolete by sortable tables. 
