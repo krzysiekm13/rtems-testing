@@ -335,10 +335,16 @@ namespace Coverage {
         fprintf(
           stderr,
           "ERROR: DesiredSymbols::createCoverageMap - Attempt to create "
-          "unified coverage maps for %s with different sizes\n",
-          symbolName.c_str()
+          "unified coverage maps for %s with different sizes (%d != %d)\n",
+          symbolName.c_str(),
+          itr->second.stats.sizeInBytes,
+          size
         );
-        exit( -1 );
+        if ( itr->second.stats.sizeInBytes < size )
+          itr->second.stats.sizeInBytes = size;
+        else
+          size = itr->second.stats.sizeInBytes;
+        // exit( -1 );
       }
     }
 
@@ -622,7 +628,8 @@ namespace Coverage {
         "coverage map for %s because the sizes are different\n",
         symbolName.c_str()
       );
-      exit( -1 );
+      return;
+      // exit( -1 );
     }
 
     // Merge the data for each address.

@@ -82,17 +82,18 @@ namespace Coverage {
         //
 	a = baseAddress + i;
 	aCoverageMap = executableInformation->getCoverageMap( a );
-        if (!aCoverageMap)
+        if ( !aCoverageMap )
           continue;
-        if (cover & 1) {
+        if ( cover & 0x01 ) {
           aCoverageMap->setWasExecuted( a );
           aCoverageMap->setWasExecuted( a + 1 );
           aCoverageMap->setWasExecuted( a + 2 );
           aCoverageMap->setWasExecuted( a + 3 );
-          if ( cover & 0x10 ) {
+          if ( cover & 0x08 ) {
 	    aCoverageMap->setWasTaken( a );
 	    BranchInfoAvailable = true;
-          } else if ( cover & 0x20 ) {
+          }
+          if ( cover & 0x10 ) {
 	    aCoverageMap->setWasNotTaken( a );
 	    BranchInfoAvailable = true;
           }

@@ -1,3 +1,9 @@
+2010-05-26	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* CoverageReaderTSIM.cc: Branch coverage works now.
+	* DesiredSymbols.cc: Do not fatal on size mismatch.  Just patch it
+	up and continue.
+
 2010-05-26	Jennifer.Averett<Jennifer.Averett@OARcorp.com>
 
 	* DesiredSymbols.cc: added -C to addr2line system call.
