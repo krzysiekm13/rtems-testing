@@ -1,3 +1,7 @@
+2010-05-26	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* do_coverage: Include libuntar.
+
 2010-05-25	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* do_coverage, rtems_items.sed: Moved the summary report to the covoar

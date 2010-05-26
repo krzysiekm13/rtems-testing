@@ -490,7 +490,7 @@ generate_symbols()
       filter_nm libmisc/${subd}libdumpbuf.a
       # filter_nm libmisc/${subd}libmonitor.a
       # filter_nm libmisc/${subd}libserdbg.a
-      # filter_nm libmisc/${subd}libuntar.a
+      filter_nm libmisc/${subd}libuntar.a
       # filter_nm libblock/${subd}libblock.a
     fi
   fi
