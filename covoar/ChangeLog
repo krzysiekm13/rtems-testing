@@ -1,3 +1,8 @@
+2010-05-27	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* CoverageReaderTSIM.cc: Coverage byte is in hexadecimal.
+	* Target_sparc.cc: Add annulled form of branches.
+
 2010-05-27	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* ReportsHtml.cc: Modified to correctly sort of numeric values.

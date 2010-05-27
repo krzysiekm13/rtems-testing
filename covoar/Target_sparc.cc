@@ -20,21 +20,37 @@ namespace Target {
     TargetBase( targetName )
   {
     branchInstructions.push_back("bn");
+    branchInstructions.push_back("bn,a");
     branchInstructions.push_back("be");
+    branchInstructions.push_back("be,a");
     branchInstructions.push_back("ble");
+    branchInstructions.push_back("ble,a");
     branchInstructions.push_back("bl");
+    branchInstructions.push_back("bl,a");
     branchInstructions.push_back("bleu");
+    branchInstructions.push_back("bleu,a");
     branchInstructions.push_back("bcs");
+    branchInstructions.push_back("bcs,a");
     branchInstructions.push_back("bneg");
+    branchInstructions.push_back("bneg,a");
     branchInstructions.push_back("bvs");
+    branchInstructions.push_back("bvs,a");
     branchInstructions.push_back("ba");
+    branchInstructions.push_back("ba,a");
     branchInstructions.push_back("bne");
+    branchInstructions.push_back("bne,a");
     branchInstructions.push_back("bg");
+    branchInstructions.push_back("bg,a");
     branchInstructions.push_back("bge");
+    branchInstructions.push_back("bge,a");
     branchInstructions.push_back("bgu");
+    branchInstructions.push_back("bgu,a");
     branchInstructions.push_back("bcc");
+    branchInstructions.push_back("bcc,a");
     branchInstructions.push_back("bpos");
+    branchInstructions.push_back("bpos,a");
     branchInstructions.push_back("bvc");
+    branchInstructions.push_back("bvc,a");
   
     branchInstructions.sort();    
   }

@@ -65,7 +65,7 @@ namespace Coverage {
 
       for (i=0; i < 0x80; i+=4) {
         unsigned int a;
-        status = fscanf( coverageFile, "%d", &cover );
+        status = fscanf( coverageFile, "%x", &cover );
 	if (status == EOF || status == 0) {
           fprintf(
             stderr,
