@@ -201,6 +201,7 @@ void ReportsBase::WriteAnnotatedReport(
     theBranches = ditr->second.uncoveredBranches;
 
     // Add annotations to each line where necessary
+    AnnotatedStart( aFile );
     for (itr = theInstructions->begin();
          itr != theInstructions->end();
          itr++ ) {
@@ -236,6 +237,8 @@ void ReportsBase::WriteAnnotatedReport(
       
       PutAnnotatedLine( aFile, state, line, id); 
     }
+
+    AnnotatedEnd( aFile );
   }
 
   CloseAnnotatedFile( aFile );

@@ -149,6 +149,16 @@ class ReportsHtml: public ReportsBase {
     );
 
     /* Inherit documentation from base class. */ 
+     virtual void AnnotatedStart(
+      FILE*                aFile
+    );
+ 
+    /* Inherit documentation from base class. */ 
+     virtual void AnnotatedEnd(
+      FILE*                aFile
+    );
+ 
+    /* Inherit documentation from base class. */ 
     virtual bool PutNoBranchInfo(
       FILE* report
     );

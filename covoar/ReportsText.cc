@@ -21,6 +21,23 @@ ReportsText::ReportsText( time_t timestamp ):
   reportExtension_m = ".txt";
 }
 
+void ReportsText::AnnotatedStart(
+  FILE*                aFile
+)
+{
+  fprintf( 
+    aFile, 
+    "========================================"
+    "=======================================\n" 
+  );
+}
+ 
+void ReportsText::AnnotatedEnd(
+  FILE*                aFile
+)
+{
+}
+
 void ReportsText::PutAnnotatedLine( 
   FILE*                aFile, 
   AnnotatedLineState_t state, 

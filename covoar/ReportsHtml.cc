@@ -406,6 +406,22 @@ namespace Coverage {
     return aFile;
   }
 
+  void ReportsHtml::AnnotatedStart(
+    FILE*                aFile
+  )
+  {
+    fprintf( 
+      aFile,
+      "<hr>\n" 
+    );
+  }
+ 
+  void ReportsHtml::AnnotatedEnd(
+    FILE*                aFile
+  )
+  {
+  }
+
   void ReportsHtml::PutAnnotatedLine( 
     FILE*                aFile, 
     AnnotatedLineState_t state, 

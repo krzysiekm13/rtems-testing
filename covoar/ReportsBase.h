@@ -271,8 +271,8 @@ class ReportsBase {
     );
 
     /*!
-     *  This method puts any necessary footer information into
-     *  the report then closes the file.
+     *  This method puts any necessary a line of annotated
+     *  data into the file.
      *
      *  @param[in] aFile identifies the report file name
      *  @param[in] state identifies the state machine state
@@ -285,6 +285,27 @@ class ReportsBase {
       std::string          line,
       uint32_t             id 
     )=0;
+
+    /*!
+     *  This method puts any necessary header information in
+     *  front of an annotated section.
+     *
+     *  @param[in] aFile identifies the report file name
+     */
+     virtual void AnnotatedStart(
+      FILE*                aFile
+    )=0;
+ 
+    /*!
+     *  This method puts any necessary footer information in
+     *  front of an annotated section.
+     *
+     *  @param[in] aFile identifies the report file name
+     */
+     virtual void AnnotatedEnd(
+      FILE*                aFile
+    )=0;
+ 
 
     /*!
      *  This method puts any necessary footer information into

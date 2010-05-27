@@ -1,3 +1,9 @@
+2010-05-27	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* ReportsBase.cc, ReportsBase.h, ReportsHtml.cc, ReportsHtml.h,
+	ReportsText.cc, ReportsText.h: Added visual break between information
+	sections in the annotated report.
+
 2010-05-26	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* CoverageReaderTSIM.cc: Branch coverage works now.
