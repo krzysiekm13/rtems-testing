@@ -1,5 +1,9 @@
 2010-05-27	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
+	* ReportsHtml.cc: Modified to correctly sort of numeric values.
+
+2010-05-27	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
 	* ReportsBase.cc, ReportsBase.h, ReportsHtml.cc, ReportsHtml.h,
 	ReportsText.cc, ReportsText.h: Added visual break between information
 	sections in the annotated report.
