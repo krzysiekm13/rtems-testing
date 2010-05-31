@@ -1,31 +1,15 @@
-mutexinit.c:165
-Simple Test Case
-This code is not initializing a specific type of mutex -- probably recursive.
-+++
-
-pthread.c:125
+pthread.c:1149
 Simple Test Case
 This is a case of attempting to change the priority of a thread
 whose priority is above that of the "high" priority it is supposed
 to have.  This is just a matter of having a thread at a high priority
 when its budget runs out.
-+++
 
-pthread.c:126
-Simple Test Case
-This is 1/2 of pthread.c:125.
-+++
+There is another case of a branch not taken which is actually
+when the thread is holding a resource and we do not want to bump
+its priority.
 
-coremutex.inl:171
-Simple Test Case
-pri ceiling, acquire when pri = ceiling
-+++
-
-coremutexsurrender.c:188
-Simple Test Case
-There must not be a test of a priority ceiling mutex getting released
-which results in a thread being unblocked and the UNBLOCKED thread's
-priority being elevated.
+So there are actually two cases which could branch here.
 +++
 
 threadinitialize.c:100
@@ -36,46 +20,12 @@ thread stack address attribute.
 NOTE: Code Should be Configured on POSIX
 +++
 
-pipe.c:28
-Simple Test Case
-Pass in a NULL file descriptor.
-+++
-
-pipe/pipe.c:35
-Simple Test Case
-This looks like ar error on the path passed in to create.
-+++
-
-pipe/pipe.c:82
-Simple Test Case
-This looks like a common error path which will be covered if you
-generate the other errors.
-
-+++
-
-pipe/pipe.c:50
-Simple Test Case
-This looks like you need to create multiple pipes so the name generation
-algorithm has a conflict on its first N attempts.
-+++
-
-pipe/pipe.c:65
-Simple Test Case
-This looks like there is no test code for blocking mode.
-+++
-
-pipe/pipe.c:72
-Simple Test Case
-This looks like a special test where you can create/open the first
-pipe file descriptor but not the second.
-+++
-
-bspcmdline_getparam.c:65
+bspcmdline_getparam.c:67
 Simple Test Case
 Need a test case to return NULL.
 +++
 
-bspcmdline_getparamrhs.c:41
+bspcmdline_getparamrhs.c:48
 Simple Test Case
 Need a test case to return NULL.
 +++
