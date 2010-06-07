@@ -516,7 +516,7 @@ test -d ${BASEDIR}/${BSP}-tests || mkdir ${BASEDIR}/${BSP}-tests
 if [ ${do_covmerge} = "yes" ] ; then
   echo "Updating and building covmerge..."
 
-  cd ${COVBASE}
+  cd ${COVBASE}/../covoar
   check_status $? "cd covmerge"
 
   cvs up -Pd 2>&1 | grep -v ^cvs

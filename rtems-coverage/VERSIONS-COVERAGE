@@ -2,7 +2,7 @@
 BASEDIR=${HOME}/test-gcc
 
 
-RTEMS_VERSION=4.10
+RTEMS_VERSION=4.11
 case ${RTEMS_VERSION} in
   4.5)  RTEMSDIR=${BASEDIR}/rtems-45
         TARDIR=${BASEDIR}/tarballs/4.5
@@ -24,7 +24,11 @@ case ${RTEMS_VERSION} in
         TARDIR=${BASEDIR}/tarballs/4.9
         DEFAULT_EXEEXT=ralf
         ;;
-  4.10) RTEMSDIR=${BASEDIR}/rtems
+  4.10) RTEMSDIR=${BASEDIR}/rtems-49
+        TARDIR=${BASEDIR}/tarballs/4.10
+        DEFAULT_EXEEXT=ralf
+        ;;
+  4.11) RTEMSDIR=${BASEDIR}/rtems
         TARDIR=${BASEDIR}/tarballs/`date +%Y`
         DEFAULT_EXEEXT=ralf
         ;;
