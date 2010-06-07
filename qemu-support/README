@@ -7,8 +7,6 @@ This directory contains files which assist in using qemu with RTEMS.
 pc386_fda.bz2 - uncompress and place in ~/qemu.  This file boots test.exe
                 from the hd which is ~/qemu/hd in the scripts.
 
-NOTE: Joel has two other things to add from other machines.
-
 pc386_fda_slow - pauses before booting test.exe so you can attach gdb. 
 
 qemu-nic - run with network support configured.  EDIT THIS AS NEEDED

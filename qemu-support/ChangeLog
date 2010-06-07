@@ -1,3 +1,8 @@
+2010-06-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* README, pc386_fda.bz2: Update to version with bootloader arguments
+	for COM1 as console.
+
 2010-01-14	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemu-nic: Add some more help.
