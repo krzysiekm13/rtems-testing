@@ -1,3 +1,8 @@
+2010-06-08	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_coverage: Until untar test is committed do not include it. It's
+	presence is hiding other coverage improvements.
+
 2010-06-07	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* VERSIONS-COVERAGE, do_coverage: Now builds with 4.11.
