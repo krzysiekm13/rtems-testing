@@ -111,7 +111,7 @@ EOF
 for bsp in $BSPs
 do
   cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
-	sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
+	sed -e 's/^.*Target: *//' | cut -d'-' -f1 | sort -u`
   echo "<li><a href=\"${bsp}.html\">${cpu}/${bsp}</li>"
 done
 cat <<EOF
@@ -284,6 +284,7 @@ cleanup()
 
 #BSPs=`find * -maxdepth 1 -type d | cut -d'-' -f1 | uniq | grep -v rtems`
 BSPs=`genBSPList`
+
 
 # Let them grow for a while
 # cleanup

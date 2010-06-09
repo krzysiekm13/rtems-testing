@@ -1,3 +1,10 @@
+2010-06-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* generate_coverage_html: sort after the cut so the cpus are unique not
+	the target names. This made a CPU show up twice when we had
+	difference RTEMS branches in the results (e.g. sparc-rtems4.10 and
+	sparc-rtems4.11).
+
 2010-06-08	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_coverage: Until untar test is committed do not include it. It's
