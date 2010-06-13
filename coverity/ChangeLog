@@ -1,0 +1,4 @@
+2010-06-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* ChangeLog, Makefile, README, do_coverity, do_mail_coverity: New files.
+
