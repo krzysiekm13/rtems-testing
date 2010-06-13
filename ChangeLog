@@ -1,3 +1,7 @@
+2010-06-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* Makefile: Adding coverity scripts.
+
 2010-05-24	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* Makefile: rtems-coverage now has nothing to build.
