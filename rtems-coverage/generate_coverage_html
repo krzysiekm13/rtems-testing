@@ -164,7 +164,7 @@ doit()
 {
   BSP=${1}
   cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
-        sed -e 's/^.*Target: *//' | sort -u | cut -d'-' -f1`
+        sed -e 's/^.*Target: *//' | cut -d'-' -f1 | sort -u`
 
   print_doc_top ${cpu}/${BSP}
 

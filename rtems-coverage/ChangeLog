@@ -1,3 +1,8 @@
+2010-06-16	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* generate_coverage_html: Another place where sort -u should have been
+	after the cut.
+
 2010-06-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* generate_coverage_html: sort after the cut so the cpus are unique not
