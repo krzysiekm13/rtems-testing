@@ -13,7 +13,7 @@
 #    MAILOPT:  Either MAIL, NOMAIL, or an email address.
 
 cat <<EOF |
-v1;RTEMS;ce5hazuV;joel@oarcorp.com.com;http://www.rtems.org/ftp/private/coverity/project.tgz
+v1;RTEMS;ce5hazuV;joel@oarcorp.com;http://www.rtems.org/ftp/private/coverity/project.tgz
 EOF
 mail -u joel -r joel@oarcorp.com -s "RTEMS Coverity Run Request"  build@submit.scan.coverity.com 
 exit 0

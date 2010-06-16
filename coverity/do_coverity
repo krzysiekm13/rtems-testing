@@ -69,9 +69,9 @@ check_fatal $? "could not coverity configure g++"
 # Clean build directory and start over
 rm     -rf  b-coverity-${RTEMS_TARGET}
 check_fatal $? "Could not remove build directory"
-mkdir  -p   b-${RTEMS_TARGET}/b-coverity-${RTEMS_TARGET}
+mkdir  -p   b-coverity-${RTEMS_TARGET}/b-${RTEMS_TARGET}
 check_fatal $? "Could not make build directory"
-cd          b-${RTEMS_TARGET}/b-coverity-${RTEMS_TARGET}
+cd          b-coverity-${RTEMS_TARGET}/b-${RTEMS_TARGET}
 check_fatal $? "Could not cd to build directory"
 
 # Configure RTEMS
