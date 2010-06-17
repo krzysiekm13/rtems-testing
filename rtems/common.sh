@@ -39,7 +39,7 @@ print_rtems_cpus()
   echo "CPU is one of the following: "
   echo "  arm           h8300		i386		lm32"
   echo "  m68k		nios2		powerpc		sh"
-  echo "  m32c		m32r            sparc		tic4x"
+  echo "  m32c		m32r            sparc		sparc64    tic4x"
   echo 
   echo "Formats without a -XXX suffix are the preferred target."
   echo 
@@ -57,6 +57,7 @@ print_rtems_cpus()
   echo "    powerpc-rtems     -- IBM and Motorola PowerPC"
   echo "    sh-rtems          -- Renesas SH (COFF)"
   echo "    sparc-rtems       -- SPARC (ELF)"
+  echo "    sparc64-rtems     -- SPARC64 (ELF)"
 }
 
 # CPU must be set before we run any of this stuff
@@ -86,6 +87,7 @@ case ${CPU} in
   sh)          ;;
   tic4x)       ;;
   sparc)       ;;
+  sparc64)     ;;
   native)      CPU=unix;;
   unix)        ;;
   *)  
@@ -97,8 +99,7 @@ case ${CPU} in
 esac
  
 # insert the os version
-#target=`echo $target | sed -e 's/-rtems$/-rtems4.9/' -e 's/-rtemself$/-rtemself4.9/'`
-target=`echo $target | sed -e 's/-rtems$/-rtems4.10/' -e 's/-rtemself$/-rtemself4.10/'`
+target=`echo $target | sed -e 's/-rtems$/-rtems4.11/' -e 's/-rtemself$/-rtemself4.11/'`
 
 #
 #  Figure out if GNU make is available

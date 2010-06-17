@@ -114,6 +114,7 @@ if [ x${BSP_TO_TEST} != x ] ; then
       bf537Stamp) ENABLE_BSP="${ENABLE_BSP} BFIN_ON_SKYEYE=1" ;;
       eZKit533)   ENABLE_BSP="${ENABLE_BSP} BFIN_ON_SKYEYE=1"   ;;
       edb7312)    ENABLE_BSP="${ENABLE_BSP} ON_SKYEYE=1" ;;
+      leon3)      ENABLE_BSP="${ENABLE_BSP}" ;;
       gumstix)    ENABLE_BSP="${ENABLE_BSP} ON_SKYEYE=1" ;;
       lm32_evr)   ENABLE_BSP="${ENABLE_BSP} ON_SIMULATOR=1" ;;
       csb637)
@@ -266,7 +267,7 @@ fi
 if [ ${ENABLE_RTEMS_TCPIP} = yes ] ; then
   case ${CPU} in
     avr) TCPIP_FLAG="--disable-networking" ;;
-    *)   TCPIP_FLAG="--enable-networking" ;;
+    *)   TCPIP_FLAG="--enable-networking --enable-shttpd" ;;
   esac
 else
   TCPIP_FLAG="--disable-networking"
@@ -320,12 +321,17 @@ else
   ENABLE_MP_FLAG="--disable-multiprocessing"
 fi
 
+if [ ${ENABLE_RTEMS_SMP} = yes ] ; then
+  ENABLE_SMP_FLAG="--enable-smp"
+else
+  ENABLE_SMP_FLAG="--disable-smp"
+fi
+
 # Some CPUs do not have C++ support
 if [ ${ENABLE_RTEMS_CXX} = yes ] ; then
   case ${CPU} in
-    avr|bfin|m32c|m32r|tic4x)
-       ENABLE_RTEMS_CXX="--disable-cxx" ;;
-    *) ENABLE_RTEMS_CXX="--enable-cxx" ;;
+    avr|bfin|tic4x) ENABLE_RTEMS_CXX="--disable-cxx" ;;
+    *)              ENABLE_RTEMS_CXX="--enable-cxx" ;;
   esac
 else
   ENABLE_RTEMS_CXX="--disable-cxx"
@@ -353,7 +359,7 @@ fi
 
 ENABLE_ARGS="\
     --prefix=${INSTALL_POINT} \
-    ${DISABLE_INLINES_FLAG} ${ENABLE_MP_FLAG} \
+    ${DISABLE_INLINES_FLAG} ${ENABLE_MP_FLAG} ${ENABLE_SMP_FLAG} \
     ${ENABLE_RTEMS_DEBUG} ${ENABLE_RTEMS_CXX} \
     ${ENABLE_RTEMS_RDBG} ${ENABLE_RTEMS_MAINTAINER_MODE} \
     ${RTEMS_TESTS_FLAG} ${TCPIP_FLAG} \
@@ -483,12 +489,14 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
 
   if [ ${RUN_RTEMS_TESTS} = yes ] ; then
     case ${BSP_TO_TEST} in
-      edb7312) testable=yes ;;  # arm/edb7312
-      rtl22xx) testable=yes ;;  # arm/rtl22xx
-      jmr3904) testable=yes ;;  # mips/jmr3904
-      psim)    testable=yes ;;  # powerpc/psim
-      sis)     testable=yes ;;  # sparc/sis
-      erc32|leon2|leon3)        # sparc using tsim
+      edb7312)  testable=yes ;;  # arm/edb7312
+      rtl22xx)  testable=yes ;;  # arm/rtl22xx
+      pc386)    testable=yes ;;  # i386/pc386
+      lm32_evr) testable=yes ;;  # lm32/lm32_evr
+      jmr3904)  testable=yes ;;  # mips/jmr3904
+      psim)     testable=yes ;;  # powerpc/psim
+      sis)      testable=yes ;;  # sparc/sis
+      erc32|leon2|leon3)         # sparc using tsim
         case `uname -n` in
           england*|iceland*) testable=yes ;; 
           *)                 testable=no ;;
@@ -502,11 +510,17 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     testable=no
   fi
 
+  # This should run the tests
+  case ${BSP_TO_TEST} in
+    pc386) EXEEXT=exe ;;
+    *)     EXEEXT=ralf ;;
+  esac
+
   # If not multilib, grab the ticker.ralf and save it out
   if [ X${BSP_TO_TEST} != X ] ; then
     mkdir -p ../ticker-executables
-    cp `find . -name ticker.ralf` \
-        ../ticker-executables/${CPU}-${BSP_TO_TEST}-ticker.ralf
+    cp `find . -name ticker.${EXEEXT}` \
+        ../ticker-executables/${CPU}-${BSP_TO_TEST}-ticker.${EXEEXT}
   fi
 
   if [ ${testable} = yes ] ; then
@@ -516,21 +530,23 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
 
     mkdir ${testdir}
     check_fatal $? "failed to mkdir test directory for ${BSP_TO_TEST}."
-    cp `find . -name "*.ralf"` ${testdir}
+    cp `find . -name "*.${EXEEXT}"` ${testdir}
 
     case ${BSP_TO_TEST} in
-      jmr3904)  running=jmr3904 ;;
-      psim)     running=psim ;;
-      posix)    running="" ;;
+      jmr3904)  runner=jmr3904 ;;
+      psim)     runner=psim ;;
+      posix)    runner="" ;;
       # ARM
       edb7312)  runner=edb7312 ;;
       gumstix)  runner=gumstix ;;
       rtl22xx)  runner=rtl22xx ;;
+      # i386
+      pc386)    runner=pc386 ;;
       # SPARC
       erc32)    runner=erc32 ;;
       leon2)    runner=leon  ;;
       leon3)    runner=leon3 ;;
-      sis)      running=sis ;;
+      sis)      runner=sis ;;
       *) ;;
     esac
 
@@ -538,7 +554,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     check_fatal $? "failed to enter test directory for ${BSP_TO_TEST}."
 
     # This should run the tests
-    ${runner} *.ralf
+    ${runner} *.${EXEEXT}
 
     # Check Logs
     echo "Checking Logs for Proper Test Completion ..."
