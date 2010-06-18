@@ -58,7 +58,8 @@ CONFIGFILE_TEST_OBJS = \
 INSTALLED= \
     ../bin/qemu-dump-trace \
     ../bin/trace-converter \
-    ../bin/covoar
+    ../bin/covoar \
+    ../bin/mkExplanation
 
 all: $(PROGRAMS) ${INSTALL_DIR} $(INSTALLED)
 
@@ -74,6 +75,9 @@ ${INSTALL_DIR}:
 
 ../bin/covoar: covoar ${INSTALL_DIR}
 	cp covoar ../bin
+
+../bin/mkExplanation: mkExplanation ${INSTALL_DIR}
+	cp mkExplanation ../bin
 
 #  EXECUTABLES
 qemu-dump-trace: qemu-dump-trace.c ${INSTALL_DIR}
@@ -151,4 +155,4 @@ clean:
 doxygen:
 	doxygen Doxyfile
 
-install: all
+install: ${INSTALLED}

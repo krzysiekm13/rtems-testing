@@ -1,3 +1,8 @@
+2010-06-18	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Makefile: Add simple script to help write explanation entries.
+	* mkExplanation: New file.
+
 2010-05-27	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* CoverageReaderTSIM.cc: Coverage byte is in hexadecimal.
