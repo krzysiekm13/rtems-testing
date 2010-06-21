@@ -29,13 +29,15 @@ usage()
   exit 1
 }
 
+addToCVS=no
 source=
 dest=
 desc=
 verbose=no
-while getopts d:D:s:v OPT
+while getopts cd:D:s:v OPT
 do
   case "$OPT" in 
+    c) addToCVS=`toggle ${addToCVS}` ;;
     d) dest=$OPTARG ;; 
     D) desc=$OPTARG ;; 
     s) source=$OPTARG ;; 
@@ -47,12 +49,30 @@ done
 # Error check
 test "X${dest}" != "X"
 check_status $? No destination provided
+test -r configure.ac
+check_status $? Not in test suite directory
+
+
+if [ ${addToCVS} == yes ] ; then
+  test -d ${dest}
+  check_status $? "Cannot add ${dest} -- does not exist"
+
+  echo cvs add ${dest}
+  cd ${dest}
+  for f in `ls -1 .cvsignore Makefile.am *.doc *.scn *.[ch] 2>/dev/null`
+  do
+     echo cvs add ${f}
+  done
+  exit 0
+fi
+
 test "X${source}" != "X"
 check_status $? No source provided
 test -d "${source}" 
 check_status $? Source directory not present 
-test -r configure.ac
-check_status $? Not in test suite directory
+
+test -d ${dest}/CVS
+check_status $? "Are you sure about ${dest}? Already a CVS directory in it"
 
 let $((shiftcount = $OPTIND - 1))
 shift #shiftcount
@@ -83,6 +103,11 @@ do
    check_status $? "Unable to process ${d}"
   fi
 done
+
+cat <<EOF >${dest}/.cvsignore
+Makefile
+Makefile.in
+EOF
 
 cat <<EOF
 You need to add the test to the Makefile.am and configure.ac by hand
