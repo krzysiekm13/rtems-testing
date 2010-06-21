@@ -1,0 +1,5 @@
+2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ChangeLog, sptest/Makefile.am, sptest/TEST.doc, sptest/TEST.scn,
+	sptest/init.c: New files.
+
