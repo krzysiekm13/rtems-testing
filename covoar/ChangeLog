@@ -1,3 +1,7 @@
+2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* mkExplanation: Default value for verbose.
+
 2010-06-18	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile: Add simple script to help write explanation entries.

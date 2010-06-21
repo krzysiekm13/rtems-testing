@@ -24,6 +24,7 @@ message=
 messageFile=
 category=
 sourceLine=
+verbose=no
 while getopts c:m:M:r:v OPT
 do
   case "$OPT" in 
