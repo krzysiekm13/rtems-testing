@@ -26,6 +26,13 @@ check_status()
 usage()
 {
   echo "$progname -s SOURCE -d DEST -D description [-v]"
+  echo "                   OR"
+  echo "$progname -c -d DEST"
+cat <<EOF
+
+The first form is to generate a new test.
+The second form is to add the new test to CVS.
+EOF
   exit 1
 }
 
@@ -57,11 +64,11 @@ if [ ${addToCVS} == yes ] ; then
   test -d ${dest}
   check_status $? "Cannot add ${dest} -- does not exist"
 
-  echo cvs add ${dest}
+  cvs add ${dest}
   cd ${dest}
   for f in `ls -1 .cvsignore Makefile.am *.doc *.scn *.[ch] 2>/dev/null`
   do
-     echo cvs add ${f}
+     cvs add ${f}
   done
   exit 0
 fi
