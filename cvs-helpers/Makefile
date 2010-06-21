@@ -3,7 +3,7 @@
 #
 
 INSTALL_DIR=../bin
-SCRIPTS=commit-with-changelog-diff cvscommit mkChangeLogList prepend
+SCRIPTS=commit-with-changelog-diff cvscommit mkChangeLogList prepend mktest
 
 all: prep ${SCRIPTS} install
 

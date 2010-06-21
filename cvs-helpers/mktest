@@ -1,0 +1,96 @@
+#! /bin/sh
+#
+#  Process a test template directory into the baseline for a new test
+#
+#  $Id$
+#
+
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
+
+check_status()
+{
+  if [ $1 -ne 0 ] ; then
+    shift 
+    echo "FAILED: " "$*" >&2
+    exit 1
+  fi
+}
+
+usage()
+{
+  echo "$progname -s SOURCE -d DEST -D description [-v]"
+  exit 1
+}
+
+source=
+dest=
+desc=
+verbose=no
+while getopts d:D:s:v OPT
+do
+  case "$OPT" in 
+    d) dest=$OPTARG ;; 
+    D) desc=$OPTARG ;; 
+    s) source=$OPTARG ;; 
+    v) verbose=`toggle ${verbose}` ;;
+    *) usage ;;
+  esac
+done
+
+# Error check
+test "X${dest}" != "X"
+check_status $? No destination provided
+test "X${source}" != "X"
+check_status $? No source provided
+test -d "${source}" 
+check_status $? Source directory not present 
+test -r configure.ac
+check_status $? Not in test suite directory
+
+let $((shiftcount = $OPTIND - 1))
+shift #shiftcount
+
+args=$*
+
+destCaps=`echo ${dest} | tr [:lower:] [:upper:]`
+echo ${destCaps}
+
+# Process the test
+rm -rf ${dest}
+check_status $? "Unable to remove ${dest}"
+
+mkdir ${dest}
+check_status $? "Unable to make ${dest}"
+
+# all the source code we know about
+for s in ${source}/*
+do
+  if [ -r ${s} -a ! -d ${s} ] ; then
+    b=`basename ${s}`
+    d=`echo ${dest}/${b} | sed "s/TEST\./${dest}\./"`
+    echo Processing ${s} to ${d}
+    sed -e "s/@LOWER@/${dest}/g" \
+        -e "s/@UPPER@/${destCaps}/g" \
+        -e "s/@DESC@/${desc}/g" \
+    <${s} >${d}
+   check_status $? "Unable to process ${d}"
+  fi
+done
+
+cat <<EOF
+You need to add the test to the Makefile.am and configure.ac by hand
+before you can build.
+
+You will have to add content to the test itself including screen
+and doc files.
+
+EOF
+
+exit 0

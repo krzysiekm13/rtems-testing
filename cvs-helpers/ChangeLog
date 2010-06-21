@@ -1,3 +1,8 @@
+2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Makefile: Add RTEMS test templates and test instantiator.
+	* mktest: New file.
+
 2010-04-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* mkChangeLogList: elif not else if
