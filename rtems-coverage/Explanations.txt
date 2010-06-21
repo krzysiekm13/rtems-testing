@@ -27,7 +27,8 @@ Need a test case to return NULL.
 
 bspcmdline_getparamrhs.c:48
 Simple Test Case
-Need a test case to return NULL.
+Need a test case to return NULL.  This looks like a parameter of the form
+"LHS" with no "=" or "RHS".
 +++
 
 fifo.c:170
