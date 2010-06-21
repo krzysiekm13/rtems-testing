@@ -1,38 +1,11 @@
-pthread.c:1149
-Simple Test Case
-This is a case of attempting to change the priority of a thread
-whose priority is above that of the "high" priority it is supposed
-to have.  This is just a matter of having a thread at a high priority
-when its budget runs out.
-
-There is another case of a branch not taken which is actually
-when the thread is holding a resource and we do not want to bump
-its priority.
-
-So there are actually two cases which could branch here.
-+++
-
-threadinitialize.c:100
-Simple Test Case
-This is for the case where the application uses the POSIX
-thread stack address attribute.
-
-NOTE: Code Should be Configured on POSIX
-+++
-
 bspcmdline_getparam.c:67
 Simple Test Case
 Need a test case to return NULL.
 +++
 
-bspcmdline_getparamrhs.c:48
+bspcmdline_getparamrhs.c:36
 Simple Test Case
 Need a test case to return NULL.  This looks like a parameter of the form
 "LHS" with no "=" or "RHS".
-+++
-
-fifo.c:170
-Simple Test Case
-This looks like an existing test is broken or is only testing error paths.
 +++
 
