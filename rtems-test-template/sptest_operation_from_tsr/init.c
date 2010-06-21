@@ -57,7 +57,7 @@ rtems_task Init(
     start = rtems_clock_get_ticks_since_boot();
     do {
       now = rtems_clock_get_ticks_since_boot();
-    } while ( (now-start) > 100 );
+    } while ( (now-start) < 100 );
   }
 #endif
   if ( !operation_performed_from_tsr ) {
@@ -67,6 +67,7 @@ rtems_task Init(
 
   /* XXX also may be able to confirm operation actually was performed */
 
+  puts( "Operation from ISR successfully processed" );
   puts( "*** END OF TEST @DESC@ ***" );
   rtems_test_exit( 0 );
 }
