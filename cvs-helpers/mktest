@@ -78,7 +78,7 @@ check_status $? No source provided
 test -d "${source}" 
 check_status $? Source directory not present 
 
-test -d ${dest}/CVS
+test ! -d ${dest}/CVS
 check_status $? "Are you sure about ${dest}? Already a CVS directory in it"
 
 let $((shiftcount = $OPTIND - 1))

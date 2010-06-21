@@ -1,5 +1,9 @@
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* mktest: Test backwards.
+
+2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* mktest: Remove echo on cvs add and verify it works.
 
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
