@@ -1,5 +1,12 @@
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* sptest_operation_from_tsr/Makefile.am,
+	sptest_operation_from_tsr/TEST.doc,
+	sptest_operation_from_tsr/TEST.scn, sptest_operation_from_tsr/init.c:
+	New files.
+
+2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* tmtest/Makefile.am, tmtest/TEST.doc, tmtest/init.c: New files.
 
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
