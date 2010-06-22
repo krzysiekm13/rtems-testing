@@ -1,5 +1,10 @@
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* spfatal/Makefile.am, spfatal/TEST.doc, spfatal/TEST.scn,
+	spfatal/testcase.h: New files.
+
+2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* sptest_operation_from_tsr/init.c: Fix loop.
 
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
