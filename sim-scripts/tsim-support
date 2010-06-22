@@ -50,7 +50,7 @@ bspLimit()
 {
   testname=$1
   case ${testname} in
-    *stackchk*)limit=5 ;;
+    *stackchk*)limit=15 ;;
     *fatal*)   limit=1 ;;
     *minimum*) limit=1 ;;
     *psxtime*) 

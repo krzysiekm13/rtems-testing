@@ -1,3 +1,8 @@
+2010-06-22	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* tsim-support: Increase stack check tests maximum run allowed to 15
+	seconds of simulated CPU time for tsim SPARC simulators.
+
 2010-06-04	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* Makefile, gdb-sim-run.in, gdb-sim.in: Add 4.11 support.
