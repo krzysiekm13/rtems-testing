@@ -114,7 +114,6 @@ if [ x${BSP_TO_TEST} != x ] ; then
       bf537Stamp) ENABLE_BSP="${ENABLE_BSP} BFIN_ON_SKYEYE=1" ;;
       eZKit533)   ENABLE_BSP="${ENABLE_BSP} BFIN_ON_SKYEYE=1"   ;;
       edb7312)    ENABLE_BSP="${ENABLE_BSP} ON_SKYEYE=1" ;;
-      leon3)      ENABLE_BSP="${ENABLE_BSP}" ;;
       gumstix)    ENABLE_BSP="${ENABLE_BSP} ON_SKYEYE=1" ;;
       lm32_evr)   ENABLE_BSP="${ENABLE_BSP} ON_SIMULATOR=1" ;;
       csb637)
@@ -138,6 +137,9 @@ if [ x${BSP_TO_TEST} != x ] ; then
       #   ENABLE_BSP="${ENABLE_BSP} BSP_VIDEO_80x50=1"
       #   ;;
       pc386) ENABLE_BSP="--enable-rtemsbsp=pc386 BSP_VIDEO_80x50=1" ;;
+      sis)
+         ENABLE_BSP="${ENABLE_BSP} CONSOLE_USE_INTERRUPTS=1"
+         ;;
       *)     ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
     esac
 
@@ -267,7 +269,7 @@ fi
 if [ ${ENABLE_RTEMS_TCPIP} = yes ] ; then
   case ${CPU} in
     avr) TCPIP_FLAG="--disable-networking" ;;
-    *)   TCPIP_FLAG="--enable-networking --enable-shttpd" ;;
+    *)   TCPIP_FLAG="--enable-networking" ;;
   esac
 else
   TCPIP_FLAG="--disable-networking"
@@ -321,17 +323,12 @@ else
   ENABLE_MP_FLAG="--disable-multiprocessing"
 fi
 
-if [ ${ENABLE_RTEMS_SMP} = yes ] ; then
-  ENABLE_SMP_FLAG="--enable-smp"
-else
-  ENABLE_SMP_FLAG="--disable-smp"
-fi
-
 # Some CPUs do not have C++ support
 if [ ${ENABLE_RTEMS_CXX} = yes ] ; then
   case ${CPU} in
-    avr|bfin|tic4x) ENABLE_RTEMS_CXX="--disable-cxx" ;;
-    *)              ENABLE_RTEMS_CXX="--enable-cxx" ;;
+    avr|bfin|m32c|m32r|tic4x)
+       ENABLE_RTEMS_CXX="--disable-cxx" ;;
+    *) ENABLE_RTEMS_CXX="--enable-cxx" ;;
   esac
 else
   ENABLE_RTEMS_CXX="--disable-cxx"
@@ -359,7 +356,7 @@ fi
 
 ENABLE_ARGS="\
     --prefix=${INSTALL_POINT} \
-    ${DISABLE_INLINES_FLAG} ${ENABLE_MP_FLAG} ${ENABLE_SMP_FLAG} \
+    ${DISABLE_INLINES_FLAG} ${ENABLE_MP_FLAG} \
     ${ENABLE_RTEMS_DEBUG} ${ENABLE_RTEMS_CXX} \
     ${ENABLE_RTEMS_RDBG} ${ENABLE_RTEMS_MAINTAINER_MODE} \
     ${RTEMS_TESTS_FLAG} ${TCPIP_FLAG} \
@@ -489,14 +486,12 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
 
   if [ ${RUN_RTEMS_TESTS} = yes ] ; then
     case ${BSP_TO_TEST} in
-      edb7312)  testable=yes ;;  # arm/edb7312
-      rtl22xx)  testable=yes ;;  # arm/rtl22xx
-      pc386)    testable=yes ;;  # i386/pc386
-      lm32_evr) testable=yes ;;  # lm32/lm32_evr
-      jmr3904)  testable=yes ;;  # mips/jmr3904
-      psim)     testable=yes ;;  # powerpc/psim
-      sis)      testable=yes ;;  # sparc/sis
-      erc32|leon2|leon3)         # sparc using tsim
+      edb7312) testable=yes ;;  # arm/edb7312
+      rtl22xx) testable=yes ;;  # arm/rtl22xx
+      jmr3904) testable=yes ;;  # mips/jmr3904
+      psim)    testable=yes ;;  # powerpc/psim
+      sis)     testable=yes ;;  # sparc/sis
+      erc32|leon2|leon3)        # sparc using tsim
         case `uname -n` in
           england*|iceland*) testable=yes ;; 
           *)                 testable=no ;;
@@ -510,17 +505,11 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     testable=no
   fi
 
-  # This should run the tests
-  case ${BSP_TO_TEST} in
-    pc386) EXEEXT=exe ;;
-    *)     EXEEXT=ralf ;;
-  esac
-
   # If not multilib, grab the ticker.ralf and save it out
   if [ X${BSP_TO_TEST} != X ] ; then
     mkdir -p ../ticker-executables
-    cp `find . -name ticker.${EXEEXT}` \
-        ../ticker-executables/${CPU}-${BSP_TO_TEST}-ticker.${EXEEXT}
+    cp `find . -name ticker.ralf` \
+        ../ticker-executables/${CPU}-${BSP_TO_TEST}-ticker.ralf
   fi
 
   if [ ${testable} = yes ] ; then
@@ -530,23 +519,21 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
 
     mkdir ${testdir}
     check_fatal $? "failed to mkdir test directory for ${BSP_TO_TEST}."
-    cp `find . -name "*.${EXEEXT}"` ${testdir}
+    cp `find . -name "*.ralf"` ${testdir}
 
     case ${BSP_TO_TEST} in
-      jmr3904)  runner=jmr3904 ;;
-      psim)     runner=psim ;;
-      posix)    runner="" ;;
+      jmr3904)  running=jmr3904 ;;
+      psim)     running=psim ;;
+      posix)    running="" ;;
       # ARM
       edb7312)  runner=edb7312 ;;
       gumstix)  runner=gumstix ;;
       rtl22xx)  runner=rtl22xx ;;
-      # i386
-      pc386)    runner=pc386 ;;
       # SPARC
       erc32)    runner=erc32 ;;
       leon2)    runner=leon  ;;
       leon3)    runner=leon3 ;;
-      sis)      runner=sis ;;
+      sis)      running=sis ;;
       *) ;;
     esac
 
@@ -554,7 +541,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     check_fatal $? "failed to enter test directory for ${BSP_TO_TEST}."
 
     # This should run the tests
-    ${runner} *.${EXEEXT}
+    ${runner} *.ralf
 
     # Check Logs
     echo "Checking Logs for Proper Test Completion ..."
@@ -582,23 +569,24 @@ if [ ${do_install} = yes -a ${doing_bare_bsp} = no ] ; then
       find ${INSTALL_POINT}/${target}/lib -name "*rtems*.a" | xargs -e rm -f
       rm -rf ${INSTALL_POINT}/${target}/lib/include
   else
+    SUITES=
     case ${BSP_TO_TEST} in
       posix|bare*) ;;
       *)
         if [ -d ../examples-v2 ] ; then
-          SUITES=examples-v2
+          SUITES="${SUITES} examples-v2"
         else 
           echo "WARNING! examples-v2 not found"
         fi
 
         if [ -d ../class-examples ] ; then
-          SUITES=class-examples
+          SUITES="${SUITES} class-examples"
         else 
           echo "WARNING! class-examples not found"
         fi
 
         if [ -d ../examples ] ; then
-          SUITES=examples
+          SUITES="${SUITES} examples"
         else 
           echo "WARNING! examples not found"
         fi
@@ -610,7 +598,7 @@ if [ ${do_install} = yes -a ${doing_bare_bsp} = no ] ; then
         fi
 
         # Build application level tests that use "make"
-        for suite in examples-v2
+        for suite in ${SUITES}
         do
           cd ..
           cd ${suite}
@@ -631,7 +619,8 @@ if [ ${do_install} = yes -a ${doing_bare_bsp} = no ] ; then
 
         # Build TCP/IP demos and addons
         if [ ${ENABLE_RTEMS_POSIX} = yes -a  \
-              ${ENABLE_RTEMS_TCPIP} = yes ] ; then
+             ${ENABLE_RTEMS_TCPIP} = yes -a \
+             -d ../rtems-addon-packages ] ; then
 
           cd ../rtems-addon-packages
           check_fatal $? "failed cd to rtems-addon-packages."

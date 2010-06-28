@@ -1,3 +1,7 @@
+2010-06-28	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* bit_rtems: Clean up external directory building.
+
 2010-06-17	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* bit_all_bsps, bit_rtems, common.sh: Update to 4.11 and add sparc64.
