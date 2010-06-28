@@ -5,7 +5,7 @@
 MANAGERS = all
 
 rtems_tests_PROGRAMS = @LOWER@
-@LOWER@_SOURCES = init.c ../../support/src/spin.c
+@LOWER@_SOURCES = init.c
 
 dist_rtems_tests_DATA = @LOWER@.scn
 dist_rtems_tests_DATA += @LOWER@.doc
