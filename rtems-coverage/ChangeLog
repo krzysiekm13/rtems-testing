@@ -1,3 +1,7 @@
+2010-06-30	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* do_coverage: Add information on unreferenced symbols to summary.txt.
+
 2010-06-21	Jennifer Averett <Jennifer.Averett@OARcorp.com
 
 	* Categories.txt, Explanations.txt: Added explinations for wrapper

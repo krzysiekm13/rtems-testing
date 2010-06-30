@@ -326,6 +326,20 @@ generate_html()
   echo "</TR>"
 }
 
+add_to_summary()
+{
+  unref=${results_dir}/sizes_unreferenced.txt 
+  echo
+  unreffed=`cat ${unref} | wc -l` 
+  echo "Symbols unreferenced: " ${unreffed}
+  if [ ${unreffed} = 0 ] ; then
+    size_of=0
+  else
+    size_of=`cut -f1 ${unref} | sed -e '2,$s/$/ +/' -e '$,$s/$/ p/' | dc`
+  fi
+  echo "Bytes in unreferenced symbols : " ${size_of}
+}
+
 # generate the coverage report set
 generate_reports()
 {
@@ -377,16 +391,6 @@ generate_reports()
     print_verbose
   ) >${results_dir}/configuration.txt
 
-  # XXX summary should be in output directory
-  generate_html ${results_dir}/summary.txt >${results_dir}/row.html
-
-  cat ${results_dir}/summary.txt ${results_dir}/testsWithNoEndOfTest.txt
-
-  mv ${results_dir}/index.html ${results_dir}/index.html.tmp
-  sed -f ${COVBASE}/rtems_items.sed  \
-    <${results_dir}/index.html.tmp \
-    >${results_dir}/index.html 
-
   RTEMSLIB=${BASEDIR}/b-${BSP}/${TARGET}/${BSP}/lib/librtemscpu.a
 
   if [ -r ${RTEMSLIB} ] ; then
@@ -404,6 +408,16 @@ generate_reports()
 
   cat ${results_dir}/sizes_unreferenced.txt ${results_dir}/sizes.txt | \
     sort -n -r >${results_dir}/sizes_all.txt
+
+  generate_html ${results_dir}/summary.txt >${results_dir}/row.html
+  add_to_summary >>${results_dir}/summary.txt
+
+  cat ${results_dir}/summary.txt ${results_dir}/testsWithNoEndOfTest.txt
+
+  mv ${results_dir}/index.html ${results_dir}/index.html.tmp
+  sed -f ${COVBASE}/rtems_items.sed  \
+    <${results_dir}/index.html.tmp \
+    >${results_dir}/index.html 
 
   # Now create the archive of information
   cp ${COVOARBASE}/covoar.css ${COVOARBASE}/*gif ${COVOARBASE}/table.js ${results_dir}
