@@ -1,3 +1,7 @@
+2010-07-01	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* tsim-support: Increase time limit for block05.
+
 2010-06-22	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* tsim-support: Increase stack check tests maximum run allowed to 15

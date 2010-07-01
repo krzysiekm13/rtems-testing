@@ -53,6 +53,7 @@ bspLimit()
     *stackchk*)limit=15 ;;
     *fatal*)   limit=1 ;;
     *minimum*) limit=1 ;;
+    *block05*) limit=70 ;;
     *psxtime*) 
        case ${tsimName} in
          leon)  limit=240 ;;  # ran in 200 seconds on idle england
