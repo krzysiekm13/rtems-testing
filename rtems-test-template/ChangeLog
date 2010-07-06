@@ -1,3 +1,7 @@
+2010-07-05	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* sptest_operation_from_tsr/init.c: Update year.
+
 2010-06-28	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* sptest/Makefile.am, sptest_operation_from_tsr/Makefile.am: Remove
