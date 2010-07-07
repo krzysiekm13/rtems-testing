@@ -1,3 +1,8 @@
+2010-07-07	Sebastian Huber <sebastian.huber@embedded-brains.de>
+
+	* gdb-sim-run.in, skyeye-support: Removed special case for fatal
+	tests.
+
 2010-07-01	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* tsim-support: Increase time limit for block05.

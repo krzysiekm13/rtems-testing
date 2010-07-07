@@ -118,11 +118,6 @@ else
 fi
 
 ### Set BSP defaults.  If BSP does not have default, it will override
-if [ ${coverage} = "yes" ] ; then
-  bspRunFatal="yes"
-else
-  bspRunFatal="no"
-fi
 bspGeneratesDeviceTree="no"
 bspSupportsSystemVIPC="no"
 bspUsesGDBSimulator="yes"
@@ -369,8 +364,6 @@ do
   baseToRun=`basename ${toRun}`
   case ${baseToRun} in
     *-node*)   testtype="mp"     ;;
-    *minimum*) testtype="fatal"  ;;
-    *fatal*)   testtype="fatal"  ;;
     *)         testtype="single" ;;
   esac
   # calculate the limit in case it is used by the simulator script
@@ -404,11 +397,6 @@ do
     test ${verbose} = "yes" && \
       echo INTERACTIVE runtest ${toRun} ${testtype} 0
     runtest ${toRun} ${testtype} 0
-    continue
-  fi
-
-  if [ ${testtype} = "fatal" -a ${bspRunFatal} = "no" ] ; then
-    warn "Skipping fatal error test ${toRun}"
     continue
   fi
 

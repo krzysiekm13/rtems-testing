@@ -12,9 +12,6 @@ bspNeedsSttySane="no"
 # sometimes the .cov file has a zero length
 bspRunsFailRandomly="yes"
 
-if [ ${coverage} = "yes" ] ; then
-  bspRunFatal="yes"
-fi
 runBSP=skyeye
 
 runARGS()
