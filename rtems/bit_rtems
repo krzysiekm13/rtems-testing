@@ -522,9 +522,9 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     cp `find . -name "*.ralf"` ${testdir}
 
     case ${BSP_TO_TEST} in
-      jmr3904)  running=jmr3904 ;;
-      psim)     running=psim ;;
-      posix)    running="" ;;
+      jmr3904)  runner=jmr3904 ;;
+      psim)     runner=psim ;;
+      posix)    runner="" ;;
       # ARM
       edb7312)  runner=edb7312 ;;
       gumstix)  runner=gumstix ;;
@@ -533,7 +533,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
       erc32)    runner=erc32 ;;
       leon2)    runner=leon  ;;
       leon3)    runner=leon3 ;;
-      sis)      running=sis ;;
+      sis)      runner=sis ;;
       *) ;;
     esac
 

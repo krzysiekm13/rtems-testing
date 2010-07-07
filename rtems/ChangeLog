@@ -1,3 +1,7 @@
+2010-07-07	Sebastian Huber <sebastian.huber@embedded-brains.de>
+
+	* bit_rtems: Fixed typos.
+
 2010-06-28	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* bit_rtems: Clean up external directory building.
