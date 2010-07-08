@@ -285,7 +285,6 @@ runtest()
     return
   fi
 
-  echo Running ${testname} for maximum ${max_run_time} seconds
   echo $testname | grep "exe$" >/dev/null
   tname=`get_tname $testname`
 
@@ -311,9 +310,10 @@ runtest()
   # Make sure it won't run forever...
   millilimit=`expr ${max_run_time} \* 1000`
   milliseconds=0
+  echo -n "running ${testname} for maximum ${max_run_time} seconds... "
   while :
   do
-    # sleep 10ms at a time waiting for job to finish or timer to expire
+    # sleep 50ms at a time waiting for job to finish or timer to expire
     # if job has exited, then we exit, too.
     usleep 50000  # fifty milliseconds
     milliseconds=`expr ${milliseconds} + 50`
@@ -322,8 +322,7 @@ runtest()
     if [ $running -eq 0 ] ; then
       if [ ${milliseconds} -ge ${millilimit} ]; then
         killpid ${pid}
-        catLog ${logfile}
-        echo "${testname} killed after running ${max_run_time} seconds"
+        echo -n "killed due to over time... "
         break
       fi
       if [ ! -r ${logfile} ] ; then
@@ -331,24 +330,25 @@ runtest()
       fi
       # check for BSP specific messages which indicate program ended
       checkBSPFaults ${logfile} >/dev/null 2>&1
-      bspFaults=$?
+      if [ $? -ne 0  ] ; then
+        killpid ${pid}
+        echo -n "killed due to BSP fault... "
+        break
+      fi
       # check for cross platform messages which indicate program ended
       checkGenericExits ${logfile} #>/dev/null 2>&1
-      genericExits=$?
-      if [ ${bspFaults} -ne 0 -o ${genericExits} -ne 0 ] ; then
+      if [ $? -ne 0 ] ; then
         killpid ${pid}
-        catLog ${logfile}
-        echo Ran in ${milliseconds} milliseconds
-      break
+        echo -n "killed due to generic exit... "
+        break
       fi
-  else
-    # done normally
-    catLog ${logfile}
-    test ${verbose} = "yes" && \
-      echo "${testname} ran in ${milliseconds} milliseconds"
-    break
-  fi
+    else
+      # done normally
+      break
+    fi
   done
+  catLog ${logfile}
+  echo "${milliseconds} ms run time"
 }
 
 if [ "X${args}" = "X" ] ; then
@@ -404,7 +404,7 @@ do
   ## in batch mode, skip it.
   case ${toRun} in
     monitor*|termios.*|fileio*|capture*)
-        warn "Skipping ${toRun}; it is interactive"
+        warn "skipping interactive ${toRun}"
         continue
         ;;
     *-node2*)
@@ -415,7 +415,7 @@ do
       warn "Running both nodes associated with ${toRun}"
       ;;
     pppd*)
-      warn "Skipping ${toRun}; it locks up or takes a VERY long time to run"
+      warn "skipping long running ${toRun}"
       continue
       ;;
    esac
