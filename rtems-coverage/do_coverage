@@ -484,6 +484,7 @@ generate_symbols()
     if [ ${analyze_developmental} = "yes" ] ; then
       # filter_nm libfs/${subd}librfs.a
       # filter_nm libfs/${subd}libdosfs.a
+      filter_nm libfs/${subd}libdevfs.a
       filter_nm libfs/${subd}libimfs.a
       filter_nm libcsupport/${subd}libcsupport.a
       # filter_nm libi2c/${subd}libi2c.a
