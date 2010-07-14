@@ -1,3 +1,7 @@
+2010-07-14	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* do_coverage, rtems_items.sed: Include more info in summary.
+
 2010-07-14	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_coverage: Add libdevfs which was split from libimfs.

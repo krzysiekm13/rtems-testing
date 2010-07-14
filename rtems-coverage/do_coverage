@@ -340,6 +340,27 @@ add_to_summary()
   echo "Bytes in unreferenced symbols : " ${size_of}
 }
 
+generate_size_per_file()
+{
+  total=0
+  pfile=X
+  cut -d':' -f1 ${results_dir}/sizes_all.txt | sort  -k3 | while read line
+  do
+    size=`echo $line | cut -d' ' -f1`
+    file=`echo $line | cut -d' ' -f3`
+    #echo $size XXX $file
+    if [ $file != $pfile ] ; then
+      if [ $pfile != X ]; then
+	echo $total $pfile
+	total=0
+      fi
+      pfile=$file
+    fi
+    #echo ADD $file $total $size `expr $total + $size`
+    total=`expr $total + $size`
+  done | sort -n -r
+}
+
 # generate the coverage report set
 generate_reports()
 {
@@ -408,6 +429,8 @@ generate_reports()
 
   cat ${results_dir}/sizes_unreferenced.txt ${results_dir}/sizes.txt | \
     sort -n -r >${results_dir}/sizes_all.txt
+
+  generate_size_per_file >${results_dir}/size_per_file.txt
 
   generate_html ${results_dir}/summary.txt >${results_dir}/row.html
   add_to_summary >>${results_dir}/summary.txt
