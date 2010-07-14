@@ -1,3 +1,7 @@
+2010-07-14	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* check_endof: Removed.
+
 2010-07-07	Sebastian Huber <sebastian.huber@embedded-brains.de>
 
 	* bit_rtems: Fixed typos.
