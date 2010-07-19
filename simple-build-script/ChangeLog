@@ -1,5 +1,10 @@
 2010-07-19	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* build_tools: Add command line arguments and let you do individual
+	parts of the build process.
+
+2010-07-19	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* README: Fix typo.
 
 2010-03-28	Joel Sherrill <joel.sherrill@oarcorp.com>

@@ -1,29 +1,28 @@
 #! /bin/sh
 #
 #  This script is a simple script to build and install rtems toolset
-#  for the target you specify by editing TARGET below.  It should be
-#  of the form <CPU>-rtems<VERSION>.  For example, sparc-rtems4.11
+#  for the target you specify on the command line.  It should be of
+#  the form <CPU>-rtems<VERSION>.  For example, sparc-rtems4.11
 #
 #  This can be used to build versions from CVS/SVN or released versions.
 #  Please be sure to apply appropriate patches from
 #  rtems/contrib/crossrpms/patches.
 #
-#  --Joel Sherrill (28 Match 2010)
+#  --Joel Sherrill (28 March 2010)
 #
 #  $Id$
 #
 
 ### EDIT THESE AS NEEDED
-INSTALL=NOT_SET
-TARGET=sparc-rtems4.10
-AUTOCONF=autoconf-2.65
+AUTOCONF=autoconf-2.66
 AUTOMAKE=automake-1.11.1
 BINUTILS=binutils-2.20.1
 GDB=gdb-7.1
-GCC=gcc-4.4.3
+GCC=gcc-4.5.0
 NEWLIB=newlib-1.18.0
 LANGUAGES="c,c++"
 ### END OF EDIT THESE
+
 
 BASE=`pwd`
 
@@ -48,50 +47,143 @@ check_status()
   fi
 }
 
-test $# -eq 1 
-check_status $? "Useage: $0 install_point"
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
 
-INSTALL=$1
+usage()
+{
+cat <<EOF
+  -v             verbose
+  -A             toggle building all parts
+  -a             toggle building autoconf
+  -m             toggle building automake
+  -b             toggle building binutils
+  -g             toggle building gcc/newlib
+  -d             toggle building db
+  -i INSTALL     specify install directory (required)
+  -t TARGET      specify target (required)
+
+EOF
+exit 1
+}
+
+do_autoconf=no
+do_automake=no
+do_binutils=no
+do_gdb=no
+do_gcc_newlib=no
+verbose=no
+TARGET=NOT_SET
+INSTALL=NOT_SET
+
+while getopts vAambgdi:t: OPT
+do
+  case "$OPT" in
+    A) do_autoconf=`toggle ${do_autoconf}`
+       do_automake=`toggle ${do_automake}`
+       do_binutils=`toggle ${do_binutils}`
+       do_gdb=`toggle ${do_gdb}`
+       do_gcc_newlib=`toggle ${do_gcc_newlib}`
+       ;;
+    a) do_autoconf=`toggle ${do_autoconf}` ;;
+    m) do_automake=`toggle ${do_automake}` ;;
+    b) do_binutils=`toggle ${do_binutils}` ;;
+    g) do_gcc_newlib=`toggle ${do_gcc_newlib}` ;;
+    d) do_gdb=`toggle ${do_gdb}` ;;
+    i) INSTALL="${OPTARG}" ;;
+    t) TARGET="${OPTARG}" ;;
+    v) verbose=`toggle ${verbose}` ;;
+    *) echo ERROR ; exit 1 ;;
+  esac
+done
+
+if [ ${verbose} = "yes" ] ; then
+  echo "Build autoconf:   " ${do_autoconf}
+  echo "Build automake:   " ${do_automake}
+  echo "Build binutils:   " ${do_binutils}
+  echo "Build gdb:        " ${do_gdb}
+  echo "Build gcc/newlib: " ${do_gcc_newlib}
+  echo "Install point:    " ${INSTALL}
+  echo "Target:           " ${TARGET}
+  echo
+fi
 
 ### Validate arguments
+test ${TARGET} != NOT_SET
+check_status $? "TARGET not specified"
+
+test ${INSTALL} != NOT_SET
+check_status $? "INSTALL not specified"
+  
 if [ ! -d ${INSTALL} ] ; then
   mkdir ${INSTALL}
   check_status $? "failed to make ${INSTALL}"
 fi
 
-test -d ${BINUTILS}
-check_status $? "No ${BINUTILS} - You do not appear to be in src directory"
+if [ ${do_autoconf} = yes ] ; then
+  test -d ${AUTOCONF}
+  check_status $? "No ${AUTOCONF} - You do not appear to be in src directory"
+  TOBUILD="${TOBUILD} ${AUTOCONF}"
+fi
 
-test -d ${GCC}
-check_status $? "No ${GCC} - You do not appear to be in src directory"
+if [ ${do_automake} = yes ] ; then
+  test -d ${AUTOMAKE}
+  check_status $? "No ${AUTOMAKE} - You do not appear to be in src directory"
+  TOBUILD="${TOBUILD} ${AUTOMAKE}"
+fi
 
-test -d ${NEWLIB}
-check_status $? "No ${NEWLIB} - You do not appear to be in src directory"
+if [ ${do_binutils} = yes ] ; then
+  test -d ${BINUTILS}
+  check_status $? "No ${BINUTILS} - You do not appear to be in src directory"
+  TOBUILD="${TOBUILD} ${BINUTILS}"
+fi
 
-test -d ${GDB}
-check_status $? "No ${GDB} - You do not appear to be in src directory"
+if [ ${do_gdb} = yes ] ; then
+  test -d ${GDB}
+  check_status $? "No ${GDB} - You do not appear to be in src directory"
+  TOBUILD="${TOBUILD} ${GDB}"
+fi
 
-if [ ! -d ${GCC}/newlib -o ! -d ${GCC}/libgloss ] ; then
-  echo "Please ensure that ${GCC}/newlib and ${GCC}/libgloss are symbolic"
-  echo "links into the newlib tree.  Use commands simiilar to the following:"
-  echo ""
-  echo "ln -s ${BASE}/${NEWLIB}/newlib ${BASE}/${GCC}/newlib"
-  echo "ln -s ${BASE}/${NEWLIB}/libgloss ${BASE}/${GCC}/libgloss"
-  exit 1
+if [ ${do_gcc_newlib} = yes ] ; then
+  test -d ${GCC}
+  check_status $? "No ${GCC} - You do not appear to be in src directory"
+
+  test -d ${NEWLIB}
+  check_status $? "No ${NEWLIB} - You do not appear to be in src directory"
+
+  if [ ! -d ${GCC}/newlib -o ! -d ${GCC}/libgloss ] ; then
+    echo "Please ensure that ${GCC}/newlib and ${GCC}/libgloss are symbolic"
+    echo "links into the newlib tree.  Use commands simiilar to the following:"
+    echo ""
+    echo "ln -s ${BASE}/${NEWLIB}/newlib ${BASE}/${GCC}/newlib"
+    echo "ln -s ${BASE}/${NEWLIB}/libgloss ${BASE}/${GCC}/libgloss"
+    exit 1
+  fi
+
+  TOBUILD="${TOBUILD} ${GCC}"
 fi
 
 export PATH=${INSTALL}/bin:$PATH
-
-### Everything except GCC
-for pkg in ${AUTOCONF} ${AUTOMAKE} ${BINUTILS} ${GDB}
+### Build everything
+for pkg in ${TOBUILD}
 do
+  rm -rf b-${pkg}
+  check_status $? "failed to rm b-${pkg}"
+
   mkdir b-${pkg}
   check_status $? "failed to make b-${pkg}"
 
   cd b-${pkg}
   check_status $? "failed to cd b-${pkg}"
 
-  case pkg in
+  echo "Configuring ${pkg}..."
+  case $pkg in
     auto*)                               # autotools are native
       ../${pkg}/configure --prefix=${INSTALL} >c.log 2>&1
       check_status $? "failed to configure ${pkg}"
@@ -109,44 +201,32 @@ do
         >c.log 2>&1
       check_status $? "failed to configure ${pkg}"
       ;;
+    gcc*)
+      ../${GCC}/configure \
+       --enable-threads=rtems  --with-gnu-as --enable-multilib \
+       --enable-newlib-mb --enable-newlib-iconv \
+       --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
+        --enable-version-specific-runtime-libs \
+        --enable-languages=${LANGUAGES} --target=${TARGET} --prefix=${INSTALL} \
+      >c.log 2>&1
+      check_status $? "failed to configure ${pkg}"
+      ;;
     *)
       prerr "UNKNOWN PACKAGE ${pkg}"
       exit 1
       ;;
   esac
 
+  echo "Building ${pkg}..."
   make >b.log 2>&1
   check_status $? "failed to make ${pkg}"
 
+  echo "Installing ${pkg}..."
   make install >i.log 2>&1
   check_status $? "failed to install ${pkg}"
 
   cd ..
   rm -rf b-${pkg}
 done
-
-### GCC/NEWLIB
-mkdir b-${GCC}
-check_status $? "failed to make b-${GCC}"
-
-cd b-${GCC}
-check_status $? "failed to cd b-${GCC}"
-
-../${GCC}/configure \
- --enable-threads=rtems  --with-gnu-as --enable-multilib \
- --enable-newlib-mb --enable-newlib-iconv \
- --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
-  --enable-version-specific-runtime-libs \
-  --enable-languages=${LANGUAGES} --target=${TARGET} --prefix=${INSTALL} \
-  >c.log 2>&1
-
-make >b.log 2>&1
-check_status $? "failed to make ${GCC}/newlib"
-
-make install >i.log 2>&1
-check_status $? "failed to install ${GCC}/newlib"
-
-cd ..
-rm -rf b-${GCC}
 
 exit 0
