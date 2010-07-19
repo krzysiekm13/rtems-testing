@@ -22,5 +22,5 @@ export PATH=INSTALL_POINT/bin:$PATH
 Since you need the proper autoconf and automake versions to bootstrap
 RTEMS from CVS, these are included in the build script.
 
---Joel Sherrill (28 Match 2010)
+--Joel Sherrill (28 March 2010)
 
