@@ -1,11 +1,12 @@
 # USE FULL PATHS!!!
 BASEDIR=${HOME}/test-gcc
 
-RTEMS_VERSION=4.10
+RTEMS_VERSION=4.11
 
-GCC_VERSION=svn
+#GCC_VERSION=svn
 #GCC_VERSION=4.4.2
 #GCC_VERSION=4.3.4
+GCC_VERSION=4.5.0
 
 # NOTE: 2.63 for 4.4 and lower?
 case ${GCC_VERSION} in
@@ -47,4 +48,4 @@ case `hostname` in
 esac
 
 # Specify the desired parallelism
-# MAKEJOBS="-j`/usr/bin/getconf _NPROCESSORS_ONLN`"
+MAKEJOBS="-j`/usr/bin/getconf _NPROCESSORS_ONLN`"
