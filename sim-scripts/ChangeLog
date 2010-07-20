@@ -1,3 +1,7 @@
+2010-07-20	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* gdb-sim-run.in, gdb-sim.in: Use bash.
+
 2010-07-08	Sebastian Huber <sebastian.huber@embedded-brains.de>
 
 	* gdb-sim-run.in: Changed non-interactive test run status messages.
