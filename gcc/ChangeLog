@@ -1,3 +1,7 @@
+2010-07-19	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* test_driver: Add -T option to getopt string.
+
 2010-05-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_one: Turn off -x.

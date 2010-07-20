@@ -63,7 +63,7 @@ doAda="yes"
 doMail="yes"
 doTests="yes"
 
-while getopts AacmnuUv OPT
+while getopts AacmnuTUv OPT
 do
   case "$OPT" in
     A) doCleanInstallPoint=`toggle ${doCleanInstallPoint}`
