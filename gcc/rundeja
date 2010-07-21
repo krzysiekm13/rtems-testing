@@ -2,8 +2,8 @@
 #
 #
 
-if [ $# -ne 1 ] ; then
-  echo USAGE: BSP
+if [ $# -lt 2 ] ; then
+  echo USAGE: BSP COMPILER
   exit 1
 fi
 
@@ -111,20 +111,37 @@ else
   echo "set boards_dir ${SCRIPTDIR}/dejagnu/boards" >${dfile}
 fi
 
-RTEMS_MAKEFILE_PATH=${rtemsdir} \
-SCRIPTDIR=${SCRIPTDIR} \
-  make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccmain
-if [ $? -ne 0 ] ; then
-  echo unable to compile RTEMS GCC Main
-  exit 1
+if [ $2 = gccgo ] ; then
+  RTEMS_MAKEFILE_PATH=${rtemsdir} \
+  SCRIPTDIR=${SCRIPTDIR} \
+    make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccgoinit
+  if [ $? -ne 0 ] ; then
+    echo unable to compile RTEMS GCC Go Init File
+    exit 1
+  fi
+  rtems_config=`pwd`/rtems_gccgo_init.o
+  make check-go RUNTESTFLAGS="\
+  SIM=${BSP_SIM} \
+  RTEMS_MAKEFILE_PATH=${rtemsdir} \
+  RTEMS_CONFIG_OBJ=${rtems_config} \
+  --target_board=rtems-${CPU}-${DEJABSP} \
+  "
+else
+  RTEMS_MAKEFILE_PATH=${rtemsdir} \
+  SCRIPTDIR=${SCRIPTDIR} \
+    make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccmain
+  if [ $? -ne 0 ] ; then
+    echo unable to compile RTEMS GCC Main
+    exit 1
+  fi
+  rtems_config=`pwd`/rtems_gcc_main.o
+  make check-gcc RUNTESTFLAGS="\
+  SIM=${BSP_SIM} \
+  RTEMS_MAKEFILE_PATH=${rtemsdir} \
+  RTEMS_CONFIG_OBJ=${rtems_config} \
+  --target_board=rtems-${CPU}-${DEJABSP} \
+  "
 fi
-rtems_config=`pwd`/rtems_gcc_main.o
-make check-gcc RUNTESTFLAGS="\
-SIM=${BSP_SIM} \
-RTEMS_MAKEFILE_PATH=${rtemsdir} \
-RTEMS_CONFIG_OBJ=${rtems_config} \
---target_board=rtems-${CPU}-${DEJABSP} \
-"
 # "execute.exp=pr206*"
 # vect.exp=vect*
 # powerpc.exp=405*

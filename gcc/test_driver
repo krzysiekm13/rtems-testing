@@ -44,6 +44,7 @@ cat <<EOF
 do_one [options] CPU ..  CPU
   -A - enable clean, native, and update
   -a - build Ada (default=yes)
+  -G - build GCC Go (default=yes)
   -c - clean install point (also installs auto tools)
   -m - mail results to lists (default=yes)
   -n - build native
@@ -60,6 +61,7 @@ doUpdateRTEMS="no"
 doNative="no"
 verbose="no"
 doAda="yes"
+doGccGo="yes"
 doMail="yes"
 doTests="yes"
 
@@ -72,6 +74,7 @@ do
        doUpdateRTEMS=`toggle ${doUpdateRTEMS}`
        ;;
     a) doAda=`toggle ${doAda}` ;;
+    G) doGccGo=`toggle ${doGccGo}` ;;
     c) doCleanInstallPoint=`toggle ${doCleanInstallPoint}` ;;
     m) doMail=`toggle ${doMail}` ;;
     n) doNative=`toggle ${doNative}` ;;
@@ -105,7 +108,8 @@ if [ ${verbose} = "yes" ] ; then
   echo "Install Native:      " ${doNative}
   echo "Update Tool Source:  " ${doUpdateTools}
   echo "Update RTEMS:        " ${doUpdateRTEMS}
-  echo "Build Ada            " ${doAda}
+  echo "Build Ada:           " ${doAda}
+  echo "Build GCC Go:        " ${doGccGo}
   echo "Email Results:       " ${doMail}
   echo "Run Tests:           " ${doTests}
   if [ "X${CPUs}" = "X" ] ; then
@@ -118,6 +122,7 @@ fi
 test ${doMail}  = "no"   && mailArg="-M"
 test ${doTests} = "yes" && testArg="-T"
 test ${doAda}   = "yes" && adaArg="-a"
+test ${doGccGo} = "yes" && gccgoArg="-G"
 
 start=`date`
 echo Started at: ${start}
@@ -215,7 +220,7 @@ do_cpus()
     esac
 
     doOne=${SCRIPTDIR}/gcc/do_one 
-    time sh -x ${doOne} -v -b -D -1 -d -r ${adaArg} ${mailArg} ${testArg} \
+    time sh -x ${doOne} -v -b -D -1 -d -r ${gccgoArg} ${adaArg} ${mailArg} ${testArg} \
         ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
   done

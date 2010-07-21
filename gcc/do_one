@@ -41,11 +41,15 @@ do_stage1=no
 # Build the Ada language cross compiler. Multilib is NOT supported
 do_ada=no
   do_ada_multilib=yes
+# Build the GCC Go language cross compiler.
+do_gccgo=no
+	do_gccgo_multilib=yes
 # Build RTEMS for a particular CPU/BSP combination
 do_rtems=no
 # Which test suites do we attempt
 run_gcctests=no
 run_acats=no
+run_gccgotests=no
 # Do we send email to gcc-testresults with the test results?
 do_mail=yes
 # Are we noisy when running?
@@ -56,8 +60,8 @@ usage()
 {
 cat <<EOF
 do_one [options] CPU BSP
-  -A - binutils, stage 1, C++, C/C++ multilib, Ada, RTEMS
-  -T - run GCC and Ada tests
+  -A - binutils, stage 1, C++, C/C++ multilib, Ada, GCC Go, RTEMS
+  -T - run GCC, Ada and GCC Go tests
   -b - install binutils (from source or copy installed RPM contents)
   -D - install gdb (from source or copy installed RPM contents)
   -n - native compiler
@@ -65,12 +69,14 @@ do_one [options] CPU BSP
   -c -   do not include C++ 
   -m -   do not build multilib
   -a - stage 2 Ada compiler
+  -G - stage 2 GCC Go compiler
   -r - build RTEMS
   -g - run GCC C/C++ tests
   -C - run ACATS
   -d - do not clean up (delete build directories)
   -v - verbose
   -M - do NOT email test results to gcc-testresults
+  -o - run GCC Go tests
 EOF
 }
 
@@ -89,7 +95,7 @@ toggle()
   esac
 }
 
-while getopts bdDnv1cmargCATM OPT
+while getopts bdDnv1cmargioCATMG OPT
 do
     case "$OPT" in
         A) do_binutils="yes"
@@ -98,12 +104,14 @@ do
            do_cxx="yes"
            do_multilib="yes"
            do_ada="yes"
+           do_gccgo="yes"
            do_rtems="yes"
            ;;
         d) do_cleanup=`toggle ${do_cleanup}` ;;
         D) do_gdb=`toggle ${do_gdb}` ;;
         T) run_gcctests="yes"
            run_acats="yes"
+           run_gccgotests="yes"
            ;;
         # unrpm binutils
         b) do_binutils=`toggle ${do_binutils}` ;;
@@ -115,6 +123,7 @@ do
         m) do_multilib=`toggle ${do_multilib}` ;;
         # Stage 2 arguments
         a) do_ada=`toggle ${do_ada}` ;;
+        G) do_gccgo=`toggle ${do_gccgo}` ;;
         # Build RTEMS
         r) do_rtems=`toggle ${do_rtems}` ;;
         # Testsuites to run
@@ -122,7 +131,8 @@ do
         C) run_acats=`toggle ${run_acats}` ;;
         v) verbose=`toggle ${verbose}` ;;
         M) do_mail=`toggle ${do_mail}` ;;
-        *) fatal;;
+        o) run_gccgotests=`toggle ${run_gccgotests}` ;;
+        *) fatal ;;
     esac
 done
 
@@ -156,9 +166,12 @@ if [ ${verbose} = yes ] ; then
   echo "Stage 2       : " ${do_ada}
   echo "  Ada         : " ${do_ada}
   echo "  Multilib    : " ${do_ada_multilib}
+  echo "  GCC Go      : " ${do_gccgo}
+  echo "  Multilib    : " ${do_gccgo_multilib}
   echo "Build RTEMS   : " ${do_rtems}
   echo "Run GCC Tests : " ${run_gcctests}
   echo "Run ACATS     : " ${run_acats}
+  echo "Run Go Tests  : " ${run_gccgotests}
   echo "Email Tests   : " ${do_mail}
   echo "Native GCC    : " `type gcc`
   echo "PATH          : " ${PATH}
@@ -170,11 +183,17 @@ needBSP=no
 needCPU=no
 
 if [ ${do_binutils} = yes -o ${do_gdb} = yes -o \
-     ${do_stage1} = yes -o ${do_ada} = yes ] ; then
+     ${do_stage1} = yes -o ${do_ada} = yes -o ${do_gccgo} = yes ] ; then
   needCPU=yes
 fi
 
-if [ ${do_rtems} = yes -o ${run_gcctests} = yes -o ${run_acats} = yes ] ; then
+if [ ${do_native} = yes -a ${do_gccgo} = yes ] ; then
+  echo "Warning! Go requires native C++ to build."
+  do_cxx=yes
+fi
+
+if [ ${do_rtems} = yes -o ${run_gcctests} = yes -o \
+     ${run_acats} = yes -o ${run_gccgotests} = yes ] ; then
   needBSP=yes
   needCPU=yes
   if [ x${bsp} = x ] ; then
@@ -498,6 +517,7 @@ j_rtems()
     qemu|pc386)
       ENABLE_BSP="${ENABLE_BSP} USE_COM1_AS_CONSOLE=1"
       ENABLE_BSP="${ENABLE_BSP} BSP_PRESS_KEY_FOR_RESET=0"
+      ENABLE_BSP="${ENABLE_BSP} BSP_RESET_BOARD_AT_EXIT=0"
       ;;
     *) ;;
   esac
@@ -527,7 +547,7 @@ pwd
 if [ ${run_gcctests} = "yes" ] ; then 
   echo "Running GCC Tests..."
   cd ${BASEDIR}/b-gcc1-${cpu} || exit 1
-  time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} \
+  time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gcc\
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
 
   RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
@@ -559,7 +579,7 @@ fi
 test ${do_cleanup} = "yes" && rm -rf b-gcc1-${cpu}
 
 ##### Build an Ada compiler now that we have a cross installed
-j_gcc2()
+j_gccada()
 {
   if [ X${1} = X ] ; then
     echo Usage: $0 TARGET_CPU
@@ -599,16 +619,16 @@ j_gcc2()
 if [ ${do_ada} = "yes" ] ; then 
   echo "Building Stage 2 cross Ada compiler for ${1} ..."
   (cd ${BASEDIR} && \
-   rm -rf b-gcc2-${cpu} && \
-   mkdir  b-gcc2-${cpu} && \
-   cd b-gcc2-${cpu} && \
-   time j_gcc2 ${cpu} >${LOGDIR}/${cpu}-stage2.log 2>&1 && cd ..) || exit 1
+   rm -rf b-gccada-${cpu} && \
+   mkdir  b-gccada-${cpu} && \
+   cd b-gccada-${cpu} && \
+   time j_gccada ${cpu} >${LOGDIR}/${cpu}-ada.log 2>&1 && cd ..) || exit 1
 else
   echo Skipping Stage 2 Ada for ${cpu}
 fi
 
 #### Run the Ada ACATS tests
-if [ ${run_acats} = "yes" -a -d b-gcc2-${cpu} ] ; then 
+if [ ${run_acats} = "yes" -a -d b-gccada-${cpu} ] ; then 
   echo "Running ACATS..."
   cd ${GCCDIR}/gcc/testsuite/ada/acats/ || exit 1
 
@@ -631,6 +651,94 @@ else
 fi
 
 if [ ${do_ada} = "yes" ] ; then 
-  test ${do_cleanup} = "yes" && rm -rf b-gcc2-${cpu}
+  test ${do_cleanup} = "yes" && rm -rf b-gccada-${cpu}
+fi
+
+##### Build a GCC Go compiler now that we have a cross installed
+j_gccgo()
+{
+  if [ X${1} = X ] ; then
+    echo Usage: $0 TARGET_CPU
+    exit 1
+  fi
+  TARGET=${1}-rtems${RTEMS_VERSION}
+
+  if [ ! -d ${INSTALL} ]; then
+    echo ${INSTALL} does not exist
+    exit 1
+  fi
+
+  if [ ${verbose} = yes ] ; then
+    echo "Cross GCC ==>" `type ${TARGET}-gcc`
+  fi
+
+  if [ ${do_gccgo_multilib} = yes ] ; then
+     gccgo_multilib="--enable-multilib"
+  else
+     gccgo_multilib="--disable-multilib"
+  fi
+
+  case ${TARGET} in
+    i386*) GOFLAGS="-march=i486" ;;
+    *)     GOFLAGS="" ;;
+  esac
+#    CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${BSP_BUILT}/lib/
+
+  ${GCCDIR}/configure \
+   ${GCC_EXTRA_ARGS} \
+   CFLAGS_FOR_TARGET="-B${BSP_INSTALL}/${TARGET}/${BSP_BUILT}/lib/ ${GOFLAGS}" \
+     --enable-threads=rtems --with-gnu-as ${gccgo_multilib} \
+     --enable-newlib-mb --enable-newlib-iconv \
+     --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
+     --enable-version-specific-runtime-libs \
+    --enable-languages=c,go --target=$TARGET --prefix=$INSTALL &&
+  make ${MAKEJOBS} &&
+  make install
+}
+
+if [ ${do_gccgo} = "yes" ] ; then 
+  echo "Building Stage 2 cross GCC Go compiler for ${1} ..."
+  (cd ${BASEDIR} && \
+   rm -rf b-gccgo1-${cpu} && \
+   mkdir  b-gccgo1-${cpu} && \
+   cd b-gccgo1-${cpu} && \
+   time j_gccgo ${cpu} >${LOGDIR}/${cpu}-go.log 2>&1 && cd ..) || exit 1
+else
+  echo Skipping GCC Go for ${cpu}
+fi
+
+##### Do the gccgo tests
+if [ ${run_gccgotests} = "yes" ] ; then
+  echo "Running GCC Go Tests..."
+  cd ${BASEDIR}/b-gccgo1-${cpu}/gcc || exit 1
+  time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gccgo \
+    >${LOGDIR}/${cpu}-gccgotests-${bsp}.log 2>&1
+
+  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
+  mkdir -p ${RDIR}
+  cp testsuite/go/go.log testsuite/go/go.sum ${RDIR}
+
+  if [ ${do_mail} = "yes" ] ; then
+    echo Sending test results to GCC community..
+    ${DIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
+    if [ $? -ne 0 ] ; then
+      echo "Failed to email GCC Test Results to GCC Community .. bailing"
+      exit 1
+    fi
+
+    echo Sending test results to RTEMS community..
+    ${GCCDIR}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
+    if [ $? -ne 0 ] ; then
+      echo "Failed to email GCC Test Results to RTEMS Community .. bailing"
+      exit 1
+    fi
+  fi
+  cd .. || exit 1
+else
+  echo Skipping GCC Go DejaGNU tests for ${cpu}/${bsp}
+fi
+
+if [ ${do_gccgo} = "yes" ] ; then 
+  test ${do_cleanup} = "yes" && rm -rf b-gccgo1-${cpu}
 fi
 exit 0
