@@ -6,12 +6,13 @@ RTEMS_VERSION=4.11
 #GCC_VERSION=svn
 #GCC_VERSION=4.4.2
 #GCC_VERSION=4.3.4
-GCC_VERSION=4.5.0
+#GCC_VERSION=4.5.0
+GCC_VERSION=go
 
 # NOTE: 2.63 for 4.4 and lower?
 case ${GCC_VERSION} in
   4.[32]*)   AUTOCONF=${BASEDIR}/autoconf-2.63 ;;
-  *)         AUTOCONF=${BASEDIR}/autoconf-2.65 ;;
+  *)         AUTOCONF=${BASEDIR}/autoconf-2.66 ;;
 esac
 AUTOMAKE=${BASEDIR}/automake-1.11.1
 GCCDIR=${BASEDIR}/gcc-${GCC_VERSION}
