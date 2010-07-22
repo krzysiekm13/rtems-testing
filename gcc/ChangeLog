@@ -1,3 +1,7 @@
+2010-07-22	Vinu Rajashekhar <vinutheraj@gmail.com>
+
+	* do_one: Add Go support. Plus some cleanup from Joel.
+
 2010-07-21	Vinu Rajashekhar <vinutheraj@gmail.com>
 
 	* do_one, rundeja, test_driver: Add Go support. Plus some cleanup from
