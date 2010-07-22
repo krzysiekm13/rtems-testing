@@ -59,7 +59,7 @@ runARGS()
   # -cpu 486
   # can also redirect to file with file:log/"`basename ${1} .exe`
   SERIAL_ARG="stdio"
-  echo "-m 8 -boot a -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
+  echo "-m 64 -boot a -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
          -monitor null -nographic -serial ${SERIAL_ARG} --no-reboot"
 }
 

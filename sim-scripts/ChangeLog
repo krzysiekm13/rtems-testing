@@ -1,3 +1,7 @@
+2010-07-21	Vinu Rajashekhar <vinutheraj@gmail.com>
+
+	* pc386.in: Add Go support. Plus some cleanup from Joel.
+
 2010-07-20	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* gdb-sim-run.in, gdb-sim.in: Use bash.
