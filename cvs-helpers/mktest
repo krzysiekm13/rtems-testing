@@ -68,7 +68,7 @@ if [ ${addToCVS} == yes ] ; then
   cd ${dest}
   for f in `ls -1 .cvsignore Makefile.am *.doc *.scn *.[ch] 2>/dev/null`
   do
-     cvs add ${f}
+     cvs add -kkv ${f}
   done
   exit 0
 fi

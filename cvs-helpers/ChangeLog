@@ -1,3 +1,8 @@
+2010-08-02	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* mktest: Add .doc files with -kkv option so keyword expansion is on.
+	Otherwise cvs assumes it is a Word file and treats it as binary.
+
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* mktest: Test backwards.
