@@ -1,3 +1,8 @@
+2010-08-02	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* Explanations.txt: Update. Remove old ones and add a number of new
+	entries.
+
 2010-07-14	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* do_coverage, rtems_items.sed: Include more info in summary.

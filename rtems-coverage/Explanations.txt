@@ -1,222 +1,216 @@
-bspcmdline_getparam.c:67
+privateenv.c:43
 Simple Test Case
-Need a test case to return NULL.
+free_user_env is never called when (env == &rtems_global_user_env).  It is
+possible that this path is impossible but that will require analysis of the
+callers.  Since this is static, it is quite possible this is covered by
+the callers.
 +++
 
-bspcmdline_getparamrhs.c:36
+imfs_chown.c:46
 Simple Test Case
-Need a test case to return NULL.  This looks like a parameter of the form
-"LHS" with no "=" or "RHS".
+Not root and not owner.  Please try to cover all branch paths.
 +++
 
-mknod.c:44
+imfs_fchmod.c:42
 Simple Test Case
-Call mknod with a mode of 0
+Not root and not owner.  Please try to cover all branch paths.
 +++
 
-imfs_fifo.c:100
-Bharath Suri
-IMFS_fifo_ioctl should be hit when fifo tests are done if not
-check why.
+imfs_fifo.c:61
+Requires Discussion
+This is an error return path which only returns an error when
+pipe_release() returns an error but pipe_release() can't return
+an error.  Maybe pipe_release() should be changed to void.
 +++
 
-imfs_fifo.c:125
-Bharath Suri
-IMFS_fifo_lseek should be hit when fifo tests are done if not
-check why.
-+++
-
-imfs_fifo.c:69
-Bharath Suri
-IMFS_fifo_read should be hit when fifo tests are done if not
-check why.
-+++
-
-imfs_fifo.c:84
-Bharath Suri
-IMFS_fifo_write should be hit when fifo tests are done if not
-check why.
-+++
-
-fifo.c:553
-Bharath Suri
-pipe_ioctl should be hit when fifo tests are done if not check
-why.
-+++
-
-fifo.c:582
-Bharath Suri
-pipe_lseek should be hit when fifo tests are done if not check
-why.
-+++
-
-fifo.c:395
-Bharath Suri
-pipe_read should be hit when fifo tests are done if not check
-why.
-+++
-
-fifo.c:467
-Bharath Suri
-pipe_write should be hit when fifo tests are done if not check
-why.
-+++
-
-memfile.c:400
-Bharath Suri
-IMFS_memfile_remove_block should be hit when fifo tests are done
-if not check why.
-+++
-
-check.c:376
+imfs_getchild.c:51
 Simple Test Case
-Stack_check_Dump_threads_usage should be hit in same test as new
-stack check test for report.
+Appprently we never call this with ".." for the parent directory.
 +++
 
-check.c:356
+imfs_fsunmount.c:86
+Ask Chris Johns
+I think he wrote this code and can probably identify the test case.
++++
+
+imfs_fsunmount.c:93
+Ask Chris Johns
+I think he wrote this code and can probably identify the test case.
++++
+
+imfs_initsupp.c:55
+Requires Discussion
+I think this is an error case that cannot be reached.  The
+bytes_per_block is set by confdefs.h and there are error checks
+in that to prevent a bad value.
++++
+
+imfs_mount.c:44
+Unreachable?
+We need to ask Chris Johns about this. I believe this is a
+case where the error checking has been done by the system 
+call layer.  I analyzed the "file handlers" callbacks for
+guarantees on parameters.  This indicates the same analysis
+needs to happen for "file system handlers."
++++
+
+imfs_debug.c:43
 Simple Test Case
-Stack_check_find_high_water_mark should be hit in same test as
-new stack check test for report.
+Need to do an IMFS_dump after loading a tarfile from memory.
+I think this is a simple addition to tar01.
 +++
 
-check.c:470
+imfs_debug.c:54
 Simple Test Case
-rtems_stack_checker_report_usage_with_plugin should be hit in
-same test as new stack check test for report.
+Need to do an IMFS_dump on an IMFS filesystem which has a very large
+file in it.  I think this is a simple addition to one of the existing
+IMFS tests which creates a large file.
 +++
 
-privateenv.c:114
+imfs_debug.c:88
 Simple Test Case
-free_user_env and rtems_libio_share_private_env new test.
+We need to do an IMFS_dump on an IMFS filesystem which has a bad node type
+in it.  This may require peeking behind the curtain and changing a value.
 +++
 
-privateenv.c:33
+imfs_rename.c:40
+Discuss
+I think this is either a simple test or unreachable code.  We need
+to discuss this to figure out which.
++++
+
+imfs_unlink.c:51
+Discuss
+I think this is either a simple test or unreachable code.  We need
+to discuss this to figure out which.
++++
+
+imfs_unmount.c:45
+Discuss
+I think this is either a simple test or unreachable code.  We need
+to discuss this to figure out which.
++++
+
+imfs_unmount.c:52
+Discuss
+I think this is either a simple test or unreachable code.  We need
+to discuss this to figure out which.
++++ 
+
+dup2.c:51
 Simple Test Case
-free_user_env and rtems_libio_share_private_env new test.
+This looks like we never get to the bottom to actually call fcntl()
+which I take to mean that we do not have a test for a working call 
+to dup2().
+
+But we need to be careful because fcntl(F_DUPFD) which is called has
+slightly different semantics.  I suspect that fcntl(F_DUPFD) is wrong.
+See fcntl.c:55 for more details.
 +++
 
-check.c:215
+fcntl.c:55
+Discuss
+I question that this is correct.  We are calling this from dup2()
+and the semantics are slightly different.  fcntl is 
+I suspect that by adding a shared routine and calling it from fcntl()
+and and dup2() we can fix this.
++++
+
+fcntl.c:83
 Simple Test Case
-Stack_check_report_blown_task Should be in stack check test check
-why not hit.
+We need a test setting close on exec.
 +++
 
-assocnamebad.c:40
+fcntl.c:143
 Simple Test Case
-rtems_assoc_name_bad called from new; may want to add for
-associations.
+None of the file system specific handlers have ever returned an error here.
 +++
 
-ioman.c:70
+newlibc_exit.c:89
 Simple Test Case
-rtems_io_lookup_name added to existing io dev stub test ?sp19?
+libc_wrapup() is never called when the system state is down.
 +++
 
-error.c:201
+readv.c:106
 Simple Test Case
-rtems_panic, rtems_verror, rtems_error: New test for collection
-of rtems error reportin routines.
+The count needs to be -1 in one of the requests.  Also add a test for
+0 value at the same time since it appears that is a missing branch
+condition.
 +++
 
-error.c:109
+getpwent.c:127
+Discuss
+I think this is detecting whether or not the read can be fulfilled
+from the buffer.  But I am not sure.
++++
+
+getpwent.c:141
 Simple Test Case
-rtems_panic, rtems_verror, rtems_error: New test for collection
-of rtems error reportin routines.
+I think this is a matter of putting in a VERY large number in
+a numeric field.  This is detecting overflow.  I think a long
+string of 9's will do most of this.
 +++
 
-error.c:182
+getpwent.c:142
 Simple Test Case
-rtems_panic, rtems_verror, rtems_error: New test for collection
-of rtems error reportin routines.
+
+See getpwent.c:141
 +++
 
-getpwent.c:272
+getpwent.c:112
 Simple Test Case
-Simple
+
+This is actually the error case at line 103 (*nleft < 2).  I think this
+will be hit by having a password entry which does not have enough
+characters left in the user's return buffer while something is
+being copied into it.
 +++
 
-getpwent.c:413
+writev.c:104
 Simple Test Case
-Simple
+This is a case of needing 0 values in the write iov entries.
 +++
 
-getpwent.c:441
+writev.c:113
 Simple Test Case
-Simple
+This is a case of needing negative values in the write iov entries.
 +++
 
-fcntl.c:186
+vprintk.c:125
 Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
+0x6f is a 'o'.  It looks like we do not have a printk test which uses %o.
 +++
 
-getpid.c:43
+imfs_load_tar.c:112
 Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
+Need to make sure one of the tar tests is configured with the IMFS
+and the other is configured with fifoIMFS.
 +++
 
-_gettod.c:84
+imfs_load_tar.c:151
 Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
+We apparently only have a relative symbolic link.  We need to include
+one which has an absolute path. This will be a broken symlink on the
+host but resolve fine on the target.
 +++
 
-link.c:103
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
+imfs_load_tar.c:169
+Medium Test Case
+The eval for make must fail.  We will have to ask Jennifer how to
+make this call fail.
 +++
 
-_realloc_r.c:28
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
+rtems_mkdir.c:102
+Email Sebastian
+Sebastian needs to write a test case for this.
 +++
 
-stat.c:100
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
+rtems_mkdir.c:110
+Email Sebastian
+Sebastian needs to write a test case for this.
 +++
 
-unlink.c:115
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
+rtems_mkdir.c:124
+Email Sebastian
+Sebastian needs to write a test case for this.
 +++
-
-getpwent.c:406
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
-+++
-
-getpwent.c:263
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
-+++
-
-getpwent.c:254
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
-+++
-
-getpwent.c:247
-Simple Test Case
-This is a function wrapper add a test case calling it where the
-wrapped function is called from
-+++
-
-malloc_deferred.c:57
-Simple Test Case
-New test to Free memory from timer service routine. There is a
-send signal from TSR test that can be copied Consider adding test
-template for single operation from tsr. Talk to Joel before
-implementing.
-+++
-
