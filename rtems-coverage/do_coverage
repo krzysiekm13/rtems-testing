@@ -534,6 +534,17 @@ generate_symbols()
   fi
 }
 
+# remove symbols we do not want coverage on.
+# NOTE: As of 4 August 2010, we do not have any.
+remove_unwanted_symbols()
+{
+  cat
+#  sed -e '/IMFS_print_node/d' \
+#      -e '/IMFS_dump_directory/d' \
+#      -e '/IMFS_dump/d' \
+#      -e '/IMFS_memfile_maximum_size/d'
+}
+
 # Now we are ready to start doing real work
 start=`date`
 
@@ -713,7 +724,8 @@ if [ ${do_reports} = "yes" ] ; then
       results_dir=${outputDir}
     fi
 
-    generate_symbols >${BASEDIR}/${BSP}-tests/rtems.syms
+    generate_symbols | remove_unwanted_symbols \
+      >${BASEDIR}/${BSP}-tests/rtems.syms
     syms=`cat ${BASEDIR}/${BSP}-tests/rtems.syms | wc -l`
     if [ ${syms} -eq 0 ] ; then
       fatal "no symbols found"

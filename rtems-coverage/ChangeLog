@@ -1,3 +1,7 @@
+2010-08-04	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_coverage: Add remove_unwanted_symbols.
+
 2010-08-02	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* Explanations.txt: Update. Remove old ones and add a number of new
