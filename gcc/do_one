@@ -50,6 +50,7 @@ do_rtems=no
 run_gcctests=no
 run_acats=no
 run_gccgotests=no
+run_libgotests=no
 # Do we send email to gcc-testresults with the test results?
 do_mail=yes
 # Are we noisy when running?
@@ -77,6 +78,7 @@ do_one [options] CPU BSP
   -v - verbose
   -M - do NOT email test results to gcc-testresults
   -o - run GCC Go tests
+  -t - run libgo tests
 EOF
 }
 
@@ -95,7 +97,7 @@ toggle()
   esac
 }
 
-while getopts bdDnv1cmargioCATMG OPT
+while getopts bdDnv1cmargiotCATMG OPT
 do
     case "$OPT" in
         A) do_binutils="yes"
@@ -105,6 +107,7 @@ do
            do_multilib="yes"
            do_ada="yes"
            do_gccgo="yes"
+           do_gccgo_multilib="yes"
            do_rtems="yes"
            ;;
         d) do_cleanup=`toggle ${do_cleanup}` ;;
@@ -132,6 +135,7 @@ do
         v) verbose=`toggle ${verbose}` ;;
         M) do_mail=`toggle ${do_mail}` ;;
         o) run_gccgotests=`toggle ${run_gccgotests}` ;;
+        t) run_libgotests=`toggle ${run_libgotests}` ;;
         *) fatal ;;
     esac
 done
@@ -172,6 +176,7 @@ if [ ${verbose} = yes ] ; then
   echo "Run GCC Tests : " ${run_gcctests}
   echo "Run ACATS     : " ${run_acats}
   echo "Run Go Tests  : " ${run_gccgotests}
+  echo "Do libgo Tests: " ${run_libgotests}
   echo "Email Tests   : " ${do_mail}
   echo "Native GCC    : " `type gcc`
   echo "PATH          : " ${PATH}
@@ -719,23 +724,38 @@ if [ ${run_gccgotests} = "yes" ] ; then
   cp testsuite/go/go.log testsuite/go/go.sum ${RDIR}
 
   if [ ${do_mail} = "yes" ] ; then
-    echo Sending test results to GCC community..
+    echo Sending Go test results to GCC community..
     ${DIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
     if [ $? -ne 0 ] ; then
-      echo "Failed to email GCC Test Results to GCC Community .. bailing"
+      echo "Failed to email GCC Go Test Results to GCC Community .. bailing"
       exit 1
     fi
 
-    echo Sending test results to RTEMS community..
+    echo Sending Go test results to RTEMS community..
     ${GCCDIR}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
     if [ $? -ne 0 ] ; then
-      echo "Failed to email GCC Test Results to RTEMS Community .. bailing"
+      echo "Failed to email GCC GO Test Results to RTEMS Community .. bailing"
       exit 1
     fi
   fi
   cd .. || exit 1
 else
   echo Skipping GCC Go DejaGNU tests for ${cpu}/${bsp}
+fi
+
+##### Do the libgo tests
+if [ ${run_libgotests} = "yes" ] ; then
+  echo "Running libgo DejaGNU tests..."
+  cd ${BASEDIR}/b-gccgo1-${cpu} || exit 1
+  time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} libgo \
+    >${LOGDIR}/${cpu}-libgotests-${bsp}.log 2>&1
+
+  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
+  mkdir -p ${RDIR}
+  cp ${TARGET}-${bsp}/libgo/testsuite/libgo-all.log \
+    ${TARGET}-${bsp}/libgo/testsuite/libgo-all.sum ${RDIR}
+else
+  echo Skipping libgo DejaGNU tests for ${cpu}/${bsp}
 fi
 
 if [ ${do_gccgo} = "yes" ] ; then 

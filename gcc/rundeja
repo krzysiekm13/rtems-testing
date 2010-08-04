@@ -111,7 +111,18 @@ else
   echo "set boards_dir ${SCRIPTDIR}/dejagnu/boards" >${dfile}
 fi
 
-if [ $2 = gccgo ] ; then
+if [ $2 = libgo ] ; then
+  rtems_libgo_init=${SCRIPTDIR}/gcc/rtems_libgo_init.c
+  rtems_bin2c=${INSTALL}/bin/rtems-bin2c
+  make check-target-libgo RUNTESTFLAGS="\
+  SIM=${BSP_SIM} \
+  RTEMS_MAKEFILE_PATH=${rtemsdir} \
+  RTEMS_LIBGO_INIT=${rtems_libgo_init} \
+  RTEMS_BIN2C=${rtems_bin2c} \
+  RTEMS_CONFIG_OBJ= \
+  --target_board=rtems-${CPU}-${DEJABSP} \
+  "
+elif [ $2 = gccgo ] ; then
   RTEMS_MAKEFILE_PATH=${rtemsdir} \
   SCRIPTDIR=${SCRIPTDIR} \
     make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccgoinit
