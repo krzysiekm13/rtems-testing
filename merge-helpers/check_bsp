@@ -33,9 +33,22 @@ test_its_there()
   fi
   grep ${2} ${1} >/dev/null
   if [ $? -ne 0 ] ; then
-    echo NOT in ${bspdir}/${1}
+    echo "${2} is NOT in ${bspdir}/${1}"
   fi
 
+}
+
+test_its_NOT_there_all_case()
+{
+  if [ $# -lt 2 ] ; then
+    echo Usage: $0 FILE pattern 
+  fi
+  FILE=$1
+  shift
+  grep -i "${*}" ${FILE} >/dev/null
+  if [ $? -eq 0 ] ; then
+    echo "(${*}) SHOULD NOT BE IN ${bspdir}/${FILE} - case independent check"
+  fi
 }
 
 test_its_NOT_there()
@@ -47,9 +60,29 @@ test_its_NOT_there()
   shift
   grep "${*}" ${FILE} >/dev/null
   if [ $? -eq 0 ] ; then
-    echo SHOULD NOT BE IN ${bspdir}/${FILE}
+    echo "(${*}) SHOULD NOT BE IN ${bspdir}/${FILE}"
   fi
+}
 
+find_source()
+{
+  findArgs=
+  while getopts "cCm" OPT
+  do
+   case "$OPT" in
+     c) findArgs="${findArgs} -o -name configure.ac" ;;
+     C) findArgs="${findArgs} -o -name *.cfg" ;;
+     m) findArgs="${findArgs} -o -name Makefile.am" ;;
+     *) echo "bad arg to find_source ($OPT)" ; exit 1 ;;
+   esac
+  done
+
+  shiftcount=`expr $OPTIND - 1`
+  shift $shiftcount
+
+  args=$*
+
+  find . -name "*.[chS]" ${findArgs}
 }
 
 if [ -r configure.ac ] ; then
@@ -58,42 +91,77 @@ if [ -r configure.ac ] ; then
   test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
 fi
 
-# really need to make the copyright strings consistent in BSPs
-echo "=== Checking for copyright notices"
-find . -name "*.[chS]" | while read f
+# Verify no lines longer than 80 columns
+echo "=== Checking for lines greater than 79 columns"
+find_source -m -c -C | while read f
 do
-  grep -i COPYRIGHT ${f} >/dev/null
-  if [ $? -ne 0 ] ; then
-    echo Copyright is NOT in ${bspdir}/${f}
+  grep  ".\{80,\}" ${f} >/dev/null
+  if [ $? -eq 0 ] ; then
+    echo "${bspdir}/${FILE} has the following lines that are too long"
+    grep -n '.\{80,\}' ${f}
   fi
 done
 
 # We want CVS Id strings everywhere possible
+# really need to make the copyright strings consistent in BSPs
+echo "=== Checking for copyright notices"
+find_source | while read f
+do
+  test_its_NOT_there_all_case ${f} COPYRIGHT
+done
+
+# We want CVS Id strings everywhere possible
 echo "=== Checking for CVS Id strings"
-find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
+find_source | while read f
 do
   test_its_there ${f} "\$Id"
 done
 
-# We do not want printf in a BSP
-echo "=== Checking for printf"
-find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
+# We do not want stdio in a BSP
+echo "=== Checking for stdio"
+find_source -m -c -C | while read f
 do
   test_its_NOT_there ${f} printf
-done
-
-# We do not want puts in a BSP
-echo "=== Checking for puts"
-find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
-do
   test_its_NOT_there ${f} puts
 done
 
 # We do not want the reformatted license notice
 echo "=== Checking for reformatted RTEMS license notices"
-find . -name "*.[chS]" -o -name "*.ac" -o -name "Makefile.am" | while read f
+find_source -m -c -C | while read f
 do
   test_its_NOT_there ${f} "this file may be found in the file"
 done
 
+# We do not want GPL code
+echo "=== Checking for hints of GPL code"
+find_source -m -c -C | while read f
+do
+  test_its_NOT_there ${f} "Free Software Foundation"
+  test_its_NOT_there ${f} "program is free software"
+  test_its_NOT_there ${f} "General Public License"
+done
+
+# We do not want hints that there are things left to do
+echo "=== Checking for TODO hints"
+find_source -m -c -C | while read f
+do
+  test_its_NOT_there ${f} XXX
+  test_its_NOT_there ${f} TODO
+  test_its_NOT_there ${f} TBD
+done
+
+# If not using -O2, then we really want to know
+echo "=== Checking for not using -O2"
+grep -H "\-O[013456789]" make/custom/*.cfg
+
+# BSPs should not turn on extra warnings
+echo "=== Checking for turning on extra GCC warning checks"
+grep -H "\-W" make/custom/*.cfg
+
+# Hopefully have some output from the tmtests
+echo "=== Checking for timing information"
+c=`ls -1 times* 2>/dev/null | wc -l`
+if [ ${c} -eq 0 ] ; then
+  echo "Please run the timing tests and include the results."
+fi
 exit 0
