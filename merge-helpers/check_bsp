@@ -5,6 +5,9 @@
 #  Test for:
 #    - presense of BSP_BOOTCARD_OPTIONS
 #    - XXX
+#    - XXX
+#
+#  $Id$
 #
 
 if [ $# -ne 1 ] ; then
@@ -29,7 +32,7 @@ fi
 test_its_there()
 {
   if [ $# -ne 2 ] ; then
-    echo Usage: $0 FILE pattern 
+    echo Usage: $0 FILE pattern
   fi
   grep ${2} ${1} >/dev/null
   if [ $? -ne 0 ] ; then
@@ -41,7 +44,7 @@ test_its_there()
 test_its_NOT_there_all_case()
 {
   if [ $# -lt 2 ] ; then
-    echo Usage: $0 FILE pattern 
+    echo Usage: $0 FILE pattern
   fi
   FILE=$1
   shift
@@ -54,7 +57,7 @@ test_its_NOT_there_all_case()
 test_its_NOT_there()
 {
   if [ $# -lt 2 ] ; then
-    echo Usage: $0 FILE pattern 
+    echo Usage: $0 FILE pattern
   fi
   FILE=$1
   shift

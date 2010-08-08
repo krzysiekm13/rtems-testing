@@ -1,5 +1,9 @@
 2010-08-08	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* check_bsp: Add CVS Id and blanks at EOL.
+
+2010-08-08	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* check_bsp: Add more checks.
 
 2009-09-10	Joel Sherrill <joel.sherrill@oarcorp.com>
