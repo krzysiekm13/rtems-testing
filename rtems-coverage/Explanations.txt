@@ -1,31 +1,25 @@
 privateenv.c:43
-Simple Test Case
-free_user_env is never called when (env == &rtems_global_user_env).  It is
-possible that this path is impossible but that will require analysis of the
-callers.  Since this is static, it is quite possible this is covered by
-the callers.
-+++
-
-imfs_chown.c:46
-Simple Test Case
-Not root and not owner.  Please try to cover all branch paths.
-+++
-
-imfs_fchmod.c:42
-Simple Test Case
-Not root and not owner.  Please try to cover all branch paths.
+Unreachable
+free_user_env is never called when (env == &rtems_global_user_env).
+This check is done by the caller (rtems_libio_share_private_env) in a different manner as below:
+"if (rtems_current_user_env->task_id==current_task_id) {"
+This makes sure that free_user_env is not called venv == &rtems_global_user_env
 +++
 
 imfs_fifo.c:61
-Requires Discussion
+Unreachable
 This is an error return path which only returns an error when
 pipe_release() returns an error but pipe_release() can't return
 an error.  Maybe pipe_release() should be changed to void.
 +++
 
 imfs_getchild.c:51
-Simple Test Case
-Appprently we never call this with ".." for the parent directory.
+Unreachable
+This code cannot be reached. The routine IMFS_find_match_in_dir is
+called only if the token type is IMFS_NAME. If ".." is present in the
+path, the token type returned by IMFS_get_token would be
+IMFS_DIR_UP. With such a setup, IMFS_find_match_in_dir cannot be
+called with the name as ".."
 +++
 
 imfs_fsunmount.c:86
@@ -38,13 +32,6 @@ Ask Chris Johns
 I think he wrote this code and can probably identify the test case.
 +++
 
-imfs_initsupp.c:55
-Requires Discussion
-I think this is an error case that cannot be reached.  The
-bytes_per_block is set by confdefs.h and there are error checks
-in that to prevent a bad value.
-+++
-
 imfs_mount.c:44
 Unreachable?
 We need to ask Chris Johns about this. I believe this is a
@@ -52,12 +39,7 @@ case where the error checking has been done by the system
 call layer.  I analyzed the "file handlers" callbacks for
 guarantees on parameters.  This indicates the same analysis
 needs to happen for "file system handlers."
-+++
-
-imfs_debug.c:43
-Simple Test Case
-Need to do an IMFS_dump after loading a tarfile from memory.
-I think this is a simple addition to tar01.
+Bharath: Yes, it is checked in mount.c
 +++
 
 imfs_debug.c:54
@@ -70,13 +52,17 @@ IMFS tests which creates a large file.
 imfs_debug.c:88
 Simple Test Case
 We need to do an IMFS_dump on an IMFS filesystem which has a bad node type
-in it.  This may require peeking behind the curtain and changing a value.
+in it.  This may require peeking behind the curtain and changing a
+value.
+Bharath: But usually, this code is unreachable since we cannot create
+a node which is not of type that is checked for.
 +++
 
 imfs_rename.c:40
 Discuss
 I think this is either a simple test or unreachable code.  We need
 to discuss this to figure out which.
+Bharath: I am not sure how to have a node's parent == NULL.
 +++
 
 imfs_unlink.c:51
@@ -97,35 +83,6 @@ I think this is either a simple test or unreachable code.  We need
 to discuss this to figure out which.
 +++ 
 
-dup2.c:51
-Simple Test Case
-This looks like we never get to the bottom to actually call fcntl()
-which I take to mean that we do not have a test for a working call 
-to dup2().
-
-But we need to be careful because fcntl(F_DUPFD) which is called has
-slightly different semantics.  I suspect that fcntl(F_DUPFD) is wrong.
-See fcntl.c:55 for more details.
-+++
-
-fcntl.c:55
-Discuss
-I question that this is correct.  We are calling this from dup2()
-and the semantics are slightly different.  fcntl is 
-I suspect that by adding a shared routine and calling it from fcntl()
-and and dup2() we can fix this.
-+++
-
-fcntl.c:83
-Simple Test Case
-We need a test setting close on exec.
-+++
-
-fcntl.c:143
-Simple Test Case
-None of the file system specific handlers have ever returned an error here.
-+++
-
 newlibc_exit.c:89
 Simple Test Case
 libc_wrapup() is never called when the system state is down.
@@ -142,19 +99,6 @@ getpwent.c:127
 Discuss
 I think this is detecting whether or not the read can be fulfilled
 from the buffer.  But I am not sure.
-+++
-
-getpwent.c:141
-Simple Test Case
-I think this is a matter of putting in a VERY large number in
-a numeric field.  This is detecting overflow.  I think a long
-string of 9's will do most of this.
-+++
-
-getpwent.c:142
-Simple Test Case
-
-See getpwent.c:141
 +++
 
 getpwent.c:112
@@ -213,4 +157,36 @@ Sebastian needs to write a test case for this.
 rtems_mkdir.c:124
 Email Sebastian
 Sebastian needs to write a test case for this.
++++
+
+eval.c:95
+Discuss
+This, I feel is a valid test unless we have certain guidelines / tests
+to be done in the callers.
+Or we could have a new test that directly calls the
+rtems_filesystem_evaluate_path, if that is OK.
++++
+
+eval.c:98
+Discuss
+This, I feel is a valid test unless we have certain guidelines / tests
+to be done in the callers.
+Or we could have a new test that directly calls the
+rtems_filesystem_evaluate_path, if that is OK.
++++
+
+eval.c:40
+Discuss
+This, I feel is a valid test unless we have certain guidelines / tests
+to be done in the callers.
+Or we could have a new test that directly calls the
+rtems_filesystem_evaluate_relative_path, if that is OK.
++++
+
+eval.c:43
+Discuss
+This, I feel is a valid test unless we have certain guidelines / tests
+to be done in the callers.
+Or we could have a new test that directly calls the
+rtems_filesystem_evaluate_relative_path, if that is OK.
 +++
