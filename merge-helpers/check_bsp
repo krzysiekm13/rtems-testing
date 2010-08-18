@@ -89,7 +89,9 @@ find_source()
 }
 
 if [ -r configure.ac ] ; then
-  echo "=== Checking for options in BSP configure.ac"
+  echo "=== Checking for RTEMS_BSP_BOOTCARD_OPTIONS in BSP configure.ac"
+  test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
+  echo "=== Checking for RTEMS_BSP_CLEANUP_OPTIONS in BSP configure.ac"
   test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
   test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
 fi
