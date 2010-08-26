@@ -158,35 +158,3 @@ rtems_mkdir.c:124
 Email Sebastian
 Sebastian needs to write a test case for this.
 +++
-
-eval.c:95
-Discuss
-This, I feel is a valid test unless we have certain guidelines / tests
-to be done in the callers.
-Or we could have a new test that directly calls the
-rtems_filesystem_evaluate_path, if that is OK.
-+++
-
-eval.c:98
-Discuss
-This, I feel is a valid test unless we have certain guidelines / tests
-to be done in the callers.
-Or we could have a new test that directly calls the
-rtems_filesystem_evaluate_path, if that is OK.
-+++
-
-eval.c:40
-Discuss
-This, I feel is a valid test unless we have certain guidelines / tests
-to be done in the callers.
-Or we could have a new test that directly calls the
-rtems_filesystem_evaluate_relative_path, if that is OK.
-+++
-
-eval.c:43
-Discuss
-This, I feel is a valid test unless we have certain guidelines / tests
-to be done in the callers.
-Or we could have a new test that directly calls the
-rtems_filesystem_evaluate_relative_path, if that is OK.
-+++

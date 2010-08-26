@@ -1,3 +1,7 @@
+2010-08-26	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Explanations.txt: Remove cases which are now RTEMS_DEBUG.
+
 2010-08-09	Bharath Suri <bharath.s.jois@gmail.com>
 
 	PR 1659/testing
