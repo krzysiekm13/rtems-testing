@@ -1,3 +1,7 @@
+2010-10-04	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemu-dump-trace.c: Fix issues identified by clang-analyzer.
+
 2010-06-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* mkExplanation: Default value for verbose.

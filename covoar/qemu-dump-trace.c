@@ -1,9 +1,8 @@
 
 #include <stdint.h>
 #include <stdio.h>
-
-/* XXX this isn't right */
-typedef uint32_t target_ulong;
+#include <errno.h>
+#include <string.h>
 
 #include "qemu-traces.h"
 
@@ -26,7 +25,8 @@ int dump_file(
 
   bytes = fread( &header, sizeof(struct trace_header), 1, trace );
   if ( bytes != 1 ) {
-    fprintf( stderr, "error reading header of %s (%d)\n", name );
+    fprintf( stderr, "error reading header of %s (%s)\n",
+             name, strerror(errno) );
     return -1;
   }
   printf( "magic = %s\n", header.magic );
