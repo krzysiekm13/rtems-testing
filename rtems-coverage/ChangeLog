@@ -1,5 +1,9 @@
 2010-10-14	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* generate_coverage_html: Add uncovered ranges.
+
+2010-10-14	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* generate_coverage_html: Add progress tracking time/series plots.
 
 2010-08-26	Joel Sherrill <joel.sherrill@oarcorp.com>
