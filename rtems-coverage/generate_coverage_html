@@ -426,13 +426,13 @@ gen_plot()
   echo "set key left box"
   
   echo "plot \"${OUT}/${bsp}-Osp${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
-  echo "  title \"Osp${DEV}\" with lines, \\"
+  echo "  title \"Osp${DEV}\" with lines lw 2, \\"
   echo "     \"${OUT}/${bsp}-OsP${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
-  echo "  title \"OsP${DEV}\" with lines, \\"
+  echo "  title \"OsP${DEV}\" with lines lw 2, \\"
   echo "     \"${OUT}/${bsp}-O2p${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
-  echo "  title \"O2p${DEV}\" with lines, \\"
+  echo "  title \"O2p${DEV}\" with lines lw 2, \\"
   echo "     \"${OUT}/${bsp}-O2P${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
-  echo "  title \"O2P${DEV}\" with lines"
+  echo "  title \"O2P${DEV}\" with lines lw 2"
 }
 
 gen_data()
