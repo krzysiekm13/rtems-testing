@@ -1,3 +1,15 @@
+2010-11-05	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* psxtest/Makefile.am, psxtest/TEST.doc, psxtest/TEST.scn,
+	psxtest/init.c, psxtest_with_thread/.init.c.swp,
+	psxtest_with_thread/Makefile.am, psxtest_with_thread/TEST.doc,
+	psxtest_with_thread/TEST.scn, psxtest_with_thread/init.c,
+	psxtmtest_blocking/Makefile.am, psxtmtest_blocking/TEST.doc,
+	psxtmtest_blocking/init.c, psxtmtest_single/Makefile.am,
+	psxtmtest_single/TEST.doc, psxtmtest_single/init.c,
+	sptest_with_task/Makefile.am, sptest_with_task/TEST.doc,
+	sptest_with_task/TEST.scn, sptest_with_task/init.c: New files.
+
 2010-07-05	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* sptest_operation_from_tsr/init.c: Update year.
