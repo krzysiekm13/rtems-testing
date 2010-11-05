@@ -84,6 +84,7 @@ gdb_server_mode="no"
 use_sysv_ipc="no"
 generate_tree_and_exit="no"
 logdir="log"
+doTrace="no"
 enable_display_adapter="no"
 enable_network="no"
 rtems_test="no"
@@ -102,6 +103,7 @@ do
    l) defaultLimit="$OPTARG";;
    L) logdir="$OPTARG";;
    s) use_sysv_ipc="yes";;
+   t) doTrace="yes";;
    T) rtems_test="yes";;
    *) fatal;;
  esac

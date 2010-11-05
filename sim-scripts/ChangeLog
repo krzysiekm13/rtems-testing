@@ -1,3 +1,7 @@
+2010-11-05	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in, gdb-sim.in, psim.in: Add trace support.
+
 2010-07-21	Vinu Rajashekhar <vinutheraj@gmail.com>
 
 	* pc386.in: Add Go support. Plus some cleanup from Joel.

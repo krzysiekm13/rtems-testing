@@ -6,7 +6,10 @@
 
 runARGS()
 {
-  echo "-f ${bspTreeFile} ${1}"
+  if [ ${doTrace} = "yes" ] ; then
+    TRACEARGS="-t all"
+  fi
+  echo "-f ${bspTreeFile} ${TRACEARGS} ${1}"
 }
 
 checkBSPFaults()
@@ -31,7 +34,10 @@ bspGeneratesGDBCommands="yes"
 
 bspGenerateGDBCommands()
 {
-echo "tar sim -f ${bspTreeFile}"
+if [ ${doTrace} = "yes" ] ; then
+  TRACEARGS="-t all"
+fi
+echo "tar sim -f ${bspTreeFile} ${TRACEARGS}"
 echo "load"
 }
 
