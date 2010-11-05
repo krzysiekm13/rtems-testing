@@ -34,6 +34,7 @@ USAGE=\
 	-s	   -- force System V IPC support (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
         -L dir     -- specify log directory (default is 'log')
+        -T         -- rtems-test command mode
 
 NOTES:
   + System V IPC and Coverage are not supported by all BSPs or simulators.
@@ -85,8 +86,9 @@ generate_tree_and_exit="no"
 logdir="log"
 enable_display_adapter="no"
 enable_network="no"
+rtems_test="no"
 
-while getopts "vcCgGil:L:DsN" OPT
+while getopts "vcCgGil:L:DsNT" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
@@ -98,8 +100,9 @@ do
    N) enable_network="yes" ;;
    i) interactive="yes";;
    l) defaultLimit="$OPTARG";;
-   L) loggir="$OPTARG";;
+   L) logdir="$OPTARG";;
    s) use_sysv_ipc="yes";;
+   T) rtems_test="yes";;
    *) fatal;;
  esac
 done
@@ -116,6 +119,10 @@ else
     mkdir $logdir || fatal "could not create log directory ($logdir)"
   fi
 fi
+
+### If in RTEMS test mode do not log.
+logdir=""
+doCatOutput=""
 
 ### Set BSP defaults.  If BSP does not have default, it will override
 bspGeneratesDeviceTree="no"
