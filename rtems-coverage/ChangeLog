@@ -1,3 +1,8 @@
+2010-12-06	Matthew Voegeli <matthewvoegeli@gmail.com>
+
+	* generate_coverage_html: Eliminate columns with constant data and put
+	more detailed version of that information in the header.
+
 2010-10-16	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* generate_coverage_html: Increase thickness of lines.

@@ -160,6 +160,27 @@ print_heading()
   echo "<th>"${*}"</th>"
 }
 
+# need to use ${1} for parameter
+# need to pass 
+convert_flags() {
+  opt=`echo "-${1}" | cut -c1-3`
+  pos=`echo "${1}" | cut -c3`
+  dev=`echo "${1}" | cut -c4`
+
+  posix="POSIX Enabled"
+  deve="Developmental"
+
+  if [ X"${pos}" = X"p" ] ; then
+    posix="POSIX Disabled"
+  fi
+
+  if [ X"${dev}" = X"d" ] ; then
+    deve="Core Only"
+  fi
+
+  echo "${opt}, ${posix}, ${deve}"
+}
+
 do_perBSPPage()
 {
   BSP=${1}
@@ -233,16 +254,13 @@ EOF
     echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
     echo "<tr class=\"stats-table-target\">"
     echo "<td colspan=\"10\">"
-    echo "<strong>${cpu}/${bsp} (${build})</strong>"
+    echo "<strong>${cpu}/${bsp} `convert_flags ${build}` (${build})</strong>"
     echo "</td>"
     echo "</tr>"
     echo "<tr class=\"stats-table-top\">"
     ### generate header
     print_heading Day
     print_heading Time
-    print_heading Optimization
-    print_heading POSIX Enabled
-    print_heading Developmental Enabled
     print_heading Uncovered Ranges
     # skip Uncovered Percentage
     print_heading Covered Percentage
@@ -251,16 +269,19 @@ EOF
     print_heading Results
 
     first=no
-    ls -1 ${bsp}-${build}-*-*/row.html | sort -t -  -k 1,2 -k 3,4Vr | \
+    ls -1 ${bsp}-${build}-*-*/row.html | sort -t -  -k 1,2 -k 3,4r | \
     while read row
     do
      sed \
-      -e '2,2s/<TD>\(20[0-9][0-9]\)\([0-1][0-9]\)\([0-9][0-9]\)/<TD>\1-\2-\3/' \
+      -e '2,2s/<TD>\(20[0-9][0-9]\)\([0-1][0-9]\)\([0-3][0-9]\)/<TD>\1-\2-\3/' \
       -e '1,1s/<TR>/<tr class="stats-table-row">/' \
       -e '7,7s/<TD>0/<td class="stats-target-good">0/' \
       -e '9,9s/<TD>100/<td class="stats-target-good">100/' \
       -e '10,10s/<TD>0/<td class="stats-target-good">0/' \
       -e 's/<[tT][dD]/<td align="center"/' \
+      -e '4d' \
+      -e '5d' \
+      -e '6d' \
       -e '8d' \
       <$row
     done
@@ -473,6 +494,7 @@ print_index >index.html
 # now generate a page per BSP
 for bsp in ${BSPs} 
 do
+  echo "Processing ${bsp}..."
   do_perBSPPage ${bsp} >${bsp}.html
 done
 
