@@ -1,3 +1,8 @@
+2010-12-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* boards/rtems-microblaze-nosim.exp, boards/rtems-sparc64-nosim.exp:
+	New files.
+
 2010-04-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* boards/rtems-lm32-lm32_evr.exp: Correct cpu flags.
