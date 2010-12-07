@@ -44,7 +44,7 @@ cat <<EOF
 do_one [options] CPU ..  CPU
   -A - enable clean, native, and update
   -a - build Ada (default=yes)
-  -G - build GCC Go (default=yes)
+  -G - build GCC Go (default=no)
   -c - clean install point (also installs auto tools)
   -m - mail results to lists (default=yes)
   -n - build native
@@ -61,11 +61,11 @@ doUpdateRTEMS="no"
 doNative="no"
 verbose="no"
 doAda="yes"
-doGccGo="yes"
-doMail="yes"
+doGccGo="no"
+doMail="no"
 doTests="yes"
 
-while getopts AacmnuTUv OPT
+while getopts AacmnuGTUv OPT
 do
   case "$OPT" in
     A) doCleanInstallPoint=`toggle ${doCleanInstallPoint}`
@@ -213,6 +213,7 @@ do_cpus()
       powerpc) bsp=psim         ;;
       sh)      bsp=simsh1       ;;
       sparc)   bsp=sis          ;;
+      sparc64) bsp=niagara      ;;
       *)
 	echo "Unknown CPU ${cpu}"
 	exit 1
@@ -265,14 +266,13 @@ if [ $? -eq 0 ] ; then
     do_cpus arm
 
     # no simulator -- waiting for Skyeye
-    do_cpus bfin m68k
+    do_cpus bfin
 
     # Simulators included in gdb
-    do_cpus h8300 lm32 m32c m32r mips powerpc sh sparc
+    do_cpus h8300 lm32 m32c m32r mips powerpc sh sparc sparc64
 
     # Requires qemu installation
     do_cpus i386 m68k
-
 
     # port insufficient to run gcc tests
     do_cpus avr

@@ -106,8 +106,8 @@ do
            do_cxx="yes"
            do_multilib="yes"
            do_ada="yes"
-           do_gccgo="yes"
-           do_gccgo_multilib="yes"
+           # do_gccgo="yes"
+           # do_gccgo_multilib="yes"
            do_rtems="yes"
            ;;
         d) do_cleanup=`toggle ${do_cleanup}` ;;
@@ -261,10 +261,12 @@ if [ ${needCPU} = yes -a ${needBSP} = yes -a \
     m32c-m32csim)         dejacfg=rtems-m32c-m32csim ;;
     m32r-m32rsim)         dejacfg=rtems-m32r-m32rsim ;;
     m68k-uC5282)          dejacfg=rtems-m68k-uC5282 ;;
+    microblaze-nosim)     dejacfg=rtems-microblaze-nosim ;;
     mips-jmr3904)         dejacfg=rtems-mips-jmr3904 ;;
     powerpc-psim)         dejacfg=rtems-powerpc-psim ;;
     sh-simsh1)            dejacfg=rtems-sh-simsh1 ;;
     sparc-sis)            dejacfg=rtems-sparc-sis ;;
+    sparc64-niagara)      dejacfg=rtems-sparc64-nosim ;;
     *)
       echo "ERROR ${bsp} is not known to DegaGNU"
       exit 1
@@ -713,7 +715,7 @@ else
 fi
 
 ##### Do the gccgo tests
-if [ ${run_gccgotests} = "yes" ] ; then
+if [ ${do_gccgo} = "yes" -a ${run_gccgotests} = "yes" ] ; then
   echo "Running GCC Go Tests..."
   cd ${BASEDIR}/b-gccgo1-${cpu}/gcc || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gccgo \

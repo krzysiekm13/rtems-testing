@@ -1,0 +1,61 @@
+#! /bin/sh
+#
+#  gccgo_status
+#
+
+vfile=`dirname $0`/../VERSIONS
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS file not found
+  exit 1
+fi
+
+source ${vfile}
+
+cpu=$1
+if [ $# -eq 1 ] ; then
+  limit=0
+elif [ $# -eq 2 ] ; then
+  limit=$2
+else
+  echo usage "$0 CPU [seconds]"
+  exit 1
+fi
+
+
+if [ ! -d ${BASEDIR}/b-gccgo1-${cpu}/gcc/testsuite ] ; then
+  echo Test directory not found
+  exit 1
+fi
+
+cd ${BASEDIR}/b-gccgo1-${cpu}/gcc/testsuite
+while :
+do
+  for BASE in go
+  do
+    LFILE=${BASE}/${BASE}.log
+    SFILE=${BASE}/${BASE}.sum
+    if [ ! -r ${LFILE} ] ; then
+      continue
+    fi
+    loglines=`cat ${LFILE} | wc -l`
+    failed=`grep ^FAIL: ${SFILE} | wc -l`
+    passed=`grep ^PASS: ${SFILE} | wc -l`
+    unsupp=`grep ^UNSUPP ${SFILE} | wc -l`
+    unresolved=`grep ^UNRESOL ${SFILE} | wc -l`
+    untested=`grep ^UNTESTED ${SFILE} | wc -l`
+
+    printf "Lines in ${LFILE}: %5d\n" $loglines
+    printf "PASSED:           %5d\n" $passed
+    printf "FAILED:           %5d\n" $failed
+    printf "UNSUPPORTED:      %5d\n" $unsupp
+    printf "UNRESOLVED:       %5d\n" $unresolved
+    printf "UNTESTED:         %5d\n" $untested
+  done
+
+  if [ ${limit} -eq 0 ] ; then
+    break
+  fi
+  sleep ${limit}
+done
+exit 0
+

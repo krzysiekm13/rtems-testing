@@ -1,3 +1,9 @@
+2010-12-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one, test_driver, testsuite/ada/acats/Makefile.rtems:
+	* Makefile.rtems_gccgoinit, gccgo_status, networkconfig.h,
+	rtems_gccgo_init.c: New files.
+
 2010-08-04	Vinu Rajashekhar <vinutheraj@gmail.com>
 
 	* do_one, rundeja: Add support for libgo testing.

@@ -1,0 +1,17 @@
+#
+#  Makefile for Go testsuite
+#
+
+include $(RTEMS_MAKEFILE_PATH)/Makefile.inc
+include $(RTEMS_CUSTOM)
+include $(PROJECT_ROOT)/make/leaf.cfg
+
+# Tool helpers
+
+all: clean rtems_gccgo_init.o
+
+clean:
+	rm -f rtems_gccgo_init.o
+
+rtems_gccgo_init.o: ${SCRIPTDIR}/gcc/rtems_gccgo_init.c
+	$(CC) $(CFLAGS) $(CPU_CFLAGS) -c ${SCRIPTDIR}/gcc/rtems_gccgo_init.c

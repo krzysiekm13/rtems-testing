@@ -69,6 +69,9 @@ stamp-targetrun:
   ifeq ($(RTEMS_BSP),mcf5206elite)
 	echo "  nosim $$"'*' >> $@
   endif # mcf5206elite
+  ifeq ($(RTEMS_BSP),niagara)
+	echo "  nosim $$"'*' >> $@
+  endif # niagara
 	echo "}" >>$@
 
 stamp-targetgcc:
