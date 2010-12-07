@@ -3,24 +3,27 @@ BASEDIR=${HOME}/test-gcc
 
 RTEMS_VERSION=4.11
 
-#GCC_VERSION=svn
-#GCC_VERSION=4.4.2
+#GCC_VERSION=4.5-branch
+GCC_VERSION=svn
+#GCC_VERSION=4.4.5
 #GCC_VERSION=4.3.4
-#GCC_VERSION=4.5.0
-GCC_VERSION=go
+#GCC_VERSION=4.5.1
+#GCC_VERSION=go
 
 # NOTE: 2.63 for 4.4 and lower?
 case ${GCC_VERSION} in
-  4.[32]*)   AUTOCONF=${BASEDIR}/autoconf-2.63 ;;
-  *)         AUTOCONF=${BASEDIR}/autoconf-2.66 ;;
+  *4.[32]*)  AUTOCONF=${BASEDIR}/autoconf-2.63 ;;
+  *4.[45]*)  AUTOCONF=${BASEDIR}/autoconf-2.67 ;;
+  *)         AUTOCONF=${BASEDIR}/autoconf-2.68 ;;
 esac
 AUTOMAKE=${BASEDIR}/automake-1.11.1
 GCCDIR=${BASEDIR}/gcc-${GCC_VERSION}
 BINUTILSDIR=${BASEDIR}/binutils-cvs/src
-#BINUTILSDIR=${BASEDIR}/binutils-2.20
-#NEWLIBDIR=${BASEDIR}/newlib-cvs/src
-NEWLIBDIR=${BASEDIR}/newlib-1.18.0
+#BINUTILSDIR=${BASEDIR}/binutils-2.20.1
+NEWLIBDIR=${BASEDIR}/newlib-cvs/src
+#NEWLIBDIR=${BASEDIR}/newlib-1.18.0
 GDBDIR=${BASEDIR}/gdb-cvs/src
+#GDBDIR=${BASEDIR}/gdb-7.1
 RTEMSDIR=${BASEDIR}/rtems
 
 # These are inferred from above but double check

@@ -1,3 +1,7 @@
+2010-12-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* VERSIONS:
+
 2010-11-05	Chris Johns <chrisj@rtems.org>
 
 	* sim-scripts/gdb-sim-run.in: Fix logdir option.
