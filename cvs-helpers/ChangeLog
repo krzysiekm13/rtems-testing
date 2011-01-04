@@ -1,3 +1,8 @@
+2011-01-04	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* cvscommit, mkChangeLogList: Avoid processing autom4te.cache
+	directories and directories not added to CVS yet.
+
 2010-08-02	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* mktest: Add .doc files with -kkv option so keyword expansion is on.

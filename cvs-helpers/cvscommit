@@ -89,8 +89,13 @@ commit()
 
 for ddir in ${subdirs} ; do
   test "${ddir}" = "CVS" && continue
+  test "${ddir}" = "autom4te.cache" && continue
   test "${ddir}" = "install" && continue
   if [ -d "${ddir}" ]; then
+    if [ ! -d "${ddir}/CVS" ] ; then
+      echo "WARNING - ${ddir} is not in CVS"
+      continue
+    fi
     test -f "${ddir}/ChangeLog" || continue
     cd "$ddir" >/dev/null
     mkChangeLogList ${mkchoptions} ${userArg} "${userInfo}" \

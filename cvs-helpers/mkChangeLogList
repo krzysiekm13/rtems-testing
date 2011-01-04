@@ -125,6 +125,5 @@ ${CVS} diff ${cvsarg} 2>&1 | grep "was removed, no comparison" | \
   mklog_ Removed.
 echo
 
-
 rm -f XXX
 exit 0
