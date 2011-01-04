@@ -1,3 +1,7 @@
+2011-01-04	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* clang/do_clang: New file.
+
 2010-12-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* VERSIONS:

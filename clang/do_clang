@@ -1,0 +1,79 @@
+#! /bin/sh
+#
+#  This script automates running clang-analyzer on RTEMS.
+# 
+# NOTE:
+#    + clang/scan does not support -B option so no code which needs bsp.h
+#    + clang/scan has bug about embedded space in RHS of -D option.
+# 
+#  $Id$
+#
+
+#
+# TODO:
+#   + parse arguments for some of the hard-coded items.
+#   + better instructions on setup. Where to download, etc.
+#
+
+OUTPUTDIR=/home/joel/rtems-4.11-work/build/clang/output
+RTEMS_BIN=/opt/rtems-4.11/bin
+RTEMS_TARGET=sparc-rtems4.11
+RTEMS_BSP=sis
+#RTEMS_TARGET=i386-rtems4.11
+#RTEMS_BSP=pc386
+
+#
+#  Checks the status returned by executables and exits if it is non-zero.
+#
+check_fatal()
+{
+  if [ $1 -ne 0 ] ; then
+    shift
+    echo "ERROR: $*" >&2
+    exit 1
+  fi
+}
+
+type ${RTEMS_TARGET}-gcc
+check_fatal $? "gcc not in path"
+
+type scan-build >/dev/null 2>&1
+check_fatal $? "scan-build not in PATH"
+
+# How many jobs in parallel
+if [ -r /usr/bin/getconf ] ; then
+  cpus=`/usr/bin/getconf _NPROCESSORS_ONLN`
+  cpus=`expr ${cpus} + 1`
+else
+  cpus=2
+fi
+# Clean build directory and start over
+rm     -rf  b-clang-${RTEMS_TARGET}
+check_fatal $? "Could not remove build directory"
+mkdir  -p   b-clang-${RTEMS_TARGET}
+check_fatal $? "Could not make build directory"
+cd          b-clang-${RTEMS_TARGET}
+check_fatal $? "Could not cd to build directory"
+
+# Configure RTEMS
+#$r/configure --target=${RTEMS_TARGET} --enable-multilib \
+#  --disable-networking --disable-itron --disable-tests \
+#  --enable-rtemsbsp=${RTEMS_BSP} >c.log 2>&1
+$r/configure --target=${RTEMS_TARGET} --disable-multilib \
+  --disable-networking --disable-itron --disable-tests \
+  --enable-rtemsbsp=${RTEMS_BSP} >c.log 2>&1
+check_fatal $? "could not configure RTEMS"
+
+# Build RTEMS
+BASE=`pwd`
+#cd ${RTEMS_TARGET}/cpukit 
+#check_fatal $? "could not cd ${RTEMS_TARGET}/cpukit"
+
+scan-build -o ${OUTPUTDIR} --experimental-checks \
+  --use-cc ${RTEMS_TARGET}-gcc \
+  --use-c++ ${RTEMS_TARGET}-g++ \
+  make -j${cpus} >${BASE}/b.log 2>&1
+check_fatal $? "could not make RTEMS"
+
+# Ran completed OK
+exit 0
