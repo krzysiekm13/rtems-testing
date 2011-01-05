@@ -76,7 +76,7 @@ print_index()
 cat <<EOF
 <HTML>
 <HEAD>
-<TITLE>RTEMS 
+<TITLE>RTEMS
 EOF
 
 echo ${RTEMS_VERSION}
@@ -124,7 +124,7 @@ print_doc_top()
 cat <<EOF
 <HTML>
 <HEAD>
-<TITLE>RTEMS 
+<TITLE>RTEMS
 EOF
 
 echo "${RTEMS_VERSION} Coverage Reports for ${1} </TITLE>"
@@ -161,7 +161,7 @@ print_heading()
 }
 
 # need to use ${1} for parameter
-# need to pass 
+# need to pass
 convert_flags() {
   opt=`echo "-${1}" | cut -c1-3`
   pos=`echo "${1}" | cut -c3`
@@ -193,8 +193,9 @@ do_perBSPPage()
 <table align="center">
 <thead>
 <tr class="heading-title">
-<td width="40%">Result Tables</td>
-<td width="40%">Time Series Graphs</td>
+<td width="30%">Result Tables</td>
+<td width="30%">Time Series Graphs</td>
+<td width="30%">TimePlot Graphs</td>
 </thead>
 </tr>
 <td>
@@ -232,6 +233,28 @@ echo "<li><a href=\"graphs/${BSP}-uncovered_bytes-d.png\">"
 echo "  Uncovered Bytes (Core)</a></li>"
 echo "<li><a href=\"graphs/${BSP}-uncovered_bytes-D.png\">"
 echo "  Uncovered Bytes (Developmental)</a></li>"
+
+cat <<EOF
+</ul>
+</td>
+<td>
+<ul>
+EOF
+
+echo "<li><a href=\"graphs/timeplot-${BSP}.html\">"
+echo "  TimePlot Graphs</a></li>"
+
+echo "<li><a href=\"graphs/timeplot-${BSP}.html#uncovered_percent\">"
+echo "  Uncovered Percentage</a></li>"
+
+echo "<li><a href=\"graphs/timeplot-${BSP}.html#total_bytes\">"
+echo "  Total Bytes Analyzed</a></li>"
+
+echo "<li><a href=\"graphs/timeplot-${BSP}.html#ranges\">"
+echo "  Uncovered Ranges</a></li>"
+
+echo "<li><a href=\"graphs/timeplot-${BSP}.html#uncovered_bytes\">"
+echo "  Uncovered Bytes</a></li>"
 
 cat <<EOF
 </ul>
@@ -326,7 +349,7 @@ genBSPList()
 
 cleanup()
 {
-  for bsp in ${BSPs} 
+  for bsp in ${BSPs}
   do
     count=`ls -1 ${bsp}*.tar.bz2 | wc -l`
     if [ ${count} -gt 20 ] ; then
@@ -338,7 +361,7 @@ cleanup()
         rm -rf ${f} ${dir}
       done
     fi
-   
+
   done
 }
 
@@ -445,7 +468,7 @@ gen_plot()
   echo "set ylabel \"${YLABEL}\""
   echo "set title \"${TITLE}\""
   echo "set key left box"
-  
+
   echo "plot \"${OUT}/${bsp}-Osp${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
   echo "  title \"Osp${DEV}\" with lines lw 2, \\"
   echo "     \"${OUT}/${bsp}-OsP${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
@@ -474,12 +497,119 @@ gen_data()
     Year=`echo ${timestamp} | cut -c1-4`
     Month=`echo ${timestamp} | cut -c5-6`
     Day=`echo ${timestamp} | cut -c7-8`
-    Hour=`echo ${timestamp} | cut -c10-11`
-    Minute=`echo ${timestamp} | cut -c12-13`
-    stamp="${Year}-${Month}-${Day}/${Hour}:${Minute}"
+    stamp="${Year}-${Month}-${Day}"
 
     echo ${stamp} ${num}
-  done 
+  done
+}
+
+gen_timeplot()
+{
+BSP=$1
+
+cat <<EOF
+<HTML>
+<HEAD>
+<TITLE>${BSP} Timeplot Graphs</TITLE>
+<meta http-equiv="Content-Language" content="English" />
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+<link rel="stylesheet" type="text/css" href="rtems/style.css" media="screen" />
+EOF
+
+cat << EOF
+
+    <script src="http://api.simile-widgets.org/timeplot/1.1/timeplot-api.js"
+       type="text/javascript"></script>
+    <script type="text/javascript">
+      var timeplot = [];
+      var types  = ["O2pd", "O2pD", "O2Pd", "O2PD", "Ospd", "OspD", "OsPd", "OsPD"];
+      var graphs = ["ranges", "total_bytes", "uncovered_bytes", "uncovered_percent"];
+      var lineColors = ["#ff0000", "#D0A825", "#336699", "#99FF00", "#336666", "#33CC33", "#990099", "#FF0099"];
+      var eventsources;
+      var plotInfo;
+
+      function onLoad() {
+	for( i = 0; i<graphs.length; i++)
+	{
+	    var timeGeometry = new Timeplot.DefaultTimeGeometry({
+	        gridColor: new Timeplot.Color("#000000"),
+		axisLabelsPlacement: "top"
+	    });
+
+	    var valueGeometry = new Timeplot.DefaultValueGeometry({
+	        gridColor: "#000000",
+	        axisLabelsPlacement: "left"
+	    });
+
+	    eventsources = [];
+	    plotInfo = [];
+	    for( j = 0; j<types.length; j++)
+	    {
+	      eventsources[j] = new Timeplot.DefaultEventSource();
+	      plotInfo[j] = Timeplot.createPlotInfo({
+		 id: "plot"+(j+1),
+		 dataSource: new Timeplot.ColumnSource(eventsources[j],1),
+		 timeGeometry: timeGeometry,
+		 valueGeometry: valueGeometry,
+		 lineColor: lineColors[j]
+	      });
+	    }
+	    timeplot[i] = Timeplot.create(document.getElementById(graphs[i]+"-timeplot"), plotInfo);
+	    for( j = 0; j<types.length; j++)
+	    {
+	      timeplot[i].loadText("../plot_data/" + "${BSP}-" + types[j] + "-" + graphs[i] + ".dat", " ", eventsources[j]);
+	    }
+	  }
+      }
+      var resizeTimerID = null;
+      function onResize() {
+	if (resizeTimerID == null) {
+	resizeTimerID = window.setTimeout(
+		    function() {
+			resizeTimerID = null;
+			for( i = 0; i< timeplot.lenght; i++)
+			{
+			  timeplot[i].repaint();
+			}
+		    }, 100);
+	  }
+      }
+
+    </script>
+  </head>
+  <body onload="onLoad();" onresize="onResize();">
+    <li><a href="#uncovered_percent">Uncovered Percentage Graph</a></li>
+    <li><a href="#total_bytes">Total Bytes Analyzed Graph</a></li>
+    <li><a href="#ranges">Uncovered Ranges Graph</a></li>
+    <li><a href="#uncovered_bytes">Uncovered Bytes Graph</a></li>
+
+    <ul id="legend">
+      <li style="color:#ff0000">O2pd</li>
+      <li style="color:#D0A825">O2pD</li>
+      <li style="color:#336699">O2Pd</li>
+      <li style="color:#99FF00">O2PD</li>
+      <li style="color:#336666">Ospd</li>
+      <li style="color:#33CC33">OspD</li>
+      <li style="color:#990099">OsPd</li>
+      <li style="color:#ff0099">OsPD</li>
+    </ul>
+
+
+    <h2 id="uncovered_percent">Uncovered Percentage</h2>
+    <a href="#legend">Legend</a>
+    <div id="uncovered_percent-timeplot" style="height: 500px;"></div>
+    <h2 id="total_bytes">Total Bytes Analyzed</h2>
+    <a href="#legend">Legend</a>
+    <div id="total_bytes-timeplot" style="height: 500px;"></div>
+    <h2 id="ranges">Uncovered Ranges</h2>
+    <a href="#legend">Legend</a>
+    <div id="ranges-timeplot" style="height: 500px;"></div>
+    <h2 id="uncovered_bytes">Uncovered bytes</h2>
+    <a href="#legend">Legend</a>
+    <div id="uncovered_bytes-timeplot" style="height: 500px;"></div>
+  </body>
+</html>
+EOF
 }
 
 #BSPs=`find * -maxdepth 1 -type d | cut -d'-' -f1 | uniq | grep -v rtems`
@@ -492,9 +622,9 @@ BSPs=`genBSPList`
 print_index >index.html
 
 # now generate a page per BSP
-for bsp in ${BSPs} 
+for bsp in ${BSPs}
 do
-  echo "Processing ${bsp}..."
+  echo "Generating BSP Page for ${bsp}..."
   do_perBSPPage ${bsp} >${bsp}.html
 done
 
@@ -509,8 +639,9 @@ test -d ${OUTFIG} || mkdir ${OUTFIG}
 
 for bsp in ${BSPs}
 do
+  echo "Generating Static Plots for ${bsp}..."
   for FIELD in ranges total_bytes uncovered_bytes \
-    uncovered_percent #covered_percent 
+    uncovered_percent #covered_percent
   do
     # Pattern to find in summary.txt
     case ${FIELD} in
@@ -533,7 +664,12 @@ do
       gen_plot >${pltfile}
       #echo gnuplot ${pltfile}
       gnuplot ${pltfile}
+
     done
   done
+
+  echo "Generating Time Plots for ${bsp}..."
+  timeplotfile=${OUTFIG}/timeplot-${bsp}.html
+  gen_timeplot ${bsp} > ${timeplotfile}
 done
 exit 0
