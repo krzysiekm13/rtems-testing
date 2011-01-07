@@ -38,7 +38,7 @@ do_native=no
 do_stage1=no
   do_cxx=yes
   do_multilib=yes
-# Build the Ada language cross compiler. Multilib is NOT supported
+# Build the Ada language cross compiler.
 do_ada=no
   do_ada_multilib=yes
 # Build the GCC Go language cross compiler.
@@ -415,7 +415,7 @@ j_native()
   test ${do_native_ada} = "yes" && AdaArg=",ada"
   ${GCCDIR}/configure \
     ${NATIVE_GCC_EXTRA_ARGS} \
-    --enable-languages=c${AdaArg} --prefix=$INSTALL &&
+    --enable-languages=c,c++${AdaArg} --prefix=$INSTALL &&
   make ${MAKEJOBS} && make install
 }
 
@@ -623,19 +623,22 @@ j_gccada()
   make install
 }
 
+ada_fail="no"
 if [ ${do_ada} = "yes" ] ; then 
   echo "Building Stage 2 cross Ada compiler for ${1} ..."
   (cd ${BASEDIR} && \
    rm -rf b-gccada-${cpu} && \
    mkdir  b-gccada-${cpu} && \
    cd b-gccada-${cpu} && \
-   time j_gccada ${cpu} >${LOGDIR}/${cpu}-ada.log 2>&1 && cd ..) || exit 1
+   time j_gccada ${cpu} >${LOGDIR}/${cpu}-ada.log 2>&1 && cd ..) || \
+    ada_fail="yes"
 else
   echo Skipping Stage 2 Ada for ${cpu}
 fi
 
 #### Run the Ada ACATS tests
-if [ ${run_acats} = "yes" -a -d b-gccada-${cpu} ] ; then 
+if [ ${run_acats} = "yes" -a \
+     -d ${BASEDIR}/b-gccada-${cpu} -a ${ada_fail} = "no" ] ; then 
   echo "Running ACATS..."
   cd ${GCCDIR}/gcc/testsuite/ada/acats/ || exit 1
 
@@ -664,6 +667,7 @@ fi
 ##### Build a GCC Go compiler now that we have a cross installed
 j_gccgo()
 {
+set -x
   if [ X${1} = X ] ; then
     echo Usage: $0 TARGET_CPU
     exit 1
@@ -698,24 +702,30 @@ j_gccgo()
      --enable-newlib-mb --enable-newlib-iconv \
      --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
      --enable-version-specific-runtime-libs \
-    --enable-languages=c,go --target=$TARGET --prefix=$INSTALL &&
+     --with-host-libstdcxx=-static-libstdc++ \
+     --enable-languages=c,go --target=$TARGET --prefix=$INSTALL &&
   make ${MAKEJOBS} &&
   make install
 }
 
+go_fail="no"
 if [ ${do_gccgo} = "yes" ] ; then 
   echo "Building Stage 2 cross GCC Go compiler for ${1} ..."
   (cd ${BASEDIR} && \
    rm -rf b-gccgo1-${cpu} && \
    mkdir  b-gccgo1-${cpu} && \
    cd b-gccgo1-${cpu} && \
-   time j_gccgo ${cpu} >${LOGDIR}/${cpu}-go.log 2>&1 && cd ..) || exit 1
+   time j_gccgo ${cpu} >${LOGDIR}/${cpu}-go.log 2>&1 && cd ..) || \
+     go_fail="yes"
 else
   echo Skipping GCC Go for ${cpu}
 fi
 
 ##### Do the gccgo tests
-if [ ${do_gccgo} = "yes" -a ${run_gccgotests} = "yes" ] ; then
+if [ ${run_acats} = "yes" -a \
+     -d ${BASEDIR}/b-gccada-${cpu} -a ${ada_fail} = "no" ] ; then 
+if [ ${do_gccgo} = "yes"           -a ${run_gccgotests} = "yes" -a \
+     -d ${BASEDIR}/b-gccgo1-${cpu} -a ${go_fail} = "no" ] ; then
   echo "Running GCC Go Tests..."
   cd ${BASEDIR}/b-gccgo1-${cpu}/gcc || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gccgo \

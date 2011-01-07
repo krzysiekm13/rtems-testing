@@ -1,3 +1,8 @@
+2011-01-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gcc/do_one, gcc/testsuite/ada/acats/rtems_generate_acats_email:
+	Detect RTEMS version.
+
 2011-01-04	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* clang/do_clang: New file.
