@@ -15,7 +15,7 @@ fatal()
   echo $*
   echo "Usage: [-v] [-n NIC]"
   echo ""
-  echo "Supported NICs: i82559er i82551 i82557b rtl8139 ne2k_isa"
+  echo "Supported NICs: e1000 i82559er i82551 i82557b rtl8139 ne2k_isa"
   exit 1
 }
 
@@ -45,8 +45,10 @@ NIC=
 
 case ${nic} in
   # PCI NIC model options that work with RTEMS:
-  #   i82559er, i82551, i82557b, rtl8139
-  i82559er|i82551|i82557b|rtl8139) NIC=${nic};;
+  #   fxp: i82559er, i82551, i82557b
+  #   rl:  rtl8139
+  #   em:  e1000
+  e1000|i82559er|i82551|i82557b|rtl8139) NIC=${nic};;
   # ISA NIC model: ne2k_isa
   ne2k_isa) MODEL="-M isapc" ; NIC=${nic} ;;
   none) ;;

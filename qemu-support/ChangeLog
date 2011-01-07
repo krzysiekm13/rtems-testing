@@ -1,3 +1,7 @@
+2011-01-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemu-nic: Add e1000
+
 2010-06-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* README, pc386_fda.bz2: Update to version with bootloader arguments
