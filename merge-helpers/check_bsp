@@ -111,7 +111,7 @@ done
 echo "=== Checking for copyright notices"
 find_source | while read f
 do
-  test_its_NOT_there_all_case ${f} COPYRIGHT
+  test_its_there ${f} COPYRIGHT
 done
 
 # We want CVS Id strings everywhere possible

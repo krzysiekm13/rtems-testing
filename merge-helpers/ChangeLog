@@ -1,3 +1,7 @@
+2011-01-17	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* check_bsp: Report copyright being NOT present.
+
 2010-08-18	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* check_bsp: Remove copied line.
