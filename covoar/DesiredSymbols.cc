@@ -102,6 +102,7 @@ namespace Coverage {
   void DesiredSymbols::preprocess( void )
   {
     ObjdumpProcessor::objdumpLines_t::iterator fitr;
+    ObjdumpProcessor::objdumpLines_t::iterator n, p;
     DesiredSymbols::symbolSet_t::iterator      sitr;
     CoverageMapBase*                           theCoverageMap;
 
@@ -116,7 +117,7 @@ namespace Coverage {
       if (!theCoverageMap)
         continue;
 
-      // Mark any branch instructions.
+      // Mark any branch and NOP instructions.
       for (fitr = sitr->second.instructions.begin();
            fitr != sitr->second.instructions.end();
            fitr++) {
@@ -125,7 +126,13 @@ namespace Coverage {
              fitr->address - sitr->second.baseAddress
            );
         }
+        if (fitr->isNop) {
+           theCoverageMap->setIsNop(
+             fitr->address - sitr->second.baseAddress
+           );
+        }
       }
+
     }
   }
 
@@ -176,7 +183,6 @@ namespace Coverage {
           }
  
         }
-
  
         if (!theCoverageMap->wasExecuted( a )) {
           stats.uncoveredBytes++;
@@ -215,6 +221,27 @@ namespace Coverage {
       sitr->second.uncoveredRanges = theRanges;
       theBranches = new CoverageRanges();
       sitr->second.uncoveredBranches = theBranches;
+
+      // Mark NOPs as executed
+      endAddress = sitr->second.stats.sizeInBytes - 1;
+      a = 0;
+      while (a < endAddress) {
+        if (!theCoverageMap->wasExecuted( a )) {
+          a++;
+          continue;
+        }
+
+	for (ha=a+1;
+	     ha<=endAddress && !theCoverageMap->isStartOfInstruction( ha );
+	     ha++)
+	  ;
+        if ( ha >= endAddress )
+          break;
+
+        if (theCoverageMap->isNop( ha ))
+          theCoverageMap->setWasExecuted( ha );
+        a = ha;
+      }
 
       // Now scan through the coverage map of this symbol.
       endAddress = sitr->second.stats.sizeInBytes - 1;

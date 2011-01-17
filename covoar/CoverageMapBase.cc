@@ -149,6 +149,22 @@ namespace Coverage {
     Info[ address - lowAddress ].isBranch = true;
   }
 
+  bool CoverageMapBase::isNop( uint32_t address ) const
+  {
+    if ((address < lowAddress) || (address > highAddress))
+      return false;
+    return Info[ address - lowAddress ].isNop;
+  }
+
+  void CoverageMapBase::setIsNop(
+    uint32_t    address
+  )
+  {
+    if ((address < lowAddress) || (address > highAddress))
+      return;
+    Info[ address - lowAddress ].isNop = true;
+  }
+
   bool CoverageMapBase::isBranch( uint32_t address ) const
   {
     if ((address < lowAddress) || (address > highAddress))

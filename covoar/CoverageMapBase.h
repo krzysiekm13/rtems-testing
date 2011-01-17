@@ -125,6 +125,25 @@ namespace Coverage {
 
     /*!
      *  This method returns a boolean which indicates if the specified
+     *  address is the starting address of a NOP instruction.
+     *
+     *  @param[in] address specifies the address to check
+     *
+     *  @return Returns TRUE if a NOP instruction is at the
+     *   specified address and FALSE otherwise.
+     */
+    bool isNop( uint32_t address ) const;
+
+    /*!
+     *  This method sets the boolean which indicates if the specified
+     *  address is the starting address of a NOP instruction.
+     *
+     *  @param[in] address specifies the address of the NOP instruction
+     */
+    void setIsNop( uint32_t address );
+
+    /*!
+     *  This method returns a boolean which indicates if the specified
      *  address is the starting address of a branch instruction.
      *
      *  @param[in] address specifies the address to check
@@ -214,6 +233,10 @@ namespace Coverage {
        *  This member indicates that the address is a branch instruction.
        */
       bool isBranch;
+      /*!
+       *  This member indicates that the address is a NOP instruction.
+       */
+      bool isNop;
       /*!
        *  When isBranch is TRUE, this member indicates that the branch
        *  instruction at the address was taken.
