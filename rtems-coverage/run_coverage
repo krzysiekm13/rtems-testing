@@ -127,7 +127,7 @@ for cmd in $*
 do
   case ${cmd} in
     update) ;;                       # general command
-    *_Os|*_O2|*_baseline)            # one BSP at specific -Ox level
+    *_O[sS2][pP][dD]|*_baseline)            # one BSP at specific -Ox level
       case ${cmd} in
         lm32_evr*) bsp=lm32_evr ;;
         *)         bsp=`echo $cmd | sed -e 's/_.*$//'` ;;
@@ -149,21 +149,38 @@ RESULTSDIR=${BASEDIR}/covrun-results
 test -d ${RESULTSDIR} || mkdir -p ${RESULTSDIR}
 for cmd in $*
 do
+echo $cmd
   case ${cmd} in
     update) 
       time ${COVBASE}/do_coverage -u -m -B erc32
       ;;
-    *_O[s2])
-      bsp=`echo $cmd | sed -e 's/_O.$//'`
-      Olevel=`echo $cmd | sed -e 's/.*_O\(.\)$/\1/'`
-      case ${Olevel} in
-        2)    do_one ${bsp} ;;
-        [sS]) do_one ${bsp} -S ;;
-        *)    echo ERROR unknown optimization level ; exit 1 ;;
-      esac
+    *_O[sS2][pP][dD])
+      bsp=`echo $cmd | sed -e 's/_O.*$//'`
+      args=`echo $cmd | sed -e 's/^.*_//'`
+      Olevel=`echo $cmd | sed -e 's/.*_O\(.\).*$/\1/'`
+      posix=`echo $cmd | sed -e 's/.*_O.\(.\).*$/\1/'`
+      devel=`echo $cmd | sed -e 's/.*_O..\(.\)$/\1/'`
+
+      echo $bsp $args $Olevel $posix $devel
+      optArg="-S"
+      if [ ${Olevel} = "2" ] ; then
+        optArg=""
+      fi
+      posixArg=""
+      if [ ${posix} = "p" ] ; then
+        posixArg="-P"
+      fi
+      develArg=""
+      if [ ${devel} = "d" ] ; then
+        develArg="-D"
+      fi
+
+      # echo do_one ${bsp} ${optArg} ${posixArg} ${develArg}
+      do_one ${bsp} ${optArg} ${posixArg} ${develArg}
       ;;
     *_baseline) 
       bsp=`echo $cmd | sed -e 's/_baseline$//'`
+      # XXX development off?
       do_one ${bsp} -S          # -Os / POSIX enabled  / regression
       do_one ${bsp} -S -P       # -Os / POSIX disabled / regression
       do_one ${bsp}             # -O2 / POSIX enabled  / regression

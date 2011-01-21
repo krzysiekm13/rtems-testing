@@ -1,3 +1,7 @@
+2011-01-21	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* run_coverage: Parse command arguments better.
+
 2011-01-05	Joey Geralnik <jgeralnik@gmail.com>
 
 	* generate_coverage_html: Add timeplot output as part of Google Code In
