@@ -122,10 +122,6 @@ else
   fi
 fi
 
-### If in RTEMS test mode do not log.
-logdir=""
-doCatOutput=""
-
 ### Set BSP defaults.  If BSP does not have default, it will override
 bspGeneratesDeviceTree="no"
 bspSupportsSystemVIPC="no"

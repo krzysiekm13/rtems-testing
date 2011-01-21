@@ -1,3 +1,8 @@
+2011-01-21	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* gdb-sim-run.in: Remove lines which break running tests in RTEMS and
+	gcc tests suite frameworks.
+
 2010-11-05	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in, gdb-sim.in, psim.in: Add trace support.
