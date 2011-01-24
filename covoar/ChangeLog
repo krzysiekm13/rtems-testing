@@ -1,3 +1,8 @@
+2011-01-24	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* CoverageReaderQEMU.cc: Add debug for trace block having a bad address
+	range.
+
 2011-01-17	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* CoverageMapBase.cc, CoverageMapBase.h, DesiredSymbols.cc: Improve NOP

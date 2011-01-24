@@ -139,9 +139,17 @@ namespace Coverage {
           }
         }
 
-        // Determine if additional branch information is available.
+       // Determine if additional branch information is available.
        if ( (entry->op & branchInfo) != 0 ) {
           unsigned int a = entry->pc + entry->size - 1;
+if ( (entry->pc < aCoverageMap->getLowAddress()) ||
+     (entry->pc > aCoverageMap->getHighAddress()) )
+  fprintf( stderr, "*** entry PC of trace block is too low\n" );
+
+if ( (a < aCoverageMap->getLowAddress()) ||
+     (a > aCoverageMap->getHighAddress()) )
+  fprintf( stderr, "*** last byte of trace block is too high\n" );
+
           while (!aCoverageMap->isStartOfInstruction(a))
             a--;
           if (entry->op & taken) {
