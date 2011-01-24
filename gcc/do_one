@@ -722,8 +722,6 @@ else
 fi
 
 ##### Do the gccgo tests
-if [ ${run_acats} = "yes" -a \
-     -d ${BASEDIR}/b-gccada-${cpu} -a ${ada_fail} = "no" ] ; then 
 if [ ${do_gccgo} = "yes"           -a ${run_gccgotests} = "yes" -a \
      -d ${BASEDIR}/b-gccgo1-${cpu} -a ${go_fail} = "no" ] ; then
   echo "Running GCC Go Tests..."
