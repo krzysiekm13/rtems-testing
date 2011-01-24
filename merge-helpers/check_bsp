@@ -41,6 +41,18 @@ test_its_there()
 
 }
 
+test_its_there_all_case()
+{
+  if [ $# -ne 2 ] ; then
+    echo Usage: $0 FILE pattern
+  fi
+  grep -i ${2} ${1} >/dev/null
+  if [ $? -ne 0 ] ; then
+    echo "${2} is NOT in ${bspdir}/${1} - case independent check"
+  fi
+
+}
+
 test_its_NOT_there_all_case()
 {
   if [ $# -lt 2 ] ; then
@@ -106,12 +118,11 @@ do
   fi
 done
 
-# We want CVS Id strings everywhere possible
 # really need to make the copyright strings consistent in BSPs
 echo "=== Checking for copyright notices"
 find_source | while read f
 do
-  test_its_there ${f} COPYRIGHT
+  test_its_there_all_case ${f} COPYRIGHT
 done
 
 # We want CVS Id strings everywhere possible
