@@ -1,3 +1,7 @@
+2011-01-24	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* CoverageReaderQEMU.cc: Finetune debug.
+
 2011-01-24	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* CoverageReaderQEMU.cc: Add debug for trace block having a bad address
