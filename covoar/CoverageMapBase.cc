@@ -22,15 +22,22 @@ namespace Coverage {
   CoverageMapBase::CoverageMapBase(
     uint32_t low,
     uint32_t high
-  ) : lowAddress(low), highAddress(high)
+  )
   {
-    uint32_t a;
+    uint32_t       a;
+    AddressRange_t range;
 
-    Info = new perAddressInfo_t[ high - low + 1 ];
+    range.lowAddress  = low;
+    range.highAddress = high;
+    RangeList.push_back( range );
 
-    for (a=low; a<=high; a++) {
+    Size = high - low + 1;
 
-      perAddressInfo_t *i = &Info[ a-low ];
+    Info = new perAddressInfo_t[ Size ];
+
+    for (a=0; a<Size; a++) {
+
+      perAddressInfo_t *i = &Info[ a ];
 
       i->isStartOfInstruction = false;
       i->wasExecuted          = false;
@@ -45,6 +52,33 @@ namespace Coverage {
     if (Info)
       delete Info;
   }
+ 
+  void  CoverageMapBase::Add( uint32_t low, uint32_t high )
+  {
+    AddressRange_t range;
+
+    range.lowAddress  = low;
+    range.highAddress = high;
+    RangeList.push_back( range );
+  }
+ 
+  bool CoverageMapBase::determineOffset( 
+    uint32_t  address, 
+    uint32_t *offset
+  )const
+  {
+    AddressRange::const_iterator  itr;
+
+    for ( itr = RangeList.begin(); itr != RangeList.end(); itr++ ) {
+      if ((address >= itr->lowAddress) && (address <= itr->highAddress)){
+        *offset = address - itr->lowAddress;
+        return true;
+      }
+    }
+    *offset = 0;
+    return false;
+  }
+
 
   void CoverageMapBase::dump( void ) const {
 
@@ -53,14 +87,18 @@ namespace Coverage {
 
     fprintf( stderr, "Coverage Map Contents:\n" );
 
-    for (a = lowAddress; a <= highAddress; a++) {
+    /*
+     * XXX - Dump is only marking the first Address Range.
+     */
 
-      entry = &Info[ a - lowAddress ];
+    for (a = 0; a < Size; a++) {
+
+      entry = &Info[ a ];
 
       fprintf(
         stderr,
         "0x%x - isStartOfInstruction = %s, wasExecuted = %s\n",
-        a,
+        a + RangeList.front().lowAddress,
         entry->isStartOfInstruction ? "TRUE" : "FALSE",
         entry->wasExecuted ? "TRUE" : "FALSE"
       );
@@ -79,16 +117,19 @@ namespace Coverage {
     uint32_t* beginning
   ) const
   {
-    bool     status = false;
-    uint32_t start;
+    bool           status = false;
+    uint32_t       start;
+    AddressRange_t range;
 
-    if ((address < lowAddress) || (address > highAddress))
+
+    status = getRange( address, &range );
+    if ( status != true )
       return status;
 
     start = address;
 
-    while (start >= lowAddress ) {
-      if (Info[ start - lowAddress ].isStartOfInstruction) {
+    while (start >= range.lowAddress ) {
+      if (Info[ start - range.lowAddress ].isStartOfInstruction) {
         *beginning = start;
         status = true;
         break;
@@ -100,119 +141,184 @@ namespace Coverage {
     return status;
   }
 
-  uint32_t CoverageMapBase::getHighAddress( void ) const
+  int32_t CoverageMapBase::getFirstLowAddress() const
   {
-    return highAddress;
+    return RangeList.front().lowAddress;
   }
 
-  uint32_t CoverageMapBase::getLowAddress( void ) const
+  bool CoverageMapBase::getRange( uint32_t address, AddressRange_t *range ) const
   {
-    return lowAddress;
+    AddressRange::const_iterator  itr;
+
+    for ( itr = RangeList.begin(); itr != RangeList.end(); itr++ ) {
+      if ((address >= itr->lowAddress) && (address <= itr->highAddress)){
+        range->lowAddress = itr->lowAddress;
+        range->highAddress = itr->highAddress;
+        return true;
+      }
+    }
+
+    range->lowAddress  = 0;
+    range->highAddress = 0;
+
+    return false;
+
+  }
+
+  uint32_t CoverageMapBase::getSize() const
+  {
+    return Size;
   }
 
   void CoverageMapBase::setIsStartOfInstruction(
     uint32_t    address
   )
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return;
-    Info[ address - lowAddress ].isStartOfInstruction = true;
+
+    Info[ offset ].isStartOfInstruction = true;
   }
 
   bool CoverageMapBase::isStartOfInstruction( uint32_t address ) const
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return false;
-    return Info[ address - lowAddress ].isStartOfInstruction;
+
+    return Info[ offset ].isStartOfInstruction;
   }
 
   void CoverageMapBase::setWasExecuted( uint32_t address )
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return;
-    Info[ address - lowAddress ].wasExecuted = true;
+
+    Info[ offset ].wasExecuted = true;
   }
 
   bool CoverageMapBase::wasExecuted( uint32_t address ) const
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return false;
-    return Info[ address - lowAddress ].wasExecuted;
+
+   return Info[ offset ].wasExecuted;
   }
 
   void CoverageMapBase::setIsBranch(
     uint32_t    address
   )
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return;
-    Info[ address - lowAddress ].isBranch = true;
+
+    Info[ offset ].isBranch = true;
   }
 
   bool CoverageMapBase::isNop( uint32_t address ) const
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return false;
-    return Info[ address - lowAddress ].isNop;
+
+    return Info[ offset ].isNop;
   }
 
   void CoverageMapBase::setIsNop(
     uint32_t    address
   )
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return;
-    Info[ address - lowAddress ].isNop = true;
+
+    Info[ offset ].isNop = true;
   }
 
   bool CoverageMapBase::isBranch( uint32_t address ) const
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return false;
-    return Info[ address - lowAddress ].isBranch;
+
+    return Info[ offset ].isBranch;
   }
 
   void CoverageMapBase::setWasTaken(
     uint32_t    address
   )
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return;
-    Info[ address - lowAddress ].wasTaken = true;
+
+    Info[ offset ].wasTaken = true;
   }
 
   void CoverageMapBase::setWasNotTaken(
     uint32_t    address
   )
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return;
-    Info[ address - lowAddress ].wasNotTaken = true;
+
+    Info[ offset ].wasNotTaken = true;
   }
 
   bool CoverageMapBase::wasAlwaysTaken( uint32_t address ) const
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return false;
-    return (Info[ address - lowAddress ].wasTaken &&
-            !Info[ address - lowAddress ].wasNotTaken);
+
+    return (Info[ offset ].wasTaken &&
+            !Info[ offset ].wasNotTaken);
   }
 
   bool CoverageMapBase::wasNeverTaken( uint32_t address ) const
   {
-    if ((address < lowAddress) || (address > highAddress))
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
       return false;
-    return (!Info[ address - lowAddress ].wasTaken &&
-            Info[ address - lowAddress ].wasNotTaken);
+
+    return (!Info[ offset ].wasTaken &&
+            Info[ offset ].wasNotTaken);
   }
 
   bool CoverageMapBase::wasNotTaken( uint32_t address ) const
   {
-    return (Info[ address - lowAddress ].wasNotTaken);
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
+      return false;
+
+    return Info[ offset ].wasNotTaken;
   }
 
   bool CoverageMapBase::wasTaken( uint32_t address ) const
   {
-    return (Info[ address - lowAddress ].wasTaken);
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
+      return false;
+
+    return Info[ offset ].wasTaken;
   }
 }

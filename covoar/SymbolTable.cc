@@ -33,9 +33,9 @@ namespace Coverage {
     const uint32_t     length
   )
   {
-    uint32_t       end = 0;
-    symbol_entry_t entry;
-    symbolInfo     symbolData;
+    uint32_t         end = 0;
+    symbol_entry_t   entry;
+    symbolInfo_t     symbolData;
 
     // Add an entry to the address map.
     end = start + length - 1;
@@ -47,7 +47,15 @@ namespace Coverage {
     // Add an entry to the symbol information map.
     symbolData.startingAddress = start;
     symbolData.length = length;
-    info[ symbol ] = symbolData;
+     
+    if ( info[ symbol ].empty() == false ) {
+      if ( info[symbol ].front().length != length ) {
+        fprintf(stderr, "ERROR==> Different lengths for the symbol %s\n", symbol.c_str() );
+        exit( 0 );
+      }
+    }
+    
+    info[ symbol ].push_back( symbolData );
   }
 
   SymbolTable::symbolInfo* SymbolTable::getInfo(
@@ -71,7 +79,7 @@ namespace Coverage {
     if (it == info.end())
       return 0;
     else
-      return ((*it).second.length);
+      return ((*it).second.front().length);
   }
 
   std::string SymbolTable::getSymbol(

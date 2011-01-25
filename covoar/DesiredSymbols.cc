@@ -89,6 +89,8 @@ namespace Coverage {
             line,
             inputBuffer
           );
+
+          delete symInfo;
         }
 
         // Add this to the set of symbols.
@@ -627,7 +629,7 @@ namespace Coverage {
     uint32_t              sAddress;
     uint32_t              sBaseAddress;
     uint32_t              sMapSize;
-
+    
     // Ensure that the symbol is a desired symbol.
     itr = set.find( symbolName );
 
@@ -645,8 +647,8 @@ namespace Coverage {
     // Ensure that the source and destination coverage maps
     // are the same size.
     dMapSize = itr->second.stats.sizeInBytes;
-    sBaseAddress = sourceCoverageMap->getLowAddress();
-    sMapSize = sourceCoverageMap->getHighAddress() - sBaseAddress + 1;
+    sBaseAddress = sourceCoverageMap->getFirstLowAddress();
+    sMapSize = sourceCoverageMap->getSize();
     if (dMapSize != sMapSize) {
 
       fprintf(

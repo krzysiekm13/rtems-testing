@@ -13,6 +13,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <list>
 
 namespace Coverage {
 
@@ -23,6 +24,29 @@ namespace Coverage {
   class CoverageMapBase {
 
   public:
+
+    /*!
+     *  This structure identifies the low and high addresses
+     *  of one range.  Note:: There may be more than one address 
+     *  range per symbol.
+     */
+    typedef struct {
+      /*!
+       *  This is the low address of the address map range.
+       */
+      uint32_t lowAddress;
+
+      /*!
+       *  This is the high address of the address map range.
+       */
+      uint32_t highAddress;
+
+    } AddressRange_t;
+
+    /*
+     *  This type identifies a list of ranges.
+     */
+    typedef std::list< AddressRange_t > AddressRange;
 
     /*! 
      *  This method constructs a CoverageMapBase instance.
@@ -41,9 +65,63 @@ namespace Coverage {
     virtual ~CoverageMapBase();
 
     /*!
+     *  This method adds a address range to the RangeList.
+     *
+     *  @param[in]  Low specifies the lowAddress
+     *  @param[in]  High specifies the highAddress
+     *  
+     */
+    void Add( uint32_t low, uint32_t high );
+ 
+    /*!
+     *  This method returns true and sets the offset if
+     *  the address falls with the bounds of an address range 
+     *  in the RangeList.
+     *
+     *  @param[in]  address specifies the address to find
+     *  @param[out] offset contains the offset from the low
+     *              address of the address range.
+     *  
+     *  @return Returns TRUE if the address range can be found
+     *   and FALSE if it was not.
+      */
+    bool determineOffset( uint32_t address, uint32_t *offset ) const;
+
+    /*!
      *  This method prints the contents of the coverage map to stdout.
      */
     void dump( void ) const;
+
+    /*!
+     *  This method will return the low address of the first range in
+     *  the RangeList.
+     *
+     *  @return Returns the low address of the first range in
+     *  the RangeList.
+     */
+    int32_t getFirstLowAddress() const;
+
+    /*!
+     *  This method returns true and sets the address range if
+     *  the address falls with the bounds of an address range 
+     *  in the RangeList.
+     *
+     *  @param[in]  address specifies the address to find
+     *  @param[out] range contains the high and low addresse for
+     *              the range
+     *  
+     *  @return Returns TRUE if the address range can be found
+     *   and FALSE if it was not.
+     */
+    bool getRange( uint32_t address, AddressRange_t *range ) const;
+
+    /*!
+     *  This method returns the size of the address range.
+     * 
+     *  @return Returns Size of the address range.
+     */
+    uint32_t getSize() const;
+
 
     /*!
      *  This method returns the address of the beginning of the
@@ -65,15 +143,15 @@ namespace Coverage {
      *  This method returns the high address of the coverage map.
      *
      *  @return Returns the high address of the coverage map.
-     */
     uint32_t getHighAddress( void ) const;
+     */
 
     /*!
      *  This method returns the low address of the coverage map.
      *
      *  @return Returns the low address of the coverage map.
-     */
     uint32_t getLowAddress( void ) const;
+     */
 
     /*!
      *  This method sets the boolean which indicates if this
@@ -250,21 +328,22 @@ namespace Coverage {
     } perAddressInfo_t;
 
     /*!
+     * 
+     *  This is a list of address ranges for this symbolic address.
+     */
+    AddressRange RangeList;
+
+    /*!
+     *  
+     *  This variable contains the size of the code block.
+     */
+    uint32_t Size;
+
+    /*!
      *  This is a dynamically allocated array of data that is
      *  kept for each address.
      */
     perAddressInfo_t* Info;
-
-    /*!
-     *  This is the low address of the address map range.
-     */
-    uint32_t lowAddress;
-
-    /*!
-     *  This is the high address of the address map range.
-     */
-    uint32_t highAddress;
-
   };
 
 }

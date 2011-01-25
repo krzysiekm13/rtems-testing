@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <string>
 #include <map>
+#include <list>
 
 namespace Coverage {
 
@@ -33,7 +34,11 @@ namespace Coverage {
     typedef struct {
       uint32_t startingAddress;
       uint32_t length;
-    } symbolInfo;
+    } symbolInfo_t;
+ 
+   typedef std::list< symbolInfo_t > symbolInfo;
+ 
+    
 
     /*!
      *  This method constructs a SymbolTable instance.

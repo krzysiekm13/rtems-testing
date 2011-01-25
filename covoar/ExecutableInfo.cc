@@ -90,13 +90,15 @@ namespace Coverage {
     uint32_t           highAddress
   )
   {
-    CoverageMapBase* theMap;
+    CoverageMapBase                          *theMap;
+    ExecutableInfo::coverageMaps_t::iterator  itr;
 
-    theMap = coverageMaps.find( symbolName );
-    if ( theMap == std::map.end() ) {
+    itr = coverageMaps.find( symbolName );
+    if ( itr == coverageMaps.end() ) {
       theMap = new CoverageMap( lowAddress, highAddress );
       coverageMaps[ symbolName ] = theMap;
     } else {
+      theMap = itr->second;
       theMap->Add( lowAddress, highAddress );
     }
     return theMap;

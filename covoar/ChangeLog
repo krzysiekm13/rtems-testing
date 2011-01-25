@@ -1,3 +1,9 @@
+2011-01-25	Jennifer Averett <Jennifer.Averett@OARcorp.com>
+
+	* CoverageMapBase.cc, CoverageMapBase.h, CoverageReaderQEMU.cc,
+	DesiredSymbols.cc, ExecutableInfo.cc, SymbolTable.cc, SymbolTable.h:
+	Modifications to track multiple address ranges for the same symbol.
+
 2011-01-25	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* ExecutableInfo.cc: Hack a shot at seeing if symbol is already known.
