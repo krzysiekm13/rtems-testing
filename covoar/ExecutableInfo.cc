@@ -90,19 +90,15 @@ namespace Coverage {
     uint32_t           highAddress
   )
   {
-    CoverageMapBase* theMap = NULL;
+    CoverageMapBase* theMap;
 
-    theMap = new CoverageMap( lowAddress, highAddress );
-
-    if (!theMap)
-      fprintf(
-        stderr, "Unable to create coverage map for %s\n",
-        symbolName.c_str()
-      );
-
-    else
+    theMap = coverageMaps.find( symbolName );
+    if ( theMap == std::map.end() ) {
+      theMap = new CoverageMap( lowAddress, highAddress );
       coverageMaps[ symbolName ] = theMap;
-
+    } else {
+      theMap->Add( lowAddress, highAddress );
+    }
     return theMap;
   }
 

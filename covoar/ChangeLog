@@ -1,3 +1,8 @@
+2011-01-25	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* ExecutableInfo.cc: Hack a shot at seeing if symbol is already known.
+	If so, then say it has multiple ranges.
+
 2011-01-24	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* CoverageReaderQEMU.cc: Finetune debug.
