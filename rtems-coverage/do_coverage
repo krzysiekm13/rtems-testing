@@ -724,7 +724,7 @@ if [ ${do_reports} = "yes" ] ; then
       results_dir=${outputDir}
     fi
 
-    generate_symbols | remove_unwanted_symbols \
+    generate_symbols | sort -u | remove_unwanted_symbols \
       >${BASEDIR}/${BSP}-tests/rtems.syms
     syms=`cat ${BASEDIR}/${BSP}-tests/rtems.syms | wc -l`
     if [ ${syms} -eq 0 ] ; then

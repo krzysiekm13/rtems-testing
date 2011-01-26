@@ -110,9 +110,9 @@ RTEMS Coverage Testing</a>.</p>
 EOF
 for bsp in $BSPs
 do
-  cpu=`grep "^Target" ${bsp}-*/configuration.txt | \
+  cpu=`grep "^Target" ${bsp}/${bsp}-*/configuration.txt | \
 	sed -e 's/^.*Target: *//' | cut -d'-' -f1 | sort -u`
-  echo "<li><a href=\"${bsp}.html\">${cpu}/${bsp}</li>"
+  echo "<li><a href=\"${bsp}/${bsp}.html\">${cpu}/${bsp}</li>"
 done
 cat <<EOF
 </ul>
@@ -314,33 +314,14 @@ EOF
   print_doc_bottom
 }
 
-cd $1
-
-if [ `ls -1 *.tar.bz2 2>/dev/null | wc -l` -eq 0 ]; then
-  echo "No tarballs.  Is $1 really a coverage publishing directory?"
-  exit 1
-fi
-
-for d in `ls -1 *.tar.bz2 | sed -e 's/.tar.bz2$//'`
-do
-  if [ ! -d ${d} ] ; then
-    tar xjf ${d}.tar.bz2
-  fi
-done
-
-if [ ! -d rtems ] ; then
-  mkdir rtems
-fi
-
-cp ${COVBASE}/style.css rtems/style.css
-
 genBSPList()
 {
-  find * -maxdepth 1 -type d | cut -d'-' -f1 | uniq | \
-    sed -e '/rtems/d' -e '/plot_data/d' -e '/graphs/d' | \
-    while read bsp
+  find * -type d -name "*-O[s2][pP][dD]-2???[012]???-????" | \
+    cut -d'-' -f1 | uniq | \
+    while read dir
     do
-      cpu=`grep ^Target ${bsp}-*/configuration.txt | tail -1 | \
+      bsp=`echo ${dir} | sed -e 's/.*\/.*-//'`
+      cpu=`grep ^Target ${dir}-*/configuration.txt | tail -1 | \
         sed -e 's/^.*://' -e 's/^.*: *\([a-z]*\)-rtems.*$/\1/'`
       echo ${cpu}/${bsp}
     done | sort -t / -k 1 -k 2 | cut -d'/' -f2
@@ -385,7 +366,7 @@ round_down()
 gen_plot()
 {
   # Now merge the data
-  datfiles=`ls -1 ${OUT}/${bsp}-*${DEV}-${FIELD}.dat`
+  datfiles=`ls -1 ${OUTDAT}/${bsp}-*${DEV}-${FIELD}.dat`
   first=`cat ${datfiles} | sort -t' ' -k1.3 -n | head -n 1 | cut -d' ' -f1`
   last=`cat ${datfiles} | sort -t' ' -k1.3 -n | tail -n 1 | cut -d' ' -f1`
 
@@ -469,19 +450,19 @@ gen_plot()
   echo "set title \"${TITLE}\""
   echo "set key left box"
 
-  echo "plot \"${OUT}/${bsp}-Osp${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
+  echo "plot \"${OUTDAT}/${bsp}-Osp${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
   echo "  title \"Osp${DEV}\" with lines lw 2, \\"
-  echo "     \"${OUT}/${bsp}-OsP${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
+  echo "     \"${OUTDAT}/${bsp}-OsP${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
   echo "  title \"OsP${DEV}\" with lines lw 2, \\"
-  echo "     \"${OUT}/${bsp}-O2p${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
+  echo "     \"${OUTDAT}/${bsp}-O2p${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
   echo "  title \"O2p${DEV}\" with lines lw 2, \\"
-  echo "     \"${OUT}/${bsp}-O2P${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
+  echo "     \"${OUTDAT}/${bsp}-O2P${DEV}-${FIELD}.dat\" using 1:2 index 0 \\"
   echo "  title \"O2P${DEV}\" with lines lw 2"
 }
 
 gen_data()
 {
-  for s in `ls -1 ${bsp}-${CONF}-*/summary.txt | sort `
+  for s in `ls -1 ${bsp}/${bsp}-${CONF}-*/summary.txt | sort `
   do
     timestamp=`echo $s | cut -d'-' -f3-4 | cut -d'/' -f1`
     case ${FIELD} in
@@ -506,6 +487,20 @@ gen_data()
 gen_timeplot()
 {
 BSP=$1
+
+LEGEND_TABLE_BODY="\
+<table>\
+<tr>\
+  <td style="color:#ff0000">O2pd</td>\
+  <td style="color:#D0A825">O2pD</td>\
+  <td style="color:#336699">O2Pd</td>\
+  <td style="color:#99FF00">O2PD</td>\
+  <td style="color:#336666">Ospd</td>\
+  <td style="color:#33CC33">OspD</td>\
+  <td style="color:#990099">OsPd</td>\
+  <td style="color:#ff0099">OsPD</td>\
+</tr>\
+</table>"
 
 cat <<EOF
 <HTML>
@@ -578,67 +573,92 @@ cat << EOF
     </script>
   </head>
   <body onload="onLoad();" onresize="onResize();">
+    <h1>${BSP} Timeplot Graphs</h1>
     <li><a href="#uncovered_percent">Uncovered Percentage Graph</a></li>
     <li><a href="#total_bytes">Total Bytes Analyzed Graph</a></li>
     <li><a href="#ranges">Uncovered Ranges Graph</a></li>
     <li><a href="#uncovered_bytes">Uncovered Bytes Graph</a></li>
 
-    <ul id="legend">
-      <li style="color:#ff0000">O2pd</li>
-      <li style="color:#D0A825">O2pD</li>
-      <li style="color:#336699">O2Pd</li>
-      <li style="color:#99FF00">O2PD</li>
-      <li style="color:#336666">Ospd</li>
-      <li style="color:#33CC33">OspD</li>
-      <li style="color:#990099">OsPd</li>
-      <li style="color:#ff0099">OsPD</li>
-    </ul>
-
-
     <h2 id="uncovered_percent">Uncovered Percentage</h2>
-    <a href="#legend">Legend</a>
+    ${LEGEND_TABLE_BODY}
     <div id="uncovered_percent-timeplot" style="height: 500px;"></div>
+
     <h2 id="total_bytes">Total Bytes Analyzed</h2>
-    <a href="#legend">Legend</a>
+    ${LEGEND_TABLE_BODY}
     <div id="total_bytes-timeplot" style="height: 500px;"></div>
     <h2 id="ranges">Uncovered Ranges</h2>
-    <a href="#legend">Legend</a>
+
+    ${LEGEND_TABLE_BODY}
     <div id="ranges-timeplot" style="height: 500px;"></div>
+
     <h2 id="uncovered_bytes">Uncovered bytes</h2>
-    <a href="#legend">Legend</a>
+    ${LEGEND_TABLE_BODY}
     <div id="uncovered_bytes-timeplot" style="height: 500px;"></div>
   </body>
 </html>
 EOF
 }
 
+#
+# Now start the non-method code
+#
+
+cd $1
+
+good_dir="no"
+for d in `ls -1 *.tar.bz2 */*.tar.bz2 2>/dev/null | sed -e 's/.tar.bz2$//'`
+do
+  good_dir="yes"
+  if [ ! -d ${d} ] ; then
+    tar xjf ${d}.tar.bz2
+  fi
+done
+
+if [ ${good_dir} = "no" ]; then
+  echo "No tarballs.  Is $1 really a coverage publishing directory?"
+  exit 1
+fi
+
+# Put the style sheets in place
+if [ ! -d rtems ] ; then
+  mkdir rtems
+fi
+cp ${COVBASE}/style.css rtems/style.css
+
+# Find the BSPs and make their directories
+echo "Generating BSP list"
 #BSPs=`find * -maxdepth 1 -type d | cut -d'-' -f1 | uniq | grep -v rtems`
 BSPs=`genBSPList`
+echo BSPs=${BSPs}
 
+echo "Ensuring BSP specific content is in BSP subdirectory"
+for bsp in ${BSPs} 
+do
+  test -d ${bsp}           || mkdir ${bsp}
+  test -d ${bsp}/rtems     || mkdir ${bsp}/rtems
+  test -d ${bsp}/plot_data || mkdir ${bsp}/plot_data
+  test -d ${bsp}/graphs    || mkdir ${bsp}/graphs
+  cp ${COVBASE}/style.css ${bsp}/rtems/style.css
+  mv ${bsp}-* ${bsp} 2>/dev/null
+done
 
 # Let them grow for a while
 # cleanup
 
+echo "Generating master index.html"
 print_index >index.html
 
-# now generate a page per BSP
+# now generate a page per BSP with plots and graphs
+
 for bsp in ${BSPs}
 do
   echo "Generating BSP Page for ${bsp}..."
+  cd $1/${bsp}
   do_perBSPPage ${bsp} >${bsp}.html
-done
 
-# Now generate the plots
-cd $1
-
-OUTFIG=graphs
-OUT=plot_data
-rm -rf ${OUT}
-test -d ${OUT} || mkdir ${OUT}
-test -d ${OUTFIG} || mkdir ${OUTFIG}
-
-for bsp in ${BSPs}
-do
+  cd $1
+  OUTFIG=${bsp}/graphs
+  OUTDAT=${bsp}/plot_data
   echo "Generating Static Plots for ${bsp}..."
   for FIELD in ranges total_bytes uncovered_bytes \
     uncovered_percent #covered_percent
@@ -657,12 +677,11 @@ do
     do
       for CONF in Osp${DEV} OsP${DEV} O2p${DEV} O2P${DEV}
       do
-        gen_data ${bsp} ${CONF} >${OUT}/${bsp}-${CONF}-${FIELD}.dat
+        gen_data ${bsp} ${CONF} >${OUTDAT}/${bsp}-${CONF}-${FIELD}.dat
       done
 
-      pltfile=${OUT}/${bsp}-${FIELD}-${DEV}.plt
+      pltfile=${OUTDAT}/${bsp}-${FIELD}-${DEV}.plt
       gen_plot >${pltfile}
-      #echo gnuplot ${pltfile}
       gnuplot ${pltfile}
 
     done

@@ -1,3 +1,11 @@
+2011-01-26	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* do_coverage, generate_coverage_html, run_coverage: Contents of
+	coverage data is now split into a collection of BSP specific
+	directories. There were over 2000 entries in the main directory of
+	the site before doing this. Also reworked the timeplot page to
+	include the legend before each graph.
+
 2011-01-21	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* run_coverage: Parse command arguments better.

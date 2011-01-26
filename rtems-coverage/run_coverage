@@ -180,11 +180,11 @@ echo $cmd
       ;;
     *_baseline) 
       bsp=`echo $cmd | sed -e 's/_baseline$//'`
-      # XXX development off?
-      do_one ${bsp} -S          # -Os / POSIX enabled  / regression
-      do_one ${bsp} -S -P       # -Os / POSIX disabled / regression
-      do_one ${bsp}             # -O2 / POSIX enabled  / regression
-      do_one ${bsp}    -P       # -O2 / POSIX disabled  / regression
+      # Each run does both developmental and core.  So this is 8 configurations
+      do_one ${bsp} -S          # -Os / POSIX enabled
+      do_one ${bsp} -S -P       # -Os / POSIX disabled
+      do_one ${bsp}             # -O2 / POSIX enabled
+      do_one ${bsp}    -P       # -O2 / POSIX disabled
       ;;
     *)
       echo "Unknown command (${cmd})"
