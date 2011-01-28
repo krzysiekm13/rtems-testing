@@ -70,7 +70,8 @@ do_one()
 {
   bsp=${1}
   shift
-  time ${COVBASE}/do_coverage -A -u -m ${SAVE} ${PUBLISH} ${*} -B ${bsp}
+  echo "time ${COVBASE}/do_coverage -A -v -u -m ${SAVE} ${PUBLISH} ${*} -B ${bsp}"
+  time ${COVBASE}/do_coverage -A -v -u -m ${SAVE} ${PUBLISH} ${*} -B ${bsp}
   check_status $? "FAILED ${bsp}" 
   rm -rf b-* *-tests
 }

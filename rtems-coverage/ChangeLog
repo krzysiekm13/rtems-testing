@@ -1,3 +1,7 @@
+2011-01-28	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* run_coverage: Always be verbose and echo the command line.
+
 2011-01-26	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* do_coverage, generate_coverage_html, run_coverage: Contents of
