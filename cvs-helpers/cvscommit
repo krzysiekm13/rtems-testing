@@ -78,6 +78,15 @@ else
   subdirs="* ."
 fi
 
+# Make sure we have user information
+if test "X${userInfo}" = "X" ; then
+  user_name=`grep ^${user} /etc/passwd | cut -d':' -f5 | cut -d',' -f1`
+  if test "X${user_name}" = "X" ; then
+    echo "User information not set"
+    usage
+  fi
+fi
+
 commit()
 {
   ${CVS} up ChangeLog
