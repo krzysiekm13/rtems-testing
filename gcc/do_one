@@ -148,16 +148,41 @@ shift $shiftcount
 cpu=${1}
 bsp=${2}
 
-case ${cpu} in
-  m32c)
-    do_ada=no
-    do_cxx=no
-    run_acats=no
-    echo M32C does not support C++ or Ada
-    ;;
-  *);;
-esac
+# Which CPUs do not support C++
+if [ ${do_cxx} = "yes" ] ; then
+  case ${cpu} in
+    avr|h8300|m32c)
+      do_cxx=no
+      echo ${cpu} does not support C++
+      ;;
+    *);;
+  esac
+fi
 
+# Which CPUs do not support Ada
+if [ ${do_ada} = "yes" ] ; then
+  case ${cpu} in
+    avr|h8300|m32c)
+      do_ada=no
+      run_acats=no
+      echo ${cpu} does not support Ada
+      ;;
+    *);;
+  esac
+fi
+
+# Which CPUs do not support Go
+if [ ${do_gccgo} = "yes" ] ; then
+  case ${cpu} in
+    avr|h8300|m32c)
+      do_gccgo=no
+      echo ${cpu} does not support Go
+      ;;
+    *);;
+  esac
+fi
+
+# When verbose, print settings
 if [ ${verbose} = yes ] ; then
   echo "Target        : " ${cpu}
   echo "BSP           : " ${bsp}
@@ -219,6 +244,7 @@ fi
 
 TARGET=${cpu}-rtems${RTEMS_VERSION}
 
+# Do we accept an alternate name for the BSP?
 if [ x${bsp} = xqemu ] ; then
   BSP_BUILT=pc386
 else
@@ -415,6 +441,7 @@ j_native()
   test ${do_native_ada} = "yes" && AdaArg=",ada"
   ${GCCDIR}/configure \
     ${NATIVE_GCC_EXTRA_ARGS} \
+    --disable-werror \
     --enable-languages=c,c++${AdaArg} --prefix=$INSTALL &&
   make ${MAKEJOBS} && make install
 }
@@ -465,6 +492,7 @@ j_gcc1()
 
   ${GCCDIR}/configure \
     ${GCC_EXTRA_ARGS} \
+    --disable-werror \
    --enable-threads=rtems  --with-gnu-as ${multilib} \
    --enable-newlib-mb --enable-newlib-iconv \
    --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
@@ -614,8 +642,7 @@ j_gccada()
   ${GCCDIR}/configure \
    ${GCC_EXTRA_ARGS} \
    --enable-threads=rtems  --with-gnu-as ${ada_multilib} \
-   --enable-newlib-mb --enable-newlib-iconv \
-   --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
+   --with-gnu-ld --disable-newlib  --verbose --with-system-zlib --disable-nls \
     CFLAGS_FOR_TARGET=-B${BSP_INSTALL}/${TARGET}/${BSP_BUILT}/lib/ \
     --enable-version-specific-runtime-libs \
     --enable-languages=c,ada --target=$TARGET --prefix=$INSTALL &&
@@ -699,8 +726,8 @@ set -x
    ${GCC_EXTRA_ARGS} \
    CFLAGS_FOR_TARGET="-B${BSP_INSTALL}/${TARGET}/${BSP_BUILT}/lib/ ${GOFLAGS}" \
      --enable-threads=rtems --with-gnu-as ${gccgo_multilib} \
-     --enable-newlib-mb --enable-newlib-iconv \
-     --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
+     --with-gnu-ld --disable-newlib  --verbose \
+     --with-system-zlib --disable-nls \
      --enable-version-specific-runtime-libs \
      --with-host-libstdcxx=-static-libstdc++ \
      --enable-languages=c,go --target=$TARGET --prefix=$INSTALL &&

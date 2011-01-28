@@ -12,6 +12,7 @@ include $(PROJECT_ROOT)/make/leaf.cfg
 rtemsdir=${RTEMS_MAKEFILE_PATH}
 GNATMAKE=$(AS:as=gnatmake)
 GNATCHOP=$(AS:as=gnatchop)
+OBJCOPY=$(AS:as=objcopy)
 CARGS  = -B${rtemsdir}/lib/ -specs bsp_specs -qrtems 
 CARGS += $(LDFLAGS) $(AM_LDFLAGS)
 # RTS= --RTS=$(shell $(CC) -print-multi-directory $(CFLAGS))
@@ -64,7 +65,9 @@ stamp-targetrun:
 	echo "  qemuppc -C -l 90 $$"'*' >> $@
   endif # qemuppc
   ifeq ($(RTEMS_BSP),uC5282)
-	echo "  uC5282 -C -l 90 $$"'*' >> $@
+	echo "  $(OBJCOPY) -O binary $$"'*' "$$"'*'.ralf >>$@
+	echo "  uC5282 -C -l 90 $$"'*'.ralf >> $@
+	echo "  rm -f "$$'*'.ralf >>$@
   endif # uC5282
   ifeq ($(RTEMS_BSP),mcf5206elite)
 	echo "  nosim $$"'*' >> $@

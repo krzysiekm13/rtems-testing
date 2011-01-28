@@ -29,6 +29,13 @@ do
   fi
 done
 
+if [ x${PPL} != x ] ; then
+  if [ ! -d ${PPL} ] ; then
+    echo "Cannot locate ${d} -- aborting"
+    exit 1
+  fi
+fi
+
 toggle()
 {
   case $1 in
@@ -101,6 +108,17 @@ do
   fi
 done
 
+CPUS_PART1="arm  h8300 i386 m32c mips    sh    sparc64"
+CPUS_PART2="bfin lm32  m32r m68k powerpc sparc avr"
+ALL_CPUs="${CPUS_PART1} ${CPUS_PART2}"
+
+if    [ "X${CPUs}" = "X" ] ; then
+  CPUs="${ALL_CPUs}"
+elif [ "X${CPUs}" = "X part1" ] ; then
+  CPUs="${CPUS_PART1}"
+elif [ "X${CPUs}" = "X part2" ] ; then
+  CPUs="${CPUS_PART2}"
+fi
 
 if [ ${verbose} = "yes" ] ; then
   echo "Clean Install Point: " ${doCleanInstallPoint}
@@ -112,11 +130,7 @@ if [ ${verbose} = "yes" ] ; then
   echo "Build GCC Go:        " ${doGccGo}
   echo "Email Results:       " ${doMail}
   echo "Run Tests:           " ${doTests}
-  if [ "X${CPUs}" = "X" ] ; then
-    echo "CPUs to Build:       " ALL
-  else
-    echo "CPUs to Build:       " ${CPUs}
-  fi
+  echo "CPUs to Build:       " ${CPUs}
 fi
 
 test ${doMail}  = "no"   && mailArg="-M"
@@ -175,6 +189,19 @@ install_auto()
   done
 }
 
+install_ppl()
+{
+  if [ x${PPL} != x ] ; then
+    if [ -r ${INSTALL}/lib/libppl.a ] ; then
+      echo "*** Building PPL ***"
+      cd ${PPL}
+      make distclean
+      ./configure --prefix=${INSTALL}
+      make all install
+    fi
+  fi
+}
+
 # This handles GNU tools from CVS
 update_others()
 {
@@ -221,7 +248,9 @@ do_cpus()
     esac
 
     doOne=${SCRIPTDIR}/gcc/do_one 
-    time sh -x ${doOne} -v -b -D -1 -d -r ${gccgoArg} ${adaArg} ${mailArg} ${testArg} \
+    echo "Building ${cpu}/${bsp}..." 
+    time sh -x ${doOne} -v -b -D -1 -d -r \
+        ${gccgoArg} ${adaArg} ${mailArg} ${testArg} \
         ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
   done
@@ -230,8 +259,6 @@ do_cpus()
   echo Started at: ${start}
   echo Stopped at: ${stopped}
 }
-
-update_gcc
 
 if [ ${doCleanInstallPoint} = "yes" ] ; then
   # Clean the install point
@@ -245,6 +272,9 @@ fi
   if [ ${doUpdateTools} = "yes" ] ; then
     update_gcc
     update_others
+  fi
+  if [ ! -r ${INSTALL}/lib/libppl.a ] ; then
+    install_ppl
   fi
 wait
 
@@ -261,28 +291,10 @@ fi
 
 # Now cycle over all these CPUs
 if [ $? -eq 0 ] ; then
-  if [ $# -eq 0 ] ; then
-    # Requires Skyeye install
-    do_cpus arm
-
-    # no simulator -- waiting for Skyeye
-    do_cpus bfin
-
-    # Simulators included in gdb
-    do_cpus h8300 lm32 m32c m32r mips powerpc sh sparc sparc64
-
-    # Requires qemu installation
-    do_cpus i386 m68k
-
-    # port insufficient to run gcc tests
-    do_cpus avr
-  else
-    for cpu in ${CPUs}
-    do
-      do_cpus ${cpu}
-    done
-  fi
-  
+  for cpu in ${CPUs}
+  do
+    do_cpus ${cpu}
+  done
 fi
 
 stopped=`date`

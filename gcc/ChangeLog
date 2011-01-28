@@ -1,3 +1,8 @@
+2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one, test_driver, testsuite/ada/acats/Makefile.rtems: Various
+	improvements as part of testing gcc 4.6.0.
+
 2011-01-24	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_one: Fix script.
