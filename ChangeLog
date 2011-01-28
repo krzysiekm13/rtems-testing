@@ -1,3 +1,7 @@
+2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* VERSIONS: Various improvements as part of testing gcc 4.6.0.
+
 2011-01-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gcc/do_one, gcc/testsuite/ada/acats/rtems_generate_acats_email:
