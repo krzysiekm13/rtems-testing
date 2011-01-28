@@ -749,7 +749,8 @@ else
 fi
 
 ##### Do the gccgo tests
-if [ ${do_gccgo} = "yes"           -a ${run_gccgotests} = "yes" -a \
+set -x
+if [ $a ${run_gccgotests} = "yes" -a \
      -d ${BASEDIR}/b-gccgo1-${cpu} -a ${go_fail} = "no" ] ; then
   echo "Running GCC Go Tests..."
   cd ${BASEDIR}/b-gccgo1-${cpu}/gcc || exit 1
@@ -781,7 +782,8 @@ else
 fi
 
 ##### Do the libgo tests
-if [ ${run_libgotests} = "yes" ] ; then
+if [ $a ${run_libgotests} = "yes" -a \
+     -d ${BASEDIR}/b-gccgo1-${cpu} -a ${go_fail} = "no" ] ; then
   echo "Running libgo DejaGNU tests..."
   cd ${BASEDIR}/b-gccgo1-${cpu} || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} libgo \

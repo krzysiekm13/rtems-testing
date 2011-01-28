@@ -22,21 +22,26 @@
 #include <bsp.h>
 
 /*
- * Loopback interface
- */
-extern int rtems_bsdnet_loopattach();
-
-/*
  * Default network interface
  */
 static struct rtems_bsdnet_ifconfig netdriver_config = {
-  "lo0",                    /* name */
-  rtems_bsdnet_loopattach,  /* attach function */
-  NULL,                     /* No more interfaces */
-  "127.0.0.1",              /* IP address */
-  "255.0.0.0",              /* IP net mask */
-  NULL,                     /* Driver supplies hardware address */
-  0                         /* Use default driver parameters */
+  NULL,                     /* Loop back interface only */
+  NULL,                /* Loop back interface only */
+  NULL,                /* do not use bootp */
+  0,                   /* Default network task priority */
+  0,                   /* Default mbuf capacity */
+  0,                   /* Default mbuf cluster capacity */
+  "rtems",             /* Host name */
+  "nodomain.com",      /* Domain name */
+  "127.0.0.1",         /* Gateway */
+  "127.0.0.1",         /* Log host */
+  {"127.0.0.1" },      /* Name server(s) */
+  {"127.0.0.1" },      /* NTP server(s) */
+  0,                   /* sb_efficiency */
+  0,                   /* udp_tx_buf_size */
+  0,                   /* udp_rx_buf_size */
+  0,                   /* tcp_tx_buf_size */
+  0                    /* tcp_rx_buf_size */
 };
 
 /*
@@ -53,6 +58,12 @@ struct rtems_bsdnet_config rtems_bsdnet_config = {
   "127.0.0.1",         /* Gateway */
   "127.0.0.1",         /* Log host */
   {"127.0.0.1"  },     /* Name server(s) */
+  {"127.0.0.1" },      /* NTP server(s) */
+  0,                   /* sb_efficiency */
+  0,                   /* udp_tx_buf_size */
+  0,                   /* udp_rx_buf_size */
+  0,                   /* tcp_tx_buf_size */
+  0                    /* tcp_rx_buf_size */
 };
 
 /*

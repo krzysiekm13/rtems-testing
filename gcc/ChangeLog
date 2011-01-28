@@ -1,5 +1,10 @@
 2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* do_one, networkconfig.h, rtems_gccgo_init.c: Now running Go tests on
+	PowerPC (2/3 passing) and i386 (in process).
+
+2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* do_one, test_driver, testsuite/ada/acats/Makefile.rtems: Various
 	improvements as part of testing gcc 4.6.0.
 

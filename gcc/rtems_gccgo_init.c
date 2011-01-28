@@ -118,6 +118,7 @@ void *POSIX_Init(
 void _flush_cache()
 {
 }
+#endif
 
 /* configuration information */
 
