@@ -1,3 +1,7 @@
+2011-02-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in, pc386.in: Messages have changed.
+
 2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* pc386.in: Now running Go tests on PowerPC (2/3 passing) and i386 (in

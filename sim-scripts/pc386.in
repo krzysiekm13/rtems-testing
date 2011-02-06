@@ -65,8 +65,9 @@ runARGS()
 
 checkBSPFaults()
 {
+  # faulty thread may be deleted or suspended
   for pattern in  \
-     "FAULTY THREAD WILL BE DELETED" \
+     "FAULTY THREAD WILL BE " \
      "Error code pushed by processor itself"
   do
     grep "${pattern}" ${logfile}

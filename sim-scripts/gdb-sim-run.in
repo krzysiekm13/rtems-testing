@@ -206,7 +206,8 @@ checkGenericExits()
       "^assertion .* failed: file .*, line .*, function:" \
       "===.*FAILED.*===" \
       "===.*PASSED.*===" \
-      "FAULTY THREAD WILL BE DELETED"
+      "FAULTY THREAD WILL BE " \
+      "\*\*\* EXIT code "
   do
     grep "${pattern}" ${logfile} >/dev/null 2>&1
     if [ $? -eq 0 ] ; then
