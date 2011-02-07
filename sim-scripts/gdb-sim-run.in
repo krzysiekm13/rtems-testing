@@ -204,7 +204,7 @@ checkGenericExits()
       "^\*\*\* END OF " \
       "^.*EXECUTIVE SHUTDOWN" \
       "^assertion .* failed: file .*, line .*, function:" \
-      "===.*FAILED.*===" \
+      "\*\*\*.*FAILED.*\*\*\*" \
       "===.*PASSED.*===" \
       "FAULTY THREAD WILL BE " \
       "\*\*\* EXIT code "

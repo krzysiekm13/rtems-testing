@@ -1,3 +1,7 @@
+2011-02-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in: Match ACATS failure messages correctly.
+
 2011-02-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in, pc386.in: Messages have changed.
