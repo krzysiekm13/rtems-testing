@@ -1,3 +1,9 @@
+2011-02-07	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one, gcc_status, gccgo_status, rtems_gccgo_init.c, rundeja,
+	test_driver: Make directory names more consistent.  Clean up.
+	* testsuite/ada/acats/Makefile.rtems: Attempt to filter -G0
+
 2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_one, networkconfig.h, rtems_gccgo_init.c: Now running Go tests on

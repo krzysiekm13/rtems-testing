@@ -22,12 +22,12 @@ else
 fi
 
 
-if [ ! -d ${BASEDIR}/b-gcc1-${cpu}/gcc/testsuite ] ; then
+if [ ! -d ${BASEDIR}/b-${cpu}-gcc/gcc/testsuite ] ; then
   echo Test directory not found
   exit 1 
 fi
 
-cd ${BASEDIR}/b-gcc1-${cpu}/gcc/testsuite
+cd ${BASEDIR}/b-${cpu}-gcc/gcc/testsuite
 while :
 do
   for BASE in gcc g++

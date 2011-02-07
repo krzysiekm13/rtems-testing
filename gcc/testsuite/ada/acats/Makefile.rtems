@@ -14,6 +14,8 @@ GNATMAKE=$(AS:as=gnatmake)
 GNATCHOP=$(AS:as=gnatchop)
 OBJCOPY=$(AS:as=objcopy)
 CARGS  = -B${rtemsdir}/lib/ -specs bsp_specs -qrtems 
+# GCC 4.6 in SVN doesn't like -G0... :(
+CPU_CFLAGS_ADA=$(shell echo $(CPU_CFLAGS) | sed -e 's/-GO//')
 CARGS += $(LDFLAGS) $(AM_LDFLAGS)
 # RTS= --RTS=$(shell $(CC) -print-multi-directory $(CFLAGS))
 
@@ -90,7 +92,7 @@ stamp-targetchop:
 stamp-targetmake:
 	echo "target_gnatmake() {" >$@
 	echo "set -x" >>$@
-	echo '  $(GNATMAKE) $(CPU_CFLAGS) -fstack-check -v -O $$gnatflags $$gccflags $$* -bargs -Mgnat_main -largs $(CARGS) '$(shell pwd)/rtems_init.o' $$EXTERNAL_OBJECTS' >> $@
+	echo '  $(GNATMAKE) $(CPU_CFLAGS_ADA) -fstack-check -v -O $$gnatflags $$gccflags $$* -bargs -Mgnat_main -largs $(CARGS) '$(shell pwd)/rtems_init.o' $$EXTERNAL_OBJECTS' >> $@
 	echo "}" >>$@
 
 #	$(GNATMAKE) -v -O -gnata -gnatE -gnato $(MAIN) -g \

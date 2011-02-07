@@ -2,16 +2,19 @@
 #
 # Execution Times (for sparc-rtems${RTEMS_VERSION})
 #
-#   - building native                   - 45m43.697s
-#   - building stage1 (non-multilib)    - 7m26.749s
-#   - building stage1 (multilib)        - 
-#   - building Ada stack (non-multilib) - 13m25.945s
-#   - building RTEMS                    - 12m27.799s
-#   - Running ACAT           (sis)      - 
-#   - Running GCC Test Suite (sis)      - 60m26.523s
+#   - building native                   - TBD
+#   - building binutils                 - 1m31.310s
+#   - building GDB                      - 1m39.318s
+#   - building stage1 (multilib)        - 10m22.371s
+#   - building RTEMS (multilib + BSP)   - 22m47.048s
+#   - building Ada (multilib)           - ?
+#   - building Go (multilib)            - ?
+#   - Running GCC Test Suite (sis)      - 122m47.289s
+#   - Running ACAT           (sis)      - ?
+#   - Running Go Test Suite  (sis)      - ?
 #
 # Computer Info
-#   Fedora 8 on Intel Core2 Duo T7500  @ 2.20GHz w/ 2GB RAM
+#   Fedora 14 on Intel Core2 Duo Q6600 (4 core) @ 2.40GHz w/ 4GB RAM
 
 vfile=`dirname $0`/../VERSIONS
 if [ ! -r ${vfile} ] ; then
@@ -140,6 +143,7 @@ do
     esac
 done
 
+run_libgotests=$run_gccgotests
 ########################### Grab CPU/BSP ###########################
 
 shiftcount=`expr $OPTIND - 1`
@@ -343,9 +347,9 @@ j_binutils()
       ;;
     source)
       echo "Building Binutils from source"
-      rm -rf b-binutils-${cpu}
-      mkdir b-binutils-${cpu}
-      cd b-binutils-${cpu}
+      rm -rf b-${cpu}-binutils
+      mkdir b-${cpu}-binutils
+      cd b-${cpu}-binutils
       (${BINUTILSDIR}/configure --target=${TARGET} --prefix=$INSTALL \
         --disable-werror && \
         make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-binutils.log 2>&1
@@ -357,7 +361,7 @@ j_binutils()
       make check >${LOGDIR}/${cpu}-binutils-check.log 2>&1
       grep ^FAIL ${LOGDIR}/${cpu}-binutils-check.log
       cd .. 
-      test ${do_cleanup} = "yes" && rm -rf b-binutils-${cpu}
+      test ${do_cleanup} = "yes" && rm -rf b-${cpu}-binutils
       ;;
     *)
       echo "Where do I get the binutils from?"
@@ -368,7 +372,7 @@ j_binutils()
 
 if [ ${do_binutils} = yes ] ; then
   echo "Building binutils..."
-  j_binutils ${cpu}
+  time j_binutils ${cpu}
 fi
 
 ######### Install gdb
@@ -408,9 +412,9 @@ j_gdb()
     source)
       echo "Building GDB from source"
       cd ${BASEDIR}
-      rm -rf b-gdb-${cpu}
-      mkdir b-gdb-${cpu}
-      cd b-gdb-${cpu}
+      rm -rf b-${cpu}-gdb
+      mkdir b-${cpu}-gdb
+      cd b-${cpu}-gdb
       (${GDBDIR}/configure --target=${GDBTARGET} \
         --enable-sim --enable-sim-hardware \
         --disable-werror \
@@ -421,7 +425,7 @@ j_gdb()
         exit 1
       fi
       cd .. 
-      test ${do_cleanup} = "yes" && rm -rf b-gdb-${cpu}
+      test ${do_cleanup} = "yes" && rm -rf b-${cpu}-gdb
       ;;
     *)
       echo "Where do I get the gdb from?"
@@ -432,7 +436,7 @@ j_gdb()
 
 if [ ${do_gdb} = yes ] ; then
   echo "Building gdb..."
-  j_gdb ${cpu}
+  time j_gdb ${cpu}
 fi
 
 ######### Build a native compiler
@@ -448,27 +452,33 @@ j_native()
 
 if [ ${do_native} = "yes" ] ; then
   echo "Building native compiler..."
-  (cd ${BASEDIR} && \
-   rm -rf b-native && \
-   mkdir  b-native && \
-   cd b-native && \
-   time j_native >${LOGDIR}/native.log 2>&1 && cd .. ) || exit 1
-   test ${do_cleanup} = "yes" && rm -rf b-native
+  cd ${BASEDIR} && \
+  rm -rf b-native && \
+  mkdir  b-native && \
+  cd b-native
+  time j_native >${LOGDIR}/native.log 2>&1
+  if [ $? -ne 0 ] ; then
+    echo "Failed to build native gcc"
+    exit 1
+  fi
+  cd ..
+  test ${do_cleanup} = "yes" && rm -rf b-native
 else
   echo Skipping native
 fi
 # END of build native compiler
 
 ######### Build Cross C/C++ baseline compiler
-j_gcc1()
+j_gcc()
 {
 
+set -x
   if [ X${1} = X ] ; then
     echo Usage: $0 TARGET_CPU
     exit 1
   fi
 
-  if [ ! -d ${INSTALL} ]; then
+  if [ ! -d ${INSTALL} ] ; then
     echo ${INSTALL} does not exist
     exit 1
   fi
@@ -520,10 +530,10 @@ j_gcc1()
 if [ ${do_stage1} = "yes" ] ; then
   echo "Building Stage 1 compiler (C/C++)..."
   (cd ${BASEDIR} && \
-   rm -rf b-gcc1-${cpu} && \
-   mkdir  b-gcc1-${cpu} && \
-   cd b-gcc1-${cpu} && \
-     time j_gcc1 ${cpu} >${LOGDIR}/${cpu}-stage1.log 2>&1 && cd ..) || exit 1
+   rm -rf b-${cpu}-gcc && \
+   mkdir  b-${cpu}-gcc && \
+   cd b-${cpu}-gcc && \
+     time j_gcc ${cpu} >${LOGDIR}/${cpu}-gcc.log 2>&1 && cd ..) || exit 1
 else
   echo Skipping Stage 1 for ${cpu}
 fi
@@ -563,7 +573,12 @@ j_rtems()
   ${RTEMSDIR}/configure --target=${TARGET} ${ENABLE_BSP} \
   ${RTEMS_ARGS} --enable-maintainer-mode --disable-tests \
   --prefix=${BSP_INSTALL} && make ${MAKEJOBS} ${MAKE_ARG} && make install
+  status=$?
+  if [ $status -ne 0 ] ; then
+     echo "Failed building RTEMS for ${cpuArg}/${bspArg}"
+  fi
   cd ..
+  exit $status
 }
 
 if [ ${do_rtems} = "yes" ] ; then 
@@ -581,7 +596,7 @@ pwd
 ##### Do the gcc tests
 if [ ${run_gcctests} = "yes" ] ; then 
   echo "Running GCC Tests..."
-  cd ${BASEDIR}/b-gcc1-${cpu} || exit 1
+  cd ${BASEDIR}/b-${cpu}-gcc || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gcc\
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
 
@@ -611,7 +626,7 @@ if [ ${run_gcctests} = "yes" ] ; then
 else
   echo Skipping GCC DejaGNU tests for ${cpu}/${bsp}
 fi
-test ${do_cleanup} = "yes" && rm -rf b-gcc1-${cpu}
+test ${do_cleanup} = "yes" && rm -rf b-${cpu}-gcc
 
 ##### Build an Ada compiler now that we have a cross installed
 j_gccada()
@@ -622,7 +637,7 @@ j_gccada()
   fi
   TARGET=${1}-rtems${RTEMS_VERSION}
 
-  if [ ! -d ${INSTALL} ]; then
+  if [ ! -d ${INSTALL} ] ; then
     echo ${INSTALL} does not exist
     exit 1
   fi
@@ -648,15 +663,19 @@ j_gccada()
     --enable-languages=c,ada --target=$TARGET --prefix=$INSTALL &&
   make ${MAKEJOBS} &&
   make install
+  status=$?
+  if [ $status -ne 0 ] ; then
+    echo "Failed building Go"
+  fi
 }
 
 ada_fail="no"
 if [ ${do_ada} = "yes" ] ; then 
   echo "Building Stage 2 cross Ada compiler for ${1} ..."
   (cd ${BASEDIR} && \
-   rm -rf b-gccada-${cpu} && \
-   mkdir  b-gccada-${cpu} && \
-   cd b-gccada-${cpu} && \
+   rm -rf b-${cpu}-ada && \
+   mkdir  b-${cpu}-ada && \
+   cd b-${cpu}-ada && \
    time j_gccada ${cpu} >${LOGDIR}/${cpu}-ada.log 2>&1 && cd ..) || \
     ada_fail="yes"
 else
@@ -665,7 +684,7 @@ fi
 
 #### Run the Ada ACATS tests
 if [ ${run_acats} = "yes" -a \
-     -d ${BASEDIR}/b-gccada-${cpu} -a ${ada_fail} = "no" ] ; then 
+     -d ${BASEDIR}/b-${cpu}-ada -a ${ada_fail} = "no" ] ; then 
   echo "Running ACATS..."
   cd ${GCCDIR}/gcc/testsuite/ada/acats/ || exit 1
 
@@ -688,7 +707,7 @@ else
 fi
 
 if [ ${do_ada} = "yes" ] ; then 
-  test ${do_cleanup} = "yes" && rm -rf b-gccada-${cpu}
+  test ${do_cleanup} = "yes" && rm -rf b-${cpu}-ada
 fi
 
 ##### Build a GCC Go compiler now that we have a cross installed
@@ -701,7 +720,7 @@ set -x
   fi
   TARGET=${1}-rtems${RTEMS_VERSION}
 
-  if [ ! -d ${INSTALL} ]; then
+  if [ ! -d ${INSTALL} ] ; then
     echo ${INSTALL} does not exist
     exit 1
   fi
@@ -733,15 +752,20 @@ set -x
      --enable-languages=c,go --target=$TARGET --prefix=$INSTALL &&
   make ${MAKEJOBS} &&
   make install
+  status=$?
+  if [ $status -ne 0 ] ; then
+    echo "Failed building Go"
+  fi
+  exit $status
 }
 
 go_fail="no"
 if [ ${do_gccgo} = "yes" ] ; then 
   echo "Building Stage 2 cross GCC Go compiler for ${1} ..."
   (cd ${BASEDIR} && \
-   rm -rf b-gccgo1-${cpu} && \
-   mkdir  b-gccgo1-${cpu} && \
-   cd b-gccgo1-${cpu} && \
+   rm -rf b-${cpu}-go && \
+   mkdir  b-${cpu}-go && \
+   cd b-${cpu}-go && \
    time j_gccgo ${cpu} >${LOGDIR}/${cpu}-go.log 2>&1 && cd ..) || \
      go_fail="yes"
 else
@@ -751,9 +775,9 @@ fi
 ##### Do the gccgo tests
 set -x
 if [ $a ${run_gccgotests} = "yes" -a \
-     -d ${BASEDIR}/b-gccgo1-${cpu} -a ${go_fail} = "no" ] ; then
+     -d ${BASEDIR}/b-${cpu}-go -a ${go_fail} = "no" ] ; then
   echo "Running GCC Go Tests..."
-  cd ${BASEDIR}/b-gccgo1-${cpu}/gcc || exit 1
+  cd ${BASEDIR}/b-${cpu}-go/gcc || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gccgo \
     >${LOGDIR}/${cpu}-gccgotests-${bsp}.log 2>&1
 
@@ -763,7 +787,7 @@ if [ $a ${run_gccgotests} = "yes" -a \
 
   if [ ${do_mail} = "yes" ] ; then
     echo Sending Go test results to GCC community..
-    ${DIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
+    ${GCCDIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
     if [ $? -ne 0 ] ; then
       echo "Failed to email GCC Go Test Results to GCC Community .. bailing"
       exit 1
@@ -783,9 +807,9 @@ fi
 
 ##### Do the libgo tests
 if [ $a ${run_libgotests} = "yes" -a \
-     -d ${BASEDIR}/b-gccgo1-${cpu} -a ${go_fail} = "no" ] ; then
+     -d ${BASEDIR}/b-${cpu}-go -a ${go_fail} = "no" ] ; then
   echo "Running libgo DejaGNU tests..."
-  cd ${BASEDIR}/b-gccgo1-${cpu} || exit 1
+  cd ${BASEDIR}/b-${cpu}-go || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} libgo \
     >${LOGDIR}/${cpu}-libgotests-${bsp}.log 2>&1
 
@@ -798,6 +822,6 @@ else
 fi
 
 if [ ${do_gccgo} = "yes" ] ; then 
-  test ${do_cleanup} = "yes" && rm -rf b-gccgo1-${cpu}
+  test ${do_cleanup} = "yes" && rm -rf b-${cpu}-go
 fi
 exit 0
