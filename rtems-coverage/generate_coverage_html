@@ -47,13 +47,15 @@ toggle()
   esac
 }
 
+do_plots="yes"
 verbose="no"
 RTEMS_VERSION="CVS Head"
 
-while getopts vr: OPT
+while getopts vpr: OPT
 do
     case "$OPT" in
         r) RTEMS_VERSION="${OPTARG}";;
+        p) do_plots=no ;;
         v) verbose=`toggle ${verbose}` ;;
         *) fatal;;
     esac
@@ -193,12 +195,19 @@ do_perBSPPage()
 <table align="center">
 <thead>
 <tr class="heading-title">
-<td width="30%">Result Tables</td>
-<td width="30%">Time Series Graphs</td>
-<td width="30%">TimePlot Graphs</td>
+EOF
+  if [ ${do_plots} = "yes" ] ; then 
+    echo "<td width=\"30%\">Result Tables</td>"
+    echo "<td width=\"30%\">Time Series Graphs</td>"
+    echo "<td width=\"30%\">TimePlot Graphs</td>"
+  else
+    echo "<td>Result Tables</td>"
+  fi
+
+cat <<EOF
 </thead>
 </tr>
-<td>
+<td align="left">
 <ul>
 <li><a href="#O2pd">-O2, POSIX Disabled, Core Only</a></li>
 <li><a href="#O2pD">-O2, POSIX Disabled, Developmental</a></li>
@@ -214,25 +223,28 @@ do_perBSPPage()
 <ul>
 EOF
 
-echo "<li><a href=\"graphs/${BSP}-uncovered_percent-d.png\">"
-echo "  Uncovered Percentage (Core)</a></li>"
-echo "<li><a href=\"graphs/${BSP}-uncovered_percent-D.png\">"
-echo "  Uncovered Percentage (Developmental)</a></li>"
 
-echo "<li><a href=\"graphs/${BSP}-total_bytes-d.png\">"
-echo "  Total Bytes Analyzed (Core)</a></li>"
-echo "<li><a href=\"graphs/${BSP}-total_bytes-D.png\">"
-echo "  Total Bytes Analyzed (Developmental)</a></li>"
+  if [ ${do_plots} = "yes" ] ; then 
+    echo "<li><a href=\"graphs/${BSP}-uncovered_percent-d.png\">"
+    echo "  Uncovered Percentage (Core)</a></li>"
+    echo "<li><a href=\"graphs/${BSP}-uncovered_percent-D.png\">"
+    echo "  Uncovered Percentage (Developmental)</a></li>"
 
-echo "<li><a href=\"graphs/${BSP}-ranges-d.png\">"
-echo "  Uncovered Ranges (Core)</a></li>"
-echo "<li><a href=\"graphs/${BSP}-ranges-D.png\">"
-echo "  Uncovered Ranges (Developmental)</a></li>"
+    echo "<li><a href=\"graphs/${BSP}-total_bytes-d.png\">"
+    echo "  Total Bytes Analyzed (Core)</a></li>"
+    echo "<li><a href=\"graphs/${BSP}-total_bytes-D.png\">"
+    echo "  Total Bytes Analyzed (Developmental)</a></li>"
 
-echo "<li><a href=\"graphs/${BSP}-uncovered_bytes-d.png\">"
-echo "  Uncovered Bytes (Core)</a></li>"
-echo "<li><a href=\"graphs/${BSP}-uncovered_bytes-D.png\">"
-echo "  Uncovered Bytes (Developmental)</a></li>"
+    echo "<li><a href=\"graphs/${BSP}-ranges-d.png\">"
+    echo "  Uncovered Ranges (Core)</a></li>"
+    echo "<li><a href=\"graphs/${BSP}-ranges-D.png\">"
+    echo "  Uncovered Ranges (Developmental)</a></li>"
+
+    echo "<li><a href=\"graphs/${BSP}-uncovered_bytes-d.png\">"
+    echo "  Uncovered Bytes (Core)</a></li>"
+    echo "<li><a href=\"graphs/${BSP}-uncovered_bytes-D.png\">"
+    echo "  Uncovered Bytes (Developmental)</a></li>"
+  fi
 
 cat <<EOF
 </ul>
@@ -241,20 +253,22 @@ cat <<EOF
 <ul>
 EOF
 
-echo "<li><a href=\"graphs/timeplot-${BSP}.html\">"
-echo "  TimePlot Graphs</a></li>"
+  if [ ${do_plots} = "yes" ] ; then 
+    echo "<li><a href=\"graphs/timeplot-${BSP}.html\">"
+    echo "  TimePlot Graphs</a></li>"
 
-echo "<li><a href=\"graphs/timeplot-${BSP}.html#uncovered_percent\">"
-echo "  Uncovered Percentage</a></li>"
+    echo "<li><a href=\"graphs/timeplot-${BSP}.html#uncovered_percent\">"
+    echo "  Uncovered Percentage</a></li>"
 
-echo "<li><a href=\"graphs/timeplot-${BSP}.html#total_bytes\">"
-echo "  Total Bytes Analyzed</a></li>"
+    echo "<li><a href=\"graphs/timeplot-${BSP}.html#total_bytes\">"
+    echo "  Total Bytes Analyzed</a></li>"
 
-echo "<li><a href=\"graphs/timeplot-${BSP}.html#ranges\">"
-echo "  Uncovered Ranges</a></li>"
+    echo "<li><a href=\"graphs/timeplot-${BSP}.html#ranges\">"
+    echo "  Uncovered Ranges</a></li>"
 
-echo "<li><a href=\"graphs/timeplot-${BSP}.html#uncovered_bytes\">"
-echo "  Uncovered Bytes</a></li>"
+    echo "<li><a href=\"graphs/timeplot-${BSP}.html#uncovered_bytes\">"
+    echo "  Uncovered Bytes</a></li>"
+  fi
 
 cat <<EOF
 </ul>
@@ -324,7 +338,7 @@ genBSPList()
       cpu=`grep ^Target ${dir}-*/configuration.txt | tail -1 | \
         sed -e 's/^.*://' -e 's/^.*: *\([a-z]*\)-rtems.*$/\1/'`
       echo ${cpu}/${bsp}
-    done | sort -t / -k 1 -k 2 | cut -d'/' -f2
+    done | sort -t / -k 1 -k 2 | cut -d'/' -f2 | sort -u
     # sort cpu,bsp alphabetically
 }
 
@@ -619,6 +633,8 @@ if [ ${good_dir} = "no" ]; then
   exit 1
 fi
 
+echo "Generating HTML reports for RTEMS ${RTEMS_VERSION}"
+
 # Put the style sheets in place
 if [ ! -d rtems ] ; then
   mkdir rtems
@@ -656,39 +672,40 @@ do
   cd $1/${bsp}
   do_perBSPPage ${bsp} >${bsp}.html
 
-  cd $1
-  OUTFIG=${bsp}/graphs
-  OUTDAT=${bsp}/plot_data
-  echo "Generating Static Plots for ${bsp}..."
-  for FIELD in ranges total_bytes uncovered_bytes \
-    uncovered_percent #covered_percent
-  do
-    # Pattern to find in summary.txt
-    case ${FIELD} in
-      ranges)            PATTERN="Uncovered Ranges Found" ;;
-      covered_percent)   PATTERN="Percentage Executed" ;;
-      uncovered_percent) PATTERN="Percentage Not Executed" ;;
-      total_bytes)       PATTERN="Bytes Analyzed" ;;
-      uncovered_bytes)   PATTERN="Bytes Not Executed" ;;
-      *)                 echo "Unknown field (${FIELD})"; exit 1 ;;
-    esac
-
-    for DEV in d D
+  if [ ${do_plots} = "yes" ] ; then 
+    cd $1
+    OUTFIG=${bsp}/graphs
+    OUTDAT=${bsp}/plot_data
+    echo "Generating Static Plots for ${bsp}..."
+    for FIELD in ranges total_bytes uncovered_bytes \
+      uncovered_percent #covered_percent
     do
-      for CONF in Osp${DEV} OsP${DEV} O2p${DEV} O2P${DEV}
+      # Pattern to find in summary.txt
+      case ${FIELD} in
+        ranges)            PATTERN="Uncovered Ranges Found" ;;
+        covered_percent)   PATTERN="Percentage Executed" ;;
+        uncovered_percent) PATTERN="Percentage Not Executed" ;;
+        total_bytes)       PATTERN="Bytes Analyzed" ;;
+        uncovered_bytes)   PATTERN="Bytes Not Executed" ;;
+        *)                 echo "Unknown field (${FIELD})"; exit 1 ;;
+      esac
+
+      for DEV in d D
       do
-        gen_data ${bsp} ${CONF} >${OUTDAT}/${bsp}-${CONF}-${FIELD}.dat
+        for CONF in Osp${DEV} OsP${DEV} O2p${DEV} O2P${DEV}
+        do
+          gen_data ${bsp} ${CONF} >${OUTDAT}/${bsp}-${CONF}-${FIELD}.dat
+        done
+
+        pltfile=${OUTDAT}/${bsp}-${FIELD}-${DEV}.plt
+        gen_plot >${pltfile}
+        gnuplot ${pltfile}
       done
-
-      pltfile=${OUTDAT}/${bsp}-${FIELD}-${DEV}.plt
-      gen_plot >${pltfile}
-      gnuplot ${pltfile}
-
     done
-  done
 
-  echo "Generating Time Plots for ${bsp}..."
-  timeplotfile=${OUTFIG}/timeplot-${bsp}.html
-  gen_timeplot ${bsp} > ${timeplotfile}
+    echo "Generating Time Plots for ${bsp}..."
+    timeplotfile=${OUTFIG}/timeplot-${bsp}.html
+    gen_timeplot ${bsp} > ${timeplotfile}
+  fi
 done
 exit 0

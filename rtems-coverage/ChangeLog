@@ -1,3 +1,9 @@
+2011-02-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* VERSIONS-COVERAGE, generate_coverage_html: Add argument to disable
+	plots and graphs. When doing coverage for a single configuration,
+	this is important.
+
 2011-01-28	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* run_coverage: Always be verbose and echo the command line.
