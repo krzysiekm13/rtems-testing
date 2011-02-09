@@ -334,11 +334,11 @@ genBSPList()
     cut -d'-' -f1 | uniq | \
     while read dir
     do
-      bsp=`echo ${dir} | sed -e 's/.*\/.*-//'`
+      bsp=`basename ${dir} | sed -e 's/.*\/.*-//'`
       cpu=`grep ^Target ${dir}-*/configuration.txt | tail -1 | \
-        sed -e 's/^.*://' -e 's/^.*: *\([a-z]*\)-rtems.*$/\1/'`
+        sed -e 's/^.*Target//' | cut -d':' -f2 | cut -d'-' -f1`
       echo ${cpu}/${bsp}
-    done | sort -t / -k 1 -k 2 | cut -d'/' -f2 | sort -u
+    done | sort -u | sort -t / -k 1 -k 2 | cut -d'/' -f2
     # sort cpu,bsp alphabetically
 }
 

@@ -1,5 +1,9 @@
 2011-02-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
+	* generate_coverage_html: Fix bug again.
+
+2011-02-09	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
 	* VERSIONS-COVERAGE, generate_coverage_html: Add argument to disable
 	plots and graphs. When doing coverage for a single configuration,
 	this is important.
