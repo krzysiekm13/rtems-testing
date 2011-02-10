@@ -413,6 +413,10 @@ do
         warn "skipping interactive ${toRun}"
         continue
         ;;
+    math*)
+        warn "skipping link only ${toRun}"
+        continue
+        ;;
     *-node2*)
         fatal "MP tests not supported"
         warn "Skipping ${toRun}; 'runtest' runs both nodes when for *-node1"
