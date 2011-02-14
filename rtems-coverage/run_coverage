@@ -22,8 +22,8 @@ progname=${0##*/}        # fast basename hack for ksh, bash
 
 USAGE=\
 "usage: $progname [ -opts ] cmd [ more cmds]
-        -t        -- publish the results to ftp site (default=no)
-        -f        -- save the results locally (default=no)
+        -t        -- publish the results to ftp site (default=yes)
+        -f        -- save the results locally (default=yes)
 	-v	   -- verbose
 
 where cmds are:
@@ -92,8 +92,8 @@ validate_bsp()
 }
 
 verbose="no"
-do_publish="no"
-do_save_tarballs="no"
+do_publish="yes"
+do_save_tarballs="yes"
 
 while getopts ftv OPT
 do
