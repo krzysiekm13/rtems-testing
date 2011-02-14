@@ -1,3 +1,7 @@
+2011-02-14	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* gdb-sim-run.in: math tests now run.
+
 2011-02-10	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* gdb-sim-run.in: Add math tests as link only.
