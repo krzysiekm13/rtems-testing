@@ -1,3 +1,8 @@
+2011-03-03	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* qemu-ifup: VirtualBox uses 10.0.x.x for its eth0 so we need to switch
+	to 10.1.x.x for things to work smoothly.
+
 2011-01-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemu-nic: Add e1000

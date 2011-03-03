@@ -1,5 +1,5 @@
 #!/bin/sh
    TUN_DEV=$1
-   TUN_HOST=10.0.2.2
+   TUN_HOST=10.1.2.2
    /sbin/ifconfig $TUN_DEV $TUN_HOST
    exit 0
