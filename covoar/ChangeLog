@@ -1,3 +1,9 @@
+2011-03-07	Jennifer Averett <Jennifer.Averett@oarcorp.com>
+
+	* CoverageMapBase.cc, ObjdumpProcessor.cc: Increase symbol length so
+	there is no chance of overflow. Initialize isNop in order to fix bug
+	that results in missed instructions both covered and uncovered.
+
 2011-01-25	Jennifer Averett <Jennifer.Averett@OARcorp.com>
 
 	* CoverageMapBase.cc, CoverageMapBase.h, CoverageReaderQEMU.cc,

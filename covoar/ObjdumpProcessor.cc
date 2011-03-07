@@ -350,7 +350,7 @@ namespace Coverage {
     uint32_t           offset;
     bool               processSymbol = false;
     uint32_t           startAddress = 0;
-    char               symbol[ 100 ];
+    char               symbol[ MAX_LINE_LENGTH ];
     char               terminator1;
     char               terminator2;
     objdumpLines_t     theInstructions;

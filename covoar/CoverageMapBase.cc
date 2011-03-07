@@ -42,6 +42,7 @@ namespace Coverage {
       i->isStartOfInstruction = false;
       i->wasExecuted          = false;
       i->isBranch             = false;
+      i->isNop                = false;
       i->wasTaken             = false;
       i->wasNotTaken          = false;
     }
