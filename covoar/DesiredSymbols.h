@@ -210,7 +210,7 @@ namespace Coverage {
      *  calculates the statistics that have not already 
      *  been filled in.
      */
-    void caculateStatistics( void );
+    void calculateStatistics( void );
 
     /*!
      *  This method analyzes each symbols coverage map to determine any

@@ -138,7 +138,7 @@ namespace Coverage {
     }
   }
 
-  void DesiredSymbols::caculateStatistics( void )
+  void DesiredSymbols::calculateStatistics( void )
   {
     uint32_t                              a;
     uint32_t                              endAddress;

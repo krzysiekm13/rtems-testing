@@ -430,7 +430,7 @@ int main(
   // Calculate remainder of statistics.
   if (Verbose)
     fprintf( stderr, "Calculate statistics\n" );
-  SymbolsToAnalyze->caculateStatistics();
+  SymbolsToAnalyze->calculateStatistics();
 
   // Look up the source lines for any uncovered ranges and branches.
   if (Verbose)
