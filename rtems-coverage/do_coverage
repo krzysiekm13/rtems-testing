@@ -84,7 +84,7 @@ verbose="no"
 do_all="no"
 do_posix="yes"
 do_optimize_size="no"
-do_covmerge="no"
+do_covoar="no"
 do_rtems_update="no"
 do_rtems_configure="no"
 do_rtems_build="no"
@@ -104,7 +104,7 @@ do
     case "$OPT" in
         A)
           do_all="yes"
-          do_covmerge="yes"
+          do_covoar="yes"
           do_posix="yes"
           do_rtems_update="yes"
           do_rtems_configure="yes"
@@ -118,7 +118,7 @@ do
         B) BSP="${OPTARG}";;
         O) outputDir="${OPTARG}";;
         v) verbose=`toggle ${verbose}` ;;
-        m) do_covmerge=`toggle ${do_covmerge}` ;;
+        m) do_covoar=`toggle ${do_covoar}` ;;
         P) do_posix=`toggle ${do_posix}` ;;
         S) do_optimize_size=`toggle ${do_optimize_size}` ;;
         u) do_rtems_update=`toggle ${do_rtems_update}` ;;
@@ -200,11 +200,17 @@ case ${BSP} in
     ;;
 esac
 
-if [ ${RTEMS_VERSION} = 4.6 -o ${RTEMS_VERSION} = 4.5 ] ; then
-  TARGET=${CPU}-rtems
-else
-  TARGET=${CPU}-rtems${RTEMS_VERSION}
-fi
+case ${RTEMS_VERSION} in
+  4.5*)  TARGET=${CPU}-rtems ;;
+  4.6*)  TARGET=${CPU}-rtems ;;
+  4.7*)  TARGET=${CPU}-rtems4.7 ;;
+  4.8*)  TARGET=${CPU}-rtems4.8 ;;
+  4.9*)  TARGET=${CPU}-rtems4.9 ;;
+  4.10*) TARGET=${CPU}-rtems4.10 ;;
+  4.11*) TARGET=${CPU}-rtems4.11 ;;
+  *)
+    fatal "Unknown RTEMS Version (${RTEMS_VERSION})" ;;
+esac
 
 ##### VERBOSE
 print_verbose()
@@ -218,7 +224,7 @@ print_verbose()
   echo "Core Configuration    " ${do_core}
   echo "Developmental Code:   " ${do_developmental}
   echo "do_all:               " ${do_all}
-  echo "do_covmerge           " ${do_covmerge}
+  echo "do_covoar             " ${do_covoar}
   echo "do_rtems_update:      " ${do_rtems_update}
   echo "do_rtems_configure:   " ${do_rtems_configure}
   echo "do_rtems_build:       " ${do_rtems_build}
@@ -256,7 +262,7 @@ if [ ! -d ${COVBASE} ] ; then
 fi
 
 if [ ! -d ${RTEMSDIR} ] ; then
-  echo "Check out RTEMS!!!"
+  echo "${RTEMSDIR} not found!!!"
   exit 1
 fi
 
@@ -459,8 +465,9 @@ filter_nm()
       ${TARGET}-nm --format=sysv $l | grep "FUNC|" | \
         cut -d'|' -f1 | sed -e 's/ *$//'
       # echo "========= END $l"
-    else
-      echo "${l} is not readable"
+
+    # no else
+      # We keep a complete CURRENT list and some are not in old versions
     fi
   done
 }
@@ -468,70 +475,73 @@ filter_nm()
 # generate the list of symbols to analyze
 generate_symbols()
 {
-  if [ ${RTEMS_VERSION} = 4.6 -o ${RTEMS_VERSION} = 4.5 ] ; then
-    cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/exec
-    check_status $? "could not cd to object directory"
+  case ${RTEMS_VERSION} in
+    4.5*|4.6*)
+      cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/exec
+      check_status $? "could not cd to object directory"
+      subd=o-optimize/
+      ;;
+    *)
+      cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/cpukit
+      check_status $? "could not cd to object directory"
+      subd=
+      ;;
+  esac
 
-    subd=o-optimize/
-  else
-    cd ${BASEDIR}/b-${BSP}/${TARGET}/c/${BSP}/cpukit
-    check_status $? "could not cd to object directory"
+  case ${RTEMS_VERSION} in
+    4.5*)
+      filter_nm wrapup/rtems/o-optimize/librtems.a
+      if [ ${do_posix} = "yes" ] ; then
+	filter_nm wrapup/posix/o-optimize/libposix.a
+      fi
 
-    subd=
-  fi
+      if [ ${analyze_developmental} = "yes" ] ; then
+	filter_nm ../lib/libc/${subd}libcsupport.a
+	filter_nm ../lib/libmisc/wrapup/${subd}libmisc.a
+      fi
+      ;;
+    *) # 4.6 or newer
+      # Base set of libraries to analyse.  Do NOT include libscorecpu.a!!!
+      filter_nm score/${subd}libscore.a
+      filter_nm sapi/${subd}libsapi.a
+      filter_nm rtems/${subd}librtems.a
 
-  if [ ${RTEMS_VERSION} = 4.5 ] ; then
-    filter_nm wrapup/rtems/o-optimize/librtems.a
-    if [ ${do_posix} = "yes" ] ; then
-      filter_nm wrapup/posix/o-optimize/libposix.a
-    fi
+      # Now add the POSIX API onto that
+      if [ ${do_posix} = "yes" ] ; then
+        filter_nm posix/${subd}libposix.a
+      fi
 
-    if [ ${analyze_developmental} = "yes" ] ; then
-      filter_nm ../lib/libc/${subd}libcsupport.a
-      filter_nm ../lib/libmisc/wrapup/${subd}libmisc.a
-    fi
-  else  # 4.6 or newer
-
-    # Base set of libraries to analyse.  Do NOT include libscorecpu.a!!!
-    filter_nm score/${subd}libscore.a
-    filter_nm sapi/${subd}libsapi.a
-    filter_nm rtems/${subd}librtems.a
-
-    # Now add the POSIX API onto that
-    if [ ${do_posix} = "yes" ] ; then
-      filter_nm posix/${subd}libposix.a
-    fi
-
-    # Now add developmental libraries
-    # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
-    if [ ${analyze_developmental} = "yes" ] ; then
-      # filter_nm libfs/${subd}librfs.a
-      # filter_nm libfs/${subd}libdosfs.a
-      filter_nm libfs/${subd}libdevfs.a
-      filter_nm libfs/${subd}libimfs.a
-      filter_nm libcsupport/${subd}libcsupport.a
-      # filter_nm libi2c/${subd}libi2c.a
-      # filter_nm zlib/${subd}libz.a
-      # filter_nm libmd/${subd}libmd.a
-      # filter_nm libmisc/${subd}libshell.a
-      filter_nm libmisc/${subd}libbspcmdline.a
-      filter_nm libmisc/${subd}libcpuuse.a
-      # filter_nm libmisc/${subd}libuuid.a
-      filter_nm libmisc/${subd}libstackchk.a
-      # filter_nm libmisc/${subd}libmw-fb.a
-      # NEVER INCLUDE libdummy.a!!!
-      # filter_nm libmisc/${subd}libdummy.a
-      # filter_nm libmisc/${subd}libfsmount.a
-      filter_nm libmisc/${subd}libstringto.a
-      filter_nm libmisc/${subd}libdevnull.a
-      # filter_nm libmisc/${subd}libcapture.a
-      filter_nm libmisc/${subd}libdumpbuf.a
-      # filter_nm libmisc/${subd}libmonitor.a
-      # filter_nm libmisc/${subd}libserdbg.a
-      # filter_nm libmisc/${subd}libuntar.a
-      # filter_nm libblock/${subd}libblock.a
-    fi
-  fi
+      # Now add developmental libraries
+      # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
+      if [ ${analyze_developmental} = "yes" ] ; then
+        # filter_nm libfs/${subd}librfs.a
+        # filter_nm libfs/${subd}libdosfs.a
+        filter_nm libfs/${subd}libdevfs.a
+        filter_nm libfs/${subd}libimfs.a
+        filter_nm libcsupport/${subd}libcsupport.a
+        # filter_nm libi2c/${subd}libi2c.a
+        # filter_nm zlib/${subd}libz.a
+        # filter_nm libmd/${subd}libmd.a
+        # filter_nm libmisc/${subd}libshell.a
+        filter_nm libmisc/${subd}libbspcmdline.a
+        filter_nm libmisc/${subd}libcpuuse.a
+        # filter_nm libmisc/${subd}libuuid.a
+        filter_nm libmisc/${subd}libstackchk.a
+        # filter_nm libmisc/${subd}libmw-fb.a
+        # NEVER INCLUDE libdummy.a!!!
+        # filter_nm libmisc/${subd}libdummy.a
+        # filter_nm libmisc/${subd}libfsmount.a
+        filter_nm libmisc/${subd}libstringto.a
+        filter_nm libmisc/${subd}libdevnull.a
+        # filter_nm libmisc/${subd}libcapture.a
+        filter_nm libmisc/${subd}libdumpbuf.a
+        # filter_nm libmisc/${subd}libmonitor.a
+        # filter_nm libmisc/${subd}libserdbg.a
+        # filter_nm libmisc/${subd}libuntar.a
+        # filter_nm libblock/${subd}libblock.a
+      fi
+      ;;
+    esac
 }
 
 # remove symbols we do not want coverage on.
@@ -562,20 +572,20 @@ test -d ${BASEDIR}/b-${BSP}     || mkdir ${BASEDIR}/b-${BSP}
 test -d ${BASEDIR}/${BSP}-tests || mkdir ${BASEDIR}/${BSP}-tests
 
 # If requested, update and build the coverage support tools
-if [ ${do_covmerge} = "yes" ] ; then
-  echo "Updating and building covmerge..."
+if [ ${do_covoar} = "yes" ] ; then
+  echo "Updating and building covoar..."
 
   cd ${COVBASE}/../covoar
-  check_status $? "cd covmerge"
+  check_status $? "cd covoar"
 
   cvs up -Pd 2>&1 | grep -v ^cvs
   make clean all
-  check_status $? "build covmerge"
+  check_status $? "build covoar"
 
   make
-  check_status $? "make covmerge"
+  check_status $? "make covoar"
 else
-  echo "Skipping Updating and building covmerge..."
+  echo "Skipping Updating and building covoar..."
 fi
 
 # If requested, update the RTEMS tree
@@ -646,13 +656,16 @@ if [ ${do_rtems_build} = "yes" ] ; then
   cd ${BASEDIR}/b-${BSP}/
   check_status $? "cd b-${BSP}"
 
-  if [ ${RTEMS_VERSION} = 4.6 -o ${RTEMS_VERSION} = 4.5 ] ; then
-    sleep 5  # 4.5 on chroot'ed env needs this for some reason
-    make >b.log 2>&1
-  else
-    cpus=`/usr/bin/getconf _NPROCESSORS_ONLN`
-    make -j${cpus} >b.log 2>&1
-  fi
+  case ${RTEMS_VERSION} in
+    4.5*|4.6*)
+      sleep 5  # 4.5 on chroot'ed env needs this for some reason
+      make >b.log 2>&1
+      ;;
+    *)
+      cpus=`/usr/bin/getconf _NPROCESSORS_ONLN`
+      make -j${cpus} >b.log 2>&1
+      ;;
+  esac
   check_status $? "Building RTEMS for ${BSP}"
 else
   echo "Skipping Building RTEMS ..."

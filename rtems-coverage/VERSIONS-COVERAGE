@@ -1,31 +1,20 @@
 # USE FULL PATHS!!!
 BASEDIR=${HOME}/test-gcc
 
-
-RTEMS_VERSION=4.11
+RTEMS_VERSION=4.10.0
 case ${RTEMS_VERSION} in
   4.5)  RTEMSDIR=${BASEDIR}/rtems-45
         TARDIR=${BASEDIR}/tarballs/4.5
         DEFAULT_EXEEXT=exe
         ;;
-  4.6)  RTEMSDIR=${BASEDIR}/rtems-46
-        TARDIR=${BASEDIR}/tarballs/4.6
+  4.6*|4.7*|4.8*)
+        RTEMSDIR=${BASEDIR}/rtems-${RTEMS_VERSION}
+        TARDIR=${BASEDIR}/tarballs/${RTEMS_VERSION}
         DEFAULT_EXEEXT=exe
-        ;;
-  4.7)  RTEMSDIR=${BASEDIR}/rtems-47
-        TARDIR=${BASEDIR}/tarballs/4.7
-        DEFAULT_EXEEXT=exe
-        ;;
-  4.8)  RTEMSDIR=${BASEDIR}/rtems-48
-        TARDIR=${BASEDIR}/tarballs/4.8
-        DEFAULT_EXEEXT=exe
-        ;;
-  4.9)  RTEMSDIR=${BASEDIR}/rtems-49
-        TARDIR=${BASEDIR}/tarballs/4.9
-        DEFAULT_EXEEXT=ralf
-        ;;
-  4.10) RTEMSDIR=${BASEDIR}/rtems-410
-        TARDIR=${BASEDIR}/tarballs/4.10
+       ;;
+  4.9*|4.10*)
+        RTEMSDIR=${BASEDIR}/rtems-${RTEMS_VERSION}
+        TARDIR=${BASEDIR}/tarballs/${RTEMS_VERSION}
         DEFAULT_EXEEXT=ralf
         ;;
   4.11) RTEMSDIR=${BASEDIR}/rtems
@@ -44,7 +33,7 @@ LOGDIR=${BASEDIR}/log
 FTPDIR=/home/ftp/pub/rtems/people/joel/coverage/
 
 # Calculated
-SCRIPTDIR=${BASEDIR}/gcc-testing
+SCRIPTDIR=${BASEDIR}/rtems-testing
 COVBASE=${SCRIPTDIR}/rtems-coverage
 COVOARBASE=${SCRIPTDIR}/covoar
 
