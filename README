@@ -22,9 +22,9 @@ TESTROOT
   - autoconf SOURCE directory
   - binutils SOURCE directory
   - newlib SOURCE directory
-  - gcc-testing (this package)
+  - rtems-testing (this package)
 
-Update gcc-testing/VERSIONS to point to the appropriate directories
+Update rtems-testing/VERSIONS to point to the appropriate directories
 and versions.
 
 If the various source directories contain a CVS subdirectory,
@@ -45,7 +45,7 @@ How to Setup a Source Tree For Testing
 # Add compiled tools install directory
 export PATH=${HOME}/test-gcc/install/bin:${PATH}
 # Add simulator scripts install directory
-export PATH=${HOME}/test-gcc/gcc-testing/bin:${PATH}
+export PATH=${HOME}/test-gcc/rtems-testing/bin:${PATH}
 
 mkdir ~/test-gcc
 cd ~/test-gcc
@@ -53,8 +53,8 @@ cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src login
 cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS login
 
 # test script infrastructure
-cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P gcc-testing
-make -C gcc-testing/sim-scripts
+cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P rtems-testing
+make -C rtems-testing/sim-scripts
 
 # rtems
 cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P rtems

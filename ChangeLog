@@ -1,3 +1,7 @@
+2011-03-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* README, VERSIONS: Specify rtems-testing not gcc-testing.
+
 2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* VERSIONS: Various improvements as part of testing gcc 4.6.0.

@@ -31,7 +31,7 @@ PPL=${BASEDIR}/ppl-0.11
 INSTALL=${BASEDIR}/install-${GCC_VERSION}
 BSP_INSTALL=${INSTALL}
 #BSP_INSTALL=${BASEDIR}/bsp-install
-SCRIPTDIR=${BASEDIR}/gcc-testing
+SCRIPTDIR=${BASEDIR}/rtems-testing
 LOGDIR=${BASEDIR}/log
 RESULTSDIR=${BASEDIR}/results-trunk
 
