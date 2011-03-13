@@ -68,6 +68,7 @@ checkBSPFaults()
   # faulty thread may be deleted or suspended
   for pattern in  \
      "FAULTY THREAD WILL BE " \
+     "raw handler conne" \
      "Error code pushed by processor itself"
   do
     grep "${pattern}" ${logfile}
