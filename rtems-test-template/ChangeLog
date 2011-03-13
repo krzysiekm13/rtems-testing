@@ -1,3 +1,7 @@
+2011-03-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* psxtest_with_thread/.init.c.swp: Removed.
+
 2010-11-05	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* psxtest/Makefile.am, psxtest/TEST.doc, psxtest/TEST.scn,
