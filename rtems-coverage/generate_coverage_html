@@ -23,6 +23,7 @@ progname=${0##*/}        # fast basename hack for ksh, bash
 USAGE=\
 "usage: $progname [ -opts ]
         -v         -- verbose (default=no)
+        -p         -- generate plots (default=yes)
         -r VERSION -- RTEMS Version (default=CVS)
 "
 
