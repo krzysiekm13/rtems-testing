@@ -206,6 +206,7 @@ checkGenericExits()
       "^assertion .* failed: file .*, line .*, function:" \
       "\*\*\*.*FAILED.*\*\*\*" \
       "===.*PASSED.*===" \
+      "^raised .*_ERROR" \
       "FAULTY THREAD WILL BE " \
       "\*\*\* EXIT code "
   do

@@ -1,3 +1,7 @@
+2011-03-14	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in: Add another generic failure message.
+
 2011-03-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* pc386.in: Add another failure message.
