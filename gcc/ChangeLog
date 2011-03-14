@@ -1,3 +1,8 @@
+2011-03-14	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one, rundeja, test_driver: Updates and add initial support for
+	running Objective-C tests.
+
 2011-02-07	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_one, gcc_status, gccgo_status, rtems_gccgo_init.c, rundeja,

@@ -50,8 +50,9 @@ usage()
 cat <<EOF
 test_driver [options] CPU ..  CPU
   -A - enable clean, native, and update
+  -1 - build basic tools (default=yes)
   -a - build Ada (default=yes)
-  -G - build GCC Go (default=no)
+  -G - build GCC Go (default=yes)
   -c - clean install point (also installs auto tools)
   -m - mail results to lists (default=yes)
   -n - build native
@@ -66,13 +67,15 @@ doCleanInstallPoint="no"
 doUpdateTools="no"
 doUpdateRTEMS="no"
 doNative="no"
+doBasicTools="yes"
 verbose="no"
 doAda="yes"
-doGccGo="no"
+doGccGo="yes"
 doMail="yes"
 doTests="yes"
+justTests="no"
 
-while getopts AacmnuGTUv OPT
+while getopts j1AacmnuGTUv OPT
 do
   case "$OPT" in
     A) doCleanInstallPoint=`toggle ${doCleanInstallPoint}`
@@ -80,9 +83,11 @@ do
        doUpdateTools=`toggle ${doUpdateTools}`
        doUpdateRTEMS=`toggle ${doUpdateRTEMS}`
        ;;
+    1) doBasicTools=`toggle ${doBasicTools}` ;;
     a) doAda=`toggle ${doAda}` ;;
     G) doGccGo=`toggle ${doGccGo}` ;;
     c) doCleanInstallPoint=`toggle ${doCleanInstallPoint}` ;;
+    j) justTests=`toggle ${justTests}` ;;
     m) doMail=`toggle ${doMail}` ;;
     n) doNative=`toggle ${doNative}` ;;
     T) doTests=`toggle ${doTests}` ;;
@@ -120,12 +125,14 @@ elif [ "X${CPUs}" = "X part2" ] ; then
   CPUs="${CPUS_PART2}"
 fi
 
+
 if [ ${verbose} = "yes" ] ; then
   echo "Clean Install Point: " ${doCleanInstallPoint}
   echo "Install Autotools:   " ${doCleanInstallPoint}
   echo "Install Native:      " ${doNative}
   echo "Update Tool Source:  " ${doUpdateTools}
   echo "Update RTEMS:        " ${doUpdateRTEMS}
+  echo "Build Basic Tools:   " ${doBasicTools}
   echo "Build Ada:           " ${doAda}
   echo "Build GCC Go:        " ${doGccGo}
   echo "Email Results:       " ${doMail}
@@ -133,10 +140,18 @@ if [ ${verbose} = "yes" ] ; then
   echo "CPUs to Build:       " ${CPUs}
 fi
 
-test ${doMail}  = "no"   && mailArg="-M"
-test ${doTests} = "yes" && testArg="-T"
-test ${doAda}   = "yes" && adaArg="-a"
-test ${doGccGo} = "yes" && gccgoArg="-G"
+test ${doMail}  = "no"       && mailArg="-M"
+test ${doTests} = "yes"      && testArg="-T"
+test ${doAda}   = "yes"      && adaArg="-a"
+test ${doGccGo} = "yes"      && gccgoArg="-G"
+test ${doBasicTools} = "yes" && basicArgs="-b -D -1 -r"
+
+echo "Checking for just tests override"
+if [ ${justTests} = "yes" ] ; then
+  adaArg=""
+  gccgoArg=""
+  basicArgs=""
+fi
 
 start=`date`
 echo Started at: ${start}
@@ -249,7 +264,10 @@ do_cpus()
 
     doOne=${SCRIPTDIR}/gcc/do_one 
     echo "Building ${cpu}/${bsp}..." 
-    time sh -x ${doOne} -v -b -D -1 -d -r \
+    echo "time sh -x ${doOne} -v -d ${basicArgs}  \
+        ${gccgoArg} ${adaArg} ${mailArg} ${testArg} \
+        ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1"
+    time sh -x ${doOne} -v -d ${basicArgs}  \
         ${gccgoArg} ${adaArg} ${mailArg} ${testArg} \
         ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
