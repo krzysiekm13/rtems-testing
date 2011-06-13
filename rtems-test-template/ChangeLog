@@ -1,5 +1,9 @@
 2011-06-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* smptest/Makefile.am: New file.
+
+2011-06-13	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* psxtmtest_single/init.c: Fine tune a bit.
 	* smptest/TEST.doc, smptest/TEST.scn, smptest/init.c: New files.
 
