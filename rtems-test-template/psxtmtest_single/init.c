@@ -9,9 +9,12 @@
  *  $Id$
  */
 
-#include <coverhd.h>
-#include <tmacros.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <timesys.h>
+#include <rtems/timerdrv.h>
 #include "test_support.h"
 
 void *POSIX_Init(
@@ -20,7 +23,7 @@ void *POSIX_Init(
 {
   long end_time;
 
-  puts( "\n\n*** POSIX TIME TEST @DESC@ ***" );
+  puts( "\n\n*** POSIX TIME TEST @UPPER@ ***" );
 
   /* XXX any required initialization goes here */
 
@@ -38,7 +41,7 @@ void *POSIX_Init(
     0
   );
 
-  puts( "*** END OF POSIX TIME TEST @DESC@ ***" );
+  puts( "*** END OF POSIX TIME TEST @UPPER@ ***" );
 
   rtems_test_exit(0);
 }
