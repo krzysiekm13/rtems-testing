@@ -1,3 +1,13 @@
+2011-06-22	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* psxtest/TEST.doc, psxtest/init.c, psxtest_with_thread/TEST.doc,
+	psxtest_with_thread/init.c, psxtmtest_blocking/TEST.doc,
+	psxtmtest_blocking/init.c, psxtmtest_single/TEST.doc,
+	smptest/TEST.doc, spfatal/TEST.doc, spfatal/testcase.h,
+	sptest/TEST.doc, sptest/init.c, sptest_operation_from_tsr/TEST.doc,
+	sptest_operation_from_tsr/init.c, sptest_with_task/TEST.doc,
+	sptest_with_task/init.c, tmtest/TEST.doc, tmtest/init.c: Tidy up.
+
 2011-06-13	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* smptest/Makefile.am: New file.

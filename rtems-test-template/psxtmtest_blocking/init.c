@@ -1,5 +1,5 @@
 /*
- *  COPYRIGHT (c) 1989-2010.
+ *  COPYRIGHT (c) 1989-2011.
  *  On-Line Applications Research Corporation (OAR).
  *
  *  The license and distribution terms for this file may be
@@ -9,12 +9,15 @@
  *  $Id$
  */
 
-#include <coverhd.h>
-#include <tmacros.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <timesys.h>
-#include "test_support.h"
-#include <pthread.h>
 #include <rtems/timerdrv.h>
+#include "test_support.h"
+
+#include <pthread.h>
 
 void *Low(
   void *argument
@@ -25,7 +28,7 @@ void *Low(
   end_time = benchmark_timer_read();
 
   put_time(
-    "XXX",
+    "@DESC@",
     end_time,
     OPERATION_COUNT,
     0,
