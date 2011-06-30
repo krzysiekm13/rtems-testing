@@ -14,6 +14,7 @@
 #endif
 
 #include <timesys.h>
+#include <tmacros.h>
 #include <rtems/timerdrv.h>
 #include "test_support.h"
 
