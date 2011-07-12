@@ -17,30 +17,38 @@
 #include <rtems/timerdrv.h>
 #include "test_support.h"
 
+void benchmark_NAME_OF_OPERATION(void)
+{
+  long end_time;
+  int  status;
+
+  benchmark_timer_initialize();
+    /* XXX single shot operation goes here -- test expected status outside */
+    /* XXX of the benchmark'ed region */
+  end_time = benchmark_timer_read();
+  rtems_test_assert( status == 0 );
+
+  put_time(
+    "@DESC@",
+    end_time,
+    1,        /* Only executed once */
+    0,
+    0
+  );
+
+}
+
 void *POSIX_Init(
   void *argument
 )
 {
-  long end_time;
 
   puts( "\n\n*** POSIX TIME TEST @UPPER@ ***" );
 
   /* XXX any required initialization goes here */
 
-  benchmark_timer_initialize();
-
-  /* XXX single shot operation goes here */
-
-  end_time = benchmark_timer_read();
-
-  put_time(
-    "@DESC@",
-    end_time,
-    OPERATION_COUNT,
-    0,
-    0
-  );
-
+  benchmark_NAME_OF_OPERATION();
+  
   puts( "*** END OF POSIX TIME TEST @UPPER@ ***" );
 
   rtems_test_exit(0);
