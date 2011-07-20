@@ -1,5 +1,11 @@
 2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* psxtmtest_unblocking_preempt/Makefile.am,
+	psxtmtest_unblocking_preempt/TEST.doc,
+	psxtmtest_unblocking_preempt/init.c: New files.
+
+2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* psxtmtest_unblocking_nopreempt/init.c: Fix pattern.
 
 2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
