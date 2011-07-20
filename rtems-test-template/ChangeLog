@@ -1,5 +1,9 @@
 2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* psxtmtest_unblocking_nopreempt/init.c: Fix pattern.
+
+2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* psxtest/init.c, psxtest_with_thread/init.c, psxtmtest_single/init.c,
 	smptest/init.c, sptest/init.c, sptest_operation_from_tsr/init.c,
 	sptest_with_task/init.c, tmtest/init.c: Switch to @TESTNUM@ for start
