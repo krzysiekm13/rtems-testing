@@ -43,13 +43,13 @@ void *POSIX_Init(
 )
 {
 
-  puts( "\n\n*** POSIX TIME TEST @UPPER@ ***" );
+  puts( "\n\n*** POSIX TIME TEST @TESTNUMR@ ***" );
 
   /* XXX any required initialization goes here */
 
   benchmark_NAME_OF_OPERATION();
   
-  puts( "*** END OF POSIX TIME TEST @UPPER@ ***" );
+  puts( "*** END OF POSIX TIME TEST @TESTNUMR@ ***" );
 
   rtems_test_exit(0);
 }

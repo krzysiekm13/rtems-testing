@@ -31,7 +31,7 @@ rtems_task Init(
   rtems_status_code     status;
   rtems_id              timer;
 
-  puts( "\n\n*** TEST @DESC@ ***" );
+  puts( "\n\n*** TEST @TESTNUM@ ***" );
 
   /*
    *  Timer used in multiple ways
@@ -68,7 +68,7 @@ rtems_task Init(
   /* XXX also may be able to confirm operation actually was performed */
 
   puts( "Operation from ISR successfully processed" );
-  puts( "*** END OF TEST @DESC@ ***" );
+  puts( "*** END OF TEST @TESTNUM@ ***" );
   rtems_test_exit( 0 );
 }
 

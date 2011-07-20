@@ -16,11 +16,11 @@ rtems_task Init(
   rtems_task_argument argument
 )
 {
-  puts( "\n\n*** TEST @DESC@ ***" );
+  puts( "\n\n*** TEST @TESTNUM@ ***" );
 
   /* XXX test code goes here */
   
-  puts( "*** END OF TEST @DESC@ ***" );
+  puts( "*** END OF TEST @TESTNUM@ ***" );
 
   rtems_test_exit(0);
 }

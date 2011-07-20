@@ -29,7 +29,7 @@ rtems_task Init(
   rtems_id           id;
   rtems_status_code  status;
 
-  puts( "\n\n*** TEST @UPPER@ ***" );
+  puts( "\n\n*** TEST @TESTNUM@ ***" );
 
   for ( i=0; i<_SMP_Processor_count-1; i++ ) {
     ch = '1' + i;
@@ -53,7 +53,7 @@ rtems_task Init(
 
   /* XXX something goes here */
 
-  puts( "*** END OF TEST @UPPER@ ***" );
+  puts( "*** END OF TEST @TESTNUM@ ***" );
   rtems_test_exit(0);
 }
 

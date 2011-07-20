@@ -1,5 +1,12 @@
 2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* psxtest/init.c, psxtest_with_thread/init.c, psxtmtest_single/init.c,
+	smptest/init.c, sptest/init.c, sptest_operation_from_tsr/init.c,
+	sptest_with_task/init.c, tmtest/init.c: Switch to @TESTNUM@ for start
+	and ending message.
+
+2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* psxtmtest_blocking/init.c: Add template for POSIX timing test of
 	unblocking operation with no preemption.
 	* psxtmtest_unblocking_nopreempt/Makefile.am,
