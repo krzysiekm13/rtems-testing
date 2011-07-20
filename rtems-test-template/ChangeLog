@@ -1,3 +1,11 @@
+2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* psxtmtest_blocking/init.c: Add template for POSIX timing test of
+	unblocking operation with no preemption.
+	* psxtmtest_unblocking_nopreempt/Makefile.am,
+	psxtmtest_unblocking_nopreempt/TEST.doc,
+	psxtmtest_unblocking_nopreempt/init.c: New files.
+
 2011-07-12	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* psxtmtest_single/init.c: Fix operation count and move timing to
