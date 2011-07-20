@@ -1,3 +1,7 @@
+2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* mktest: Add option to put test number in.
+
 2011-01-28	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* cvscommit: Now running Go tests on PowerPC (2/3 passing) and i386 (in

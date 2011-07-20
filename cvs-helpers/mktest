@@ -25,7 +25,7 @@ check_status()
 
 usage()
 {
-  echo "$progname -s SOURCE -d DEST -D description [-v]"
+  echo "$progname -s SOURCE -d DEST -D description -n NUMBER [-v]"
   echo "                   OR"
   echo "$progname -c -d DEST"
 cat <<EOF
@@ -40,14 +40,16 @@ addToCVS=no
 source=
 dest=
 desc=
+testNum=
 verbose=no
-while getopts cd:D:s:v OPT
+while getopts cd:D:s:n:v OPT
 do
   case "$OPT" in 
     c) addToCVS=`toggle ${addToCVS}` ;;
     d) dest=$OPTARG ;; 
     D) desc=$OPTARG ;; 
     s) source=$OPTARG ;; 
+    n) testNum=$OPTARG ;; 
     v) verbose=`toggle ${verbose}` ;;
     *) usage ;;
   esac
@@ -77,6 +79,8 @@ test "X${source}" != "X"
 check_status $? No source provided
 test -d "${source}" 
 check_status $? Source directory not present 
+test "X${testNum}" != "X"
+check_status $? No test number provided
 
 test ! -d ${dest}/CVS
 check_status $? "Are you sure about ${dest}? Already a CVS directory in it"
@@ -106,6 +110,7 @@ do
     sed -e "s/@LOWER@/${dest}/g" \
         -e "s/@UPPER@/${destCaps}/g" \
         -e "s/@DESC@/${desc}/g" \
+        -e "s/@TESTNUM@/${testNum}/g" \
     <${s} >${d}
    check_status $? "Unable to process ${d}"
   fi
