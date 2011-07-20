@@ -55,7 +55,7 @@
 #    rtems_check_state
 #
 
-echo Loading GDB Macro Package for RTEMS 4.10...\n
+echo Loading GDB Macro Package for RTEMS 4.11...\n
 
 #############################################################################
 ########                   Public Helper Macros                      ########
@@ -317,8 +317,8 @@ define rtems_helper_score_threadq
   set $queues = &$tq->Queues
   while $pri_index < $limit
     set $chain = &$queues.Priority[$pri_index]
-    set $ptail = &$chain->permanent_null
-    set $next = $chain->first
+    set $ptail = &$chain->Head.fill
+    set $next = $chain->Head.Node.next
     while $next != $ptail
       set $t = (struct Thread_Control_struct *)$next
       printf "0x%08x@%d ", $t->Object.id, $t->current_priority
@@ -392,8 +392,8 @@ end
 #    arg0 = pointer to Watchdog delta chain
 #
 define rtems_helper_score_watchdog_chain
-  set $permt = &$arg0.permanent_null
-  set $node = $arg0.first
+  set $permt = &$arg0.Tail.Node
+  set $node = $arg0.Head.Node.next
 
   if $node == $permt
     printf "Empty\n"
@@ -908,10 +908,11 @@ end
 #
 # ARGUMENTS: NONE
 #
-# TODO: For 4.6, check object information table for non-NULL
+# TODO: NONE
 define rtems_tasks
-  printf "Executing: 0x%x, Heir: 0x%x\n", _Thread_Executing->Object.id, \
-    _Thread_Heir.Object.id
+  printf "Executing: 0x%x, Heir: 0x%x\n", \
+    _Per_CPU[0].executing->Object.id, \
+    _Per_CPU[0].heir.Object.id
   printf "================================================================\n"
   printf "Internal Tasks\n"
   rtems_helper_show_tasks  _Thread_Internal_information

@@ -32,6 +32,7 @@ USAGE=\
 	-G	   -- put simulator in GDB server mode (default=no)
 	-i	   -- interactive (default=no time limit)
 	-s	   -- force System V IPC support (default=no)
+	-S	   -- skip Interrupt Critical Section Tests (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
         -L dir     -- specify log directory (default is 'log')
         -T         -- rtems-test command mode
@@ -88,8 +89,9 @@ doTrace="no"
 enable_display_adapter="no"
 enable_network="no"
 rtems_test="no"
+skipIntrCriticalTest="no"
 
-while getopts "vcCgGil:L:DsNT" OPT
+while getopts "vcCgGil:L:DsSNT" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
@@ -103,6 +105,7 @@ do
    l) defaultLimit="$OPTARG";;
    L) logdir="$OPTARG";;
    s) use_sysv_ipc="yes";;
+   S) skipIntrCriticalTest="yes";;
    t) doTrace="yes";;
    T) rtems_test="yes";;
    *) fatal;;
@@ -409,20 +412,30 @@ do
 
   ## If the test is known to be interactive or locks up and we are
   ## in batch mode, skip it.
-  case ${toRun} in
+  case ${baseToRun} in
     monitor*|termios.*|fileio*|capture*)
-        warn "skipping interactive ${toRun}"
+        warn "skipping interactive ${baseToRun}"
+        continue
+        ;;
+    spintrcritical*|psxintrcritical*)
+        if [ ${skipIntrCriticalTest} = "yes" ] ; then
+          warn "skipping Interrupt Critical Section test ${baseToRun}"
+          continue
+        fi
+        ;;
+    appstart*)
+        warn "skipping intermediate file ${baseToRun}"
         continue
         ;;
     *-node2*)
         fatal "MP tests not supported"
-        warn "Skipping ${toRun}; 'runtest' runs both nodes when for *-node1"
+        warn "Skipping ${baseToRun}; 'runtest' runs both nodes when for *-node1"
         continue;;
     *-node1*)
-      warn "Running both nodes associated with ${toRun}"
+      warn "Running both nodes associated with ${baseToRun}"
       ;;
     pppd*)
-      warn "skipping long running ${toRun}"
+      warn "skipping long running ${baseToRun}"
       continue
       ;;
    esac

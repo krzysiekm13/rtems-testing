@@ -1,3 +1,9 @@
+2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim-run.in: Add option to skip critical section tests.
+	* pc386.in: Default to core2duo CPU.
+	* rtems-gdb-macros-4.11: Update to 4.11.
+
 2011-03-14	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in: Add another generic failure message.

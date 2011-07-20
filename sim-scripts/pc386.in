@@ -59,8 +59,9 @@ runARGS()
   # -cpu 486
   # can also redirect to file with file:log/"`basename ${1} .exe`
   SERIAL_ARG="stdio"
-  echo "-m 512 -boot a -cpu 486 -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
-         -monitor null -nographic -serial ${SERIAL_ARG} --no-reboot"
+  echo "-m 512 -boot a -cpu core2duo \
+       -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
+       -monitor null -nographic -serial ${SERIAL_ARG} --no-reboot"
 }
 
 checkBSPFaults()
