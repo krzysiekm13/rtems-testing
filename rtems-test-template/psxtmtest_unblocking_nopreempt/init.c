@@ -42,7 +42,7 @@ void *POSIX_Init(
   pthread_t  threadId;
   long       end_time;
 
-  puts( "\n\n*** POSIX TIME TEST XXX @TESTNUM@ ***" );
+  puts( "\n\n*** POSIX TIME TEST @UPPER@ ***" );
 
   status = pthread_create( &threadId, NULL, Blocker, NULL );
   rtems_test_assert( status == 0 );
@@ -80,7 +80,7 @@ void *POSIX_Init(
     0
   );
 
-  puts( "*** END OF POSIX TIME TEST XXX @TESTNUM@ ***" );
+  puts( "*** END OF POSIX TIME TEST @UPPER@ ***" );
   rtems_test_exit( 0 );
 
   return NULL;

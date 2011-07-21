@@ -28,12 +28,12 @@ void *POSIX_Init(
 {
   int status;
 
-  puts( "\n\n*** POSIX TEST @TESTNUM@ ***" );
+  puts( "\n\n*** POSIX TEST @UPPER@ ***" );
 
   status = pthread_create( &ThreadId, NULL, TestThread, NULL );
   rtems_test_assert( !status );
 
-  puts( "*** END OF POSIX TEST @TESTNUM@ ***" );
+  puts( "*** END OF POSIX TEST @UPPER@ ***" );
 
   rtems_test_exit(0);
 }

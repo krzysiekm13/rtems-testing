@@ -16,11 +16,11 @@ void *POSIX_Init(
   rtems_task_argument argument
 )
 {
-  puts( "\n\n*** POSIX TEST @TESTNUM@ ***" );
+  puts( "\n\n*** POSIX TEST @UPPER@ ***" );
 
   /* XXX test code goes here */
   
-  puts( "*** END OF POSIX TEST @TESTNUM@ ***" );
+  puts( "*** END OF POSIX TEST @UPPER@ ***" );
 
   rtems_test_exit(0);
 }

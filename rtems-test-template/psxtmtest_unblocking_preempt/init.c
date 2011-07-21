@@ -43,7 +43,7 @@ void *Low(
     0
   );
 
-  puts( "*** END OF POSIX TIME TEST XXX @TESTNUM@ ***" );
+  puts( "*** END OF POSIX TIME TEST @UPPER@ ***" );
   rtems_test_exit( 0 );
   return NULL;
 }
@@ -79,7 +79,7 @@ void *POSIX_Init(
   pthread_attr_t      attr;
   struct sched_param  param;
 
-  puts( "\n\n*** POSIX TIME TEST XXX @TESTNUM@ ***" );
+  puts( "\n\n*** POSIX TIME TEST @UPPER@ ***" );
 
   /*
    * Deliberately create the XXX BEFORE the threads.  This way the

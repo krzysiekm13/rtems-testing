@@ -26,7 +26,7 @@ rtems_task Init(
   rtems_status_code status;
   rtems_id          task_id;
 
-  puts( "\n\n*** TEST @TESTNUM@ ***" );
+  puts( "\n\n*** TEST @UPPER@ ***" );
 
   status = rtems_task_create(
     rtems_build_name( 'T', 'E', 'S', 'T' ),
@@ -41,7 +41,7 @@ rtems_task Init(
   status = rtems_task_start( task_id, Test_task, 0 );
   directive_failed( status, "rtems_task_start" );
 
-  puts( "*** END OF TEST @TESTNUM@ ***" );
+  puts( "*** END OF TEST @UPPER@ ***" );
 
   rtems_test_exit(0);
 }

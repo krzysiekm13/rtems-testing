@@ -1,3 +1,12 @@
+2011-07-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* psxtest/init.c, psxtest_with_thread/init.c,
+	psxtmtest_blocking/init.c, psxtmtest_single/init.c,
+	psxtmtest_unblocking_nopreempt/init.c,
+	psxtmtest_unblocking_preempt/init.c, smptest/init.c, sptest/init.c,
+	sptest_operation_from_tsr/init.c, sptest_with_task/init.c,
+	tmtest/init.c: Standardize start and end messages.
+
 2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* psxtmtest_unblocking_preempt/Makefile.am,
