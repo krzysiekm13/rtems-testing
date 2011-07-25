@@ -37,7 +37,16 @@ if [ $# -ne 0 ] ; then
   CPUS=$*
 else
   # leave out nios2 tic4x
-  CPUS="arm avr bfin h8300 i386 lm32 m32c m32r m68k mips powerpc sh sparc sparc64"
+  CPUs=
+  for c in arm avr bfin h8300 i386 lm32 m32c m32r m68k mips \
+           powerpc sh sparc sparc64
+  do
+    if [ -r ${RTEMS}/cpukit/score/cpu/${c} ] ; then
+      CPUS="${CPUS} ${c}"
+    else
+      rm -f log/${CPU}-*.log
+    fi
+  done
 fi
 
 # we collect the ticker executables for users to try out
@@ -59,42 +68,42 @@ get_bsps()
   else
     # RTEMS before 4.10
     case $CPU in   
-      avr)     ALL_BSPS="avrtest" ;;
-      bfin)    ALL_BSPS="eZKit533 bf537Stamp" ;;
-      arm)     ALL_BSPS="csb336 csb337 csb637 edb7312 gba gp32 nds"
-	       ALL_BSPS="${ALL_BSPS} rtl22xx rtl22xx_t smdk2410"
-	       ALL_BSPS="${ALL_BSPS} lpc2478 gumstix" ;;
-      h8300)   ALL_BSPS="h8sim" ;;
-      i386)    ALL_BSPS="i386ex pc386 pc386dx pc486 pc586 pc686"
-	       ALL_BSPS="${ALL_BSPS} ts_386ex" ;;
-      lm32)    ALL_BSPS="lm32_evr" ;;
-      m32c)    ALL_BSPS="m32csim" ;;
-      m32r)    ALL_BSPS="m32rsim" ;;
-      m68k)    ALL_BSPS="gen68360 gen68360_040 mvme136 mvme147 mvme147s"
-	       ALL_BSPS="${ALL_BSPS} mvme162 mvme162lx mvme167 ods68302"
-	       ALL_BSPS="${ALL_BSPS} sim68000 mcf5206elite "
-	       ALL_BSPS="${ALL_BSPS} uC5282 mcf52235 mcf5329"
-	       ALL_BSPS="${ALL_BSPS} gen68302 csb360 simcpu32 mrm332 av5282"
-	       ALL_BSPS="${ALL_BSPS} gen68340 mcf5235 idp pgh360" 
-	       ALL_BSPS="${ALL_BSPS} m5484FireEngine" ;;
-      mips)    ALL_BSPS="jmr3904 genmongoosev csb350 hurricane"
-	       ALL_BSPS="${ALL_BSPS} rbtx4925 rbtx4938" ;;
-      nios2)   ALL_BSPS="nios2_iss" ;;
-      powerpc) ALL_BSPS="psim score603e mcp750 mvme2100 mvme2307 mvme3100"
-	       ALL_BSPS="${ALL_BSPS} mpc8260ads ss555 mvme5500 ep1a"
-	       ALL_BSPS="${ALL_BSPS} pm520_cr825 pm520_ze30"
-	       ALL_BSPS="${ALL_BSPS} mbx821_001 mbx821_002 mbx821_002b"
-	       ALL_BSPS="${ALL_BSPS} mbx860_1b mbx860_001b mbx860_002"
-	       ALL_BSPS="${ALL_BSPS} mbx860_005b mtx603e brs5l icecube"
-	       ALL_BSPS="${ALL_BSPS} virtex mpc8349eamds hsc_cm01 haleakala"
-	       ALL_BSPS="${ALL_BSPS} mpc8313erdb mpc5566evb"
-	       ALL_BSPS="${ALL_BSPS} pghplus tqm8xx_stk8xx" ;;
-      sh)      ALL_BSPS="gensh1 gensh2 gensh4"
-	       ALL_BSPS="${ALL_BSPS} simsh1 simsh2 simsh4" ;;
-      sparc)   ALL_BSPS="sis erc32 leon2 leon3" ;;
-      sparc64) ALL_BSPS="usiii niagara" ;;
-      tic4x)   ALL_BSPS="c3xsim c4xsim" ;;
-      unix)    ALL_BSPS="posix"
+      avr)     all_bsps="avrtest" ;;
+      bfin)    all_bsps="eZKit533 bf537Stamp" ;;
+      arm)     all_bsps="csb336 csb337 csb637 edb7312 gba gp32 nds"
+	       all_bsps="${all_bsps} rtl22xx rtl22xx_t smdk2410"
+	       all_bsps="${all_bsps} lpc2478 gumstix" ;;
+      h8300)   all_bsps="h8sim" ;;
+      i386)    all_bsps="i386ex pc386 pc386dx pc486 pc586 pc686"
+	       all_bsps="${all_bsps} ts_386ex" ;;
+      lm32)    all_bsps="lm32_evr" ;;
+      m32c)    all_bsps="m32csim" ;;
+      m32r)    all_bsps="m32rsim" ;;
+      m68k)    all_bsps="gen68360 gen68360_040 mvme136 mvme147 mvme147s"
+	       all_bsps="${all_bsps} mvme162 mvme162lx mvme167 ods68302"
+	       all_bsps="${all_bsps} sim68000 mcf5206elite "
+	       all_bsps="${all_bsps} uC5282 mcf52235 mcf5329"
+	       all_bsps="${all_bsps} gen68302 csb360 simcpu32 mrm332 av5282"
+	       all_bsps="${all_bsps} gen68340 mcf5235 idp pgh360" 
+	       all_bsps="${all_bsps} m5484FireEngine" ;;
+      mips)    all_bsps="jmr3904 genmongoosev csb350 hurricane"
+	       all_bsps="${all_bsps} rbtx4925 rbtx4938" ;;
+      nios2)   all_bsps="nios2_iss" ;;
+      powerpc) all_bsps="psim score603e mcp750 mvme2100 mvme2307 mvme3100"
+	       all_bsps="${all_bsps} mpc8260ads ss555 mvme5500 ep1a"
+	       all_bsps="${all_bsps} pm520_cr825 pm520_ze30"
+	       all_bsps="${all_bsps} mbx821_001 mbx821_002 mbx821_002b"
+	       all_bsps="${all_bsps} mbx860_1b mbx860_001b mbx860_002"
+	       all_bsps="${all_bsps} mbx860_005b mtx603e brs5l icecube"
+	       all_bsps="${all_bsps} virtex mpc8349eamds hsc_cm01 haleakala"
+	       all_bsps="${all_bsps} mpc8313erdb mpc5566evb"
+	       all_bsps="${all_bsps} pghplus tqm8xx_stk8xx" ;;
+      sh)      all_bsps="gensh1 gensh2 gensh4"
+	       all_bsps="${all_bsps} simsh1 simsh2 simsh4" ;;
+      sparc)   all_bsps="sis erc32 leon2 leon3" ;;
+      sparc64) all_bsps="usiii niagara" ;;
+      tic4x)   all_bsps="c3xsim c4xsim" ;;
+      unix)    all_bsps="posix"
 
 	supported=no
 	# check to see if this host has a simulator port
@@ -114,6 +123,15 @@ get_bsps()
 	;;
     esac
 
+    ALL_BSPS=
+    for b in ${all_bsps}
+    do
+      if [ -r ${RTEMS}/make/custom/${b}.cfg ] ; then
+        ALL_BSPS="${ALL_BSPS} ${b}"
+      else
+        rm -f log/${CPU}-${b}.log
+      fi
+    done
   fi
 }
 
