@@ -299,6 +299,7 @@ EOF
     ### generate header
     print_heading Day
     print_heading Time
+    print_heading Version
     print_heading Uncovered Ranges
     # skip Uncovered Percentage
     print_heading Covered Percentage
@@ -310,19 +311,28 @@ EOF
     ls -1 ${bsp}-${build}-*-*/row.html | sort -t -  -k 1,2 -k 3,4r | \
     while read row
     do
+     index=`echo ${row} | sed -e 's/row/index/'`
      sed \
+      -e '1,1s/<TR>/<tr class="stats-table-row">/'  \
       -e '2,2s/<TD>\(20[0-9][0-9]\)\([0-1][0-9]\)\([0-3][0-9]\)/<TD>\1-\2-\3/' \
-      -e '1,1s/<TR>/<tr class="stats-table-row">/' \
+      -e '4,13d' \
+     <$row
+     version="unknown"
+     if [ -r ${index} ] ; then
+       version=`grep heading-title ${index} | \
+          sed -e 's/<.*>RTEMS //' -e 's/<.*$//'`
+     fi
+  
+     echo "<TD>${version}</TD>"
+     sed \
+      -e '1,6d' \
       -e '7,7s/<TD>0/<td class="stats-target-good">0/' \
+      -e '8d' \
       -e '9,9s/<TD>100/<td class="stats-target-good">100/' \
       -e '10,10s/<TD>0/<td class="stats-target-good">0/' \
-      -e 's/<[tT][dD]/<td align="center"/' \
-      -e '4d' \
-      -e '5d' \
-      -e '6d' \
-      -e '8d' \
       <$row
-    done
+    done | \
+     sed -e 's/<[tT][dD]/<td align="center"/'
     echo "</table>"
     echo "</br>"
   done
