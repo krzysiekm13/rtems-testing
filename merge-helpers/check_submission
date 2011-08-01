@@ -233,7 +233,7 @@ fi  ## END OF IF BSP
 if [ ${do_test} = "yes" ] ; then
   # find all the Makefile.am's with rtems_tests_PROGRAMS in them
   Makefiles=`find . -name Makefile.am | xargs -e grep -l ^rtems_tests`
-  if [ X${Makefiles} = X ] ; then
+  if [ "X${Makefiles}" = "X" ] ; then
     fatal "Unable to locate any test Makefile.am files."
   fi
   echo "=== Checking for missing test support files"
