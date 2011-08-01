@@ -189,7 +189,9 @@ do
   test_its_NOT_there ${f} TBD
 done
 
-# If not using -O2, then we really want to know
+#
+# BSP specific checks
+#
 if [ ${do_bsp} = "yes" ] ; then
   # We do not want stdio in a BSP
   echo "=== Checking for stdio"
@@ -208,6 +210,7 @@ if [ ${do_bsp} = "yes" ] ; then
     test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
   fi
 
+  # If not using -O2, then we really want to know
   # BSPs should normally use -O2
   echo "=== Checking for not using -O2"
   grep -H "\-O[013456789]" make/custom/*.cfg
@@ -223,5 +226,34 @@ if [ ${do_bsp} = "yes" ] ; then
     echo "Please run the timing tests and include the results."
   fi
 fi  ## END OF IF BSP
+
+#
+# Test specific checks
+#
+if [ ${do_test} = "yes" ] ; then
+  # find all the Makefile.am's with rtems_tests_PROGRAMS in them
+  Makefiles=`find . -name Makefile.am | xargs -e grep -l ^rtems_tests`
+  if [ X${Makefiles} = X ] ; then
+    fatal "Unable to locate any test Makefile.am files."
+  fi
+  echo "=== Checking for missing test support files"
+  for m in ${Makefiles}
+  do
+    testName=`dirname ${m}`
+    if [ ${testName} = "." ] ; then
+      testName=`pwd`
+    fi
+    testName=`basename ${testName}`
+    # Does this test have a .doc file?
+    if [ ! -r ${testName}.doc ] ; then
+      echo ${testName}.doc is not present
+    fi
+    # Does this test have a .scn file?
+    if [ ! -r ${testName}.scn ] ; then
+      echo ${testName}.scn is not present
+    fi
+  done
+      
+fi
 
 exit 0
