@@ -171,6 +171,14 @@ do
   test_its_NOT_there ${f} "this file may be found in the file"
 done
 
+# We do not want spaces at the end of lines
+echo "=== Checking for spaces at the end of lines"
+find_source -m -c -C | while read f
+do
+  egrep " +$" $f >/dev/null
+  test $? -eq 0 && echo "$f has spaces at the end of one or more lines."
+done
+
 # We do not want GPL code
 echo "=== Checking for hints of GPL code"
 find_source -m -c -C | while read f

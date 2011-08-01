@@ -1,5 +1,9 @@
 2011-08-01	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* check_submission: Check for spaces at end of lines.
+
+2011-08-01	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* check_submission: Fix error in string test.
 
 2011-08-01	Joel Sherrill <joel.sherrill@oarcorp.com>
