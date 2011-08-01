@@ -1,3 +1,9 @@
+2011-08-01	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* Makefile: Enhance to check more than a BSP. 
+	* check_submission: New file.
+	* check_bsp: Removed.
+
 2011-01-24	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* check_bsp: Fix copyright check to allow Copyright.

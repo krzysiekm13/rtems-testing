@@ -3,28 +3,67 @@
 #  submitted.
 #
 #  Test for:
-#    - presense of BSP_BOOTCARD_OPTIONS
-#    - XXX
 #    - XXX
 #
 #  $Id$
 #
 
-if [ $# -ne 1 ] ; then
-  echo Usage: $0 BSPDIR
+usage()
+{
+cat <<EOF
+check_submission [options] directory
+  -v - verbose
+EOF
+}
+
+fatal()
+{
+  usage
   exit 1
+}
+
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
+
+verbose="no"
+do_bsp="no"
+do_test="no"
+
+while getopts vbt OPT
+do
+    case "$OPT" in
+        b) do_bsp="yes" ; do_test="no"  ;;
+        t) do_bsp="no"  ; do_test="yes" ;;
+        v) verbose=`toggle ${verbose}` ;;
+        *) fatal ;;
+    esac
+done
+
+########################### Grab Directory ###########################
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+basedir=${1}
+
+if [ ${do_bsp} = "no" -a ${do_test} = "no" ] ; then
+  fatal must select test or bsp check mode
 fi
 
-bspdir=${1}
-
-if [ ! -d ${bspdir} ] ; then
-  echo ${bspdir} is not a directory
-  exit 1
+if [ ! -d ${basedir} ] ; then
+  fatal ${basedir} is not a directory
 fi
 
-cd ${bspdir}
+
+cd ${basedir}
 if [ $? -ne 0 ] ; then
-  echo Unable to cd to ${bspdir}
+  echo Unable to cd to ${basedir}
   exit 1
 fi
 
@@ -36,7 +75,7 @@ test_its_there()
   fi
   grep ${2} ${1} >/dev/null
   if [ $? -ne 0 ] ; then
-    echo "${2} is NOT in ${bspdir}/${1}"
+    echo "${2} is NOT in ${basedir}/${1}"
   fi
 
 }
@@ -48,7 +87,7 @@ test_its_there_all_case()
   fi
   grep -i ${2} ${1} >/dev/null
   if [ $? -ne 0 ] ; then
-    echo "${2} is NOT in ${bspdir}/${1} - case independent check"
+    echo "${2} is NOT in ${basedir}/${1} - case independent check"
   fi
 
 }
@@ -62,7 +101,7 @@ test_its_NOT_there_all_case()
   shift
   grep -i "${*}" ${FILE} >/dev/null
   if [ $? -eq 0 ] ; then
-    echo "(${*}) SHOULD NOT BE IN ${bspdir}/${FILE} - case independent check"
+    echo "(${*}) SHOULD NOT BE IN ${basedir}/${FILE} - case independent check"
   fi
 }
 
@@ -75,7 +114,7 @@ test_its_NOT_there()
   shift
   grep "${*}" ${FILE} >/dev/null
   if [ $? -eq 0 ] ; then
-    echo "(${*}) SHOULD NOT BE IN ${bspdir}/${FILE}"
+    echo "(${*}) SHOULD NOT BE IN ${basedir}/${FILE}"
   fi
 }
 
@@ -100,20 +139,13 @@ find_source()
   find . -name "*.[chS]" ${findArgs}
 }
 
-if [ -r configure.ac ] ; then
-  echo "=== Checking for RTEMS_BSP_BOOTCARD_OPTIONS in BSP configure.ac"
-  test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
-  echo "=== Checking for RTEMS_BSP_CLEANUP_OPTIONS in BSP configure.ac"
-  test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
-fi
-
 # Verify no lines longer than 80 columns
 echo "=== Checking for lines greater than 79 columns"
 find_source -m -c -C | while read f
 do
   grep  ".\{80,\}" ${f} >/dev/null
   if [ $? -eq 0 ] ; then
-    echo "${bspdir}/${FILE} has the following lines that are too long"
+    echo "*** ${basedir}/${f} has the following lines that are too long"
     grep -n '.\{80,\}' ${f}
   fi
 done
@@ -130,14 +162,6 @@ echo "=== Checking for CVS Id strings"
 find_source | while read f
 do
   test_its_there ${f} "\$Id"
-done
-
-# We do not want stdio in a BSP
-echo "=== Checking for stdio"
-find_source -m -c -C | while read f
-do
-  test_its_NOT_there ${f} printf
-  test_its_NOT_there ${f} puts
 done
 
 # We do not want the reformatted license notice
@@ -166,17 +190,38 @@ do
 done
 
 # If not using -O2, then we really want to know
-echo "=== Checking for not using -O2"
-grep -H "\-O[013456789]" make/custom/*.cfg
+if [ ${do_bsp} = "yes" ] ; then
+  # We do not want stdio in a BSP
+  echo "=== Checking for stdio"
+  find_source -m -c -C | while read f
+  do
+    test_its_NOT_there ${f} printf
+    test_its_NOT_there ${f} puts
+  done
 
-# BSPs should not turn on extra warnings
-echo "=== Checking for turning on extra GCC warning checks"
-grep -H "\-W" make/custom/*.cfg
+  # BSPs should include RTEMS_BSP_CLEANUP_OPTIONS and maybe
+  #   RTEMS_BSP_BOOTCARD_OPTIONS
+  if [ -r configure.ac ] ; then
+    echo "=== Checking for RTEMS_BSP_BOOTCARD_OPTIONS in BSP configure.ac"
+    test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
+    echo "=== Checking for RTEMS_BSP_CLEANUP_OPTIONS in BSP configure.ac"
+    test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
+  fi
 
-# Hopefully have some output from the tmtests
-echo "=== Checking for timing information"
-c=`ls -1 times* 2>/dev/null | wc -l`
-if [ ${c} -eq 0 ] ; then
-  echo "Please run the timing tests and include the results."
-fi
+  # BSPs should normally use -O2
+  echo "=== Checking for not using -O2"
+  grep -H "\-O[013456789]" make/custom/*.cfg
+
+  # BSPs should not turn on extra warnings
+  echo "=== Checking for turning on extra GCC warning checks"
+  grep -H "\-W" make/custom/*.cfg
+
+  # Hopefully have some output from the tmtests
+  echo "=== Checking for timing information"
+  c=`ls -1 times* 2>/dev/null | wc -l`
+  if [ ${c} -eq 0 ] ; then
+    echo "Please run the timing tests and include the results."
+  fi
+fi  ## END OF IF BSP
+
 exit 0

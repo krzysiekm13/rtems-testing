@@ -3,7 +3,7 @@
 #
 
 INSTALL_DIR=../bin
-SCRIPTS=check_bsp
+SCRIPTS=check_submission
 
 all: prep ${SCRIPTS} install
 
