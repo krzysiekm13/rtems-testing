@@ -239,19 +239,24 @@ if [ ${do_test} = "yes" ] ; then
   echo "=== Checking for missing test support files"
   for m in ${Makefiles}
   do
-    testName=`dirname ${m}`
-    if [ ${testName} = "." ] ; then
-      testName=`pwd`
+    directory=`dirname ${m}`
+    if [ ${directory} = "." ] ; then
+      directory=`pwd`
     fi
-    testName=`basename ${testName}`
+    testName=`basename ${directory}`
     # Does this test have a .doc file?
-    if [ ! -r ${testName}.doc ] ; then
+    if [ ! -r ${directory}/${testName}.doc ] ; then
       echo ${testName}.doc is not present
     fi
-    # Does this test have a .scn file?
-    if [ ! -r ${testName}.scn ] ; then
-      echo ${testName}.scn is not present
-    fi
+    case ${directory} in
+      */*tmtests*) ;;
+      *)
+        # Does this test have a .scn file?
+        if [ ! -r ${directory}/${testName}.scn ] ; then
+          echo ${testName}.scn is not present
+        fi
+        ;;
+    esac
   done
       
 fi
