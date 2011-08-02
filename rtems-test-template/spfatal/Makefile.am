@@ -5,8 +5,9 @@
 MANAGERS = all
 
 rtems_tests_PROGRAMS = @LOWER@
-@LOWER@_SOURCES = ../spfatal_support/init.c \
-    ../spfatal_support/system.h testcase.h
+@LOWER@_SOURCES  = ../spfatal_support/init.c
+@LOWER@_SOURCES += ../spfatal_support/system.h
+@LOWER@_SOURCES += testcase.h
 
 dist_rtems_tests_DATA = @LOWER@.scn
 dist_rtems_tests_DATA += @LOWER@.doc

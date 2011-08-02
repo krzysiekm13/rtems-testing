@@ -5,9 +5,10 @@
 MANAGERS = io rate_monotonic semaphore
 
 rtems_tests_PROGRAMS = @LOWER@
-@LOWER@_SOURCES = init.c ../include/timesys.h \
-    ../../support/src/tmtests_empty_function.c \
-    ../../support/src/tmtests_support.c
+@LOWER@_SOURCES  = init.c
+@LOWER@_SOURCES += ../include/timesys.h
+@LOWER@_SOURCES += ../../support/src/tmtests_empty_function.c
+@LOWER@_SOURCES += ../../support/src/tmtests_support.c
 
 dist_rtems_tests_DATA = @LOWER@.doc
 
