@@ -128,7 +128,7 @@ void *POSIX_Init(
     );
     rtems_test_assert( status == 0 );
   }
-  
+
   /*
    * Now start the timer which will be stopped in Low
    */

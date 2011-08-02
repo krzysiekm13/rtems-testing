@@ -64,7 +64,7 @@ void *POSIX_Init(
     status = pthread_create( &threadId, NULL, Middle, NULL );
     rtems_test_assert( !status );
   }
-  
+
   status = pthread_create( &threadId, NULL, Low, NULL );
   rtems_test_assert( !status );
 

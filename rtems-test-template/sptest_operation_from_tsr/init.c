@@ -19,7 +19,6 @@ rtems_timer_service_routine test_operation_from_isr(
 )
 {
   /* do something from ISR */
-  
 
   operation_performed_from_tsr = true;
 }

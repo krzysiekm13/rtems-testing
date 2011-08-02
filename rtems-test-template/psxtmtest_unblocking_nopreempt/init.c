@@ -46,7 +46,7 @@ void *POSIX_Init(
 
   status = pthread_create( &threadId, NULL, Blocker, NULL );
   rtems_test_assert( status == 0 );
-  
+
   /*
    * Deliberately create the XXX after the threads.  This way if the
    * threads do run before we intend, they will get an error.

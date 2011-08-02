@@ -1,5 +1,13 @@
 2011-08-02	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* psxtest/init.c, psxtmtest_blocking/init.c, psxtmtest_single/init.c,
+	psxtmtest_unblocking_nopreempt/init.c,
+	psxtmtest_unblocking_preempt/init.c, sptest/init.c,
+	sptest_operation_from_tsr/init.c, sptest_with_task/init.c,
+	tmtest/init.c: Formatting.
+
+2011-08-02	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* psxtmtest_blocking/Makefile.am, psxtmtest_single/Makefile.am,
 	psxtmtest_unblocking_nopreempt/Makefile.am,
 	psxtmtest_unblocking_preempt/Makefile.am, spfatal/Makefile.am,

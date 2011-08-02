@@ -37,12 +37,11 @@ rtems_task Init(
     &task_id
   );
   directive_failed( status, "rtems_task_create" );
-  
+
   status = rtems_task_start( task_id, Test_task, 0 );
   directive_failed( status, "rtems_task_start" );
 
   puts( "*** END OF TEST @UPPER@ ***" );
-
   rtems_test_exit(0);
 }
 

@@ -19,7 +19,7 @@ void *POSIX_Init(
   puts( "\n\n*** POSIX TEST @UPPER@ ***" );
 
   /* XXX test code goes here */
-  
+
   puts( "*** END OF POSIX TEST @UPPER@ ***" );
 
   rtems_test_exit(0);

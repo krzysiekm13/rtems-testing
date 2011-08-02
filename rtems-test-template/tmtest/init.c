@@ -21,7 +21,7 @@ rtems_task Init(
   puts( "\n\n*** TIME TEST @UPPER@ ***" );
 
   /* XXX test code goes here */
-  
+
   puts( "*** END OF TIME TEST @UPPER@ ***" );
 
   rtems_test_exit(0);

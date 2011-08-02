@@ -19,7 +19,7 @@ rtems_task Init(
   puts( "\n\n*** TEST @UPPER@ ***" );
 
   /* XXX test code goes here */
-  
+
   puts( "*** END OF TEST @UPPER@ ***" );
 
   rtems_test_exit(0);
