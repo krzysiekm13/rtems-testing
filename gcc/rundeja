@@ -146,6 +146,22 @@ case $2 in
     --target_board=rtems-${CPU}-${DEJABSP} \
     "
     ;;
+  libjava)
+    RTEMS_MAKEFILE_PATH=${rtemsdir} \
+    SCRIPTDIR=${SCRIPTDIR} \
+      make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gcjinit
+    if [ $? -ne 0 ] ; then
+      echo unable to compile RTEMS GCC Java Init File
+      exit 1
+    fi
+    rtems_config=`pwd`/rtems_gcj_init.o
+    make check-gcc-java RUNTESTFLAGS="\
+    SIM=${BSP_SIM} \
+    RTEMS_MAKEFILE_PATH=${rtemsdir} \
+    RTEMS_CONFIG_OBJ=${rtems_config} \
+    --target_board=rtems-${CPU}-${DEJABSP} \
+    "
+    ;;
   gcc)
     RTEMS_MAKEFILE_PATH=${rtemsdir} \
     SCRIPTDIR=${SCRIPTDIR} \

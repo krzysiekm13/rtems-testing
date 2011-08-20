@@ -1,0 +1,17 @@
+#
+#  Makefile for GCJ testsuite
+#
+
+include $(RTEMS_MAKEFILE_PATH)/Makefile.inc
+include $(RTEMS_CUSTOM)
+include $(PROJECT_ROOT)/make/leaf.cfg
+
+# Tool helpers
+
+all: rtems_gcj_init.o
+
+clean:
+	rm -f rtems_gcj_init.o
+
+rtems_gcj_init.o: ${SCRIPTDIR}/gcc/rtems_gcj_init.c
+	$(CC) $(CFLAGS) $(CPU_CFLAGS) -c ${SCRIPTDIR}/gcc/rtems_gcj_init.c

@@ -1,3 +1,12 @@
+2011-08-21	Jie Liu <lj8175@gmail.com>
+
+	* gcc/rtems_gcj_init.c: New file for rtems/gcj testing.
+	* gcc/Makefile.rtems_gcjinit: The Makefile for
+	gcc/rtems_gcj_init.c
+	* gcc/rundeja: Add options for libjava test.
+	* gcc/test_driver: Add GCJ options.
+	* gcc/do_one: Add GCJ build and test options.
+
 2011-03-13	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* README, VERSIONS: Specify rtems-testing not gcc-testing.

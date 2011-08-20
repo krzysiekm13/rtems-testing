@@ -53,6 +53,7 @@ test_driver [options] CPU ..  CPU
   -1 - build basic tools (default=yes)
   -a - build Ada (default=yes)
   -G - build GCC Go (default=yes)
+  -J - build GCJ (default=yes)
   -c - clean install point (also installs auto tools)
   -m - mail results to lists (default=yes)
   -n - build native
@@ -71,6 +72,7 @@ doBasicTools="yes"
 verbose="no"
 doAda="yes"
 doGccGo="yes"
+doGcj="yes"
 doMail="yes"
 doTests="yes"
 justTests="no"
@@ -86,6 +88,7 @@ do
     1) doBasicTools=`toggle ${doBasicTools}` ;;
     a) doAda=`toggle ${doAda}` ;;
     G) doGccGo=`toggle ${doGccGo}` ;;
+    J) doGcj=`toggle ${doGcj}` ;;
     c) doCleanInstallPoint=`toggle ${doCleanInstallPoint}` ;;
     j) justTests=`toggle ${justTests}` ;;
     m) doMail=`toggle ${doMail}` ;;
@@ -135,6 +138,7 @@ if [ ${verbose} = "yes" ] ; then
   echo "Build Basic Tools:   " ${doBasicTools}
   echo "Build Ada:           " ${doAda}
   echo "Build GCC Go:        " ${doGccGo}
+  echo "Build GCJ:           " ${doGcj}
   echo "Email Results:       " ${doMail}
   echo "Run Tests:           " ${doTests}
   echo "CPUs to Build:       " ${CPUs}
@@ -144,12 +148,14 @@ test ${doMail}  = "no"       && mailArg="-M"
 test ${doTests} = "yes"      && testArg="-T"
 test ${doAda}   = "yes"      && adaArg="-a"
 test ${doGccGo} = "yes"      && gccgoArg="-G"
+test ${doGcj} = "yes"        && gcjArg="-J"
 test ${doBasicTools} = "yes" && basicArgs="-b -D -1 -r"
 
 echo "Checking for just tests override"
 if [ ${justTests} = "yes" ] ; then
   adaArg=""
   gccgoArg=""
+  gcjArg=""
   basicArgs=""
 fi
 
@@ -265,10 +271,10 @@ do_cpus()
     doOne=${SCRIPTDIR}/gcc/do_one 
     echo "Building ${cpu}/${bsp}..." 
     echo "time sh -x ${doOne} -v -d ${basicArgs}  \
-        ${gccgoArg} ${adaArg} ${mailArg} ${testArg} \
+        ${gccgoArg} ${gcjArg} ${adaArg} ${mailArg} ${testArg} \
         ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1"
     time sh -x ${doOne} -v -d ${basicArgs}  \
-        ${gccgoArg} ${adaArg} ${mailArg} ${testArg} \
+        ${gccgoArg} ${gcjArg} ${adaArg} ${mailArg} ${testArg} \
         ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
   done
