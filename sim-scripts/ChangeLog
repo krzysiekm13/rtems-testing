@@ -1,3 +1,7 @@
+2011-08-21	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim.in: Initialize doTrace variable.
+
 2011-07-20	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim-run.in: Add option to skip critical section tests.
