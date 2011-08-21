@@ -629,6 +629,7 @@ namespace Coverage {
     uint32_t              sAddress;
     uint32_t              sBaseAddress;
     uint32_t              sMapSize;
+    uint32_t              executionCount;
     
     // Ensure that the symbol is a desired symbol.
     itr = set.find( symbolName );
@@ -673,8 +674,8 @@ namespace Coverage {
         destinationCoverageMap->setIsStartOfInstruction( dAddress );
 
       // Merge the execution data.
-      if (sourceCoverageMap->wasExecuted( sAddress ))
-        destinationCoverageMap->setWasExecuted( dAddress );
+      executionCount = sourceCoverageMap->getWasExecuted( sAddress );
+      destinationCoverageMap->sumWasExecuted( dAddress, executionCount );
 
       // Merge the branch data.
       if (sourceCoverageMap->wasTaken( sAddress ))

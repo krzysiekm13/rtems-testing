@@ -1,3 +1,12 @@
+2011-08-21	Pawel Zagorski <pzagor@agh.edu.pl>
+
+	PR 1900/testing
+	* CoverageMapBase.cc, CoverageMapBase.h, DesiredSymbols.cc:
+	Changed tracking of "instruction was executed" from a boolean
+	to a counter.  This change was propagated as needed and a helper
+	method to access new information (getWasExecuted) was added.
+	* covoar.cc: Removed unnecessary blank line.
+
 2011-03-08	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* DesiredSymbols.cc, DesiredSymbols.h, covoar.cc: Fix typo.

@@ -40,7 +40,7 @@ namespace Coverage {
       perAddressInfo_t *i = &Info[ a ];
 
       i->isStartOfInstruction = false;
-      i->wasExecuted          = false;
+      i->wasExecuted          = 0;
       i->isBranch             = false;
       i->isNop                = false;
       i->wasTaken             = false;
@@ -200,17 +200,43 @@ namespace Coverage {
     if (determineOffset( address, &offset ) != true)
       return;
 
-    Info[ offset ].wasExecuted = true;
+    Info[ offset ].wasExecuted += 1;
+  }
+
+  void CoverageMapBase::sumWasExecuted( uint32_t address, uint32_t addition)
+  {
+    uint32_t offset;
+ 
+    if (determineOffset( address, &offset ) != true)
+      return;
+
+    Info[ offset ].wasExecuted += addition;
   }
 
   bool CoverageMapBase::wasExecuted( uint32_t address ) const
   {
     uint32_t offset;
+    bool     result;
  
-    if (determineOffset( address, &offset ) != true)
-      return false;
+    result = true;
 
-   return Info[ offset ].wasExecuted;
+    if (determineOffset( address, &offset ) != true)
+      result = false;
+
+    if (Info[ offset ].wasExecuted <= 0)
+      result = false;
+
+    return result;
+  }
+
+  uint32_t CoverageMapBase::getWasExecuted( uint32_t address ) const
+  {
+    uint32_t offset;
+
+    if (determineOffset( address, &offset ) != true)
+      return 0;
+
+    return Info[ offset ].wasExecuted;	
   }
 
   void CoverageMapBase::setIsBranch(

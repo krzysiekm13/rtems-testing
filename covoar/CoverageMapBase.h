@@ -175,8 +175,8 @@ namespace Coverage {
     bool isStartOfInstruction( uint32_t address ) const;
 
     /*!
-     *  This method sets the boolean which indicates that the instruction
-     *  at the specified address was executed.
+     *  This method increments the counter which indicates how many times
+     *  the instruction at the specified address was executed.
      *
      *  @param[in] address specifies the address which was executed
      */
@@ -192,6 +192,27 @@ namespace Coverage {
      *   address was executed and FALSE otherwise.
      */
     bool wasExecuted( uint32_t address ) const;
+
+    /*!
+     *  This method increases the counter which indicates how many times
+     *  the instruction at the specified address was executed. It is used
+     *  for merging coverage maps.
+     *
+     *  @param[in] address specifies the address which was executed
+     *  @param[in] address specifies the execution count that should be
+     *             added
+     */
+    virtual void sumWasExecuted( uint32_t address, uint32_t addition );
+
+    /*!
+     *  This method returns an unsigned integer which indicates how often
+     *  the instruction at the specified address was executed.
+     *
+     *  @param[in] address specifies the address to check
+     *  
+     *  @return Returns number of executins
+     */
+    uint32_t getWasExecuted( uint32_t address ) const;
 
     /*!
      *  This method sets the boolean which indicates if the specified
@@ -304,9 +325,9 @@ namespace Coverage {
        */
       bool isStartOfInstruction;
       /*!
-       *  This member indicates that the address was executed.
+       *  This member indicates how many times the address was executed.
        */
-      bool wasExecuted;
+      uint32_t wasExecuted;
       /*!
        *  This member indicates that the address is a branch instruction.
        */

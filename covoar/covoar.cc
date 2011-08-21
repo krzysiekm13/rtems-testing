@@ -81,7 +81,6 @@ void usage()
  */
 #include "ConfigFile.h"
 Configuration::FileReader *CoverageConfiguration;
-
 Configuration::Options_t Options[] = {
   { "explanations",         NULL },
   { "format",               NULL },
