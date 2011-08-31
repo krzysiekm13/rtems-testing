@@ -1,5 +1,5 @@
 #
-#  m68k/uc5282 Qemu Support 
+#  PowerPC/QemuPPC BSP Qemu Support 
 #
 #  $Id$
 #
@@ -16,7 +16,7 @@ bspNeedsDos2Unix="yes"
 runARGS()
 {
   if [ ${coverage} = yes ] ; then
-    COVERAGE_ARG="-trace ${1}.cov"
+    COVERAGE_ARG="--exec-trace ${1}.cov"
   fi
 
   echo "-nographic -M prep -boot n -no-reboot ${COVERAGE_ARG} \

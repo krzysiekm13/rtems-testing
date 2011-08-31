@@ -1,3 +1,8 @@
+2011-08-31	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* gdb-sim.in: Default bspDoTrace variable to no.
+	* qemuppc.in: Update arguments to match newer qemu.
+
 2011-08-21	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim.in: Initialize doTrace variable.

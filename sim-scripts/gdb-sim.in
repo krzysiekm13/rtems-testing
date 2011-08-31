@@ -96,6 +96,7 @@ bspGeneratesGDBCommands="no"
 bspGeneratesDeviceTree="no"
 bspSupportsLCD="no"
 bspSupportsTCPIP="no"
+bspDoTrace="no"
 
 ###################################################################
 ###################################################################
