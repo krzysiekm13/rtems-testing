@@ -43,8 +43,8 @@ namespace Coverage {
       i->wasExecuted          = 0;
       i->isBranch             = false;
       i->isNop                = false;
-      i->wasTaken             = false;
-      i->wasNotTaken          = false;
+      i->wasTaken             = 0;
+      i->wasNotTaken          = 0;
     }
   }
 
@@ -292,7 +292,7 @@ namespace Coverage {
     if (determineOffset( address, &offset ) != true)
       return;
 
-    Info[ offset ].wasTaken = true;
+    Info[ offset ].wasTaken += 1;
   }
 
   void CoverageMapBase::setWasNotTaken(
@@ -304,7 +304,7 @@ namespace Coverage {
     if (determineOffset( address, &offset ) != true)
       return;
 
-    Info[ offset ].wasNotTaken = true;
+    Info[ offset ].wasNotTaken += 1;
   }
 
   bool CoverageMapBase::wasAlwaysTaken( uint32_t address ) const
@@ -331,10 +331,36 @@ namespace Coverage {
 
   bool CoverageMapBase::wasNotTaken( uint32_t address ) const
   {
+	    uint32_t offset;
+	    bool     result;
+
+	    result = true;
+
+	    if (determineOffset( address, &offset ) != true)
+	      result = false;
+
+	    if (Info[ offset ].wasNotTaken <= 0)
+	      result = false;
+
+	    return result;
+  }
+
+  void CoverageMapBase::sumWasNotTaken( uint32_t address, uint32_t addition)
+  {
     uint32_t offset;
- 
+
     if (determineOffset( address, &offset ) != true)
-      return false;
+      return;
+
+    Info[ offset ].wasNotTaken += addition;
+  }
+
+  uint32_t CoverageMapBase::getWasNotTaken( uint32_t address ) const
+  {
+    uint32_t offset;
+
+    if (determineOffset( address, &offset ) != true)
+      return 0;
 
     return Info[ offset ].wasNotTaken;
   }
@@ -342,9 +368,35 @@ namespace Coverage {
   bool CoverageMapBase::wasTaken( uint32_t address ) const
   {
     uint32_t offset;
+    bool     result;
+
+    result = true;
  
     if (determineOffset( address, &offset ) != true)
-      return false;
+      result = false;
+
+    if (Info[ offset ].wasTaken <= 0)
+      result = false;
+
+    return result;
+  }
+
+  void CoverageMapBase::sumWasTaken( uint32_t address, uint32_t addition)
+  {
+    uint32_t offset;
+
+    if (determineOffset( address, &offset ) != true)
+      return;
+
+    Info[ offset ].wasTaken += addition;
+  }
+
+  uint32_t CoverageMapBase::getWasTaken( uint32_t address ) const
+  {
+    uint32_t offset;
+
+    if (determineOffset( address, &offset ) != true)
+      return 0;
 
     return Info[ offset ].wasTaken;
   }

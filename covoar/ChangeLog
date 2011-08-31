@@ -1,3 +1,15 @@
+2011-08-31      Pawel Zagorski <pzagor@agh.edu.pl>
+
+	* covoar/CoverageMapBase.cc, covoar/CoverageMapBase.h,
+	covoar/DesiredSymbols.cc, covoar/DesiredSymbols.h,
+	covoar/app_common.cc, covoar/app_common.h,
+	rtems-coverage/do_coverage:
+	Modified do_coverage script and source code to gather information 
+	about object files from which symbols originate. Changed tracking 
+	of "branch was taken" and "branch was not taken" from booleans to
+	counters. Change propagated and new helper methods added: 
+	(getWasTaken, getWasNotTaken, sumWasTaken, sumWasNotTaken)
+
 2011-08-21	Pawel Zagorski <pzagor@agh.edu.pl>
 
 	PR 1900/testing

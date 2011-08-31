@@ -253,20 +253,63 @@ namespace Coverage {
     bool isBranch( uint32_t address ) const;
 
     /*!
-     *  This method sets the boolean which indicates if the branch
-     *  at the specified address was taken.
+     *  This method increments the counter which indicates how many times
+     *  the branch at the specified address was taken.
      *
      *  @param[in] address specifies the address of the branch instruction
      */
     void setWasTaken( uint32_t address );
 
     /*!
-     *  This method sets the boolean which indicates if the branch
-     *  at the specified address was NOT taken.
+     *  This method increases the counter which indicates how many times
+     *  the branch at the specified address was taken. It is used
+     *  for merging coverage maps.
+     *
+     *  @param[in] address specifies the address which was executed
+     *  @param[in] address specifies the execution count that should be
+     *             added
+     */
+    virtual void sumWasTaken( uint32_t address, uint32_t addition );
+
+    /*!
+     *  This method returns an unsigned integer which indicates how often
+     *  the branch at the specified address was taken.
+     *
+     *  @param[in] address specifies the address to check
+     *
+     *  @return Returns number of executins
+     */
+    uint32_t getWasTaken( uint32_t address ) const;
+
+    /*!
+     *  This method increments the counter which indicates how many times
+     *  the branch at the specified address was not taken.
      *
      *  @param[in] address specifies the address of the branch instruction
      */
     void setWasNotTaken( uint32_t address );
+
+    /*!
+     *  This method increases the counter which indicates how many times
+     *  the branch at the specified address was not taken. It is used
+     *  for merging coverage maps.
+     *
+     *  @param[in] address specifies the address which was executed
+     *  @param[in] address specifies the execution count that should be
+     *             added
+     */
+    virtual void sumWasNotTaken( uint32_t address, uint32_t addition );
+
+    /*!
+     *  This method returns an unsigned integer which indicates how often
+     *  the branch at the specified address was not taken.
+     *
+     *  @param[in] address specifies the address to check
+     *
+     *  @return Returns number of executins
+     */
+    uint32_t getWasNotTaken( uint32_t address ) const;
+
 
     /*!
      *  This method returns a boolean which indicates if the branch
@@ -340,12 +383,12 @@ namespace Coverage {
        *  When isBranch is TRUE, this member indicates that the branch
        *  instruction at the address was taken.
        */
-      bool wasTaken;
+      uint32_t wasTaken;
       /*!
        *  When isBranch is TRUE, this member indicates that the branch
        *  instruction at the address was NOT taken.
        */
-      bool wasNotTaken;
+      uint32_t wasNotTaken;
     } perAddressInfo_t;
 
     /*!

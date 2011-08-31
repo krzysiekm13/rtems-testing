@@ -34,7 +34,7 @@ namespace Coverage {
     const char* const symbolsFile
   )
   {
-    char*                   cStatus;
+    int                   cStatus;
     bool                    done = false;
     FILE*                   sFile;
     SymbolInformation*      symInfo;
@@ -69,12 +69,14 @@ namespace Coverage {
       // Skip blank lines between symbols
       do { 
         inputBuffer[0] = '\0';
-        cStatus = fgets( inputBuffer, MAX_LINE_LENGTH, sFile );
-        if ( cStatus == NULL ) {
+        inputBuffer2[0] = '\0';
+        cStatus = fscanf( sFile, "%s %s", inputBuffer, inputBuffer2 );
+        //TODO: Store inputBuffer2 value containing symbol source file
+        if ( cStatus == EOF ) {
           done = true;
         }
         else {
-          inputBuffer[ strlen(inputBuffer) - 1] = '\0';
+          //inputBuffer[ strlen(inputBuffer) - 1] = '\0';
           line++;
         }
       } while ( !done && (inputBuffer[0] == '\0') );
@@ -678,11 +680,11 @@ namespace Coverage {
       destinationCoverageMap->sumWasExecuted( dAddress, executionCount );
 
       // Merge the branch data.
-      if (sourceCoverageMap->wasTaken( sAddress ))
-        destinationCoverageMap->setWasTaken( dAddress );
+      executionCount = sourceCoverageMap->getWasTaken( sAddress );
+      destinationCoverageMap->sumWasTaken( dAddress, executionCount );
 
-      if (sourceCoverageMap->wasNotTaken( sAddress ))
-        destinationCoverageMap->setWasNotTaken( dAddress );
+      executionCount = sourceCoverageMap->getWasNotTaken( sAddress );
+      destinationCoverageMap->sumWasNotTaken( dAddress, executionCount );
     }
   }
 

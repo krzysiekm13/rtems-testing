@@ -23,6 +23,7 @@ extern const char*                  projectName;
 
 #define MAX_LINE_LENGTH             512
 extern char                         inputBuffer[MAX_LINE_LENGTH];
+extern char                         inputBuffer2[MAX_LINE_LENGTH];
 
 
 bool FileIsNewer( const char *f1, const char *f2 ); 

@@ -463,7 +463,8 @@ filter_nm()
       test ${verbose} = "yes" && echo Generating symbols from ${l} >&2
       # echo "========= START $l"
       ${TARGET}-nm --format=sysv $l | grep "FUNC|" | \
-        cut -d'|' -f1 | sed -e 's/ *$//'
+        cut -d'|' -f1 | sed -e 's/ *$//' -e "s,$, ${l},"
+
       # echo "========= END $l"
 
     # no else

@@ -190,7 +190,7 @@ namespace Coverage {
     typedef std::map<std::string, SymbolInformation> symbolSet_t;
 
     /*!
-     *  This variable contains a map of ymbol sets for each 
+     *  This variable contains a map of symbol sets for each 
      *  symbol in the system keyed on the symbol name.
      */
     symbolSet_t set;
