@@ -179,6 +179,17 @@ do
   test $? -eq 0 && echo "$f has spaces at the end of one or more lines."
 done
 
+# We do not want tabs in source files
+echo "=== Checking for tabs in source files"
+find_source | while read f
+do
+  grep -P '\t' $f >/dev/null
+  if [ $? -eq 0 ]; then
+    echo "*** ${basedir}/${f} has the following lines with tabs"
+    grep -P '\t' $f
+  fi
+done
+
 # We do not want GPL code
 echo "=== Checking for hints of GPL code"
 find_source -m -c -C | while read f
