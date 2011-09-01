@@ -1,3 +1,8 @@
+2011-09-01	Pawel Zagorski <pzagor@agh.edu.pl>
+
+	PR 1909/testing
+	* ReportsHtml.cc: Add branch taken and not taken count columns.
+
 2011-08-31      Pawel Zagorski <pzagor@agh.edu.pl>
 
 	* covoar/CoverageMapBase.cc, covoar/CoverageMapBase.h,

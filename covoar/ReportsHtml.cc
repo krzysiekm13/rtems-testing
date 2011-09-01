@@ -203,6 +203,7 @@ namespace Coverage {
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">File</th>\n"
         "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Bytes</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Reason</th>\n"
+        "<th class=\"table-sortable:default\" align=\"left\">Taken / Not Taken</th>\n"
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
         "</tr>\n"
@@ -508,6 +509,9 @@ namespace Coverage {
     const Coverage::Explanation* explanation;
     std::string                  temp;
     int                          i;
+    uint32_t                     bAddress = 0;
+    uint32_t                     lowAddress = 0;
+    Coverage::CoverageMapBase*   theCoverageMap = NULL;
 
     // Mark the background color different for odd and even lines.
     if ( ( count%2 ) != 0 )
@@ -560,11 +564,22 @@ namespace Coverage {
         "<td class=\"covoar-td\" align=\"center\">Never Taken</td>\n"
       );
 
+    // Taken / Not taken counts
+    lowAddress = rangePtr->lowAddress;
+    bAddress = symbolPtr->second.baseAddress;
+    theCoverageMap = symbolPtr->second.unifiedCoverageMap;
+    fprintf(
+      report,
+      "<td class=\"covoar-td\" align=\"center\">%d / %d</td>\n",
+      theCoverageMap->getWasTaken( lowAddress - bAddress ),
+      theCoverageMap->getWasNotTaken( lowAddress - bAddress )
+    );
+
     // See if an explanation is available and write the Classification and
     // the Explination Columns.
     explanation = AllExplanations->lookupExplanation( rangePtr->lowSourceLine );
     if ( !explanation ) {
-      // Write Classification
+      // Write Classificationditr->second.baseAddress
       fprintf( 
         report, 
         "<td class=\"covoar-td\" align=\"center\">NONE</td>\n"
