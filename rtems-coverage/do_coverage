@@ -421,7 +421,7 @@ generate_reports()
   RTEMSLIB=${BASEDIR}/b-${BSP}/${TARGET}/${BSP}/lib/librtemscpu.a
 
   if [ -r ${RTEMSLIB} ] ; then
-    while read symbol
+    cut -d' ' -f1 ${results_dir}/no_range_uncovered.txt | while read symbol
     do
       line=`${TARGET}-nm --format=sysv \
 	${BASEDIR}/b-${BSP}/${TARGET}/${BSP}/lib/librtemscpu.a | \
@@ -429,7 +429,7 @@ generate_reports()
       size=`echo ${line} | cut -d'|' -f5 | tr "[:lower:]" "[:upper:]"`
       size=`echo 16 i ${size} p | dc`
       echo "${size}	${symbol}	unknown"
-    done <${results_dir}/no_range_uncovered.txt | sort -n -r \
+    done | sort -n -r \
          >${results_dir}/sizes_unreferenced.txt
   fi
 
@@ -515,8 +515,8 @@ generate_symbols()
       # Now add developmental libraries
       # NOTE: all non-network libraries are listed here.  --joel 5 March 2010
       if [ ${analyze_developmental} = "yes" ] ; then
-        # filter_nm libfs/${subd}librfs.a
-        # filter_nm libfs/${subd}libdosfs.a
+        filter_nm libfs/${subd}librfs.a
+        filter_nm libfs/${subd}libdosfs.a
         filter_nm libfs/${subd}libdevfs.a
         filter_nm libfs/${subd}libimfs.a
         filter_nm libcsupport/${subd}libcsupport.a
@@ -531,7 +531,7 @@ generate_symbols()
         # filter_nm libmisc/${subd}libmw-fb.a
         # NEVER INCLUDE libdummy.a!!!
         # filter_nm libmisc/${subd}libdummy.a
-        # filter_nm libmisc/${subd}libfsmount.a
+        filter_nm libmisc/${subd}libfsmount.a
         filter_nm libmisc/${subd}libstringto.a
         filter_nm libmisc/${subd}libdevnull.a
         # filter_nm libmisc/${subd}libcapture.a
@@ -539,7 +539,7 @@ generate_symbols()
         # filter_nm libmisc/${subd}libmonitor.a
         # filter_nm libmisc/${subd}libserdbg.a
         # filter_nm libmisc/${subd}libuntar.a
-        # filter_nm libblock/${subd}libblock.a
+        filter_nm libblock/${subd}libblock.a
       fi
       ;;
     esac
