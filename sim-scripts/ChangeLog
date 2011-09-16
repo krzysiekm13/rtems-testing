@@ -1,3 +1,9 @@
+2011-09-16	Sebastian Huber <sebastian.huber@embedded-brains.de>
+
+	* check_endof: Update due to test case output changes.
+	* gdb-sim-run.in: Run more test cases.
+	* sis.in: Use 180 seconds time limit for all test cases.
+
 2011-08-31	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* gdb-sim.in: Default bspDoTrace variable to no.

@@ -89,9 +89,8 @@ doTrace="no"
 enable_display_adapter="no"
 enable_network="no"
 rtems_test="no"
-skipIntrCriticalTest="no"
 
-while getopts "vcCgGil:L:DsSNT" OPT
+while getopts "vcCgGil:L:DsNT" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
@@ -105,7 +104,6 @@ do
    l) defaultLimit="$OPTARG";;
    L) logdir="$OPTARG";;
    s) use_sysv_ipc="yes";;
-   S) skipIntrCriticalTest="yes";;
    t) doTrace="yes";;
    T) rtems_test="yes";;
    *) fatal;;
@@ -413,16 +411,6 @@ do
   ## If the test is known to be interactive or locks up and we are
   ## in batch mode, skip it.
   case ${baseToRun} in
-    monitor*|termios.*|fileio*|capture*)
-        warn "skipping interactive ${baseToRun}"
-        continue
-        ;;
-    spintrcritical*|psxintrcritical*)
-        if [ ${skipIntrCriticalTest} = "yes" ] ; then
-          warn "skipping Interrupt Critical Section test ${baseToRun}"
-          continue
-        fi
-        ;;
     appstart*)
         warn "skipping intermediate file ${baseToRun}"
         continue

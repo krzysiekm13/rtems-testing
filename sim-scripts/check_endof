@@ -19,15 +19,7 @@ do
     case $f in
       # we don't expect an "END OF" from these
       *ppd*) ;;
-      *fatal*) ;;
       *minimum*) ;;
-      *stackchk*) ;;
-      # These do not know when they hit the case so run until killed.
-      *spintrcritical06*) ;;
-      *spintrcritical07*) ;;
-      *spintrcritical09*) ;;
-      *spintrcritical13*) ;;
-      *spintrcritical14*) ;;
       *)
         grep "END OF" $f >/dev/null
         if [ $? -ne 0 ] ; then
