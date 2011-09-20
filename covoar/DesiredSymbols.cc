@@ -34,7 +34,7 @@ namespace Coverage {
     const char* const symbolsFile
   )
   {
-    int                   cStatus;
+    int                     cStatus;
     bool                    done = false;
     FILE*                   sFile;
     SymbolInformation*      symInfo;

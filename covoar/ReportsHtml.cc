@@ -203,7 +203,8 @@ namespace Coverage {
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">File</th>\n"
         "<th class=\"table-sortable:numeric\" align=\"left\">Size </br>Bytes</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Reason</th>\n"
-        "<th class=\"table-sortable:default\" align=\"left\">Taken / Not Taken</th>\n"
+        "<th class=\"table-filterable table-sortable:default\" align=\"left\">Taken</th>\n"
+	"<th class=\"table-filterable table-sortable:default\" align=\"left\">Not Taken</th>\n"
         "<th class=\"table-filterable table-sortable:default\" align=\"left\">Classification</th>\n"
         "<th class=\"table-sortable:default\" align=\"left\">Explanation</th>\n"
         "</tr>\n"
@@ -570,8 +571,12 @@ namespace Coverage {
     theCoverageMap = symbolPtr->second.unifiedCoverageMap;
     fprintf(
       report,
-      "<td class=\"covoar-td\" align=\"center\">%d / %d</td>\n",
-      theCoverageMap->getWasTaken( lowAddress - bAddress ),
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
+      theCoverageMap->getWasTaken( lowAddress - bAddress )
+    );
+        fprintf(
+      report,
+      "<td class=\"covoar-td\" align=\"center\">%d</td>\n",
       theCoverageMap->getWasNotTaken( lowAddress - bAddress )
     );
 
