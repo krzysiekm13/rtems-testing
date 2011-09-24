@@ -35,6 +35,7 @@ leon3
 leon3-gdb
 lm32_evr
 lm32_evr-gdb
+lm3s6965
 m32csim
 m32csim-gdb
 m32rsim

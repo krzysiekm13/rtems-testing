@@ -1,0 +1,39 @@
+#
+#  arm/lm3s6965 Qemu Support 
+#
+#  $Id$
+#
+
+bspUsesGDBSimulator="no"
+# bspGeneratesGDBCommands="yes"
+# bspSupportsGDBServerMode="yes"
+runBSP=NOT_OVERRIDDEN
+if [ ! -r ${runBSP} ] ; then
+  runBSP=qemu-system-arm
+fi
+bspNeedsDos2Unix="yes"
+
+runARGS()
+{
+  if [ ${coverage} = yes ] ; then
+    COVERAGE_ARG="-trace ${1}.cov"
+  fi
+
+  echo "-nographic ${COVERAGE_ARG} -M lm3s6965evb -kernel `basename ${1}`"
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${testname} in
+    *)         limit=180 ;;
+  esac
+  echo ${limit}
+}
+
+bspGeneratesDeviceTree="no"
