@@ -1,3 +1,8 @@
+2011-11-04	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* qemu-nic: Better error message when not root and want networking.
+	Increase memory.
+
 2011-03-03	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* qemu-ifup: VirtualBox uses 10.0.x.x for its eth0 so we need to switch

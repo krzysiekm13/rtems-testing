@@ -57,14 +57,18 @@ case ${nic} in
      ;;
 esac
  
-ARGS="${MODEL} -m 64 \
+ARGS="${MODEL} -m 128 \
     -boot a -fda ${QEMUDIR}/qemu/pc386_fda \
     -hda fat:${QEMUDIR}/qemu/hd  --no-reboot"
-if [ ${nic} != "none" -a $EUID -eq 0 ] ; then
-  NICARGS="\
-    -net nic,model=${NIC} \
-    -net nic,macaddr=00:80:7F:22:61:77 \
-    -net tap,script=/etc/qemu-ifup"
+if [ ${nic} != "none" ] ; then
+  if [ $EUID -eq 0 ] ; then
+    NICARGS="\
+      -net nic,model=${NIC} \
+      -net nic,macaddr=00:80:7F:22:61:77 \
+      -net tap,script=/etc/qemu-ifup"
+  else
+     echo "*** You are not root -- ignoring request for NIC ***"
+  fi
 
   if [ ! -r /etc/qemu-ifup ] ; then
     echo /etc/qemu-ifup not found
