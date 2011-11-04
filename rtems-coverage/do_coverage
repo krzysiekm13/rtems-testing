@@ -81,7 +81,6 @@ toggle()
 
 # parse arguments for these
 verbose="no"
-do_all="no"
 do_posix="yes"
 do_optimize_size="no"
 do_covoar="no"
@@ -103,7 +102,6 @@ while getopts vB:PSmAucbCLrRftO:dD OPT
 do
     case "$OPT" in
         A)
-          do_all="yes"
           do_covoar="yes"
           do_posix="yes"
           do_rtems_update="yes"
@@ -223,7 +221,6 @@ print_verbose()
   echo "POSIX Enabled:        " ${do_posix}
   echo "Core Configuration    " ${do_core}
   echo "Developmental Code:   " ${do_developmental}
-  echo "do_all:               " ${do_all}
   echo "do_covoar             " ${do_covoar}
   echo "do_rtems_update:      " ${do_rtems_update}
   echo "do_rtems_configure:   " ${do_rtems_configure}
