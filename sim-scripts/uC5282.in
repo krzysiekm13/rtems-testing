@@ -20,7 +20,7 @@ runARGS()
 {
   if [ ${coverage} = yes ] ; then
      rm -f trace ${1}.tra
-     COVERAGE_ARG="-trace ${1}.tra"
+     COVERAGE_ARG="-exec-trace ${1}.tra"
   fi
 
   echo "-M uc5282 -nographic ${COVERAGE_ARG} -kernel ${1}"
