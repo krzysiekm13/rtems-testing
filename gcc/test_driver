@@ -116,8 +116,8 @@ do
   fi
 done
 
-CPUS_PART1="avr arm h8300 i386 m32c mips  sh sparc64"
-CPUS_PART2="bfin lm32  m32r m68k powerpc sparc"
+CPUS_PART1="avr arm h8300 i386 m32c mips sh sparc64"
+CPUS_PART2="bfin lm32 m32r m68k powerpc sparc"
 ALL_CPUs="${CPUS_PART1} ${CPUS_PART2}"
 
 if    [ "X${CPUs}" = "X" ] ; then
