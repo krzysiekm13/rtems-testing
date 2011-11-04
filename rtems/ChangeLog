@@ -1,3 +1,7 @@
+2011-11-04	Joel Sherrill <joel.sherrilL@OARcorp.com>
+
+	* bit_rtems: Update to handle exe extension more gracefully.
+
 2011-07-25	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* bit_all_bsps: Ensure BSPs exist in version under test.

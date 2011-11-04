@@ -137,9 +137,7 @@ if [ x${BSP_TO_TEST} != x ] ; then
       #   ENABLE_BSP="${ENABLE_BSP} BSP_VIDEO_80x50=1"
       #   ;;
       pc386) ENABLE_BSP="--enable-rtemsbsp=pc386 BSP_VIDEO_80x50=1" ;;
-      sis)
-         ENABLE_BSP="${ENABLE_BSP} CONSOLE_USE_INTERRUPTS=1"
-         ;;
+      # sis) ENABLE_BSP="${ENABLE_BSP} CONSOLE_USE_INTERRUPTS=1" ;;
       *)     ENABLE_BSP=--enable-rtemsbsp="${BSP_TO_TEST}" ;;
     esac
 
@@ -369,12 +367,10 @@ if [ $CPU != unix ] ; then
 fi
 
 conf_rtems ${TARGET_ARG} ${ENABLE_ARGS} ${ENABLE_BSP} $args
-
 if [ $? -ne 0 ] ; then
   echo "Unable to configure successfully"
   exit 1
 fi
-
 
 build_status=0
 
@@ -424,6 +420,11 @@ case $CPU in
 esac
 build_status=$?
 
+case ${target} in
+  *4.6*|*4.7*|*4.8*) exeext=exe ;;
+  *)                 exeext=ralf ;;
+esac
+
 case ${BSP_ARG} in
   multilib)
      # should be in build-CPU-multilib-rtems
@@ -446,10 +447,10 @@ case ${BSP_ARG} in
      rm -rf ${INSTALL_POINT}/${target}/lib/include
 
      mkdir -p ../ticker-executables
-     find . -name ticker.ralf | while read f
+     find . -name ticker.${exeext} | while read f
      do
         bsp=`echo $f | cut -d'/' -f4`
-        cp $f ../ticker-executables/${CPU}-${bsp}-multilib-ticker.ralf
+        cp $f ../ticker-executables/${CPU}-${bsp}-multilib-ticker.${exeext}
      done
 
      check_fatal $status "failed BSP ${MAKE} ${MAKE_DEBUG_ARG}."
@@ -505,11 +506,11 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     testable=no
   fi
 
-  # If not multilib, grab the ticker.ralf and save it out
+  # If not multilib, grab the ticker.${exeext} and save it out
   if [ X${BSP_TO_TEST} != X ] ; then
     mkdir -p ../ticker-executables
-    cp `find . -name ticker.ralf` \
-        ../ticker-executables/${CPU}-${BSP_TO_TEST}-ticker.ralf
+    cp `find . -name ticker.${exeext}` \
+        ../ticker-executables/${CPU}-${BSP_TO_TEST}-ticker.${exeext}
   fi
 
   if [ ${testable} = yes ] ; then
@@ -519,7 +520,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
 
     mkdir ${testdir}
     check_fatal $? "failed to mkdir test directory for ${BSP_TO_TEST}."
-    cp `find . -name "*.ralf"` ${testdir}
+    cp `find . -name "*.${exeext}"` ${testdir}
 
     case ${BSP_TO_TEST} in
       jmr3904)  runner=jmr3904 ;;
@@ -541,7 +542,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
     check_fatal $? "failed to enter test directory for ${BSP_TO_TEST}."
 
     # This should run the tests
-    ${runner} *.ralf
+    ${runner} *.${exeext}
 
     # Check Logs
     echo "Checking Logs for Proper Test Completion ..."
