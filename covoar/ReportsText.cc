@@ -21,6 +21,10 @@ ReportsText::ReportsText( time_t timestamp ):
   reportExtension_m = ".txt";
 }
 
+ReportsText::~ReportsText()
+{
+}
+
 void ReportsText::AnnotatedStart(
   FILE*                aFile
 )

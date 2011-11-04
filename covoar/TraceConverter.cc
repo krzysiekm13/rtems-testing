@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <getopt.h>
 
 #include "qemu-log.h"
 

@@ -29,7 +29,7 @@ class ReportsBase {
 
   public:
     ReportsBase( time_t timestamp );
-    ~ReportsBase();
+    virtual ~ReportsBase();
 
     /*!
      *  This method produces an index of the reports generated.

@@ -26,7 +26,7 @@ class ReportsText: public ReportsBase {
 
   public:
     ReportsText( time_t timestamp );
-   ~ReportsText();
+    virtual ~ReportsText();
 
   /*!
    *  This method produces a report that contains information about each

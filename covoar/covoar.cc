@@ -348,7 +348,7 @@ int main(
   SymbolsToAnalyze->load( symbolsFile );
   if (Verbose)
     fprintf(
-      stderr, "Analyzing %d symbols\n", SymbolsToAnalyze->set.size()
+      stderr, "Analyzing %ld symbols\n", SymbolsToAnalyze->set.size()
     );
 
   // Create explanations.
