@@ -1,3 +1,8 @@
+2011-11-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* sis.in: Increase memory.
+	* uC5282.in: Add pattern for exception meaning program end.
+
 2011-11-04	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* pc386.in: Use CPU supported by older qemu.

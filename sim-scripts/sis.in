@@ -6,7 +6,7 @@
 
 runARGS()
 {
-  echo ${1}
+  echo "-m 64 ${1}"
 }
 
 checkBSPFaults()
