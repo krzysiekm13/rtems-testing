@@ -1,5 +1,10 @@
 2011-11-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
+	* uC5282.in: Use grep -E rather rather than egrep as Open Group has
+	marked it legacy.
+
+2011-11-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
 	* sis.in: Increase memory.
 	* uC5282.in: Add pattern for exception meaning program end.
 

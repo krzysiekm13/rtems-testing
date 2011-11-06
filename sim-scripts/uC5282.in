@@ -32,7 +32,7 @@ checkBSPFaults()
   for pattern in  \
      "^PC:.*  SR:.*"
   do
-    egrep "${pattern}" ${logfile}
+    grep -E "${pattern}" ${logfile}
     if [ $? -eq 0 ] ; then
       return 1
     fi
