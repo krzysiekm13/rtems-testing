@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-#  gccgo_status
+#  gccobjc_status
 #
 
 vfile=`dirname $0`/../VERSIONS
@@ -21,15 +21,16 @@ else
   exit 1
 fi
 
-if [ ! -d ${BUILDDIR}/b-${cpu}-go/gcc/testsuite ] ; then
+
+if [ ! -d ${BUILDDIR}/b-${cpu}-objc/gcc/testsuite ] ; then
   echo Test directory not found
   exit 1
 fi
 
-cd ${BUILDDIR}/b-${cpu}-go/gcc/testsuite
+cd ${BUILDDIR}/b-${cpu}-objc/gcc/testsuite
 while :
 do
-  for BASE in go
+  for BASE in objc
   do
     LFILE=${BASE}/${BASE}.log
     SFILE=${BASE}/${BASE}.sum

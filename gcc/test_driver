@@ -2,6 +2,8 @@
 #
 #  Test Driver
 #
+#  test_driver CPUs|all
+#
 #  $Id$
 #
 
@@ -76,8 +78,9 @@ doGcj="yes"
 doMail="yes"
 doTests="yes"
 justTests="no"
+checkOptionsAndExit="no"
 
-while getopts j1AacmnuGTUv OPT
+while getopts J1AacmnuCGTUv OPT
 do
   case "$OPT" in
     A) doCleanInstallPoint=`toggle ${doCleanInstallPoint}`
@@ -87,6 +90,7 @@ do
        ;;
     1) doBasicTools=`toggle ${doBasicTools}` ;;
     a) doAda=`toggle ${doAda}` ;;
+    C) checkOptionsAndExit=`toggle ${checkOptionsAndExit}` ;;
     G) doGccGo=`toggle ${doGccGo}` ;;
     J) doGcj=`toggle ${doGcj}` ;;
     c) doCleanInstallPoint=`toggle ${doCleanInstallPoint}` ;;
@@ -120,14 +124,16 @@ CPUS_PART1="avr arm h8300 i386 m32c mips sh sparc64"
 CPUS_PART2="bfin lm32 m32r m68k powerpc sparc"
 ALL_CPUs="${CPUS_PART1} ${CPUS_PART2}"
 
-if    [ "X${CPUs}" = "X" ] ; then
+if  [ "X${CPUs}" = "Xall" -o "X${CPUs}" = "X all" ] ; then
   CPUs="${ALL_CPUs}"
 elif [ "X${CPUs}" = "X part1" ] ; then
   CPUs="${CPUS_PART1}"
 elif [ "X${CPUs}" = "X part2" ] ; then
   CPUs="${CPUS_PART2}"
+elif [ "X${CPUs}" = "X" -a ${doNative} = "no" ] ; then
+  echo "No CPUs specified to test"
+  exit 1
 fi
-
 
 if [ ${verbose} = "yes" ] ; then
   echo "Clean Install Point: " ${doCleanInstallPoint}
@@ -143,6 +149,8 @@ if [ ${verbose} = "yes" ] ; then
   echo "Run Tests:           " ${doTests}
   echo "CPUs to Build:       " ${CPUs}
 fi
+
+test ${checkOptionsAndExit} = "yes" && exit 0
 
 test ${doMail}  = "no"       && mailArg="-M"
 test ${doTests} = "yes"      && testArg="-T"
@@ -213,12 +221,12 @@ install_auto()
 install_ppl()
 {
   if [ x${PPL} != x ] ; then
-    if [ -r ${INSTALL}/lib/libppl.a ] ; then
+    if [ ! -r ${INSTALL}/lib/libppl.a ] ; then
       echo "*** Building PPL ***"
       cd ${PPL}
       make distclean
-      ./configure --prefix=${INSTALL}
-      make all install
+      ./configure --enable-watchdog --prefix=${INSTALL}
+      make ${MAKEJOBS} all install
     fi
   fi
 }
@@ -240,7 +248,7 @@ update_others()
   done
 }
 
-do_cpus()
+build_cpu()
 {
   bsp=
 
@@ -308,16 +316,20 @@ wait
   fi
 wait
 
+do_cpus=yes
 if [ ${doNative} = "yes" ]; then
   # Build the native compiler as a baseline to build the others
   time sh -x ${SCRIPTDIR}/gcc/do_one -n >${BASEDIR}/native.log 2>&1
+  if [ $? -ne 0 ] ; then
+    do_cpus=no
+  fi
 fi
 
 # Now cycle over all these CPUs
-if [ $? -eq 0 ] ; then
+if [ ${do_cpus} = yes ] ; then
   for cpu in ${CPUs}
   do
-    do_cpus ${cpu}
+    build_cpu ${cpu}
   done
 fi
 

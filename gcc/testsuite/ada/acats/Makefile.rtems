@@ -68,8 +68,8 @@ stamp-targetrun:
   endif # qemuppc
   ifeq ($(RTEMS_BSP),uC5282)
 	echo "  $(OBJCOPY) -O binary $$"'*' "$$"'*'.ralf >>$@
-	echo "  uC5282 -C -l 90 $$"'*'.ralf >> $@
-	echo "  rm -f "$$'*'.ralf >>$@
+	echo "  uC5282 -C -l 90 $$"'*' >> $@
+	#echo "  rm -f "$$'*'.ralf >>$@
   endif # uC5282
   ifeq ($(RTEMS_BSP),mcf5206elite)
 	echo "  nosim $$"'*' >> $@

@@ -1,3 +1,19 @@
+2011-11-06	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one: do_cleanup defaults to "no".
+	Add initial support for Objective-C and FORTRAN.
+	  - Objective-C needs work on run-time support
+	  - FORTRAN needs to be tested
+	* gcc_status: Use BUILDDIR not BASEDIR.
+	* gccgo_status: Use BUILDDIR not BASEDIR.
+	* networkconfig.h: Update.
+	* rtems_gccgo_init.c: Switch to unlimited objects configuration.
+	* rundeja: Add Objective-C.
+	* test_driver: Add -C to check options and exit.
+	Add --enable-watchdog to PPL configuration.
+	* testsuite/ada/acats/Makefile.rtems: Correct uC5282.
+	* gccobjc_status: New file.
+
 2011-11-04	Joel Sherrill <joel.sherrilL@OARcorp.com>
 
 	* test_driver: Spacing.

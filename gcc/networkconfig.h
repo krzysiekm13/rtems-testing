@@ -22,10 +22,9 @@
 #include <bsp.h>
 
 /*
- * Default network interface
+ * Network configuration
  */
-static struct rtems_bsdnet_ifconfig netdriver_config = {
-  NULL,                     /* Loop back interface only */
+struct rtems_bsdnet_config rtems_bsdnet_config = {
   NULL,                /* Loop back interface only */
   NULL,                /* do not use bootp */
   0,                   /* Default network task priority */
@@ -42,28 +41,7 @@ static struct rtems_bsdnet_ifconfig netdriver_config = {
   0,                   /* udp_rx_buf_size */
   0,                   /* tcp_tx_buf_size */
   0                    /* tcp_rx_buf_size */
-};
 
-/*
- * Network configuration
- */
-struct rtems_bsdnet_config rtems_bsdnet_config = {
-  &netdriver_config,
-  NULL,                /* do not use bootp */
-  0,                   /* Default network task priority */
-  0,                   /* Default mbuf capacity */
-  0,                   /* Default mbuf cluster capacity */
-  "localhost",         /* Host name -- match expectations for 127.0.0.1 */
-  "nodomain.com",      /* Domain name */
-  "127.0.0.1",         /* Gateway */
-  "127.0.0.1",         /* Log host */
-  {"127.0.0.1"  },     /* Name server(s) */
-  {"127.0.0.1" },      /* NTP server(s) */
-  0,                   /* sb_efficiency */
-  0,                   /* udp_tx_buf_size */
-  0,                   /* udp_rx_buf_size */
-  0,                   /* tcp_tx_buf_size */
-  0                    /* tcp_rx_buf_size */
 };
 
 /*
