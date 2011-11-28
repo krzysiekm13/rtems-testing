@@ -135,6 +135,7 @@ cat <<EOF
 <meta http-equiv="Content-Language" content="English" />
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 <link rel="stylesheet" type="text/css" href="rtems/style.css" media="screen" />
+<script src="rtems/table.js"></script>
 <div class="heading">
 <div class="heading-title">RTEMS
 EOF
@@ -147,7 +148,7 @@ cat << EOF
 </HEAD>
 <body>
 <br>
-<table class="stats-table" $cellspacing="1" cellpadding="2">
+<table class="stats-table" cellspacing="1" cellpadding="2">
 EOF
 }
 
@@ -160,7 +161,13 @@ EOF
 
 print_heading()
 {
-  echo "<th>"${*}"</th>"
+  if [ "${*}" = "Day" ] ; then
+    echo "<th class=\"table-sortable:date\">${*}</th>"
+  elif [ "${*}" = "Results" ] ; then
+    echo "<th>${*}</th>"
+  else
+    echo "<th class=\"table-sortable:numeric\">${*}</th>"
+  fi
 }
 
 # need to use ${1} for parameter
@@ -197,7 +204,7 @@ do_perBSPPage()
 <thead>
 <tr class="heading-title">
 EOF
-  if [ ${do_plots} = "yes" ] ; then 
+  if [ ${do_plots} = "yes" ] ; then
     echo "<td width=\"30%\">Result Tables</td>"
     echo "<td width=\"30%\">Time Series Graphs</td>"
     echo "<td width=\"30%\">TimePlot Graphs</td>"
@@ -225,7 +232,7 @@ cat <<EOF
 EOF
 
 
-  if [ ${do_plots} = "yes" ] ; then 
+  if [ ${do_plots} = "yes" ] ; then
     echo "<li><a href=\"graphs/${BSP}-uncovered_percent-d.png\">"
     echo "  Uncovered Percentage (Core)</a></li>"
     echo "<li><a href=\"graphs/${BSP}-uncovered_percent-D.png\">"
@@ -254,7 +261,7 @@ cat <<EOF
 <ul>
 EOF
 
-  if [ ${do_plots} = "yes" ] ; then 
+  if [ ${do_plots} = "yes" ] ; then
     echo "<li><a href=\"graphs/timeplot-${BSP}.html\">"
     echo "  TimePlot Graphs</a></li>"
 
@@ -289,7 +296,8 @@ EOF
   for build in O2pd O2pD O2Pd O2PD Ospd OspD OsPd OsPD
   do
     echo "<a name=\"${build}\"></a>"
-    echo "<table class=\"stats-table\" cellspacing=\"1\" cellpadding=\"2\">"
+    echo "<table class=\"stats-table table-autosort\" cellspacing=\"1\" cellpadding=\"2\">"
+    echo "<thead>"
     echo "<tr class=\"stats-table-target\">"
     echo "<td colspan=\"10\">"
     echo "<strong>${cpu}/${bsp} `convert_flags ${build}` (${build})</strong>"
@@ -306,6 +314,7 @@ EOF
     print_heading Uncovered Bytes
     print_heading Total Bytes
     print_heading Results
+    echo "</thead>"
 
     first=no
     ls -1 ${bsp}-${build}-*-*/row.html | sort -t -  -k 1,2 -k 3,4r | \
@@ -322,7 +331,7 @@ EOF
        version=`grep heading-title ${index} | \
           sed -e 's/<.*>RTEMS //' -e 's/<.*$//'`
      fi
-  
+
      echo "<TD>${version}</TD>"
      sed \
       -e '1,6d' \
@@ -650,6 +659,7 @@ echo "Generating HTML reports for RTEMS ${RTEMS_VERSION}"
 if [ ! -d rtems ] ; then
   mkdir rtems
 fi
+
 cp ${COVBASE}/style.css rtems/style.css
 
 # Find the BSPs and make their directories
@@ -659,13 +669,18 @@ BSPs=`genBSPList`
 echo BSPs=${BSPs}
 
 echo "Ensuring BSP specific content is in BSP subdirectory"
-for bsp in ${BSPs} 
+for bsp in ${BSPs}
 do
   test -d ${bsp}           || mkdir ${bsp}
   test -d ${bsp}/rtems     || mkdir ${bsp}/rtems
   test -d ${bsp}/plot_data || mkdir ${bsp}/plot_data
   test -d ${bsp}/graphs    || mkdir ${bsp}/graphs
   cp ${COVBASE}/style.css ${bsp}/rtems/style.css
+  cp ${COVBASE}/../covoar/table.js ${bsp}/rtems/table.js
+  cp ${COVBASE}/../covoar/filter.gif ${bsp}/rtems
+  cp ${COVBASE}/../covoar/05_ascending.gif ${bsp}/rtems
+  cp ${COVBASE}/../covoar/05_descending.gif ${bsp}/rtems
+  cp ${COVBASE}/../covoar/05_unsorted.gif ${bsp}/rtems
   mv ${bsp}-* ${bsp} 2>/dev/null
 done
 
@@ -683,7 +698,7 @@ do
   cd $1/${bsp}
   do_perBSPPage ${bsp} >${bsp}.html
 
-  if [ ${do_plots} = "yes" ] ; then 
+  if [ ${do_plots} = "yes" ] ; then
     cd $1
     OUTFIG=${bsp}/graphs
     OUTDAT=${bsp}/plot_data
