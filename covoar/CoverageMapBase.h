@@ -46,7 +46,8 @@ namespace Coverage {
     /*
      *  This type identifies a list of ranges.
      */
-    typedef std::list< AddressRange_t > AddressRange;
+    typedef std::list< AddressRange_t > 	  AddressRange;
+    typedef std::list< AddressRange_t >::iterator AddressRangeIterator_t;
 
     /*! 
      *  This method constructs a CoverageMapBase instance.

@@ -47,6 +47,14 @@ namespace Coverage {
     }
   }
 
+  void ExecutableInfo::dumpExecutableInfo( void ){
+    fprintf( stdout, "\n== Executable info ==\n");
+    fprintf( stdout, "executableName = %s\n", executableName.c_str());
+    fprintf( stdout, "libraryName = %s\n", libraryName.c_str());
+    fprintf( stdout, "loadAddress = %u\n", loadAddress);
+    theSymbolTable->dumpSymbolTable();
+  }
+
   CoverageMapBase* ExecutableInfo::getCoverageMap ( uint32_t address )
   {
     CoverageMapBase*         aCoverageMap = NULL;

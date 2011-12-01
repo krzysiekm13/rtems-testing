@@ -25,6 +25,7 @@
 #include "ObjdumpProcessor.h"
 #include "ReportsBase.h"
 #include "TargetFactory.h"
+#include "GcovData.h"
 
 /*
  *  Variables to control general behavior
@@ -41,8 +42,14 @@ std::list<Coverage::ExecutableInfo*> executablesToAnalyze;
 const char*                          explanations = NULL;
 char*                                progname;
 const char*                          symbolsFile = NULL;
+const char*		             gcnosFileName = NULL;
+char				     gcnoFileName[FILE_NAME_LENGTH];
+char				     gcdaFileName[FILE_NAME_LENGTH];
+char				     gcovBashCommand[256];
 const char*                          target = NULL;
 const char*                          format = NULL;
+FILE*				     gcnosFile = NULL;
+Gcov::GcovData* 		     gcovFile;
 
 /*
  *  Print program usage message
@@ -64,6 +71,7 @@ void usage()
     "  -1 EXECUTABLE             - name of executable to get symbols from\n"
     "  -e EXE_EXTENSION          - extension of the executables to analyze\n"
     "  -c COVERAGEFILE_EXTENSION - extension of the coverage files to analyze\n"
+    "  -g GCNOS_LIST             - name of file with list of *.gcno files\n"
     "  -p PROJECT_NAME           - name of the project\n"
     "  -C ConfigurationFileName  - name of configuration file\n"
     "  -O Output_Directory       - name of output directory (default=."
@@ -88,6 +96,7 @@ Configuration::Options_t Options[] = {
   { "outputDirectory",      NULL },
   { "executableExtension",  NULL },
   { "coverageExtension",    NULL },
+  { "gcnosFile",            NULL },
   { "target",               NULL },
   { "verbose",              NULL },
   { "projectName",          NULL },
@@ -127,6 +136,7 @@ void check_configuration(void)
   GET_STRING( "outputDirectory",      outputDirectory );
   GET_STRING( "executableExtension",  executableExtension );
   GET_STRING( "coverageExtension",    coverageFileExtension );
+  GET_STRING( "gcnosFile",            gcnosFileName );
   GET_STRING( "projectName",          projectName );
 
   // Now calculate some values
@@ -160,13 +170,14 @@ int main(
   //
   progname = argv[0];
 
-  while ((opt = getopt(argc, argv, "C:1:L:e:c:E:f:s:T:O:p:v")) != -1) {
+  while ((opt = getopt(argc, argv, "C:1:L:e:c:g:E:f:s:T:O:p:v")) != -1) {
     switch (opt) {
       case 'C': CoverageConfiguration->processFile( optarg ); break;
       case '1': singleExecutable      = optarg; break;
       case 'L': dynamicLibrary        = optarg; break;
       case 'e': executableExtension   = optarg; break;
       case 'c': coverageFileExtension = optarg; break;
+      case 'g': gcnosFileName         = optarg; break;
       case 'E': explanations          = optarg; break;
       case 'f': format                = optarg; break;
       case 's': symbolsFile           = optarg; break;
@@ -348,7 +359,7 @@ int main(
   SymbolsToAnalyze->load( symbolsFile );
   if (Verbose)
     fprintf(
-      stderr, "Analyzing %ld symbols\n", SymbolsToAnalyze->set.size()
+      stderr, "Analyzing %u symbols\n", SymbolsToAnalyze->set.size()
     );
 
   // Create explanations.
@@ -412,6 +423,9 @@ int main(
     // Merge each symbols coverage map into a unified coverage map.
     (*eitr)->mergeCoverage();
 
+    // DEBUG Print ExecutableInfo content
+    //(*eitr)->dumpExecutableInfo();
+
     if (!singleExecutable)
       eitr++;
   }
@@ -420,6 +434,37 @@ int main(
   if (Verbose)
     fprintf( stderr, "Preprocess uncovered ranges and branches\n" );
   SymbolsToAnalyze->preprocess();
+
+  //
+  // Generate Gcov reports
+  //
+  if (Verbose)
+    fprintf( stderr, "Generating Gcov reports...\n");
+  gcnosFile = fopen ( gcnosFileName , "r" );	
+
+  if ( !gcnosFile ) {
+    fprintf( stderr, "Unable to open %s\n", gcnosFileName );
+  }
+  else {
+    while ( fscanf( gcnosFile, "%s", inputBuffer ) != EOF) {
+      gcovFile = new Gcov::GcovData();
+      strcpy( gcnoFileName, inputBuffer );
+
+      if ( Verbose )
+	fprintf( stderr, "Processing file: %s\n", gcnoFileName );
+
+      if ( gcovFile->readGcnoFile( gcnoFileName ) ) {
+        // Those need to be in this order
+        gcovFile->processCounters();
+        gcovFile->writeReportFile();
+        gcovFile->writeGcdaFile();
+        gcovFile->writeGcovFile();
+      }
+
+      delete gcovFile;
+    }
+  fclose( gcnosFile );
+  }
 
   // Determine the uncovered ranges and branches.
   if (Verbose)

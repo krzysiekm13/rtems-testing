@@ -104,4 +104,19 @@ namespace Coverage {
     return "";
   }
 
+  void SymbolTable::dumpSymbolTable( void )
+  {
+    symbolInfo   		symbolTable;
+    symbolInfoIterator_t 	symbolIterator;
+    infoIterator_t		infoIterator;
+
+    for (infoIterator = info.begin() ; infoIterator != info.end(); infoIterator++)
+    {
+      for (symbolIterator = infoIterator->second.begin() ; symbolIterator != infoIterator->second.end(); symbolIterator++)
+      {
+         fprintf( stdout, "%s:\tStarting address = %#x\tLength = %u\n", infoIterator->first.c_str(), symbolIterator->startingAddress, symbolIterator->length );
+      }
+    }
+  }
+
 }

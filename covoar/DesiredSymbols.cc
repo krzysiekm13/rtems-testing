@@ -72,7 +72,6 @@ namespace Coverage {
         inputBuffer[0] = '\0';
         inputBuffer2[0] = '\0';
         cStatus = fscanf( sFile, "%s %s", inputBuffer, inputBuffer2 );
-        //TODO: Store inputBuffer2 value containing symbol source file
         if ( cStatus == EOF ) {
           done = true;
         }
@@ -97,9 +96,8 @@ namespace Coverage {
         }
 
         // Add this to the set of symbols.
-        else {
+        else 
           set[ inputBuffer ] = *symInfo;
-        }
       }
     }
   }
@@ -462,6 +460,7 @@ namespace Coverage {
       "ranges1.tmp",
       "ranges2.tmp"
     );
+
     if (system( command )) {
       fprintf(
         stderr,

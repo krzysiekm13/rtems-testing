@@ -37,6 +37,7 @@ namespace Coverage {
     } symbolInfo_t;
  
    typedef std::list< symbolInfo_t > symbolInfo;
+   typedef std::list< symbolInfo_t >::iterator	symbolInfoIterator_t;
  
     
 
@@ -98,6 +99,12 @@ namespace Coverage {
       uint32_t address
     );
 
+    /*!
+     *  This method prints SymbolTable content to stdout
+     *
+     */
+    void dumpSymbolTable( void );
+
   private:
 
     /*!
@@ -117,6 +124,7 @@ namespace Coverage {
      *  the symbol's information.
      */
     typedef std::map<std::string, symbolInfo> info_t;
+    typedef std::map<std::string, symbolInfo>::iterator infoIterator_t;
     info_t info;
 
   };

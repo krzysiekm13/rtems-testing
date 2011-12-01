@@ -52,6 +52,11 @@ namespace Coverage {
     void dumpCoverageMaps( void );
 
     /*!
+     *  This method prints the contents of Executable info containers
+     */
+    void dumpExecutableInfo( void );
+
+    /*!
      *  This method returns a pointer to the executable's coverage map
      *  that contains the specified address.
      *

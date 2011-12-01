@@ -24,6 +24,8 @@ COMMON_OBJS= app_common.o \
   DesiredSymbols.o \
   ExecutableInfo.o \
   Explanations.o \
+  GcovData.o \
+  GcovFunctionData.o \
   ObjdumpProcessor.o \
   ReportsBase.o \
   ReportsText.o \
@@ -125,6 +127,8 @@ DesiredSymbols.o: DesiredSymbols.cc DesiredSymbols.h CoverageMap.h
 ExecutableInfo.o: ExecutableInfo.cc ExecutableInfo.h CoverageMap.h \
   DesiredSymbols.h SymbolTable.h
 Explanations.o: Explanations.cc Explanations.h
+GcovData.o: GcovData.h GcovData.cc
+GcovFunctionData.o: GcovFunctionData.h GcovFunctionData.cc
 ObjdumpProcessor.o: ObjdumpProcessor.cc ObjdumpProcessor.h ExecutableInfo.h \
   TargetBase.h TargetFactory.h
 ReportsBase.o: ReportsBase.cc ReportsBase.h CoverageRanges.h DesiredSymbols.h \

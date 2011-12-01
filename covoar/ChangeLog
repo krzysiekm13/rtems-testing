@@ -1,3 +1,12 @@
+2011-11-06	Pawel Zagorski <pzagor@agh.edu.pl>
+
+	* DesiredSymbols.cc, ExecutableInfo.cc, SymbolTable.cc, covoar.cc:
+	Added methods dumpExecutableInfo( void ) and dumpSymbolTable( void )
+	that can dump cointainers to stdout for debug purposes. Covoar now 
+	accepts aditional command line argument -g GCNOS_LIST with list of 
+	xxx.gcno files. If non-empty list is provided gcov outputs will be 
+	craeated based on each file in the list.
+
 2011-11-04	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* DesiredSymbols.cc, ReportsBase.h, ReportsText.cc, ReportsText.h,
