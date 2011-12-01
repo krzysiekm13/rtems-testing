@@ -117,7 +117,32 @@ else
   echo "set boards_dir ${SCRIPTDIR}/dejagnu/boards" >${dfile}
 fi
 
-case $2 in
+testsuite=$2
+case ${testsuite} in
+  libgo) ;;
+  gccgo)
+     testmain=rtems_gccgo_init.o
+     makefile=Makefile.rtems_gccgoinit
+     stanza=check-go
+     ;;
+  java)
+     testmain=rtems_gcj_init.o
+     makefile=Makefile.rtems_gcjinit
+     stanza=check-gcc-java
+     ;;
+  gcc|objc|fortran|gccgo|java)
+     testmain=rtems_gcc_main.o
+     makefile=Makefile.rtems_gccmain
+     stanza=check-${testsuite}
+     ;;
+  *)
+     testmain=rtems_gcc_main.o
+     makefile=Makefile.rtems_gccmain
+     stanza=check
+     ;;
+esac
+
+case ${testsuite} in
   libgo)
     rtems_libgo_init=${SCRIPTDIR}/gcc/rtems_libgo_init.c
     rtems_bin2c=${INSTALL}/bin/rtems-bin2c
@@ -130,86 +155,21 @@ case $2 in
     --target_board=rtems-${CPU}-${DEJABSP} \
     "
     ;;
-  gccgo)
+  gcc|objc|fortran|gccgo|java|*)
     RTEMS_MAKEFILE_PATH=${rtemsdir} \
     SCRIPTDIR=${SCRIPTDIR} \
-      make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccgoinit
+      make -f ${SCRIPTDIR}/gcc/${makefile}
     if [ $? -ne 0 ] ; then
-      echo unable to compile RTEMS GCC Go Init File
+      echo unable to compile RTEMS Init File for ${testsuite}
       exit 1
     fi
-    rtems_config=`pwd`/rtems_gccgo_init.o
-    make check-go RUNTESTFLAGS="\
+    rtems_config=`pwd`/${testmain}
+    make ${stanza} RUNTESTFLAGS="\
     SIM=${BSP_SIM} \
     RTEMS_MAKEFILE_PATH=${rtemsdir} \
     RTEMS_CONFIG_OBJ=${rtems_config} \
     --target_board=rtems-${CPU}-${DEJABSP} \
     "
-    ;;
-  objc)
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    SCRIPTDIR=${SCRIPTDIR} \
-      make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccmain
-    if [ $? -ne 0 ] ; then
-      echo unable to compile RTEMS GCC Main
-      exit 1
-    fi
-    rtems_config=`pwd`/rtems_gcc_main.o
-    make check-objc RUNTESTFLAGS="\
-    SIM=${BSP_SIM} \
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    RTEMS_CONFIG_OBJ=${rtems_config} \
-    --target_board=rtems-${CPU}-${DEJABSP} \
-    "
-    ;;
-  libjava)
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    SCRIPTDIR=${SCRIPTDIR} \
-      make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gcjinit
-    if [ $? -ne 0 ] ; then
-      echo unable to compile RTEMS GCC Java Init File
-      exit 1
-    fi
-    rtems_config=`pwd`/rtems_gcj_init.o
-    make check-gcc-java RUNTESTFLAGS="\
-    SIM=${BSP_SIM} \
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    RTEMS_CONFIG_OBJ=${rtems_config} \
-    --target_board=rtems-${CPU}-${DEJABSP} \
-    "
-    ;;
-  gcc)
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    SCRIPTDIR=${SCRIPTDIR} \
-      make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccmain
-    if [ $? -ne 0 ] ; then
-      echo unable to compile RTEMS GCC Main
-      exit 1
-    fi
-    rtems_config=`pwd`/rtems_gcc_main.o
-    make check-gcc RUNTESTFLAGS="\
-    SIM=${BSP_SIM} \
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    RTEMS_CONFIG_OBJ=${rtems_config} \
-    --target_board=rtems-${CPU}-${DEJABSP} \
-    "
-    ;;
-  *)
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    SCRIPTDIR=${SCRIPTDIR} \
-      make -f ${SCRIPTDIR}/gcc/Makefile.rtems_gccmain
-    if [ $? -ne 0 ] ; then
-      echo unable to compile RTEMS GCC Main
-      exit 1
-    fi
-    rtems_config=`pwd`/rtems_gcc_main.o
-    echo make check RUNTESTFLAGS="\
-    SIM=${BSP_SIM} \
-    RTEMS_MAKEFILE_PATH=${rtemsdir} \
-    RTEMS_CONFIG_OBJ=${rtems_config} \
-    --target_board=rtems-${CPU}-${DEJABSP} \
-    "
-exit 0
     ;;
 esac
 

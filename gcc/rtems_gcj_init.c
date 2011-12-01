@@ -1,3 +1,7 @@
+/*
+ *   Main for GCJ Testing
+ */
+
 #include <bsp.h>
 #include <stdlib.h>
 #include <pthread.h>

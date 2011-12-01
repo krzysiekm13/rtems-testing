@@ -1,3 +1,14 @@
+2011-12-01	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one: If a secondary language fails to build, do not abort build but
+	continue on and attempt other secondary languages.
+	Clean up arguments to rundeja to reflect clean up in that script.
+	* rtems_gcc_main.c: Add /tmp directory and file support so more tests pass.
+	Make sure argc/argv are correctly setup.
+	* rtems_gcj_init.c: Add comment.
+	* rundeja: Consolidate similar cases to eliminate duplication.
+	* test_driver: Install autotools if autoconf is not at install point.
+
 2011-11-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_one: do_cleanup defaults to "no".

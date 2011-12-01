@@ -1,6 +1,7 @@
-/*  Init
- *
- *  COPYRIGHT (c) 1989-2008.
+/*
+ *  Main for GCC Tests
+ *  
+ *  COPYRIGHT (c) 1989-2011.
  *  On-Line Applications Research Corporation (OAR).
  *
  *  The license and distribution terms for this file may be
@@ -11,8 +12,23 @@
  */
 
 #include <rtems.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-int main( int, char **, char **);
+/*
+ * Set up first argument
+ */
+static int   argc     = 1;
+static char  arg0[20] = "rtems";
+static char *argv[20] = { arg0 };
+
+int main(int argc, char **argv, char **environp);
+
+rtems_task Init(rtems_task_argument ignored)
+{
+  mkdir( "/tmp", 0777 );
+  main(argc, argv, NULL);
+}
 
 /* configuration information */
 #define CONFIGURE_MAXIMUM_TASKS 1
@@ -24,13 +40,16 @@ int main( int, char **, char **);
 
 /* GCC tests start at main, use a lot of stack and may use the FPU */
 #define CONFIGURE_RTEMS_INIT_TASKS_TABLE
-#define CONFIGURE_INIT_TASK_ENTRY_POINT   (void *)main
 #if defined(__m32c__)
   #define CONFIGURE_INIT_TASK_STACK_SIZE    (16 * 1024)
 #else
   #define CONFIGURE_INIT_TASK_STACK_SIZE    (256 * 1024)
 #endif
 #define CONFIGURE_INIT_TASK_ATTRIBUTES    RTEMS_FLOATING_POINT
+
+/* This helps language tests which need a real filesystem */
+#define CONFIGURE_USE_IMFS_AS_BASE_FILESYSTEM
+#define CONFIGURE_LIBIO_MAXIMUM_FILE_DESCRIPTORS 20
 
 #define CONFIGURE_APPLICATION_NEEDS_CONSOLE_DRIVER
 #define CONFIGURE_APPLICATION_NEEDS_CLOCK_DRIVER

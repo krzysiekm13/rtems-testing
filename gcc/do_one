@@ -592,7 +592,6 @@ j_gcc()
     echo "Failed to install GCC C/C++ .. bailing"
     exit 1
   fi
-
 }
 
 if [ ${do_stage1} = "yes" ] ; then
@@ -647,13 +646,15 @@ j_rtems()
   cd ..
   if [ $status -ne 0 ] ; then
     echo "Failed building RTEMS for ${cpuArg}/${bspArg}"
-    exit $status
+    if [ ${bspArg} != "multilib" ] ; then
+      exit $status
+    fi
   fi
 }
 
 if [ ${do_rtems} = "yes" ] ; then 
   echo "Building RTEMS for ${cpu} ${bsp} ..."
-  time j_rtems ${cpu} multilib >${LOGDIR}/${cpu}-rtems-multilib.log 2>&1
+  time j_rtems ${cpu} multilib ${bsp} >${LOGDIR}/${cpu}-rtems-multilib.log 2>&1
   if [ $? -ne 0 ] ; then
     echo "Failed to build RTEMS multilib for ${cpu}"
     exit 1
@@ -828,7 +829,7 @@ j_gccada()
   make install
   status=$?
   if [ $status -ne 0 ] ; then
-    echo "Failed building Ada"
+    echo "Failed building Ada - continuing to next secondary language"
   fi
   return $status
 }
@@ -917,9 +918,9 @@ j_gccgo()
   make install
   status=$?
   if [ $status -ne 0 ] ; then
-    echo "Failed building Go"
+    echo "Failed building Go - continuing to next secondary language"
   fi
-  exit $status
+  return $status
 }
 
 go_fail="no"
@@ -986,7 +987,6 @@ fi
 if [ ${do_gccgo} = "yes" ] ; then 
   test ${do_cleanup} = "yes" && rm -rf ${BUILDDIR}/b-${cpu}-go
 fi
-exit 0
 
 ##### Build a GCJ compiler now that we have a cross installed
 j_gcj()
@@ -1031,9 +1031,9 @@ j_gcj()
   make install
   status=$?
   if [ $status -ne 0 ] ; then
-    echo "Failed building GCJ"
+    echo "Failed building GCJ - continuing to next secondary language"
   fi
-  exit $status
+  return $status
 }
 
 gcj_fail="no"
@@ -1054,7 +1054,7 @@ if [ $a ${run_libjavatests} = "yes" -a \
      -d ${BASEDIR}/b-${cpu}-gcj -a ${gcj_fail} = "no" ] ; then
   echo "Running libjava DejaGNU tests..."
   cd ${BASEDIR}/b-${cpu}-gcj || exit 1
-  time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} libjava \
+  time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} java \
     >${LOGDIR}/${cpu}-libjavatests-${bsp}.log 2>&1
 
   RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
@@ -1096,9 +1096,9 @@ j_fortran()
   make install
   status=$?
   if [ $status -ne 0 ] ; then
-    echo "Failed building FORTRAN"
+    echo "Failed building FORTRAN - continuing to next secondary language"
   fi
-  exit $status
+  return $status
 }
 
 fortran_fail="no"

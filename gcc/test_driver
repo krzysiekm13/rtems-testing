@@ -298,7 +298,7 @@ if [ ${doCleanInstallPoint} = "yes" ] ; then
 fi
 
 # Update gcc and install autotools in parallel
-  if [ ${doCleanInstallPoint} = "yes" ] ; then
+  if [ ! -r ${INSTALL}/bin/autoconf ] ; then
     install_auto
   fi
   if [ ${doUpdateTools} = "yes" ] ; then
