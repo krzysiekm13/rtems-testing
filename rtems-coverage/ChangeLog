@@ -1,3 +1,7 @@
+2011-12-01	Pawel Zagorski <pzagor@agh.edu.pl>
+
+	* do_coverage, rtems_config.in: Add GNU coverage support.
+
 2011-11-28	Aleksejs Popovs <me@popoffka.ru>
 
 	* generate_coverage_html, style.css: Google Code-In 2011 task to make

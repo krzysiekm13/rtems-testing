@@ -22,6 +22,9 @@ outputDirectory = @OUTPUT_DIRECTORY@
 # This is the extension on the coverage/trace files.
 coverageExtension = @COVERAGE_EXTENSION@
 
+# This is the path to file containing *.gcno list
+gcnosFile = @GCNOS_LIST@
+
 # This is the extension on the executable files.
 executableExtension = @EXECUTABLE_EXTENSION@
 

@@ -39,6 +39,7 @@ usage: $progname [ -opts ]
         -L        -- do not link files to test execution point (default=link)
         -r        -- run the tests (default=no)
         -R        -- generate reports (default=no)
+        -g        -- generate GCOV reports (default=no)
         -f        -- publish the results to ftp site (default=no)
         -t        -- save the results locally (default=no)
         -O        -- output directory (default=BSP-CONF-YYYYMMDD-HHMM)
@@ -81,6 +82,7 @@ toggle()
 
 # parse arguments for these
 verbose="no"
+do_all="no"
 do_posix="yes"
 do_optimize_size="no"
 do_covoar="no"
@@ -90,6 +92,7 @@ do_rtems_build="no"
 do_copy_tests="no"
 do_link_tests="yes"
 do_run_tests="no"
+do_generate_gcov="no"
 do_reports="no"
 do_publish="no"
 do_save_tarballs="yes"
@@ -98,10 +101,11 @@ do_developmental="yes"
 outputDir=""
 BSP="not_set"
 
-while getopts vB:PSmAucbCLrRftO:dD OPT
+while getopts vB:PSmAucbCLrgRftO:dD OPT
 do
     case "$OPT" in
         A)
+          do_all="yes"
           do_covoar="yes"
           do_posix="yes"
           do_rtems_update="yes"
@@ -125,6 +129,7 @@ do
         C) do_copy_tests=`toggle ${do_copy_tests}` ;;
         L) do_link_tests=`toggle ${do_link_tests}` ;;
         r) do_run_tests=`toggle ${do_run_tests}` ;;
+        g) do_generate_gcov=`toggle ${do_generate_gcov}` ;;
         R) do_reports=`toggle ${do_reports}` ;;
         f) do_publish=`toggle ${do_publish}` ;;
         t) do_save_tarballs=`toggle ${do_save_tarballs}` ;;
@@ -221,6 +226,7 @@ print_verbose()
   echo "POSIX Enabled:        " ${do_posix}
   echo "Core Configuration    " ${do_core}
   echo "Developmental Code:   " ${do_developmental}
+  echo "do_all:               " ${do_all}
   echo "do_covoar             " ${do_covoar}
   echo "do_rtems_update:      " ${do_rtems_update}
   echo "do_rtems_configure:   " ${do_rtems_configure}
@@ -228,6 +234,7 @@ print_verbose()
   echo "do_copy_tests:        " ${do_copy_tests}
   echo "do_link_tests:        " ${do_link_tests}
   echo "do_run_tests:         " ${do_run_tests}
+  echo "do_generate_gcov:     " ${do_generate_gcov}
   echo "do_reports:           " ${do_reports}
   echo "do_publish:           " ${do_publish}
   echo "do_save_tarballs:     " ${do_save_tarballs}
@@ -283,7 +290,7 @@ if [ ! -r ${custom} ] ; then
   fi
 fi
 
-grep "^CFLAGS_OPTIMIZE_V.*=.*-O[s01234]" ${custom} >/dev/null
+grep "^CFLAGS_OPTIMIZE_V.*=.*-O[s01234].*" ${custom} >/dev/null
 if [ $? -ne 0 ] ; then
   echo "Unable to find CFLAGS_OPTIMIZE_V in ${custom}"
   exit 1
@@ -386,6 +393,7 @@ generate_reports()
       -e "s,@OUTPUT_DIRECTORY@,${results_dir}," \
       -e "s/@EXECUTABLE_EXTENSION@/exe/" \
       -e "s/@COVERAGE_EXTENSION@/${RTEMSEXT}.${COVEXT}/" \
+      -e "s,@GCNOS_LIST@,${rtems_gcnos_file}," \
       -e "s/@PROJECT_NAME@/RTEMS ${RTEMS_VERSION}/" \
       <${COVBASE}/rtems_config.in \
       >${BASEDIR}/${BSP}-tests/config
@@ -418,7 +426,7 @@ generate_reports()
   RTEMSLIB=${BASEDIR}/b-${BSP}/${TARGET}/${BSP}/lib/librtemscpu.a
 
   if [ -r ${RTEMSLIB} ] ; then
-    cut -d' ' -f1 ${results_dir}/no_range_uncovered.txt | while read symbol
+    while read symbol
     do
       line=`${TARGET}-nm --format=sysv \
 	${BASEDIR}/b-${BSP}/${TARGET}/${BSP}/lib/librtemscpu.a | \
@@ -426,7 +434,7 @@ generate_reports()
       size=`echo ${line} | cut -d'|' -f5 | tr "[:lower:]" "[:upper:]"`
       size=`echo 16 i ${size} p | dc`
       echo "${size}	${symbol}	unknown"
-    done | sort -n -r \
+    done <${results_dir}/no_range_uncovered.txt | sort -n -r \
          >${results_dir}/sizes_unreferenced.txt
   fi
 
@@ -602,7 +610,15 @@ fi
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
   # Now let's patch the make/custom file
-  sed -e "s/-O[0123s]/${c_opt}/" <${custom} >${custom}.tmp
+  cat ${custom} | 
+  sed -e '/^CFLAGS_OPTIMIZE_V.*=.*-ftest-coverage -finline-functions -g/d' \
+      -e "s/-O[0123s]/${c_opt}/" | 
+  if [ ${do_generate_gcov} = "yes" ] ; then
+    sed -e \
+      '/^CFLAGS_OPTIMIZE_V/a CFLAGS_OPTIMIZE_V += -ftest-coverage -finline-functions -g' 
+  else
+    cat
+  fi >${custom}.tmp
   mv ${custom}.tmp ${custom}
 
   echo "Configuring RTEMS..."
@@ -692,6 +708,22 @@ if [ ${do_copy_tests} = "yes" ] ; then
   
 else
   echo "Skipping copying tests..."
+fi
+
+# If requested prepare data to create gcov reports 
+if [ ${do_generate_gcov} = "yes" ] ; then
+  echo "Preparing data for gcov reports..."
+
+  cd ${BASEDIR}/b-${BSP}/
+  check_status $? "cd b-${BSP}"
+
+  rtems_gcnos_file="${BASEDIR}/${BSP}-tests/rtems.gcnos"
+  find `pwd`  -name \*.gcno >${rtems_gcnos_file}
+
+  check_status $? "Preparing data for gcov reports for for ${BSP}"
+else
+  rtems_gcnos_file="/dev/null"
+  echo "Skipping creating gcov reports ..."
 fi
 
 # If requested, run the tests with coverage reporting enabled
