@@ -16,7 +16,10 @@ checkBSPFaults()
   exceptionExit=$?
   grep "^mips-core: " ${logfile}
   badAccessExit=$?
-  if [ $badAccessExit -eq 0 -o $exceptionExit -eq 0 ] ; then
+  grep "Data Bus Error" ${logfile}
+  dataBusError=$?
+  if [ $badAccessExit -eq 0 -o $exceptionExit -eq 0 -o \
+       $dataBusError -eq 0 ] ; then
     return 1
   fi
   return 0

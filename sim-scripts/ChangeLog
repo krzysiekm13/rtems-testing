@@ -1,3 +1,8 @@
+2011-12-01	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* jmr3904.in: Add Data Bus Error to detected faults to exit simulator
+	on.
+
 2011-11-06	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* uC5282.in: Use grep -E rather rather than egrep as Open Group has
