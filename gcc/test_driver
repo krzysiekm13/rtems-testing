@@ -71,16 +71,18 @@ doUpdateTools="no"
 doUpdateRTEMS="no"
 doNative="no"
 doBasicTools="yes"
-verbose="no"
+verbose="yes"
 doAda="yes"
 doGccGo="yes"
 doGcj="yes"
 doMail="yes"
+doObjC="yes"
+doFORTRAN="yes"
 doTests="yes"
 justTests="no"
 checkOptionsAndExit="no"
 
-while getopts J1AacmnuCGTUv OPT
+while getopts J1AacmnuCGTUfOv OPT
 do
   case "$OPT" in
     A) doCleanInstallPoint=`toggle ${doCleanInstallPoint}`
@@ -93,6 +95,8 @@ do
     C) checkOptionsAndExit=`toggle ${checkOptionsAndExit}` ;;
     G) doGccGo=`toggle ${doGccGo}` ;;
     J) doGcj=`toggle ${doGcj}` ;;
+    f) doFORTRAN=`toggle ${doFORTRAN}` ;;
+    O) doObjC=`toggle ${doObjC}` ;;
     c) doCleanInstallPoint=`toggle ${doCleanInstallPoint}` ;;
     j) justTests=`toggle ${justTests}` ;;
     m) doMail=`toggle ${doMail}` ;;
@@ -145,6 +149,8 @@ if [ ${verbose} = "yes" ] ; then
   echo "Build Ada:           " ${doAda}
   echo "Build GCC Go:        " ${doGccGo}
   echo "Build GCJ:           " ${doGcj}
+  echo "Build Objective-C    " ${doObjC}
+  echo "Build FORTRAN        " ${doFORTRAN}
   echo "Email Results:       " ${doMail}
   echo "Run Tests:           " ${doTests}
   echo "CPUs to Build:       " ${CPUs}
@@ -157,6 +163,8 @@ test ${doTests} = "yes"      && testArg="-T"
 test ${doAda}   = "yes"      && adaArg="-a"
 test ${doGccGo} = "yes"      && gccgoArg="-G"
 test ${doGcj} = "yes"        && gcjArg="-J"
+test ${doObjC} = "yes"       && objcArg="-O"
+test ${doFORTRAN} = "yes"    && fortrancArg="-f"
 test ${doBasicTools} = "yes" && basicArgs="-b -D -1 -r"
 
 echo "Checking for just tests override"
@@ -164,6 +172,8 @@ if [ ${justTests} = "yes" ] ; then
   adaArg=""
   gccgoArg=""
   gcjArg=""
+  objcArg=""
+  fortranArg=""
   basicArgs=""
 fi
 
@@ -279,11 +289,11 @@ build_cpu()
     doOne=${SCRIPTDIR}/gcc/do_one 
     echo "Building ${cpu}/${bsp}..." 
     echo "time sh -x ${doOne} -v -d ${basicArgs}  \
-        ${gccgoArg} ${gcjArg} ${adaArg} ${mailArg} ${testArg} \
-        ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1"
+        ${gccgoArg} ${gcjArg} ${adaArg} ${objcArg} ${fortranArg} \
+        ${mailArg} ${testArg} \ ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1"
     time sh -x ${doOne} -v -d ${basicArgs}  \
-        ${gccgoArg} ${gcjArg} ${adaArg} ${mailArg} ${testArg} \
-        ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
+        ${gccgoArg} ${gcjArg} ${adaArg} ${objcArg} ${fortranArg} \
+        ${mailArg} ${testArg} \ ${cpu} ${bsp} >${BASEDIR}/${bsp}.log 2>&1
     echo $?
   done
 

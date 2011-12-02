@@ -1,4 +1,4 @@
-#
+
 # Execution Times (for sparc-rtems${RTEMS_VERSION})
 #
 #   - building native                      - ?
@@ -57,7 +57,7 @@ do_gccgo=no
 do_gcj=no
 	do_gcj_multilib=yes
 # Build the GCC FORTRAN language cross compiler.
-do_fortran=no
+do_fortran=yes
 	do_fortran_multilib=yes
 # Build RTEMS for a particular CPU/BSP combination
 do_rtems=no
@@ -135,7 +135,7 @@ do
            do_gccgo="yes"
            do_gcj="yes"
            do_objc="yes"
-           #do_fortran="yes"
+           do_fortran="yes"
            do_rtems="yes"
            ;;
         d) do_cleanup=`toggle ${do_cleanup}` ;;
@@ -198,7 +198,7 @@ fi
 # Which CPUs do not support Ada
 if [ ${do_ada} = "yes" ] ; then
   case ${cpu} in
-    avr|h8300|m32c)
+    avr|h8300|m32c|sh)
       do_ada=no
       run_acats=no
       echo ${cpu} does not support Ada
@@ -257,7 +257,7 @@ if [ ${verbose} = yes ] ; then
   echo "  GCC Go        : " ${do_gccgo}
   echo "  Go Multilib   : " ${do_gccgo_multilib}
   echo "  GCJ           : " ${do_gcj}
-  echo "  GCJ Multilib  : " ${do_gccgcj_multilib}
+  echo "  GCJ Multilib  : " ${do_gcj_multilib}
   echo "  FORTRAN       : " ${do_fortran}
   echo "Build RTEMS     : " ${do_rtems}
   echo "Run GCC Tests   : " ${run_gcctests}
@@ -266,6 +266,7 @@ if [ ${verbose} = yes ] ; then
   echo "Run Go Tests    : " ${run_gccgotests}
   echo "Do libgo Tests  : " ${run_libgotests}
   echo "Do libjava Tests: " ${run_libjavatests}
+  echo "Do FORTRAN Tests: " ${run_fortrantests}
   echo "Email Tests     : " ${do_mail}
   echo "Native GCC      : " `type gcc`
   echo "PATH            : " ${PATH}
@@ -671,6 +672,36 @@ else
 fi
 pwd
 
+j_process_results()
+{
+  language=$1
+
+  shift
+
+  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
+  for results in `ls -1 gcc/testsuite/*/${*}.log gcc/testsuite/*/${*}.sum` 
+  do
+    test -d ${RDIR} || mkdir -p ${RDIR}
+    cp ${results} ${RDIR}
+  done
+
+  if [ ${do_mail} = "yes" ] ; then
+    echo "Sending ${language} test results to GCC community.."
+    ${GCCDIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
+    if [ $? -ne 0 ] ; then
+      echo "Failed to email ${language} Test Results to GCC Community .. bailing"
+      exit 1
+    fi
+
+    echo "Sending ${language} test results to RTEMS community.."
+    ${GCCDIR}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
+    if [ $? -ne 0 ] ; then
+      echo "Failed to email ${language} Test Results to RTEMS Community .. bailing"
+      exit 1
+    fi
+  fi
+}
+
 ##### Do the gcc tests
 if [ ${run_gcctests} = "yes" ] ; then 
   echo "Running GCC Tests..."
@@ -678,28 +709,8 @@ if [ ${run_gcctests} = "yes" ] ; then
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gcc \
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
 
-  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
-  mkdir -p ${RDIR}
-  cp gcc/testsuite/gcc/gcc.log gcc/testsuite/gcc/gcc.sum ${RDIR}
-  if [ -r gcc/testsuite/g++/g++.log ] ; then
-    cp gcc/testsuite/g++/g++.log gcc/testsuite/g++/g++.sum ${RDIR}
-  fi
+  j_process_results "C/C++" gcc/testsuite/gcc/gcc gcc/testsuite/g++/g++
 
-  if [ ${do_mail} = "yes" ] ; then
-    echo Sending test results to GCC community..
-    ${GCCDIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
-    if [ $? -ne 0 ] ; then
-      echo "Failed to email GCC Test Results to GCC Community .. bailing"
-      exit 1
-    fi
-
-    echo Sending test results to RTEMS community..
-    ${GCCDIR}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
-    if [ $? -ne 0 ] ; then
-      echo "Failed to email GCC Test Results to RTEMS Community .. bailing"
-      exit 1
-    fi
-  fi
   cd .. || exit 1
 else
   echo Skipping GCC DejaGNU tests for ${cpu}/${bsp}
@@ -761,28 +772,8 @@ if [ ${run_objctests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} objc \
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
 
-  #RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
-  #mkdir -p ${RDIR}
-  #cp gcc/testsuite/gcc/gcc.log gcc/testsuite/gcc/gcc.sum ${RDIR}
-  #if [ -r gcc/testsuite/g++/g++.log ] ; then
-  #  cp gcc/testsuite/g++/g++.log gcc/testsuite/g++/g++.sum ${RDIR}
-  #fi
+  j_process_results "Objective-C" gcc/testsuite/objc/objc
 
-  if [ ${do_mail} = "yes" ] ; then
-    echo Sending Objective-C test results to GCC community..
-    ${GCCDIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
-    if [ $? -ne 0 ] ; then
-      echo "Failed to email Objective-C Test Results to GCC Community .. bailing"
-      exit 1
-    fi
-
-    echo Sending test results to RTEMS community..
-    ${GCCDIR}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
-    if [ $? -ne 0 ] ; then
-      echo "Failed to email Objective-C Test Results to RTEMS Community .. bailing"
-      exit 1
-    fi
-  fi
   cd .. || exit 1
 else
   echo Skipping Objective-C Tests for ${cpu}
@@ -944,25 +935,7 @@ if [ $a ${run_gccgotests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gccgo \
     >${LOGDIR}/${cpu}-gccgotests-${bsp}.log 2>&1
 
-  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
-  mkdir -p ${RDIR}
-  cp testsuite/go/go.log testsuite/go/go.sum ${RDIR}
-
-  if [ ${do_mail} = "yes" ] ; then
-    echo Sending Go test results to GCC community..
-    ${GCCDIR}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
-    if [ $? -ne 0 ] ; then
-      echo "Failed to email GCC Go Test Results to GCC Community .. bailing"
-      exit 1
-    fi
-
-    echo Sending Go test results to RTEMS community..
-    ${GCCDIR}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
-    if [ $? -ne 0 ] ; then
-      echo "Failed to email GCC GO Test Results to RTEMS Community .. bailing"
-      exit 1
-    fi
-  fi
+  j_process_results "Go" testsuite/go/go
   cd .. || exit 1
 else
   echo Skipping GCC Go DejaGNU tests for ${cpu}/${bsp}
@@ -976,10 +949,7 @@ if [ $a ${run_libgotests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} libgo \
     >${LOGDIR}/${cpu}-libgotests-${bsp}.log 2>&1
 
-  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
-  mkdir -p ${RDIR}
-  cp ${TARGET}/libgo/testsuite/libgo-all.log \
-    ${TARGET}/libgo/testsuite/libgo-all.sum ${RDIR}
+  j_process_results "Go Library" ${TARGET}/libgo/testsuite/libgo-all
 else
   echo Skipping libgo DejaGNU tests for ${cpu}/${bsp}
 fi
@@ -1057,10 +1027,7 @@ if [ $a ${run_libjavatests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} java \
     >${LOGDIR}/${cpu}-libjavatests-${bsp}.log 2>&1
 
-  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
-  mkdir -p ${RDIR}
-  cp ${TARGET}-${bsp}/libjava/testsuite/libjava-all.log \
-    ${TARGET}-${bsp}/libjava/testsuite/libjava-all.sum ${RDIR}
+  j_process_results "GCJ" ${TARGET}-${bsp}/libjava/testsuite/libjava-all
 else
   echo Skipping libjava DejaGNU tests for ${cpu}/${bsp}
 fi
@@ -1117,15 +1084,12 @@ fi
 ##### Do the FORTRAN tests
 if [ $a ${run_fortrantests} = "yes" -a \
      -d ${BASEDIR}/b-${cpu}-fortran -a ${fortran_fail} = "no" ] ; then
-  echo "Running fortran DejaGNU tests..."
+  echo "Running FORTRAN DejaGNU tests..."
   cd ${BASEDIR}/b-${cpu}-fortran || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} fortran \
     >${LOGDIR}/${cpu}-fortrantests-${bsp}.log 2>&1
 
-  RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
-  mkdir -p ${RDIR}
-  #cp ${TARGET}-${bsp}/libjava/testsuite/libjava-all.log \
-  #  ${TARGET}-${bsp}/libjava/testsuite/libjava-all.sum ${RDIR}
+  j_process_results "FORTRAN" gcc/testsuite/gfortran/gfortran
 else
   echo Skipping FORTRAN DejaGNU tests for ${cpu}/${bsp}
 fi

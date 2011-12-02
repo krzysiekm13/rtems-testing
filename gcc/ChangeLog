@@ -1,3 +1,8 @@
+2011-12-02	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* do_one: Consolidate capturing test results and mailing them.
+	* test_driver: Add support for Objective-C and FORTRAN. 
+
 2011-12-01	Joel Sherrill <joel.sherrill@oarcorp.com>
 
 	* do_one: If a secondary language fails to build, do not abort build but
