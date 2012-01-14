@@ -1,9 +1,9 @@
 #
-#  $Id$
+#  $Id: Makefile,v 1.3 2010/06/21 12:37:03 joel Exp $
 #
 
 INSTALL_DIR=../bin
-SCRIPTS=commit-with-changelog-diff cvscommit mkChangeLogList prepend mktest
+SCRIPTS=commit-with-changelog-diff commit mkChangeLogList prepend mktest
 
 all: prep ${SCRIPTS} install
 

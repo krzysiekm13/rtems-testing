@@ -1,11 +1,11 @@
 #! /bin/sh
 #
-#   Do a cvs diff from the current directory and put the file names
+#   Use git from the current directory and put the file names
 #   in suitable format for use in a ChangeLog.
 #
-#   TODO:  No outstanding isses.
+#   TODO:  Initial conversion from cvs
 #
-#  $Id$
+#  $Id: mkChangeLogList,v 1.6 2011/01/04 19:53:53 joel Exp $
 #
 
 mklog_()
@@ -29,13 +29,13 @@ usage()
 
 print_name="no"
 user=$LOGNAME
-cvs_local_arg=""
+git_local_arg=""
 basedir=.
 while getopts d:lnM:m:p:c:u:U: OPT
 do
   case "$OPT" in 
     d) basedir=$OPTARG ;;
-    l) cvs_local_arg="-l" ;;
+    l) git_local_arg="-l" ;;
     n) print_name="yes" ;;
     p) prnum=$OPTARG ;;
     c) coverity_num=$OPTARG ;;
@@ -52,24 +52,17 @@ shift #shiftcount
 
 args=$*
 
-cvsarg="${cvs_local_arg} ${basedir}"
+dirarg="${basedir}"
 
-if [ -d .svn ] ; then
-  CVS=svn
+# Determine VCS in use
+if [ -d .git ] ; then
+  VCS=git
 elif [ -d CVS ] ; then
-  cmd=cvs
-  # done parsing arguments, now work 
-  if [ "X${CVSROOT}" = "X" ] ; then
-    CVS=${cmd}
-  else
-    CVS="${cmd} -d ${CVSROOT}"
-  fi
+  VCS=cvs
 else
-  echo "This does not look like a CVS or SVN checkout."
+  echo "This does not look like a checkout from a VCS I understand."
   exit 1
 fi
-
-CVS="${CVS}"
 
 if [ ! -r ChangeLog ] ; then
   ( echo "There is no ChangeLog in this directory." ;
@@ -77,9 +70,32 @@ if [ ! -r ChangeLog ] ; then
   exit 1
 fi
 
-files_modded=`${CVS} diff ${cvsarg} 2>&1 | grep ^Index | wc -l`
-files_added=`${CVS} diff ${cvsarg} 2>&1 | grep "is a new entry, no " | wc -l`
-files_deleted=`${CVS} diff ${cvsarg} 2>&1 | grep " was removed, no " | wc -l`
+case ${VCS} in
+  cvs)
+    # done parsing arguments, now work 
+    if [ "X${CVSROOT}" = "X" ] ; then
+      CVS=cvs
+    else
+      CVS="cvs -d ${CVSROOT}"
+    fi
+    CVS="${CVS}"
+
+    files_modded=`${CVS} diff ${dirarg} 2>&1 | grep ^Index | wc -l`
+    files_added=`${CVS} diff ${dirarg} 2>&1 | grep "is a new entry, no " | wc -l`
+    files_deleted=`${CVS} diff ${dirarg} 2>&1 | grep " was removed, no " | wc -l`
+    ;;
+  git)
+    files_modded=`git status ${dirarg} 2>&1 | grep "modified: " | wc -l`
+    files_added=`git status ${dirarg} 2>&1 | grep "new file: " | wc -l`
+    files_deleted=0
+    #files_deleted=`${CVS} diff ${dirarg} 2>&1 | grep " was removed, no " | wc -l`
+    ;;
+  *)
+    echo "${VCS} to be implemented"
+    exit 1
+    ;;
+esac
+
 files_changed=`expr ${files_modded} + ${files_added} + ${files_deleted}`
 if test ${files_changed} -eq 0 ; then
   exit 0
@@ -111,19 +127,42 @@ if test "X${coverity_num}" != "X" ; then
   echo "	Coverity Id ${coverity_num}"
 fi
 
-# Generate list of modified files
-${CVS} diff ${cvsarg} 2>/dev/null | grep ^Index | mklog_ ${message}
+case ${VCS} in
+  cvs)
+    # Generate list of modified files
+    ${CVS} diff ${dirarg} 2>/dev/null | grep ^Index | mklog_ ${message}
 
-# Generate list of deleted files
-test ${files_added} -gt 1 && plural=s
-${CVS} diff ${cvsarg} 2>&1 | grep "is a new entry, no comparison" | \
-  sed -e 's/^.*: //' -e 's/ is a .*$//' | mklog_ "New file${plural}."
+    # Generate list of deleted files
+    test ${files_added} -gt 1 && plural=s
+    ${CVS} diff ${dirarg} 2>&1 | grep "is a new entry, no comparison" | \
+      sed -e 's/^.*: //' -e 's/ is a .*$//' | mklog_ "New file${plural}."
 
-# Generate list of removed files
-${CVS} diff ${cvsarg} 2>&1 | grep "was removed, no comparison" | \
-  sed -e 's/^.*: //' -e 's/ was removed, no comparison.*$//' | \
-  mklog_ Removed.
+    # Generate list of removed files
+    ${CVS} diff ${dirarg} 2>&1 | grep "was removed, no comparison" | \
+      sed -e 's/^.*: //' -e 's/ was removed, no comparison.*$//' | \
+      mklog_ Removed.
+    ;;
+  git)
+    # Generate list of modified files
+    git status 2>&1 | grep "modified: " | mklog_ ${message}
+
+    # Generate list of deleted files
+    test ${files_added} -gt 1 && plural=s
+    git status 2>&1 | grep "new file: " | \
+      sed -e 's/^.*: //' -e 's/ is a .*$//' | mklog_ "New file${plural}."
+
+    # Generate list of removed files
+    #${CVS} diff ${dirarg} 2>&1 | grep "was removed, no comparison" | \
+    #  sed -e 's/^.*: //' -e 's/ was removed, no comparison.*$//' | \
+    #  mklog_ Removed.
+    ;;
+  *)
+    echo "${VCS} to be implemented"
+    exit 1
+    ;;
+esac
+
 echo
 
-rm -f XXX
+# rm -f XXX
 exit 0

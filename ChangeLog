@@ -1,3 +1,8 @@
+2012-01-14	Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* README, cvs-helpers/Makefile, cvs-helpers/mkChangeLogList,
+	cvs-helpers/mkChangeLogList: Update to add initial support for git.
+
 2011-08-21	Jie Liu <lj8175@gmail.com>
 
 	* gcc/rtems_gcj_init.c: New file for rtems/gcj testing.

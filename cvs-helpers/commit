@@ -1,13 +1,11 @@
 #! /bin/sh
 #
-#   Do a cvs diff from the current directory and put the file names
-#   in suitable format for use in a ChangeLog.
+#  Recurse from current directory assisting in generating ChangeLog entries
+#  and committing files to the Source Code Repository.
 #
-#   TODO:  No outstanding isses.
+#   TODO:  
+#     + Currently supports CVS and git. Could add svn
 #
-#  $Id$
-#
-
 
 progname=${0##*/}
 usage()
@@ -27,8 +25,13 @@ usage()
   exit 1
 }
 
-if [ ! -d CVS ] ; then
-  echo There is no CVS directory in the current directory.
+# Determine VCS in use
+if [ -d .git ] ; then
+  VCS=git
+elif [ -d CVS ] ; then
+  VCS=cvs
+else
+  echo "This does not look like a checkout from a VCS I understand."
   exit 1
 fi
 
@@ -63,19 +66,33 @@ shift #shiftcount
 
 args=$*
 
-# done parsing arguments, now work 
-if [ "X${CVSROOT}" = "X" ] ; then
-  CVS=cvs
-else
-  CVS="cvs -d ${CVSROOT}"
-fi
-
-CVS="${CVS}"
-
+# find ChangeLogs and print them by depth
+get_subdirs()
+{
+  find . -name ChangeLog | while read f
+  do
+    case $1 in
+      */*/*/*/*/*/*/*/*/*) d=9 ;;
+      */*/*/*/*/*/*/*/*) d=8 ;;
+      */*/*/*/*/*/*/*) d=7 ;;
+      */*/*/*/*/*/*) d=6 ;;
+      */*/*/*/*/*) d=5 ;;
+      */*/*/*/*) d=4 ;;
+      */*/*/*) d=3 ;;
+      */*/*) d=2 ;;
+      */*) d=1 ;;
+      *) d=0 ;;
+    esac
+    echo ${d} ${f}
+  done | sort -n -r | cut -d' ' -f2- | while read f
+  do
+    dirname $f
+  done
+}
 if [ ${localdir} = "yes" ] ; then
   subdirs="."
 else
-  subdirs="* ."
+  subdirs=`get_subdirs`
 fi
 
 # Make sure we have user information
@@ -89,20 +106,43 @@ fi
 
 commit()
 {
-  ${CVS} up ChangeLog
-  if [ $? -eq 0 ] ; then
-    prepend ${changefile}
-    cvs commit -F ${changefile}
+  if [ $? -ne 0 ] ; then
+    return
   fi
+
+  prepend ${changefile}
+
+  # Specify VCS support directory
+  case ${VCS} in
+    cvs)
+      ${CVS} up ChangeLog
+      cvs commit -F ${changefile}
+      ;;
+    git)
+      echo "git commit -F ${changefile}"
+      git commit -a -F ${changefile}
+      ;;
+    *) echo "${VCS} to be implemented" ;  exit 1 ;;
+  esac
 }
 
+# Specify VCS support directory
+case ${VCS} in
+  cvs) VCSDIR=CVS ;;
+  git) VCSDIR=.git ;;
+  *)
+    echo "${VCS} to be implemented"
+    exit 1
+    ;;
+esac
+
 for ddir in ${subdirs} ; do
-  test "${ddir}" = "CVS" && continue
+  test "${ddir}" = "${VCSDIR}" && continue
   test "${ddir}" = "autom4te.cache" && continue
   test "${ddir}" = "install" && continue
   if [ -d "${ddir}" ]; then
-    if [ ! -d "${ddir}/CVS" ] ; then
-      echo "WARNING - ${ddir} is not in CVS"
+    if [ ! -d "${ddir}/${VCSDIR}" ] ; then
+      echo "WARNING - ${ddir} is not in .git"
       continue
     fi
     test -f "${ddir}/ChangeLog" || continue
