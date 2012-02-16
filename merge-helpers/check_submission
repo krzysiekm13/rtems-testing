@@ -12,6 +12,8 @@ usage()
 {
 cat <<EOF
 check_submission [options] directory
+  -b - check assuming directory is a BSP
+  -t - check assuming directory is a test
   -v - verbose
 EOF
 }
@@ -51,6 +53,10 @@ shiftcount=`expr $OPTIND - 1`
 shift $shiftcount
 
 basedir=${1}
+
+if [ "${basedir}X" = "X" ] ; then
+  basedir=.
+fi
 
 if [ ${do_bsp} = "no" -a ${do_test} = "no" ] ; then
   fatal must select test or bsp check mode
@@ -126,6 +132,7 @@ find_source()
    case "$OPT" in
      c) findArgs="${findArgs} -o -name configure.ac" ;;
      C) findArgs="${findArgs} -o -name *.cfg" ;;
+     d) findArgs="${findArgs} -o -name *.doc" ;;
      m) findArgs="${findArgs} -o -name Makefile.am" ;;
      *) echo "bad arg to find_source ($OPT)" ; exit 1 ;;
    esac
@@ -159,9 +166,9 @@ done
 
 # We want CVS Id strings everywhere possible
 echo "=== Checking for CVS Id strings"
-find_source | while read f
+find_source -d | while read f
 do
-  test_its_there ${f} "\$Id"
+  test_its_NOT_there ${f} "\$Id"
 done
 
 # We do not want the reformatted license notice
