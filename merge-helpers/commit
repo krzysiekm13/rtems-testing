@@ -26,7 +26,23 @@ usage()
 }
 
 # Determine VCS in use
-if [ -d .git ] ; then
+isgit()
+{
+  depth=0
+  dir=.git
+  while [ $depth -lt 10 ]
+  do
+    if [ -d ${dir} ] ; then
+      return 1
+    fi
+    dir=../${dir}
+    depth=`expr ${depth} + 1`
+  done  
+  return 0
+}
+
+isgit
+if [ $? -eq 1 ] ; then
   VCS=git
 elif [ -d CVS ] ; then
   VCS=cvs
@@ -104,7 +120,7 @@ if test "X${userInfo}" = "X" ; then
   fi
 fi
 
-commit()
+commit_helper()
 {
   if [ $? -ne 0 ] ; then
     return
@@ -120,7 +136,8 @@ commit()
       ;;
     git)
       echo "git commit -F ${changefile}"
-      git commit -a -F ${changefile}
+      git add ${changefile} 
+      git commit -F ${changefile}
       ;;
     *) echo "${VCS} to be implemented" ;  exit 1 ;;
   esac
@@ -141,10 +158,20 @@ for ddir in ${subdirs} ; do
   test "${ddir}" = "autom4te.cache" && continue
   test "${ddir}" = "install" && continue
   if [ -d "${ddir}" ]; then
-    if [ ! -d "${ddir}/${VCSDIR}" ] ; then
-      echo "WARNING - ${ddir} is not in .git"
-      continue
-    fi
+    case ${VCS} in
+      cvs) 
+	if [ ! -d "${ddir}/${VCSDIR}" ] ; then
+	  echo "WARNING - ${ddir} is not in .git"
+	  continue
+	fi
+        ;;
+      git)
+        ;;
+      *)
+        echo "${VCS} to be implemented"
+        exit 1
+        ;;
+    esac
     test -f "${ddir}/ChangeLog" || continue
     cd "$ddir" >/dev/null
     mkChangeLogList ${mkchoptions} ${userArg} "${userInfo}" \
@@ -157,7 +184,7 @@ for ddir in ${subdirs} ; do
       response="n"
       read -p "Commit changes? [y/n/e(edit)]: " response
       case ${response} in
-        y) commit; break ;;
+        y) commit_helper; break ;;
         n) break ;;
         e) ${editor} ${changefile} ;;
         *) echo "*** enter y,n, or e ***" ;;

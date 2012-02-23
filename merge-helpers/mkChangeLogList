@@ -55,7 +55,23 @@ args=$*
 dirarg="${basedir}"
 
 # Determine VCS in use
-if [ -d .git ] ; then
+isgit()
+{
+  depth=0
+  dir=.git
+  while [ $depth -lt 10 ]
+  do
+    if [ -d ${dir} ] ; then
+      return 1
+    fi
+    dir=../${dir}
+    depth=`expr ${depth} + 1`
+  done  
+  return 0
+}
+
+isgit
+if [ $? -eq 1 ] ; then
   VCS=git
 elif [ -d CVS ] ; then
   VCS=cvs
