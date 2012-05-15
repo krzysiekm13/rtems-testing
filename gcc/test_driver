@@ -4,8 +4,6 @@
 #
 #  test_driver CPUs|all
 #
-#  $Id$
-#
 
 vfile=`dirname $0`/../VERSIONS
 if [ ! -r ${vfile} ] ; then

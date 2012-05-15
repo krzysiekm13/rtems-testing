@@ -1,7 +1,3 @@
-#
-# $Id$
-#
-
 GCC Testing
 ===========
   + Diff results of subsequent runs for the same target and generate

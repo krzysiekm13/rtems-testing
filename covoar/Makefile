@@ -1,7 +1,3 @@
-#
-# $Id$
-#
-
 INSTALL_DIR=../bin
 CXXFLAGS=-g -Wall -O3
 PROGRAMS=covoar qemu-dump-trace trace-converter configfile-test

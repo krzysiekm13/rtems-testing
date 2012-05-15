@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 INSTALL_DIR=../bin
 GDBSIM_SCRIPTS=bf537Stamp ezkit533 gdbarmsim h8sim jmr3904 lm32_evr \
   m32csim m32rsim psim sis simsh

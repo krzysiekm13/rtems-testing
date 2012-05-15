@@ -2,8 +2,6 @@
 #
 #  Combine the various reports into a single html file
 #
-#  $Id$
-#
 
 vfile=`dirname $0`/VERSIONS-COVERAGE
 if [ ! -r ${vfile} ] ; then

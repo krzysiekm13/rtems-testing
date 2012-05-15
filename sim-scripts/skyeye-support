@@ -1,8 +1,6 @@
 #
 #  Shared Skyeye Support
 #
-#  $Id$ 
-#
 
 bspUsesGDBSimulator="no"
 bspSupportsGDBServerMode="yes"

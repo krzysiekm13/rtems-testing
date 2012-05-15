@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 INSTALL_DIR=../bin
 SCRIPTS  = check_submission
 SCRIPTS += commit-with-changelog-diff

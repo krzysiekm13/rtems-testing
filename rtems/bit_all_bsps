@@ -2,8 +2,6 @@
 #
 #  Test build all the tool configurations
 #
-#  $Id$
-#
 
 # Include user configurable information
 test -r ./user.cfg || \

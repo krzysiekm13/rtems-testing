@@ -1,8 +1,6 @@
 #
 # Example script to show how to test an installed RTEMS and GCC
 #
-# $Id$
-#
 
 gcc=gcc
 prefix=/users/joel/work-gnat/svn/install

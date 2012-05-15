@@ -1,7 +1,6 @@
 #
 #  TSIM Shared Support
 #
-#  $Id$
 #
 
 runBSP=tsim-${tsimName}

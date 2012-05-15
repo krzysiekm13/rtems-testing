@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 The SPARC assembly is often hard to understand because a single
 instruction will show up as not executed.  The instructions before
 and after it will be marked as executed.  The instruction before

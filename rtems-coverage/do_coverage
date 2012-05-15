@@ -4,8 +4,6 @@
 #  in a specific configuration.  This script automates all steps
 #  of building RTEMS, running the tests, and generating the reports.
 #
-#  $Id$
-#
 
 vfile=`dirname $0`/VERSIONS-COVERAGE
 if [ ! -r ${vfile} ] ; then

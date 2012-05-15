@@ -6,8 +6,6 @@
 #    + clang/scan does not support -B option so no code which needs bsp.h
 #    + clang/scan has bug about embedded space in RHS of -D option.
 # 
-#  $Id$
-#
 
 #
 # TODO:

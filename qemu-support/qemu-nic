@@ -2,9 +2,6 @@
 #
 # Run qemu with network interface if root.
 #
-#
-#  $Id$
-#
 # TODO:
 #    -s for gdb from command line
 

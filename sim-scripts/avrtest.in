@@ -1,8 +1,6 @@
 #
 #  AVR/AVRTEST Support (uses simulavrxx)
 #
-#  $Id$ 
-#
 
 bspUsesGDBSimulator="no"
 runBSP=simulavr

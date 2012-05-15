@@ -2,8 +2,6 @@
 #
 #  Script to help generate an explanation for the covoar explanations file.
 #
-#  $Id$
-#
 
 toggle()
 {

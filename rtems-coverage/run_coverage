@@ -2,8 +2,6 @@
 #
 #  Script to help running coverage profiles
 #
-#  $Id$
-#
 
 vfile=`dirname $0`/VERSIONS-COVERAGE
 if [ ! -r ${vfile} ] ; then

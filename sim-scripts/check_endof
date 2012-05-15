@@ -3,8 +3,6 @@
 #  This script checks for the "END OF" message in all RTEMS tests.
 #  It reports tests which do not appear to have completed successfully
 #
-#  $Id$
-#
 
 if [ -d log ] ; then
   logdir=log/

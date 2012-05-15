@@ -1,8 +1,6 @@
 #
 #  This is a comment.
 #
-#  $Id$
-#
 
 projectName = RTEMS 4.10
 

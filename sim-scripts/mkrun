@@ -2,7 +2,6 @@
 #
 #  Helper to sed run scripts
 #
-#  $Id$
 
 doGdb=$1
 CPU=$2

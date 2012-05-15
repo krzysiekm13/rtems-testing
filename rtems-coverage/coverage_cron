@@ -1,7 +1,4 @@
 #! /bin/sh
-#
-#  $Id$
-#
 
 vfile=`dirname $0`/VERSIONS-COVERAGE
 if [ ! -r ${vfile} ] ; then

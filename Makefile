@@ -1,7 +1,3 @@
-#
-# $Id$
-#
-#
 # NOTE: This is not the fanciest Makefile I have ever written. ;)
 
 all:

@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 This is the list of Explanation Categories used when analyzing RTEMS
 Coverage report.  By using standard categories, the table filter on
 the web site works better.

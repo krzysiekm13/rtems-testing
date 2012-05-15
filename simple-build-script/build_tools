@@ -10,8 +10,6 @@
 #
 #  --Joel Sherrill (28 March 2010)
 #
-#  $Id$
-#
 
 ### EDIT THESE AS NEEDED
 AUTOCONF=autoconf-2.66

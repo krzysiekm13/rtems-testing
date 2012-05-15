@@ -4,8 +4,6 @@
 #
 #  build-${CPU}-rtems is created as the build tree
 #
-#  $Id$
-#
 
 usage()
 {

@@ -1,7 +1,4 @@
 #! /bin/sh
-#
-#  $Id$
-#
 
 case $1 in 
   *acats*)

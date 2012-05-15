@@ -2,8 +2,6 @@
 #
 #  Process a test template directory into the baseline for a new test
 #
-#  $Id$
-#
 
 toggle()
 {

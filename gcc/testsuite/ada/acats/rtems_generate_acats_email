@@ -2,8 +2,6 @@
 #
 #  Generate ACATS Email
 #
-#  $Id$
-#
 
 if [ $# -ne 3 ] ; then
   echo Usage $0: CPU BSP domail

@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 INSTALL_DIR=../bin
 SCRIPTS=do_coverity do_mail_coverity
 

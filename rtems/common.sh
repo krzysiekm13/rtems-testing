@@ -12,7 +12,6 @@
 #  target   - to the GNU tools target name
 #  CPU      - to the canonical RTEMS CPU
 #
-#
 
 #
 #  Checks the status returned by executables and exits if it is non-zero.
