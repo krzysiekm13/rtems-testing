@@ -1,0 +1,11 @@
+
+PWD=`pwd`
+cd $r/doc
+../bootstrap
+cd -
+mkdir b-docs
+cd b-docs
+$r/doc/configure && cd tools && make && \
+  cd .. && make info && make 
+cd ..
+rm -rf b-docs
