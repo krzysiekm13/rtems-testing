@@ -3,21 +3,22 @@
 #  Do a full test sweep using the other helper scripts
 #
 
-all_confs=no
-do_cvs_update=yes
+all_confs=yes
+do_update=no
 
 testdir=`pwd`
 
-# update all the add-ons
-if [ ${do_cvs_update} = yes ] ; then
+# update RTEMS and all the add-ons
+# TODO: Does it make sense to automate updating with git?
+if [ ${do_update} = yes ] ; then
   cd ${testdir}/rtems
-  cvs up -Pd 2>&1 | grep -v cvs
+  # TODO: Replace with git pull
   for addon in class-examples examples examples-v2 rtems-addon-packages \
       network-demos ada-examples
   do
     if [ -d ${addon} ] ; then
       cd ${testdir}/${addon}
-      cvs up -Pd 2>&1 | grep -v cvs
+      # TODO: Replace with git pull
     fi
   done
 fi
