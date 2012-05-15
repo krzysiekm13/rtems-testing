@@ -383,16 +383,24 @@ if [ ${BUILD_RTEMS_DEBUG} = "yes" ] ; then
  MAKE_DEBUG_ARG="VARIANT=DEBUG"
 fi
 
+# Calculate number of jobs as 1.5*ncpus + 1
+ncpus=`/usr/bin/getconf _NPROCESSORS_ONLN 2>/dev/null`
+if [ $? -ne 0 ] ; then
+  ncpus=2
+fi
+njobs=`expr ${ncpus} / 2 + 1 + ${ncpus}`
+echo "Using make ${njobs} parallel jobs"
+
 case ${BSP_TO_TEST} in
   multilib)
      echo "Executing ${MAKE} ${MAKE_DEBUG_ARG} ..."
-     ${MAKE} -j8 RTEMS_BSP= ${MAKE_DEBUG_ARG}
+     ${MAKE} -j${njobs} RTEMS_BSP= ${MAKE_DEBUG_ARG}
      check_fatal $? "failed ${MAKE} ${MAKE_DEBUG_ARG}."
      BSP_TO_TEST=
      ;;
   *)
      echo "Executing ${MAKE} ${MAKE_DEBUG_ARG} ..."
-     ${MAKE} -j8 RTEMS_BSP=${BSP_TO_TEST} ${MAKE_DEBUG_ARG}
+     ${MAKE} -j${njobs} RTEMS_BSP=${BSP_TO_TEST} ${MAKE_DEBUG_ARG}
      check_fatal $? "failed ${MAKE} ${MAKE_DEBUG_ARG}."
      ;;
 esac
@@ -439,7 +447,7 @@ case ${BSP_ARG} in
      check_fatal $? "Unable to configure BSP step successfully"
 
      echo "Executing multilib BSP: ${MAKE} ${MAKE_DEBUG_ARG} ..."
-     ${MAKE} -k -j8 ${MAKE_DEBUG_ARG}
+     ${MAKE} -k -j${njobs} ${MAKE_DEBUG_ARG}
      status=$?
 
      # clean up install point
