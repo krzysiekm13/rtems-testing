@@ -1,7 +1,3 @@
-#
-# $Id$
-#
-
 Board: GumStix Connex PXA255
 RTEMS BSP: gumstix
 

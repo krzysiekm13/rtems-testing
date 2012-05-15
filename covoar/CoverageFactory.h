@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageFactory.h
  *  @brief CoverageFactory Specification
  *

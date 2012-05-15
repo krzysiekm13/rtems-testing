@@ -1,8 +1,4 @@
 
-/*
- *  $Id$
- */
-
 /*! @file CoverageMapBase.cc
  *  @brief CoverageMapBase Implementation
  *

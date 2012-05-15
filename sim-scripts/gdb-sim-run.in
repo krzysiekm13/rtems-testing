@@ -6,8 +6,6 @@
 #        this is the source file.  If it does have specific CPU/BSP pair,
 #        then this is generated output and should NOT be edited.
 #  
-#  $Id$
-#
 
 trap "test_exit 1" 1 2 3 13 14 15
 

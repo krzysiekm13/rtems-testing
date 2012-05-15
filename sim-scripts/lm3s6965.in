@@ -1,8 +1,6 @@
 #
 #  arm/lm3s6965 Qemu Support 
 #
-#  $Id$
-#
 
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"

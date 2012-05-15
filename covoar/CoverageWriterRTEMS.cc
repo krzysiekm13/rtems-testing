@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageWriterRTEMS.cc
  *  @brief CoverageWriterRTEMS Implementation
  *

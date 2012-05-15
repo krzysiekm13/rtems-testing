@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 This directory contains scripts which assist in running Coverity
 on RTEMS and submitting them to the Coverity builder.  You have
 to have an account to view the results of the run.  

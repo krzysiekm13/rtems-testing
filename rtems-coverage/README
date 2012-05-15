@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 The script do_coverage now is a living README.  Please see it for
 procedural information.  It can perform all steps.  You should only
 have to edit VERSIONS-COVERAGE to tailor to your local installation

@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file TraceReaderBase.h
  *  @brief TraceReaderBase Specification
  *

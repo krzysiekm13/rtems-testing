@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageReaderRTEMS.h
  *  @brief CoverageReaderRTEMS Specification
  *

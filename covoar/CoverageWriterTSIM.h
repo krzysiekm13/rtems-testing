@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageWriterTSIM.h
  *  @brief CoverageWriterTSIM Specification
  *

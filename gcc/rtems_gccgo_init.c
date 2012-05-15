@@ -1,7 +1,5 @@
 /*
  *  Init for Go testing.
- *
- *  $Id$
  */
 
 #include <bsp.h>

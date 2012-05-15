@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageRanges.cc
  *  @brief CoverageRanges Implementation
  *

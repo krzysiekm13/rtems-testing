@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_m68k.h
  *  @brief Target_m68k Specification
  *

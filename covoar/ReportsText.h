@@ -1,7 +1,3 @@
-/*
- *   $Id$
- */
-
 /*! @file ReportsText.h
  *  @brief Reports Text Format Write Specification
  *

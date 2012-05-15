@@ -1,8 +1,6 @@
 #
 #  M32R/m32rsim Support 
 #
-#  $Id$
-#
 
 runARGS()
 {

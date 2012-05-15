@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file TargetBase.h
  *  @brief TargetBase Specification
  *

@@ -1,8 +1,6 @@
 #
 #  COVOAR Template for RTEMS Coverage Analysis Runs
 #
-#  $Id$
-#
 
 # This is the format of the trace or coverage files.
 format = @FORMAT@

@@ -1,8 +1,6 @@
 #
 #  SPARC/ERC32 Support (on TSIM)
 #
-#  $Id$
-#
 
 tsimName=erc32
 tsimGoAddress=0x2000000

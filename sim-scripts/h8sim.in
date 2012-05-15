@@ -1,8 +1,6 @@
 #
 #  H8300/h8sim Support 
 #
-#  $Id$
-#
 
 runARGS()
 {

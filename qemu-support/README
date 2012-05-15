@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 This directory contains files which assist in using qemu with RTEMS.
 
 pc386_fda.bz2 - uncompress and place in ~/qemu.  This file boots test.exe

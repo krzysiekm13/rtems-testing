@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageWriterBase.cc
  *  @brief CoverageWriterBase Implementation
  *

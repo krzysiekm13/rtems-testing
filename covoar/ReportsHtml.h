@@ -1,7 +1,3 @@
-/*
- *   $Id$
- */
-
 /*! @file ReportsHtml.h
  *  @brief Reports in HTML Specification
  *

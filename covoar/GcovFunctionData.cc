@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file GcovFunctionData.cc
  *  @brief GcovFunctionData Implementation
  *

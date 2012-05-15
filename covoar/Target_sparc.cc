@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_sparc.cc
  *  @brief Target_sparc Implementation
  *

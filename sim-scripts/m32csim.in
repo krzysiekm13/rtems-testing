@@ -1,8 +1,6 @@
 #
 #  M32C/m32csim Support 
 #
-#  $Id$
-#
 
 runARGS()
 {

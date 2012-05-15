@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file GcovData.h
  *  @brief GcovData Specification
  *

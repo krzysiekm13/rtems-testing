@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageWriterTSIM.cc
  *  @brief CoverageWriterTSIM Implementation
  *

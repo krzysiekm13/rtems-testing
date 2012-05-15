@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageReaderSkyeye.h
  *  @brief CoverageReaderSkyeye Specification
  *

@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file DesiredSymbols.cc
  *  @brief DesiredSymbols Implementation
  *

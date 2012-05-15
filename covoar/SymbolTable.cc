@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file SymbolTable.cc
  *  @brief SymbolTable Implementation
  *

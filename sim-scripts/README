@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 This directory contains a framework for running RTEMS applications
 on simulators.  These help run the simulators in a consistent manner
 and detect programs which have faulted.

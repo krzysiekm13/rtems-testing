@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 
 /*
  * Qemu log file format.

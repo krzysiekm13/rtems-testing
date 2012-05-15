@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Explanations.cc
  *  @brief Explanations Implementation
  *

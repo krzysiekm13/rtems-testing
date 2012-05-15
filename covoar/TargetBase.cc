@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file TargetBase.cc
  *  @brief TargetBase Implementation
  *

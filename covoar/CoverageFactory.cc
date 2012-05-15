@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageFactory.cc
  *  @brief CoverageFactory Implementation
  *

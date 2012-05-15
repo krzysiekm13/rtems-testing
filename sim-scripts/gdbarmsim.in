@@ -1,8 +1,6 @@
 #
 #  ARM/gdbarmsim Support 
 #
-#  $Id$
-#
 
 runARGS()
 {

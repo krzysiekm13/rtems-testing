@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file ObjdumpProcessor.h
  *  @brief ObjdumpProcessor Specification
  *

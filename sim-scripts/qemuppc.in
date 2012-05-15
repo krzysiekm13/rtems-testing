@@ -1,8 +1,6 @@
 #
 #  PowerPC/QemuPPC BSP Qemu Support 
 #
-#  $Id$
-#
 
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"

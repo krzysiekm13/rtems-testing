@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file ObjdumpProcessor.cc
  *  @brief ObjdumpProcessor Implementation
  *

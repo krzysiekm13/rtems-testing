@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageRanges.h
  *  @brief CoverageRanges Specification
  *

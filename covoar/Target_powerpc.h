@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_powerpc.h
  *  @brief Target_powerpc Specification
  *

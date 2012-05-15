@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageMapBase.h
  *  @brief CoverageMapBase Specification
  *

@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 This package contains a collection of scripts and support files
 that support running the GCC (http://gcc.gnu.org) testsuite for
 C, C++, Ada, FORTRAN, GCJ, Go, and Objective-C.

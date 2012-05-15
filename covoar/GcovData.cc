@@ -1,6 +1,4 @@
 /*
- *  $Id$
- *
  *  TODO: use strings instead of cstrings for reliability and saving memory
  *  TODO: use global buffers
  *

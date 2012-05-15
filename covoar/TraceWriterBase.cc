@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file TraceWriterBase.cc
  *  @brief TraceWriterBase Implementation
  *

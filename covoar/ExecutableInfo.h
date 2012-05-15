@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file ExecutableInfo.h
  *  @brief ExecutableInfo Specification
  *

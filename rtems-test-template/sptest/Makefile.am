@@ -1,7 +1,3 @@
-##
-## $Id$
-##
-
 MANAGERS = all
 
 rtems_tests_PROGRAMS = @LOWER@

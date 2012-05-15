@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageWriterBase.h
  *  @brief CoverageWriterBase Specification
  *

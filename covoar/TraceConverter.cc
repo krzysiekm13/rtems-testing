@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file TraceReaderLogQEMU.cc
  *  @brief TraceReaderLogQEMU Implementation
  *

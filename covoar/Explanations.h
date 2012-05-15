@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Explanations.h
  *  @brief Explanations Specification
  *

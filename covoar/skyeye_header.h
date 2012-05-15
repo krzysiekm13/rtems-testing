@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file skyeye_header.h
  *  @brief skyeye_header Implementation
  *

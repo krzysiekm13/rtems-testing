@@ -1,8 +1,6 @@
 #
 #  SuperH/shsim Support 
 #
-#  $Id$
-#
 
 runARGS()
 {

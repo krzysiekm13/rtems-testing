@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file TraceList.h
  *  @brief TraceList Specification
  *

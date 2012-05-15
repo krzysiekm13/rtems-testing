@@ -1,8 +1,6 @@
 #
 #  lm32/lm32_evr Support Using Simulator in GDB
 #
-#  $Id$
-#
 
 runARGS()
 {

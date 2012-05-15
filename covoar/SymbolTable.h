@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file SymbolTable.h
  *  @brief SymbolTable Specification
  *

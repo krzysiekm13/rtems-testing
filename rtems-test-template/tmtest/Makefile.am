@@ -1,7 +1,3 @@
-##
-## $Id$
-##
-
 MANAGERS = io rate_monotonic semaphore
 
 rtems_tests_PROGRAMS = @LOWER@

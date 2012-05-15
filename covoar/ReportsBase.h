@@ -1,7 +1,3 @@
-/*
- *   $Id$
- */
-
 /*! @file ReportsBase.h
  *  @brief Reports Base Class Specification
  *

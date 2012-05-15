@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 #include "TraceList.h"
 #include <stdio.h>
 

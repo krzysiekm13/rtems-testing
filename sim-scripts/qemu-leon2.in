@@ -1,8 +1,6 @@
 #
 #  SPARC/LEON2 Qemu Support 
 #
-#  $Id$
-#
 
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"

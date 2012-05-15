@@ -1,7 +1,3 @@
-/*
- * $Id$
- */
-
 #include "ConfigFile.h"
 #include <stdio.h>
 

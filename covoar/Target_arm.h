@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_arm.h
  *  @brief Target_arm Specification
  *

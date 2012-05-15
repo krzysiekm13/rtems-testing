@@ -1,8 +1,6 @@
 #
 #  Blackfin BF537 Stamp Support 
 #
-#  $Id$
-#
 
 runARGS()
 {

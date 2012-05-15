@@ -1,8 +1,6 @@
 #
 #  m68k/uc5282 Qemu Support 
 #
-#  $Id$
-#
 
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"

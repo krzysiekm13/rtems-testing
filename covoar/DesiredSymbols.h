@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file DesiredSymbols.h
  *  @brief DesiredSymbols Specification
  *

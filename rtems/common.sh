@@ -13,8 +13,6 @@
 #  CPU      - to the canonical RTEMS CPU
 #
 #
-#  $Id$
-#
 
 #
 #  Checks the status returned by executables and exits if it is non-zero.

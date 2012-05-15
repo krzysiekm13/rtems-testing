@@ -1,7 +1,3 @@
-/*
- * $Id$
- */
-
 /*! @file ExecutableInfo.cc
  *  @brief ExecutableInfo Implementation
  *

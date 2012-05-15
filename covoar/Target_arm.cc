@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_arm.cc
  *  @brief Target_arm Implementation
  *

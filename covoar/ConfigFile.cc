@@ -1,7 +1,3 @@
-/*
- *   $Id$
- */
-
 
 /*! @file ConfigFile.cc
  *  @brief ConfigFile Implementation

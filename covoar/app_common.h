@@ -1,7 +1,3 @@
-/*
- *   $Id$
- */
-
 #ifndef __APP_COMMON_h
 #define __APP_COMMON_h
 

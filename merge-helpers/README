@@ -1,7 +1,3 @@
-#
-#  $Id$
-#
-
 This directory contains helpers for dealing with the RTEMS CVS Repository
 during maintenance activities.
 

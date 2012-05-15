@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_lm32.h
  *  @brief Target_lm32 Specification
  *

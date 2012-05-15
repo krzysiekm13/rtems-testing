@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file rtemscov_header.h
  *  @brief rtemscov_header Implementation
  *

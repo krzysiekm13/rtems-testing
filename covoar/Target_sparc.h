@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_sparc.h
  *  @brief Target_sparc Specification
  *

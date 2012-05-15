@@ -1,8 +1,6 @@
 #
 #  SPARC/LEON2 Support (on TSIM)
 #
-#  $Id$
-#
 
 tsimName=leon
 tsimGoAddress=0x40000000

@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageReaderQEMU.h
  *  @brief CoverageReaderQEMU Specification
  *

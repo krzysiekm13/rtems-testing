@@ -1,8 +1,6 @@
 #
 #  lm32/lm32_evr Qemu Support 
 #
-#  $Id$
-#
 
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"

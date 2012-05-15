@@ -1,7 +1,3 @@
-##
-## $Id$
-##
-
 rtems_tests_PROGRAMS = @LOWER@
 @LOWER@_SOURCES = init.c
 

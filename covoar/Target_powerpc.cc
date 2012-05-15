@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_powerpc.cc
  *  @brief Target_powerpc Implementation
  *

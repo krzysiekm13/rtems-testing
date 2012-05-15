@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file Target_i386.cc
  *  @brief Target_i386 Implementation
  *

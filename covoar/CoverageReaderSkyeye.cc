@@ -1,7 +1,3 @@
-/*
- *  $Id$
- */
-
 /*! @file CoverageReaderSkyeye.cc
  *  @brief CoverageReaderSkyeye Implementation
  *
