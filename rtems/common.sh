@@ -34,9 +34,9 @@ print_rtems_cpus()
 {
   echo
   echo "CPU is one of the following: "
-  echo "  arm           h8300		i386		lm32"
-  echo "  m68k		nios2		powerpc		sh"
-  echo "  m32c		m32r            sparc		sparc64    tic4x"
+  echo "  arm           h8300		i386	lm32		m32c"
+  echo "  m32r 		mips		nios2	powerpc		sh"
+  echo "  sparc		sparc64    	v850"
   echo 
   echo "Formats without a -XXX suffix are the preferred target."
   echo 
@@ -55,6 +55,7 @@ print_rtems_cpus()
   echo "    sh-rtems          -- Renesas SH (COFF)"
   echo "    sparc-rtems       -- SPARC (ELF)"
   echo "    sparc64-rtems     -- SPARC64 (ELF)"
+  echo "    v850-rtems        -- Renesas v850 (ELF)"
 }
 
 # CPU must be set before we run any of this stuff
@@ -85,6 +86,7 @@ case ${CPU} in
   tic4x)       ;;
   sparc)       ;;
   sparc64)     ;;
+  v850)        ;;
   native)      CPU=unix;;
   unix)        ;;
   *)  
