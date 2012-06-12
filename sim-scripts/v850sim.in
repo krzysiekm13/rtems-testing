@@ -1,0 +1,26 @@
+#
+#  v850 Simulator in GDB Support 
+#
+
+runARGS()
+{
+  echo "${1}"
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${testname} in
+    *)
+      limit=5
+      ;;
+  esac
+  echo ${limit}
+}
+
+bspSkipInterruptCriticalSectionTests="yes"

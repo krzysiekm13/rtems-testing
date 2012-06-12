@@ -57,3 +57,5 @@ smdk2410
 smdk2410-gdb
 uC5282
 usleep
+v850sim
+v850sim-gdb

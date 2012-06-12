@@ -1,6 +1,6 @@
 INSTALL_DIR=../bin
 GDBSIM_SCRIPTS=bf537Stamp ezkit533 gdbarmsim h8sim jmr3904 lm32_evr \
-  m32csim m32rsim psim sis simsh
+  m32csim m32rsim psim sis simsh v850sim
 SKYEYE_SCRIPTS=ant5206 bf537Stamp-skyeye csb337 csb350 csb360 edb7312 \
   ezkit533-skyeye gumstix rtl22xx smdk2410 leon2-skyeye
 
@@ -126,6 +126,9 @@ sis sis-gdb: gdb-sim-run.in gdb-sim.in sis.in
 
 simsh simsh-gdb: gdb-sim-run.in gdb-sim.in simsh.in
 	./mkrun yes SuperH sh simsh
+
+v850sim v850sim-gdb: gdb-sim-run.in gdb-sim.in v850sim.in
+	./mkrun yes V850 v850 v850sim
 
 ## AVR Test (uses Simulavrxx)
 avrtest: gdb-sim-run.in avrtest.in
