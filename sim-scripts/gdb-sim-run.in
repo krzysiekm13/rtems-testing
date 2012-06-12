@@ -87,6 +87,7 @@ doTrace="no"
 enable_display_adapter="no"
 enable_network="no"
 rtems_test="no"
+skip_interrupt_critical_section_tests="no"
 
 while getopts "vcCgGil:L:DsNT" OPT
 do
@@ -102,6 +103,7 @@ do
    l) defaultLimit="$OPTARG";;
    L) logdir="$OPTARG";;
    s) use_sysv_ipc="yes";;
+   S) skip_interrupt_critical_section_tests="yes";;
    t) doTrace="yes";;
    T) rtems_test="yes";;
    *) fatal;;
@@ -135,6 +137,7 @@ bspNeedsTraceConversion="no"
 bspRunsFailRandomly="no"
 bspInputDevice=/dev/console
 bspRedirectInput=no
+bspSkipInterruptCriticalSectionTests="no"
 
 for v in 4.11 4.10 4.9 4.8 4.7 ""
 do
@@ -410,15 +413,27 @@ do
   ## in batch mode, skip it.
   case ${baseToRun} in
     appstart*)
-        warn "skipping intermediate file ${baseToRun}"
-        continue
-        ;;
+      warn "skipping intermediate file ${baseToRun}"
+      continue
+      ;;
     *-node2*)
-        fatal "MP tests not supported"
-        warn "Skipping ${baseToRun}; 'runtest' runs both nodes when for *-node1"
-        continue;;
+      fatal "MP tests not supported"
+      warn "Skipping ${baseToRun}; 'runtest' runs both nodes when for *-node1"
+      continue
+      ;;
     *-node1*)
       warn "Running both nodes associated with ${baseToRun}"
+      ;;
+    spintr*|psxintr*)
+      if [ ${skip_interrupt_critical_section_tests} = "yes" -o \
+           ${bspSkipInterruptCriticalSectionTests} = "yes" ]; then
+        warn "Skipping interrupt critical section test ${baseToRun}"
+        continue
+      fi
+      ;;
+    fileio.*|termios.*)
+      warn "skipping interactive ${baseToRun}"
+      continue
       ;;
     pppd*)
       warn "skipping long running ${baseToRun}"
