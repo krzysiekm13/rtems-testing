@@ -366,6 +366,7 @@ if [ ${needCPU} = yes -a ${needBSP} = yes -a \
     sh-simsh1)            dejacfg=rtems-sh-simsh1 ;;
     sparc-sis)            dejacfg=rtems-sparc-sis ;;
     sparc64-niagara)      dejacfg=rtems-sparc64-nosim ;;
+    v850-v850*sim*)       dejacfg=rtems-v850-v850sim ;;
     *)
       echo "ERROR ${bsp} is not known to DegaGNU"
       exit 1

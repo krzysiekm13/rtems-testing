@@ -3,7 +3,7 @@
 #
 
 if [ $# -lt 2 ] ; then
-  echo USAGE: BSP COMPILER
+  echo USAGE: BSP TESTSUITE
   exit 1
 fi
 
@@ -99,6 +99,12 @@ case $1 in
     BSP=pc386
     DEJABSP=qemu
     BSP_SIM=pc386
+    ;;
+  v850sim) 
+    CPU=v850
+    BSP=v850sim
+    DEJABSP=v850sim
+    BSP_SIM=v850sim
     ;;
   *)
     echo UNKNOWN BSP
