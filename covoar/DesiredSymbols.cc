@@ -238,7 +238,12 @@ namespace Coverage {
           break;
 
         if (theCoverageMap->isNop( ha ))
-          theCoverageMap->setWasExecuted( ha );
+          do {
+            theCoverageMap->setWasExecuted( ha );
+	    ha++;
+            if ( ha >= endAddress )
+              break;
+          } while ( !theCoverageMap->isStartOfInstruction( ha ) );
         a = ha;
       }
 
