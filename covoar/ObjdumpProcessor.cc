@@ -75,7 +75,10 @@ namespace Coverage {
       // Erase trailing nops.  The erase operation wants the first
       // parameter to point to the first item to erase and the second
       // parameter to point to the item beyond the last item to erase.
-      instructions.erase( fnop, ++lnop );
+      if ( fnop == lnop )
+        instructions.erase( fnop );
+      else
+        instructions.erase( fnop, ++lnop );
     }
 
     // If there are NOT already saved instructions, save them.
