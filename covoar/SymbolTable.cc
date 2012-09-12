@@ -45,12 +45,17 @@ namespace Coverage {
     symbolData.length = length;
      
     if ( info[ symbol ].empty() == false ) {
-      if ( info[symbol ].front().length != length ) {
-        fprintf(stderr, "ERROR==> Different lengths for the symbol %s\n", symbol.c_str() );
+      if ( info[ symbol ].front().length != length ) {
+        fprintf(stderr,
+          "ERROR==> Different lengths for the symbol %s (%d and %d)\n",
+          symbol.c_str(), 
+          info[ symbol ].front().length,
+          length
+        );
         exit( 0 );
       }
     }
-    
+
     info[ symbol ].push_back( symbolData );
   }
 
