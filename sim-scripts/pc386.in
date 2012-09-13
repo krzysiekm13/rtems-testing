@@ -21,6 +21,7 @@ if [ ! -r ${runBSP} ] ; then
 fi
 bspNeedsDos2Unix="yes"
 bspRunsFailRandomly="yes"
+bspSupportsDisplayAdapter="yes"
 
 # Set the defaults based upon arguments given and do some error checking
 if [ X${QEMUDIR} == X ] ; then
@@ -69,11 +70,17 @@ runARGS()
   # -cpu 486
   # can also redirect to file with file:log/"`basename ${1} .exe`
   SERIAL_ARG="stdio"
+  if [ ${enable_display_adapter} = "no" ] ; then
+     GRAPHIC_ARG="-nographic"
+  else
+     GRAPHIC_ARG="-vga cirrus"
+  fi
 # core2duo with newer qemu for smp support
 # 486 or pentium for older qemu
   echo "-m 512 -boot a -cpu 486 \
        -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
        -monitor null -nographic -serial ${SERIAL_ARG} --no-reboot"
+       -monitor null ${GRAPHIC_ARG} -serial ${SERIAL_ARG} --no-reboot"
 }
 
 checkBSPFaults()
