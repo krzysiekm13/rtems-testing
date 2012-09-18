@@ -167,7 +167,7 @@ case ${BSP} in
     RTEMS_EXTRA_ARGS="USE_COM1_AS_CONSOLE=1"
     RTEMS_EXTRA_ARGS="${RTEMS_EXTRA_ARGS} BSP_PRESS_KEY_FOR_RESET=0"
     RTEMSEXT=exe
-    ;; 
+    ;;
   uC5282)
     CPU=m68k
     COVERAGE_FORMAT=QEMU
@@ -336,9 +336,9 @@ generate_html()
 
 add_to_summary()
 {
-  unref=${results_dir}/sizes_unreferenced.txt 
+  unref=${results_dir}/sizes_unreferenced.txt
   echo
-  unreffed=`cat ${unref} | wc -l` 
+  unreffed=`cat ${unref} | wc -l`
   echo "Symbols unreferenced: " ${unreffed}
   if [ ${unreffed} = 0 ] ; then
     size_of=0
@@ -403,7 +403,7 @@ generate_reports()
     *.exe
   check_status $? "covoar failed"
 
-  # This should be made obsolete by sortable tables. 
+  # This should be made obsolete by sortable tables.
   #(echo "====== Largest Range Sizes (Size and Count)======" ; \
   #  grep ^Size uncovered.txt | cut -d':' -f2 | sort -n | uniq -c | \
   #     tail -15 | sed -e 's/ *\([0-9]*\) *\([0-9]*\)/\2 \1/' | sort -n -r | \
@@ -449,7 +449,7 @@ generate_reports()
   mv ${results_dir}/index.html ${results_dir}/index.html.tmp
   sed -f ${COVBASE}/rtems_items.sed  \
     <${results_dir}/index.html.tmp \
-    >${results_dir}/index.html 
+    >${results_dir}/index.html
 
   # Now create the archive of information
   cp ${COVOARBASE}/covoar.css ${COVOARBASE}/*gif ${COVOARBASE}/table.js ${results_dir}
@@ -609,12 +609,12 @@ fi
 # If requested, configure RTEMS
 if [ ${do_rtems_configure} = "yes" ] ; then
   # Now let's patch the make/custom file
-  cat ${custom} | 
+  cat ${custom} |
   sed -e '/^CFLAGS_OPTIMIZE_V.*=.*-ftest-coverage -finline-functions -g/d' \
-      -e "s/-O[0123s]/${c_opt}/" | 
+      -e "s/-O[0123s]/${c_opt}/" |
   if [ ${do_generate_gcov} = "yes" ] ; then
     sed -e \
-      '/^CFLAGS_OPTIMIZE_V/a CFLAGS_OPTIMIZE_V += -ftest-coverage -finline-functions -g' 
+      '/^CFLAGS_OPTIMIZE_V/a CFLAGS_OPTIMIZE_V += -ftest-coverage -finline-functions -g'
   else
     cat
   fi >${custom}.tmp
@@ -698,18 +698,18 @@ if [ ${do_copy_tests} = "yes" ] ; then
   find `pwd` -name "*.ralf" -o -name "*.exe" | while read f
   do
     rm -f ../${BSP}-tests/`basename ${f}`
-    if [ ${do_link_tests} = "yes" ] ; then 
+    if [ ${do_link_tests} = "yes" ] ; then
       ln -s ${f} ../${BSP}-tests
     else
       cp ${f} ../${BSP}-tests
     fi
   done
-  
+
 else
   echo "Skipping copying tests..."
 fi
 
-# If requested prepare data to create gcov reports 
+# If requested prepare data to create gcov reports
 if [ ${do_generate_gcov} = "yes" ] ; then
   echo "Preparing data for gcov reports..."
 
