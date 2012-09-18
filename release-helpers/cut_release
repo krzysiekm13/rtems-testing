@@ -3,11 +3,9 @@
 #  Cut a snapshot of a module in CVS
 #
 #  Example Invocations:
-#  
 #
-#  $Id: cut_release,v 1.11 2004/07/29 16:05:40 joel Exp $
+#  TBD
 #
-
 
 usage()
 {
@@ -23,7 +21,7 @@ usage()
   echo "    -v              -- be verbose"
   echo
   echo "Must be run from top level directory of checked out source."
-  echo 
+  echo
   exit 1
 }
 
@@ -222,10 +220,10 @@ fi
 
 # tag the current source
 cd ${base}
-cvs -d ${cvs_root} tag ${current_tag} `grep -v "^D$" CVS/Entries | cut -d'/' -f2` 
+cvs -d ${cvs_root} tag ${current_tag} `grep -v "^D$" CVS/Entries | cut -d'/' -f2`
 if test $? -ne 0 ;  then
   echo Unable to tag source
-  exit 1 
+  exit 1
 fi
 
 # export the current source
@@ -233,7 +231,7 @@ cd ${export_dir}
 cvs -d ${cvs_root} export -r ${current_tag} -d ${release_name}-${current} ${module_name}
 if test $? -ne 0 ;  then
   echo Unable to export source
-  exit 1 
+  exit 1
 fi
 
 # Now start dealing with the exported source
@@ -281,7 +279,7 @@ if [ ${previous} != "NA" ] ; then
 
 fi
 
-# This is where the module has the opportunity to do actions after 
+# This is where the module has the opportunity to do actions after
 # the tarball is made.  This can be used to capture host information,
 # sign the tarball, etc.
 #
@@ -301,7 +299,7 @@ cd ..
 if [ ${previous} != "NA" ] ; then
   if [ -r ${release_name}-${current}/ChangeLog ] ; then
     find ${release_name}-${previous} ${release_name}-${current} -type f | \
-      grep -v ChangeLog | xargs -e rm -rf 
+      grep -v ChangeLog | xargs -e rm -rf
 
     diff -N -P -r -c ${release_name}-${previous} ${release_name}-${current} \
        >${reldir_curr}/${release_name}-ChangeLog-${previous}-${current}.diff
