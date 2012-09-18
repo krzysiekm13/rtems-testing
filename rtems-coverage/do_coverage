@@ -549,14 +549,15 @@ generate_symbols()
 }
 
 # remove symbols we do not want coverage on.
-# NOTE: As of 4 August 2010, we do not have any.
 remove_unwanted_symbols()
 {
-  cat
+#  cat
 #  sed -e '/IMFS_print_node/d' \
 #      -e '/IMFS_dump_directory/d' \
 #      -e '/IMFS_dump/d' \
 #      -e '/IMFS_memfile_maximum_size/d'
+   sed -e '/rtems_shell_debugrfs/d' \
+       -e '/rtems_rfs_shell_/d'
 }
 
 # Now we are ready to start doing real work
