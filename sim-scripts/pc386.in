@@ -79,7 +79,6 @@ runARGS()
 # 486 or pentium for older qemu
   echo "-m 512 -boot a -cpu 486 \
        -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
-       -monitor null -nographic -serial ${SERIAL_ARG} --no-reboot"
        -monitor null ${GRAPHIC_ARG} -serial ${SERIAL_ARG} --no-reboot"
 }
 
