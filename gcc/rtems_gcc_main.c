@@ -9,7 +9,7 @@
  *  http://www.rtems.com/license/LICENSE.
  */
 
-#include <rtems.h>
+#include <bsp.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
