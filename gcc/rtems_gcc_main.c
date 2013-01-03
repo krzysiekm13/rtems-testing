@@ -29,12 +29,12 @@ rtems_task Init(rtems_task_argument ignored)
 }
 
 /* configuration information */
-#define CONFIGURE_MAXIMUM_TASKS 1
 #define CONFIGURE_USE_IMFS_AS_BASE_FILESYSTEM
 #define CONFIGURE_LIBIO_MAXIMUM_FILE_DESCRIPTORS 20
 
 /* might as well treat all memory as one pool */
 #define CONFIGURE_UNIFIED_WORK_AREAS
+#define CONFIGURE_UNLIMITED_OBJECTS
 
 /* GCC tests start at main, use a lot of stack and may use the FPU */
 #define CONFIGURE_RTEMS_INIT_TASKS_TABLE
