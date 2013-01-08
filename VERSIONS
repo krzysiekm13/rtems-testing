@@ -34,20 +34,5 @@ SCRIPTDIR=${BASEDIR}/rtems-testing
 LOGDIR=${BASEDIR}/log
 RESULTSDIR=${BASEDIR}/results-trunk
 
-# These things vary between the GCC CFARM Debian and OAR Fedora test machines
-# TODO: It would be good to probe to figure this out.
-case `hostname` in
-  gcc*)
-    NATIVE_GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
-    GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
-    ;;
-  rtbf32a|rtbf64*|iceland*|*oarcorp*)
-    ;;
-  *)
-    echo "UNKNOWN HOST!!!"
-    exit 1
-    ;;
-esac
-
 # Specify the desired parallelism
 MAKEJOBS="-j`/usr/bin/getconf _NPROCESSORS_ONLN`"
