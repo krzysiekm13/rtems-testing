@@ -31,12 +31,10 @@ source ${vfile}
 ######################## Set defaults #############################
 # Remove Build Directories
 do_cleanup=no
-# Install Binutils (from rpm or source)
+# Install Binutils
 do_binutils=no
-  do_binutils_method=source
-# Install GDB (from rpm or source)
+# Install GDB
 do_gdb=no
-  do_gdb_method=source
 # Build the native compiler?
 do_native=no
   do_native_ada=yes
@@ -57,7 +55,7 @@ do_gccgo=no
 do_gcj=no
 	do_gcj_multilib=yes
 # Build the GCC FORTRAN language cross compiler.
-do_fortran=yes
+do_fortran=no
 	do_fortran_multilib=yes
 # Build RTEMS for a particular CPU/BSP combination
 do_rtems=no
@@ -79,32 +77,39 @@ usage()
 {
 cat <<EOF
 do_one [options] CPU BSP
-  -A - binutils, stage 1, C++, C/C++ multilib, Ada, GCC Go, ObjC, RTEMS
-  -T - run GCC, Ada, GCC Go, and ObjC tests
-  -A - binutils, stage 1, C++, C/C++ multilib, Ada, GCC Go, GCJ, RTEMS
-  -T - run GCC, Ada, GCC Go and GCJ tests
-  -b - install binutils (from source or copy installed RPM contents)
-  -D - install gdb (from source or copy installed RPM contents)
-  -n - native compiler
-  -1 - stage 1 C/C++ compiler
-  -c -   do not include C++ 
-  -m -   do not build multilib
-  -a - stage 2 Ada compiler
-  -G - stage 2 GCC Go compiler
-  -J - stage 2 GCC Java compiler
-  -f - stage 2 GCC FORTRAN compiler
-  -F - run FORTRAN tests
-  -r - build RTEMS
-  -g - run GCC C/C++ tests
-  -C - run ACATS
-  -d - do not clean up (delete build directories) (default=no)
-  -v - verbose
-  -M - do NOT email test results to gcc-testresults
-  -O - Build Objective-C
-  -P - Run Objective-C Tests
-  -o - run GCC Go tests
-  -t - run libgo tests
-  -j - run libjava tests
+  -A   - binutils, stage 1, C++, C/C++ multilib, RTEMS
+  -S   - enable secondary languages of Ada, GCC Go, ObjC, FORTRAN
+  -T   - run GCC tests for languages enabled
+  -B n - build jobs in parallel (e.g. make -j N)
+  -n   - native compiler
+  -d   - do not clean up (delete build directories) (default=no)
+  -M   - do NOT email test results to gcc-testresults
+  -v   - verbose
+
+  Cross Compilation Options (Base and Primary Languages)
+  ======================================================
+    -b   - install binutils
+    -D   - install gdb
+    -1   - stage 1 C/C++ compiler
+    -c   -   do not include C++ 
+    -m   -   do not build multilib
+    -r   - build RTEMS
+    -g   - run GCC C/C++ tests
+
+
+  Cross Compilation Options (Secondary Languages)
+  ===============================================
+    -a   - enable stage 2 Ada compiler
+    -G   - enable stage 2 GCC Go compiler
+    -J   - enable stage 2 GCC Java compiler
+    -f   - enable stage 2 GCC FORTRAN compiler
+    -F   - run FORTRAN tests
+    -C   - run ACATS
+    -O   - Build Objective-C
+    -P   - Run Objective-C Tests
+    -o   - run GCC Go tests
+    -t   - run libgo tests
+    -j   - run libjava tests
 EOF
 }
 
@@ -123,7 +128,7 @@ toggle()
   esac
 }
 
-while getopts bdDnv1cmargiotCfFAJTMGOP OPT
+while getopts bdDnv1cmargiotB:CfFAJTMGOPS OPT
 do
     case "$OPT" in
         A) do_binutils="yes"
@@ -131,21 +136,24 @@ do
            do_stage1="yes"
            do_cxx="yes"
            do_multilib="yes"
+           do_rtems="yes"
+           ;;
+        S) # Secondary languages need to be explicitly turned on
            do_ada="yes"
            do_gccgo="yes"
            do_gcj="yes"
            do_objc="yes"
            do_fortran="yes"
-           do_rtems="yes"
            ;;
+        B) MAKEJOBS="-j$OPTARG" ;;
         d) do_cleanup=`toggle ${do_cleanup}` ;;
         D) do_gdb=`toggle ${do_gdb}` ;;
         T) run_gcctests="yes"
            run_objctests="yes"
            run_acats="yes"
            run_gccgotests="yes"
+           run_fortrantests="yes"
            ;;
-        # unrpm binutils
         b) do_binutils=`toggle ${do_binutils}` ;;
         # Build the native
         n) do_native=`toggle ${do_native}` ;;
@@ -176,68 +184,114 @@ do
 done
 
 run_libgotests=$run_gccgotests
-########################### Grab CPU/BSP ###########################
 
+########################### Grab CPU/BSP ###########################
 shiftcount=`expr $OPTIND - 1`
 shift $shiftcount
-
 cpu=${1}
 bsp=${2}
 
-# Which CPUs do not support C++
-if [ ${do_cxx} = "yes" ] ; then
-  case ${cpu} in
-    avr|h8300|m32c)
-      do_cxx=no
-      echo ${cpu} does not support C++
-      ;;
-    *);;
-  esac
-fi
+needBSP=no
+needCPU=no
 
-# Which CPUs do not support Ada
-if [ ${do_ada} = "yes" ] ; then
-  case ${cpu} in
-    avr|h8300|m32c|sh)
-      do_ada=no
-      run_acats=no
-      echo ${cpu} does not support Ada
-      ;;
-    *);;
-  esac
-fi
+# If native or cross, check things differently
+if [ ${do_native} = yes ] ; then
+  if [ ${do_gccgo} = yes ] ; then
+    echo "Warning! Go requires native C++ to build."
+    do_cxx=yes
+  fi
 
-# Which CPUs do not support Go
-if [ ${do_gccgo} = "yes" ] ; then
-  case ${cpu} in
-    avr|h8300|m32c)
-      do_gccgo=no
-      echo ${cpu} does not support Go
-      ;;
-    *);;
-  esac
-fi
+  if [ ${do_gcj} = yes ] ; then
+    echo "Warning! GCJ requires native C++ to build."
+    do_cxx=yes
+  fi
+else # NOT NATIVE - build for RTEMS
+  # Should the user have specified a CPU and/or BSP?
+  if [ ${do_binutils} = yes -o ${do_gdb} = yes -o \
+       ${do_stage1} = yes -o ${do_ada} = yes -o \
+       ${do_gccgo} = yes -o ${do_gcj} = yes -o \
+       ${do_fortran} = yes ] ; then
+    needCPU=yes
+  fi
 
-# Which CPUs do not support GCJ
-if [ ${do_gcj} = "yes" ] ; then
-  case ${cpu} in
-    avr|h8300|m32c)
-      do_gcj=no
-      echo ${cpu} does not support GCJ
-      ;;
-    *);;
-  esac
-fi
+  if [ ${do_rtems} = yes -o ${run_gcctests} = yes -o \
+       ${run_acats} = yes -o ${run_gccgotests} = yes -o \
+       ${run_libjavatests} = yes ] ; then
+    needBSP=yes
+    needCPU=yes
+    if [ x${bsp} = x ] ; then
+      echo "BSP NOT SET"
+      fatal
+    fi
+  fi
 
-# Which CPUs do not support FORTRAN
-if [ ${do_fortran} = "yes" ] ; then
-  case ${cpu} in
-    arm|i386|m68k|mips|powerpc|sparc) ;;
-    *)
-      do_fortran=no
-      echo ${cpu} does not support Ada
-      ;;
-  esac
+  if [ ${needCPU} = yes -a x${cpu} = x ] ; then
+    echo "CPU NOT SET"
+    fatal
+  fi
+
+  if [ ${needBSP} = yes -a x${bsp} = x ] ; then
+    echo "BSP NOT SET"
+    fatal
+  fi
+
+  TARGET=${cpu}-rtems${RTEMS_VERSION}
+
+  # Which CPUs do not support C++
+  if [ ${do_cxx} = "yes" ] ; then
+    case ${cpu} in
+      avr|h8300|m32c)
+        do_cxx=no
+        echo ${cpu} does not support C++
+        ;;
+      *);;
+    esac
+  fi
+
+  # Which CPUs do not support Ada
+  if [ ${do_ada} = "yes" ] ; then
+    case ${cpu} in
+      avr|h8300|m32c|sh)
+        do_ada=no
+        run_acats=no
+        echo ${cpu} does not support Ada
+        ;;
+      *);;
+    esac
+  fi
+
+  # Which CPUs do not support Go
+  if [ ${do_gccgo} = "yes" ] ; then
+    case ${cpu} in
+      avr|h8300|m32c)
+        do_gccgo=no
+        echo ${cpu} does not support Go
+        ;;
+      *);;
+    esac
+  fi
+
+  # Which CPUs do not support GCJ
+  if [ ${do_gcj} = "yes" ] ; then
+    case ${cpu} in
+      avr|h8300|m32c)
+        do_gcj=no
+        echo ${cpu} does not support GCJ
+        ;;
+      *);;
+    esac
+  fi
+
+  # Which CPUs do not support FORTRAN
+  if [ ${do_fortran} = "yes" ] ; then
+    case ${cpu} in
+      arm|i386|m68k|mips|powerpc|sparc) ;;
+      *)
+        do_fortran=no
+        echo ${cpu} does not support Ada
+        ;;
+    esac
+  fi
 fi
 
 # When verbose, print settings
@@ -246,6 +300,7 @@ if [ ${verbose} = yes ] ; then
   echo "BSP             : " ${bsp}
   echo "Binutils        : " ${do_binutils}
   echo "GDB             : " ${do_gdb}
+  echo "Make Jobs       : " ${MAKEJOBS}
   echo "Build Native    : " ${do_native}
   echo "Build Stage 1   : " ${do_stage1}
   echo "  C++           : " ${do_cxx}
@@ -273,50 +328,6 @@ if [ ${verbose} = yes ] ; then
   echo "Clean up        : " ${do_cleanup}
 fi
 
-# Should the user have specified a CPU and/or BSP?
-needBSP=no
-needCPU=no
-
-if [ ${do_binutils} = yes -o ${do_gdb} = yes -o \
-     ${do_stage1} = yes -o ${do_ada} = yes -o \
-     ${do_gccgo} = yes -o ${do_gcj} = yes -o \
-     ${do_fortran} = yes ] ; then
-  needCPU=yes
-fi
-
-if [ ${do_native} = yes -a ${do_gccgo} = yes ] ; then
-  echo "Warning! Go requires native C++ to build."
-  do_cxx=yes
-fi
-
-if [ ${do_native} = yes -a ${do_gcj} = yes ] ; then
-  echo "Warning! GCJ requires native C++ to build."
-  do_cxx=yes
-fi
-
-if [ ${do_rtems} = yes -o ${run_gcctests} = yes -o \
-     ${run_acats} = yes -o ${run_gccgotests} = yes -o \
-     ${run_libjavatests} = yes ] ; then
-  needBSP=yes
-  needCPU=yes
-  if [ x${bsp} = x ] ; then
-    echo "BSP NOT SET"
-    fatal
-  fi
-fi
-
-if [ ${needCPU} = yes -a x${cpu} = x ] ; then
-  echo "CPU NOT SET"
-  fatal
-fi
-
-if [ ${needBSP} = yes -a x${bsp} = x ] ; then
-  echo "BSP NOT SET"
-  fatal
-fi
-
-TARGET=${cpu}-rtems${RTEMS_VERSION}
-
 # Do we accept an alternate name for the BSP?
 if [ x${bsp} = xqemu ] ; then
   BSP_BUILT=pc386
@@ -325,7 +336,6 @@ else
 fi
   
 ######### Consistency check installation of source
-
 if [ ! -d ${GCCDIR}/newlib ] ; then
   echo "${GCCDIR}/newlib not present"
   exit 1
@@ -393,51 +403,22 @@ j_binutils()
 
   cd ${INSTALL}/..
   
-  case ${do_binutils_method} in
-    rpm)
-      if [ ! -r /opt/rtems-${RTEMS_VERSION}/bin/${TARGET}-as ] ; then
-         echo "Binutils RPMs not installed"
-         exit 0
-      fi
-
-      echo "Extracting binutils from installed RPMs"
-      DIR=`pwd`
-      mkdir tmp-unrpm
-      cd tmp-unrpm
-      cd /
-      for cpu in $*
-      do
-        pkg=`rpm -qf /opt/rtems-${RTEMS_VERSION}/bin/${TARGET}-as`
-        rpm -ql $pkg | cpio -pvdum ${DIR}/tmp-unrpm
-      done
-      cd ${DIR}/tmp-unrpm/opt/rtems-${RTEMS_VERSION}
-      find . | cpio -pdum ${INSTALL}
-      cd ${DIR}
-      rm -rf tmp-unrpm
-      ;;
-    source)
-      echo "Building Binutils from source"
-      rm -rf ${BUILDDIR}/b-${cpu}-binutils
-      mkdir ${BUILDDIR}/b-${cpu}-binutils
-      cd ${BUILDDIR}/b-${cpu}-binutils
-      (${BINUTILSDIR}/configure --target=${TARGET} --prefix=$INSTALL \
-        --disable-werror && \
-        make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-binutils.log 2>&1
-      if [ $? -ne 0 ] ; then
-        echo "Failed to build Binutils from source"
-        exit 1
-      fi
-      echo "Checking Binutils "
-      make check >${LOGDIR}/${cpu}-binutils-check.log 2>&1
-      grep ^FAIL ${LOGDIR}/${cpu}-binutils-check.log
-      cd .. 
-      test ${do_cleanup} = "yes" && rm -rf ${BUILDDIR}/b-${cpu}-binutils
-      ;;
-    *)
-      echo "Where do I get the binutils from?"
-      exit 1
-      ;;
-  esac
+  echo "Building Binutils from source"
+  rm -rf ${BUILDDIR}/b-${cpu}-binutils
+  mkdir ${BUILDDIR}/b-${cpu}-binutils
+  cd ${BUILDDIR}/b-${cpu}-binutils
+  (${BINUTILSDIR}/configure --target=${TARGET} --prefix=$INSTALL \
+    --disable-werror && \
+    make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-binutils.log 2>&1
+  if [ $? -ne 0 ] ; then
+    echo "Failed to build Binutils from source"
+    exit 1
+  fi
+  echo "Checking Binutils "
+  make check >${LOGDIR}/${cpu}-binutils-check.log 2>&1
+  grep ^FAIL ${LOGDIR}/${cpu}-binutils-check.log
+  cd .. 
+  test ${do_cleanup} = "yes" && rm -rf ${BUILDDIR}/b-${cpu}-binutils
 }
 
 if [ ${do_binutils} = yes ] ; then
@@ -457,51 +438,22 @@ j_gdb()
     *)    GDBTARGET=${TARGET} ;;
   esac
 
-  case ${do_gdb_method} in
-    rpm)
-      if [ ! -r /opt/rtems-${RTEMS_VERSION}/bin/${GDBTARGET}-gdb ] ; then
-         echo "Binutils RPMs not installed"
-         exit 0
-      fi
-
-      echo "Extracting gdb from installed RPMs"
-      DIR=`pwd`
-      mkdir tmp-unrpm
-      cd tmp-unrpm
-      cd /
-      for cpu in $*
-      do
-        pkg=`rpm -qf /opt/rtems-${RTEMS_VERSION}/bin/${GDBTARGET}-gdb`
-        rpm -ql $pkg | cpio -pvdum ${DIR}/tmp-unrpm
-      done
-      cd ${DIR}/tmp-unrpm/opt/rtems-${RTEMS_VERSION}
-      find . | cpio -pdum ${INSTALL}
-      cd ${DIR}
-      rm -rf tmp-unrpm
-      ;;
-    source)
-      echo "Building GDB from source"
-      cd ${BASEDIR}
-      rm -rf ${BUILDDIR}/b-${cpu}-gdb
-      mkdir ${BUILDDIR}/b-${cpu}-gdb
-      cd ${BUILDDIR}/b-${cpu}-gdb
-      (${GDBDIR}/configure --target=${GDBTARGET} \
-        --enable-sim --enable-sim-hardware \
-        --disable-werror \
-        --enable-timebase --enable-sim-trace  --prefix=$INSTALL && \
-        make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-gdb.log 2>&1
-      if [ $? -ne 0 ] ; then
-        echo "Failed to build gdb from source"
-        exit 1
-      fi
-      cd .. 
-      test ${do_cleanup} = "yes" && rm -rf ${BUILDDIR}/b-${cpu}-gdb
-      ;;
-    *)
-      echo "Where do I get the gdb from?"
-      exit 1
-      ;;
-  esac
+  echo "Building GDB from source"
+  cd ${BASEDIR}
+  rm -rf ${BUILDDIR}/b-${cpu}-gdb
+  mkdir ${BUILDDIR}/b-${cpu}-gdb
+  cd ${BUILDDIR}/b-${cpu}-gdb
+  (${GDBDIR}/configure --target=${GDBTARGET} \
+    --enable-sim --enable-sim-hardware \
+    --disable-werror \
+    --enable-timebase --enable-sim-trace  --prefix=$INSTALL && \
+    make ${MAKEJOBS} && make install) >${LOGDIR}/${cpu}-gdb.log 2>&1
+  if [ $? -ne 0 ] ; then
+    echo "Failed to build gdb from source"
+    exit 1
+  fi
+  cd .. 
+  test ${do_cleanup} = "yes" && rm -rf ${BUILDDIR}/b-${cpu}-gdb
 }
 
 if [ ${do_gdb} = yes ] ; then
@@ -573,9 +525,9 @@ j_gcc()
   ${GCCDIR}/configure \
     ${GCC_EXTRA_ARGS} \
     --disable-werror \
-   --enable-threads=rtems  --with-gnu-as ${multilib} \
-   --enable-newlib-mb --enable-newlib-iconv \
-   --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
+    --enable-threads=rtems  --with-gnu-as ${multilib} \
+    --enable-newlib-mb --enable-newlib-iconv \
+    --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
     --enable-version-specific-runtime-libs \
     --enable-languages=c${cxx} --target=$TARGET --prefix=$INSTALL
   if [ $? -ne 0 ] ; then
