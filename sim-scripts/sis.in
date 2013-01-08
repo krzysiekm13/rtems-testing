@@ -9,6 +9,12 @@ runARGS()
 
 checkBSPFaults()
 {
+  logfile=$1
+  grep "^Memory exception at " ${logfile}
+  badAccessExit=$?
+  if [ $badAccessExit -eq 0 ] ; then
+    return 1
+  fi
   return 0
 }
 
