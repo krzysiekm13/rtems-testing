@@ -3,32 +3,90 @@
 #  Test build all the tool configurations
 #
 
+#  Checks the status returned by executables and exits if it is non-zero.
+check_fatal()
+{
+  if [ $1 -eq 0 ] ; then
+    return
+  fi
+  shift
+  echo "ERROR: $*" >&2
+  exit $?
+}
+
 # Include user configurable information
 test -r ./user.cfg || \
   check_fatal 1 "Cannot find user configuration (user.cfg)"
 . ./user.cfg
-
-#
-#  Set up variables which control the scripts behavior
-verbose=yes
-testing=no
-quit_on_error=yes
-do_barebsps=no
-if [ "x${BSP}" = "x" ]; then
-  BSP=all
-fi
-
-
-#
-#  Now get started
-#
-start=`date`
 
 # Verify that the environment is correct
 if [ ! -d log ] ; then
   echo No log directory
   exit 1
 fi
+
+usage()
+{
+  echo "$0: arguments"
+  echo "  where arguments are:"
+  echo "    -t                     enable test mode (default=no)"
+  echo "    -p                     execute builds with GNU parallel"
+  echo "                             default is sequential"
+  echo "    -j N                   when parallel, number of jobs"
+  echo "    -v                     disable verbose mode"
+}
+
+toggle()
+{
+  if [ $1 = "no" ] ; then
+    echo "yes"
+    return
+  fi
+  echo "no"
+}
+
+#  Set up variables which control the scripts behavior
+verbose=yes
+testing=no
+do_parallel=no
+jobs=NOT_SET
+
+while getopts j:ptv OPT
+do
+  case "$OPT" in
+    t) testing=`toggle ${testing}` ;;
+    j) jobs="${OPTARG}" ;;
+    p) do_parallel=`toggle ${do_parallel}` ;;
+    v) verbose=`toggle ${verbose}` ;;
+    *) usage ; exit 1 ;;
+  esac
+done
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+if [ ${do_parallel} = "yes" ] ; then
+  parallel --version 2>&1 | grep "GNU Parallel" >/dev/null
+  check_fatal $? "GNU parallel is not installed"
+
+  JOBS=
+  case ${jobs} in
+    NOT_SET)
+      JOBS=""
+      ;;
+    ''|*[!0-9]*)
+      check_fatal 1 "Number of jobs (${jobs}) specified is not a number"
+      ;;
+    *)
+      JOBS="-j ${jobs}"
+      ;;
+  esac
+fi
+
+#
+#  Now get started
+#
+start=`date`
 
 # Determine the list of CPUs to build
 if [ $# -ne 0 ] ; then
@@ -37,7 +95,7 @@ else
   # leave out nios2 tic4x
   CPUs=
   for c in arm avr bfin h8300 i386 lm32 m32c m32r m68k mips \
-           powerpc sh sparc sparc64
+           powerpc sh sparc sparc64 v850
   do
     if [ -r ${RTEMS}/cpukit/score/cpu/${c} ] ; then
       CPUS="${CPUS} ${c}"
@@ -69,56 +127,56 @@ get_bsps()
       avr)     all_bsps="avrtest" ;;
       bfin)    all_bsps="eZKit533 bf537Stamp" ;;
       arm)     all_bsps="csb336 csb337 csb637 edb7312 gba gp32 nds"
-	       all_bsps="${all_bsps} rtl22xx rtl22xx_t smdk2410"
-	       all_bsps="${all_bsps} lpc2478 gumstix" ;;
+               all_bsps="${all_bsps} rtl22xx rtl22xx_t smdk2410"
+               all_bsps="${all_bsps} lpc2478 gumstix" ;;
       h8300)   all_bsps="h8sim" ;;
       i386)    all_bsps="i386ex pc386 pc386dx pc486 pc586 pc686"
-	       all_bsps="${all_bsps} ts_386ex" ;;
+               all_bsps="${all_bsps} ts_386ex" ;;
       lm32)    all_bsps="lm32_evr" ;;
       m32c)    all_bsps="m32csim" ;;
       m32r)    all_bsps="m32rsim" ;;
       m68k)    all_bsps="gen68360 gen68360_040 mvme136 mvme147 mvme147s"
-	       all_bsps="${all_bsps} mvme162 mvme162lx mvme167 ods68302"
-	       all_bsps="${all_bsps} sim68000 mcf5206elite "
-	       all_bsps="${all_bsps} uC5282 mcf52235 mcf5329"
-	       all_bsps="${all_bsps} gen68302 csb360 simcpu32 mrm332 av5282"
-	       all_bsps="${all_bsps} gen68340 mcf5235 idp pgh360" 
-	       all_bsps="${all_bsps} m5484FireEngine" ;;
+               all_bsps="${all_bsps} mvme162 mvme162lx mvme167 ods68302"
+               all_bsps="${all_bsps} sim68000 mcf5206elite "
+               all_bsps="${all_bsps} uC5282 mcf52235 mcf5329"
+               all_bsps="${all_bsps} gen68302 csb360 simcpu32 mrm332 av5282"
+               all_bsps="${all_bsps} gen68340 mcf5235 idp pgh360" 
+               all_bsps="${all_bsps} m5484FireEngine" ;;
       mips)    all_bsps="jmr3904 genmongoosev csb350 hurricane"
-	       all_bsps="${all_bsps} rbtx4925 rbtx4938" ;;
+               all_bsps="${all_bsps} rbtx4925 rbtx4938" ;;
       nios2)   all_bsps="nios2_iss" ;;
       powerpc) all_bsps="psim score603e mcp750 mvme2100 mvme2307 mvme3100"
-	       all_bsps="${all_bsps} mpc8260ads ss555 mvme5500 ep1a"
-	       all_bsps="${all_bsps} pm520_cr825 pm520_ze30"
-	       all_bsps="${all_bsps} mbx821_001 mbx821_002 mbx821_002b"
-	       all_bsps="${all_bsps} mbx860_1b mbx860_001b mbx860_002"
-	       all_bsps="${all_bsps} mbx860_005b mtx603e brs5l icecube"
-	       all_bsps="${all_bsps} virtex mpc8349eamds hsc_cm01 haleakala"
-	       all_bsps="${all_bsps} mpc8313erdb mpc5566evb"
-	       all_bsps="${all_bsps} pghplus tqm8xx_stk8xx" ;;
+               all_bsps="${all_bsps} mpc8260ads ss555 mvme5500 ep1a"
+               all_bsps="${all_bsps} pm520_cr825 pm520_ze30"
+               all_bsps="${all_bsps} mbx821_001 mbx821_002 mbx821_002b"
+               all_bsps="${all_bsps} mbx860_1b mbx860_001b mbx860_002"
+               all_bsps="${all_bsps} mbx860_005b mtx603e brs5l icecube"
+               all_bsps="${all_bsps} virtex mpc8349eamds hsc_cm01 haleakala"
+               all_bsps="${all_bsps} mpc8313erdb mpc5566evb"
+               all_bsps="${all_bsps} pghplus tqm8xx_stk8xx" ;;
       sh)      all_bsps="gensh1 gensh2 gensh4"
-	       all_bsps="${all_bsps} simsh1 simsh2 simsh4" ;;
+               all_bsps="${all_bsps} simsh1 simsh2 simsh4" ;;
       sparc)   all_bsps="sis erc32 leon2 leon3" ;;
       sparc64) all_bsps="usiii niagara" ;;
       tic4x)   all_bsps="c3xsim c4xsim" ;;
       unix)    all_bsps="posix"
 
-	supported=no
-	# check to see if this host has a simulator port
-	case `${RTEMS}/config.guess` in
-	  i[3456]86-pc-linux*)  supported=yes ;;
-	  sparc-sun-solaris*)   supported=yes ;;
-	  i[3456]86-*freebsd2*) supported=yes ;;
-	  *hpux*)
-	     echo "You are on a platform which needs to be tested".
-	     echo "HPUX has not been tested with the autoconf configuration."
-	     exit 0
-	     ;;
-	esac
-	;;
+        supported=no
+        # check to see if this host has a simulator port
+        case `${RTEMS}/config.guess` in
+          i[3456]86-pc-linux*)  supported=yes ;;
+          sparc-sun-solaris*)   supported=yes ;;
+          i[3456]86-*freebsd2*) supported=yes ;;
+          *hpux*)
+             echo "You are on a platform which needs to be tested".
+             echo "HPUX has not been tested with the autoconf configuration."
+             exit 0
+             ;;
+        esac
+        ;;
       *)
-	echo "UNKNOWN CPU ${CPU} -- add to bit_all"
-	;;
+        echo "UNKNOWN CPU ${CPU} -- add to bit_all"
+        ;;
     esac
 
     ALL_BSPS=
@@ -133,41 +191,55 @@ get_bsps()
   fi
 }
 
+if [ ${do_parallel} = "yes" ] ; then
+  cp /dev/null parallel_bsps.tmp
+fi
 
 # Now cycle through all the CPUs selected
 for CPU in ${CPUS} 
 do
-
-
   #
   #  Decide to cycle over all the BSPs
   #
-  if [ ${BSP} = "all" ] ; then
-    get_bsps
-    BSPS_TO_TEST="${ALL_BSPS}"
-  else
-    BSPS_TO_TEST="${BSP}"
-  fi 
+  get_bsps
 
-  if [ "X${BSPS_TO_TEST}" != "X" ] ; then
-    for BSP_TO_TEST in ${BSPS_TO_TEST}
-    do
-      echo "Building RTEMS targetting ${CPU} for the ${BSP_TO_TEST} board"
-      logfile=log/${CPU}-${BSP_TO_TEST}.log
+  for BSP_TO_TEST in ${ALL_BSPS}
+  do
+    logfile=log/${CPU}-${BSP_TO_TEST}.log
+    CMD="./bit_rtems $CPU $BSP_TO_TEST"
+
+    # build the BSPs serially
+    if [ ${do_parallel} = no ] ; then
       if [ ${verbose} = yes ] ; then
-	 echo "./bit_rtems $CPU $BSP_TO_TEST >${logfile} 2>&1"
+        echo "Building RTEMS targetting ${CPU} for the ${BSP_TO_TEST} board"
       fi
-      if [ ${testing} = no ] ; then
-	BUILDDIR=build-${CPU}-${BSP_TO_TEST}-rtems
-	./bit_rtems $CPU $BSP_TO_TEST >${logfile} 2>&1
-	mv ${BUILDDIR}/${BSP_TO_TEST}/test*/*.log log 2>/dev/null
-	du -s -k ${BUILDDIR}
-	rm -rf ${BUILDDIR}
-      fi
-    done
-  fi
 
+      # echo the command which will be used to build the BSP
+      if [ ${testing} = yes ] ; then
+        echo "${CMD} >${logfile} 2>&1"
+        continue
+      fi
+
+      ${CMD} >${logfile} 2>&1
+      continue
+    fi
+
+    # generate parallel script
+    echo "${CMD} >${logfile} 2>&1" >>parallel_bsps.tmp
+
+  done
 done
+
+if [ ${do_parallel} = yes ] ; then
+  if [ ${verbose} = yes ] ; then
+    echo "Initiating parallel build of `wc -l parallel_bsps.tmp` RTEMS BSPs"
+    echo "  parallel_bsps.tmp is the script being executed"
+  fi
+  if [ ${testing} = no ] ; then
+    cat parallel_bsps.tmp | parallel --verbose
+  fi
+    
+fi
 
 # Now we are done
 
