@@ -29,13 +29,6 @@ do
   fi
 done
 
-if [ x${PPL} != x ] ; then
-  if [ ! -d ${PPL} ] ; then
-    echo "Cannot locate ${d} -- aborting"
-    exit 1
-  fi
-fi
-
 toggle()
 {
   case $1 in

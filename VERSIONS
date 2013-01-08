@@ -25,7 +25,6 @@ NEWLIBDIR=${BASEDIR}/newlib-cvs/src
 GDBDIR=${BASEDIR}/gdb-cvs/src
 #GDBDIR=${BASEDIR}/gdb-7.1
 RTEMSDIR=${BASEDIR}/rtems
-PPL=${BASEDIR}/ppl-0.11
 
 # These are inferred from above but double check
 INSTALL=${BASEDIR}/install-${GCC_VERSION}
@@ -43,11 +42,6 @@ case `hostname` in
     GCC_EXTRA_ARGS="--with-mpfr=/opt/cfarm/mpfr-2.3.1/"
     ;;
   rtbf32a|rtbf64*|iceland*|*oarcorp*)
-    if [ x${PPL} != x ] ; then
-      NATIVE_GCC_EXTRA_ARGS="--with-ppl=${INSTALL}"
-      GCC_EXTRA_ARGS="--with-ppl=${INSTALL}"
-      export LD_LIBRARY_PATH=${INSTALL}/lib
-    fi
     ;;
   *)
     echo "UNKNOWN HOST!!!"
