@@ -14,22 +14,28 @@ GCC_VERSION=svn
 case ${GCC_VERSION} in
   *4.[32]*)  AUTOCONF=${BASEDIR}/autoconf-2.63 ;;
   *4.[45]*)  AUTOCONF=${BASEDIR}/autoconf-2.67 ;;
-  *)         AUTOCONF=${BASEDIR}/autoconf-2.68 ;;
+  *)         AUTOCONF=${BASEDIR}/autoconf-2.69 ;;
 esac
-AUTOMAKE=${BASEDIR}/automake-1.11.1
+AUTOMAKE=${BASEDIR}/automake-1.12.6
 GCCDIR=${BASEDIR}/gcc-${GCC_VERSION}
+
+## checked out from source code control
 BINUTILSDIR=${BASEDIR}/binutils-cvs/src
-#BINUTILSDIR=${BASEDIR}/binutils-2.20.1
 NEWLIBDIR=${BASEDIR}/newlib-cvs/src
-#NEWLIBDIR=${BASEDIR}/newlib-1.18.0
 GDBDIR=${BASEDIR}/gdb-cvs/src
+
+## Example release versions
+#BINUTILSDIR=${BASEDIR}/binutils-2.20.1
+#NEWLIBDIR=${BASEDIR}/newlib-1.18.0
 #GDBDIR=${BASEDIR}/gdb-7.1
 RTEMSDIR=${BASEDIR}/rtems
 
 # These are inferred from above but double check
 INSTALL=${BASEDIR}/install-${GCC_VERSION}
 BSP_INSTALL=${INSTALL}
-#BSP_INSTALL=${BASEDIR}/bsp-install
+#BUILDDIR=${BASEDIR}
+
+BUILDDIR=/home2/joel/build
 SCRIPTDIR=${BASEDIR}/rtems-testing
 LOGDIR=${BASEDIR}/log
 RESULTSDIR=${BASEDIR}/results-trunk
