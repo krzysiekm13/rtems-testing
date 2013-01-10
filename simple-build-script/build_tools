@@ -8,19 +8,18 @@
 #  Please be sure to apply appropriate patches from
 #  rtems/contrib/crossrpms/patches.
 #
-#  --Joel Sherrill (28 March 2010)
+#  Currently only testing of non-RTEMS targets is supported.
 #
 
 ### EDIT THESE AS NEEDED
-AUTOCONF=autoconf-2.66
-AUTOMAKE=automake-1.11.1
-BINUTILS=binutils-2.20.1
-GDB=gdb-7.1
-GCC=gcc-4.5.0
-NEWLIB=newlib-1.18.0
+AUTOCONF=autoconf-2.69
+AUTOMAKE=automake-1.12.6
+BINUTILS=binutils-cvs/src
+GDB=gdb-cvs/src
+GCC=gcc-svn
+NEWLIB=newlib-cvs/src
 LANGUAGES="c,c++"
 ### END OF EDIT THESE
-
 
 BASE=`pwd`
 
@@ -57,20 +56,27 @@ toggle()
 usage()
 {
 cat <<EOF
-  -v             verbose
-  -A             toggle building all parts
-  -a             toggle building autoconf
-  -m             toggle building automake
-  -b             toggle building binutils
-  -g             toggle building gcc/newlib
-  -d             toggle building db
+  -v             verbose (default=no)
+  -c             clean after building if OK (default=yes)
+  -A             toggle building binutils, gcc, newlib, and gdb
+  -a             toggle building autoconf (default=no)
+  -m             toggle building automake (default=no)
+  -b             toggle building binutils (default=no)
+  -g             toggle building gcc/newlib (default=no)
+  -d             toggle building gdb (default=no)
   -i INSTALL     specify install directory (required)
   -t TARGET      specify target (required)
+  -B DIRECTORY   specify directory for build tree (default=pwd)
+  -T             toggle running test (default=no)
+  -M             toggle sending test results email (default=no)
 
 EOF
 exit 1
 }
 
+sourcedir=`pwd`
+buildroot=`pwd`
+do_clean=yes
 do_autoconf=no
 do_automake=no
 do_binutils=no
@@ -79,13 +85,14 @@ do_gcc_newlib=no
 verbose=no
 TARGET=NOT_SET
 INSTALL=NOT_SET
+jobs=NOT_SET
+do_tests=no
+do_mail=no
 
-while getopts vAambgdi:t: OPT
+while getopts cj:B:vTMAambgdi:t: OPT
 do
   case "$OPT" in
-    A) do_autoconf=`toggle ${do_autoconf}`
-       do_automake=`toggle ${do_automake}`
-       do_binutils=`toggle ${do_binutils}`
+    A) do_binutils=`toggle ${do_binutils}`
        do_gdb=`toggle ${do_gdb}`
        do_gcc_newlib=`toggle ${do_gcc_newlib}`
        ;;
@@ -96,19 +103,44 @@ do
     d) do_gdb=`toggle ${do_gdb}` ;;
     i) INSTALL="${OPTARG}" ;;
     t) TARGET="${OPTARG}" ;;
+    j) jobs="${OPTARG}" ;;
+    B) buildroot="${OPTARG}" ;;
+    c) do_clean=`toggle ${do_clean}` ;;
+    T) do_tests=`toggle ${do_tests}` ;;
+    M) do_mail=`toggle ${do_mail}` ;;
     v) verbose=`toggle ${verbose}` ;;
-    *) echo ERROR ; exit 1 ;;
+    *) echo "Error ${OPT} is not a valid option" ; usage ; exit 1 ;;
   esac
 done
 
+# Specify the desired parallelism
+if [ ${jobs} != "NOT_SET" ] ; then
+  case ${jobs} in
+    NOT_SET)
+      JOBS=""
+      ;;
+    ''|*[!0-9]*)
+      check_fatal 1 "Number of jobs (${jobs}) specified is not a number"
+      ;;
+    *)
+      JOBS="-j ${jobs}"
+      ;;
+  esac
+fi
+
 if [ ${verbose} = "yes" ] ; then
-  echo "Build autoconf:   " ${do_autoconf}
-  echo "Build automake:   " ${do_automake}
-  echo "Build binutils:   " ${do_binutils}
-  echo "Build gdb:        " ${do_gdb}
-  echo "Build gcc/newlib: " ${do_gcc_newlib}
-  echo "Install point:    " ${INSTALL}
-  echo "Target:           " ${TARGET}
+  echo "Build autoconf:    " ${do_autoconf}
+  echo "Build automake:    " ${do_automake}
+  echo "Build binutils:    " ${do_binutils}
+  echo "Build gdb:         " ${do_gdb}
+  echo "Build gcc/newlib:  " ${do_gcc_newlib}
+  echo "Clean as building: " ${do_clean}
+  echo "Running Tests:     " ${do_tests}
+  echo "  Mailing Results: " ${do_mail}
+  echo "Parallel Jobs:     " ${jobs}
+  echo "Install point:     " ${INSTALL}
+  echo "Build root:        " ${buildroot}
+  echo "Target:            " ${TARGET}
   echo
 fi
 
@@ -167,40 +199,47 @@ if [ ${do_gcc_newlib} = yes ] ; then
   TOBUILD="${TOBUILD} ${GCC}"
 fi
 
+test -d ${buildroot}
+check_status $? "${buildroot} does not exist"
+
 export PATH=${INSTALL}/bin:$PATH
 ### Build everything
 for pkg in ${TOBUILD}
 do
-  rm -rf b-${pkg}
-  check_status $? "failed to rm b-${pkg}"
+  cd ${buildroot}
+  check_status $? "failed to cd ${buildroot}"
 
-  mkdir b-${pkg}
-  check_status $? "failed to make b-${pkg}"
+  BUILDDIR=`echo b-${TARGET}-${pkg} | sed -e 's/\//-/g'`
 
-  cd b-${pkg}
-  check_status $? "failed to cd b-${pkg}"
+  rm -rf ${BUILDDIR}
+  check_status $? "failed to rm ${BUILDDIR}"
 
-  echo "Configuring ${pkg}..."
+  mkdir ${BUILDDIR}
+  check_status $? "failed to make ${BUILDDIR}"
+
+  cd ${BUILDDIR}
+  check_status $? "failed to cd ${BUILDDIR}"
+
+  echo "Configuring ${pkg} in ${BUILDDIR}..."
   case $pkg in
     auto*)                               # autotools are native
-      ../${pkg}/configure --prefix=${INSTALL} >c.log 2>&1
+      ${sourcedir}/${pkg}/configure --prefix=${INSTALL} >c.log 2>&1
       check_status $? "failed to configure ${pkg}"
       ;;
     binutils*)
-      ../${pkg}/configure --target=${TARGET} \
+      ${sourcedir}/${pkg}/configure --target=${TARGET} \
         --prefix=${INSTALL} >c.log 2>&1
       check_status $? "failed to configure ${pkg}"
       ;;
     gdb*)
-      ../${pkg}/configure --target=${TARGET} \
+      ${sourcedir}/${pkg}/configure --target=${TARGET} \
         --prefix=${INSTALL} \
         --enable-sim --enable-sim-hardware \
-        --enable-timebase --enable-sim-trace 
-        >c.log 2>&1
+        --enable-timebase --enable-sim-trace >c.log 2>&1
       check_status $? "failed to configure ${pkg}"
       ;;
     gcc*)
-      ../${GCC}/configure \
+      ${sourcedir}/${GCC}/configure \
        --enable-threads=rtems  --with-gnu-as --enable-multilib \
        --enable-newlib-mb --enable-newlib-iconv \
        --with-gnu-ld --with-newlib  --verbose --with-system-zlib --disable-nls \
@@ -216,15 +255,83 @@ do
   esac
 
   echo "Building ${pkg}..."
-  make >b.log 2>&1
+  make ${JOBS} >b.log 2>&1
   check_status $? "failed to make ${pkg}"
 
   echo "Installing ${pkg}..."
   make install >i.log 2>&1
   check_status $? "failed to install ${pkg}"
 
+  # If testing the package, fall into this if
+  if [ ${do_tests} = "yes" ] ; then
+    echo "Testing ${pkg}..."
+    case $pkg in
+      auto*)
+        # currently do not run test suite on autoconf and automake
+        ;;
+      binutils*)
+        echo "Testing binutils for ${TARGET}"
+        make check >check.log 2>&1
+        ;;
+      gdb*)
+        # currently do not run test suite on gdb
+        ;;
+      gcc*)
+        baseboard=NOT_SET
+        case ${TARGET} in
+          *-rtems*)
+            echo "*** Currently do not support testing GCC with this script"
+            ;;
+          *-elf*|*-eabi*)
+            cpu=`echo ${TARGET} | cut -d'-' -f1`
+            case ${cpu} in
+              arc*|arm*|basic*|cris*|d10v*|d30v*|fr30*|frv*|h8300*|i960*|iq2000*|jmr3904|\
+              m32r*|m68hc11*|mcore*|mips*|mips64*|mips64vr4100*|mmixware*|mn10200|\
+              mn10300*|powerpc*|powerpcle*|sh*|sparc*|sparc64*|sparclite*|tic80*|tx39|\
+              v850*|vr4100*|vr4111*|vr4300*|xtensa*)
+                baseboard=${cpu}-sim
+                ;;
+              *)
+                ;;
+            esac
+            ;;
+          *)
+            ;;
+          
+        esac
+
+        # now see if we found a configuration to test with
+        if [ ${baseboard} = "NOT_SET" ] ; then
+          echo "*** Do not know how to test gcc on ${target}"
+          continue
+        fi
+
+        echo "Testing gcc for ${TARGET} on ${baseboard}"
+        make check RUNTESTFLAGS="--target_board=${baseboard}" >check.log 2>&1
+
+        if [ ${do_mail} = "yes" ] ; then
+          echo "Sending ${language} test results to GCC community.."
+          ${sourcedir}/${GCC}/contrib/test_summary -m gcc-testresults@gcc.gnu.org | sh
+          check_status $? "Failed to email ${language} Test Results to GCC Community .. bailing"
+
+          echo "Sending ${language} test results to RTEMS community.."
+          ${sourcedir}/${GCC}/contrib/test_summary -o -m rtems-tooltestresults@rtems.org | sh
+          check_status $? "Failed to email ${language} Test Results to RTEMS Community .. bailing"
+        fi
+        ;;
+      *)
+        prerr "UNKNOWN PACKAGE ${pkg}"
+        exit 1
+        ;;
+    esac
+
+  fi
+  # END of if testing the package
+
   cd ..
-  rm -rf b-${pkg}
+  if [ ${do_clean} = "yes" ] ; then
+    rm -rf ${BUILD}
+  fi
 done
 
 exit 0

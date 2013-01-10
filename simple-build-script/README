@@ -3,10 +3,26 @@ build and install an RTEMS toolset from source.  You are responsible for
 downloading the various tools from either release images or their
 development versions and patching as appropriate.
 
-To build the tools, simply invoke the following command with INSTALL_POINT
-replaced with "prefix" in GNU tool terms:
+The usage is as follows:
 
-./build_tools INSTALL_POINT
+  -v             verbose (default=no)
+  -c             clean after building if OK (default=yes)
+  -A             toggle building binutils, gcc, newlib, and gdb
+  -a             toggle building autoconf (default=no)
+  -m             toggle building automake (default=no)
+  -b             toggle building binutils (default=no)
+  -g             toggle building gcc/newlib (default=no)
+  -d             toggle building gdb (default=no)
+  -i INSTALL     specify install directory (required)
+  -t TARGET      specify target (required)
+  -B DIRECTORY   specify directory for build tree (default=pwd)
+  -T             toggle running test (default=no)
+  -M             toggle sending test results email (default=no)
+
+To build a cross toolset for a target, invoke the build_tools command
+with INSTALL_POINT replaced with "prefix" in GNU tool terms:
+
+./build_tools -i INSTALL_POINT -t TARGET -A
 
 Depending on the target and the speed of the machine, this can take
 anywhere from 30 minutes to a few hours.
@@ -16,7 +32,13 @@ When completed, you should prepend INSTALL_POINT/bin to your PATH:
 export PATH=INSTALL_POINT/bin:$PATH
 
 Since you need the proper autoconf and automake versions to bootstrap
-RTEMS from CVS, these are included in the build script.
+RTEMS, these are included in the build script.
 
---Joel Sherrill (28 March 2010)
+The script will also build non-RTEMS embedded GNU targets. This
+script can be used to build and test a no-OS target that shares
+a common code base with the RTEMS target. For example, arm-rtems
+is very similar to arm-eabi. Testing the non-RTEMS target variant
+can help when reporting issues and tracking down problems.
+
+--Joel Sherrill (9 January 2013)
 
