@@ -70,7 +70,7 @@ run_fortrantests=no
 # Do we send email to gcc-testresults with the test results?
 do_mail=yes
 # Are we noisy when running?
-verbose=yes
+verbose=no
 ######################## Parse arguments ###########################
 
 usage()
@@ -84,7 +84,7 @@ do_one [options] CPU BSP
   -n   - native compiler
   -d   - do not clean up (delete build directories) (default=no)
   -M   - do NOT email test results to gcc-testresults
-  -v   - verbose
+  -v   - verbose (default=no)
 
   Cross Compilation Options (Base and Primary Languages)
   ======================================================
@@ -302,30 +302,22 @@ if [ ${verbose} = yes ] ; then
   echo "GDB             : " ${do_gdb}
   echo "Make Jobs       : " ${MAKEJOBS}
   echo "Build Native    : " ${do_native}
-  echo "Build Stage 1   : " ${do_stage1}
+  echo "Build C Stage 1 : " ${do_stage1} "(multilib=${do_multilib} test=${run_gcctests})"
   echo "  C++           : " ${do_cxx}
-  echo "  Multilib      : " ${do_multilib}
-  echo "Stage 2         : " ${do_ada}
-  echo "  Objective-C   : " ${do_objc}
-  echo "  Ada           : " ${do_ada}
-  echo "  Multilib      : " ${do_ada_multilib}
-  echo "  GCC Go        : " ${do_gccgo}
-  echo "  Go Multilib   : " ${do_gccgo_multilib}
-  echo "  GCJ           : " ${do_gcj}
-  echo "  GCJ Multilib  : " ${do_gcj_multilib}
-  echo "  FORTRAN       : " ${do_fortran}
   echo "Build RTEMS     : " ${do_rtems}
-  echo "Run GCC Tests   : " ${run_gcctests}
-  echo "Run ObjC Tests  : " ${run_objctests}
-  echo "Run ACATS       : " ${run_acats}
-  echo "Run Go Tests    : " ${run_gccgotests}
-  echo "Do libgo Tests  : " ${run_libgotests}
-  echo "Do libjava Tests: " ${run_libjavatests}
-  echo "Do FORTRAN Tests: " ${run_fortrantests}
   echo "Email Tests     : " ${do_mail}
   echo "Native GCC      : " `type gcc`
   echo "PATH            : " ${PATH}
   echo "Clean up        : " ${do_cleanup}
+  echo
+  echo "==================== Secondary Languages ======================"
+  echo "  Ada         : " ${do_ada}     "(multilib=${do_ada_multilib} test=${run_acats})"
+  echo "  FORTRAN     : " ${do_fortran} "(multilib=${do_gccgo_multilib} test=${run_fortrantests})"
+  echo "  GCC Go      : " ${do_gccgo} \
+       "(multilib=${do_gccgo_multilib} test=${run_gccgotests} libgotests=${run_libgotests})"
+  echo "  GCJ         : " ${do_gcj} \
+       "(multilib=${do_gcj_multilib} test=${run_gcjtests} libtests=${run_libjavatests})"
+  echo "  Objective-C : " ${do_objc}   "(multilib=${do_ada_multilib} test=${run_objctests})"
 fi
 
 # Do we accept an alternate name for the BSP?
@@ -632,7 +624,7 @@ j_process_results()
   shift
 
   RDIR=${RESULTSDIR}/${TARGET}-${bsp}/`date +%Y-%m-%d-%H-%M-%S`
-  for results in `ls -1 gcc/testsuite/*/${*}.log gcc/testsuite/*/${*}.sum` 
+  for results in `ls -1 gcc/testsuite/*/${*}.log gcc/testsuite/*/${*}.sum 2>/dev/null` 
   do
     test -d ${RDIR} || mkdir -p ${RDIR}
     cp ${results} ${RDIR}
@@ -661,8 +653,10 @@ if [ ${run_gcctests} = "yes" ] ; then
   cd ${BUILDDIR}/b-${cpu}-gcc || exit 1
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gcc \
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
-
-  j_process_results "C/C++" gcc/testsuite/gcc/gcc gcc/testsuite/g++/g++
+  
+  if [ $? -eq 0 ] ; then
+    j_process_results "C/C++" gcc/testsuite/gcc/gcc gcc/testsuite/g++/g++
+  fi
 
   cd .. || exit 1
 else
@@ -725,7 +719,9 @@ if [ ${run_objctests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} objc \
     >${LOGDIR}/${cpu}-gcctests-${bsp}.log 2>&1
 
-  j_process_results "Objective-C" gcc/testsuite/objc/objc
+  if [ $? -eq 0 ] ; then
+    j_process_results "Objective-C" gcc/testsuite/objc/objc
+  fi
 
   cd .. || exit 1
 else
@@ -888,7 +884,9 @@ if [ $a ${run_gccgotests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} gccgo \
     >${LOGDIR}/${cpu}-gccgotests-${bsp}.log 2>&1
 
-  j_process_results "Go" testsuite/go/go
+  if [ $? -eq 0 ] ; then
+    j_process_results "Go" testsuite/go/go
+  fi
   cd .. || exit 1
 else
   echo Skipping GCC Go DejaGNU tests for ${cpu}/${bsp}
@@ -902,7 +900,9 @@ if [ $a ${run_libgotests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} libgo \
     >${LOGDIR}/${cpu}-libgotests-${bsp}.log 2>&1
 
-  j_process_results "Go Library" ${TARGET}/libgo/testsuite/libgo-all
+  if [ $? -eq 0 ] ; then
+    j_process_results "Go Library" ${TARGET}/libgo/testsuite/libgo-all
+  fi
 else
   echo Skipping libgo DejaGNU tests for ${cpu}/${bsp}
 fi
@@ -980,7 +980,9 @@ if [ $a ${run_libjavatests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} java \
     >${LOGDIR}/${cpu}-libjavatests-${bsp}.log 2>&1
 
-  j_process_results "GCJ" ${TARGET}-${bsp}/libjava/testsuite/libjava-all
+  if [ $? -eq 0 ] ; then
+    j_process_results "GCJ" ${TARGET}-${bsp}/libjava/testsuite/libjava-all
+  fi
 else
   echo Skipping libjava DejaGNU tests for ${cpu}/${bsp}
 fi
@@ -1042,7 +1044,9 @@ if [ $a ${run_fortrantests} = "yes" -a \
   time sh -x ${SCRIPTDIR}/gcc/rundeja ${bsp} fortran \
     >${LOGDIR}/${cpu}-fortrantests-${bsp}.log 2>&1
 
-  j_process_results "FORTRAN" gcc/testsuite/gfortran/gfortran
+  if [ $? -eq 0 ] ; then
+    j_process_results "FORTRAN" gcc/testsuite/gfortran/gfortran
+  fi
 else
   echo Skipping FORTRAN DejaGNU tests for ${cpu}/${bsp}
 fi
