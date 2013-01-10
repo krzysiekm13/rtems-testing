@@ -1,0 +1,201 @@
+#! /bin/sh
+#
+#  PARALLEL - Test build all the tool configurations
+#
+#  Requires GNU parallel to be installed
+#
+#  TODO:
+#    + command line for dry-run enable/di
+#    + specify list of targets to build
+#    + add ssh support for spreading builds across multiple computers
+#
+
+#  Checks the status returned by executables and exits if it is non-zero.
+check_fatal()
+{
+  if [ $1 -eq 0 ] ; then
+    return
+  fi
+  shift
+  echo "ERROR: $*" >&2
+  exit $?
+}
+
+vfile=`dirname $0`/../VERSIONS
+if [ ! -r ${vfile} ] ; then
+  echo VERSIONS file not found
+  exit 1
+fi
+
+source ${vfile}
+
+if [ ! -d ${BASEDIR} ] ; then
+  echo Have you set the BASEDIR in VERSIONS correctly?
+  exit 1
+fi
+
+for d in ${AUTOCONF} ${AUTOMAKE} ${BINUTILSDIR} \
+    ${GDBDIR} ${NEWLIBDIR} ${GCCDIR}
+do
+  if [ ! -d ${d} ] ; then
+    check_fatal 1 "Cannot locate ${d} -- aborting"
+  fi
+done
+
+toggle()
+{
+  case $1 in
+    no)  echo "yes" ;;
+    yes) echo "no" ;;
+    *)   fatal "Unknown value to toggle ($1)" ;;
+  esac
+}
+
+parallel --version 2>&1 | grep "GNU Parallel" >/dev/null
+check_fatal $? "GNU parallel is not installed"
+
+usage()
+{
+cat <<EOF
+parallel_tools [options]
+  -v   - verbose (default=yes)
+  -d   - dry-run (default=no)
+  -p   - do preparation steps (default=no)
+  -t   - do tool building steps (default=no)
+  -j N - jobs in parallel (default=number of cores)
+  When building the tools, the following options apply:
+    -T - run the tools (default=no)
+    -c - clean on exit (default=no)
+EOF
+}
+
+dryrun=""
+verbose=yes
+do_dryrun=no
+do_tests=no
+do_cleanOnExit=no
+do_cleanInstallPoint=no
+do_prep=no
+do_tools=no
+jobs=NOT_SET
+
+while getopts cdCTtpj:v OPT
+do
+  case "$OPT" in
+    c) do_cleanOnExit=`toggle ${do_cleanOnExit}` ;;
+    C) do_cleanInstallPoint=`toggle ${do_cleanInstallPoint}` ;;
+    d) do_dryrun=`toggle ${do_dryrun}` ;;
+    j) jobs="${OPTARG}" ;;
+    p) do_prep=`toggle ${do_prep}` ;;
+    t) do_tools=`toggle ${do_tools}` ;;
+    T) do_tests=`toggle ${do_tests}` ;;
+    v) verbose=`toggle ${verbose}` ;;
+    *) usage ; exit 0 ;;
+  esac
+done
+
+# Validate number of jobs
+JOBS=
+if [ ${jobs} != "NOT_SET" ] ; then
+  case ${jobs} in
+    NOT_SET)
+      JOBS=""
+      ;;
+    ''|*[!0-9]*)
+      check_fatal 1 "Number of jobs (${jobs}) specified is not a number"
+      ;;
+    *)
+      JOBS="-j ${jobs}"
+      ;;
+  esac
+fi
+
+if [ ${verbose} = "yes" ] ; then
+  echo "Clean Install Point:  " ${do_cleanInstallPoint}
+  echo "Do Preparation Steps: " ${do_prep}
+  echo "Parallel Jobs:        " ${jobs}
+  echo "Build Tools:          " ${do_tools}
+  echo "  Run Tool Tests:     " ${do_tests}
+  echo "  Clean On OK Build:  " ${do_cleanOnExit}
+  echo "Dry Run:              " ${do_dryrun}
+  echo "Verbose:              " ${verbose}
+fi
+
+if [ ${do_dryrun} = "yes" ] ; then
+  dryrun="--dry-run"
+fi
+
+shiftcount=`expr $OPTIND - 1`
+shift $shiftcount
+
+args=$*
+
+# XXX down select set of CPUs based on arguments
+
+#### Preparation
+if [ ${do_prep} = "yes" ] ; then
+  test ${verbose} = "yes" && echo "*** Performing Tool Build Preparation Steps"
+
+  if [ ${do_cleanInstallPoint} = "yes" ] ; then
+    rm -rf ${INSTALL}
+    mkdir ${INSTALL}
+  fi
+
+  parallel --verbose ${JOBS} ${dryrun} <<EOF
+(cd ${RTEMSDIR} && ./bootstrap -c && ./bootstrap) >${LOGDIR}/bootstrap.log 2>&1
+${SCRIPTDIR}/gcc/do_one -n 
+cd ${AUTOCONF} && \
+  (./configure --prefix=${INSTALL} && make && make install) \
+    >${LOGDIR}/autoconf.log 2>&1
+cd ${AUTOMAKE} && \
+  (./configure --prefix=${INSTALL} && make && make install) \
+    >${LOGDIR}/automake.log 2>&1
+EOF
+
+  status=$?
+  check_fatal ${status} "*** ${status} steps failed during preparation phase"
+fi
+
+start=`date`
+
+#### Tool Building
+if [ ${do_tools} = "yes" ] ; then
+  test ${verbose} = "yes" && echo "*** Building Tools"
+
+  args=""
+  if [ ${do_tests} = "yes" ] ; then
+    args="${args} -T"
+  fi
+  echo "  Clean On OK Build:  " ${do_cleanOnExit}
+  if [ ${do_cleanOnExit} = "yes" ] ; then
+    args="${args} -d"
+  fi
+
+  parallel --verbose ${JOBS} ${dryrun} <<EOF
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} arm edb7312
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} avr avrtest
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} bfin eZKit533
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} h8300 h8sim
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} i386 pc386
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} lm32 lm32_evr
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} m32c m32csim
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} m32r m32rsim
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} m68k uC5282
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} mips jmr3904
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} powerpc psim
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} sh simsh1
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} sparc sis
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} sparc64 niagara
+${BASEDIR}/rtems-testing/gcc/do_one  -B1 -A ${args} v850 v850sim
+EOF
+
+  # XXX Enhance to run multiple tests using multiple BSPs  
+  # ${BASEDIR}/rtems-testing/gcc/do_one         -T i386 pc386dx
+  status=$?
+  echo "*** ${status} targets failed during tool build phase"
+fi
+
+stopped=`date`
+echo Started at: ${start}
+echo Stopped at: ${stopped}
+exit 0
