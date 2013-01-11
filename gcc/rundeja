@@ -100,9 +100,9 @@ case $1 in
     DEJABSP=qemu
     BSP_SIM=pc386
     ;;
-  v850sim) 
+  *v850sim) 
     CPU=v850
-    BSP=v850sim
+    BSP=gdbv850sim
     DEJABSP=v850sim
     BSP_SIM=v850sim
     ;;
