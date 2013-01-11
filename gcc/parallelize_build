@@ -141,15 +141,21 @@ if [ ${do_prep} = "yes" ] ; then
     mkdir ${INSTALL}
   fi
 
+  # Autoconf and automake must be installed before we bootstrap RTEMS
+  cd ${BASEDIR}/${AUTOCONF} && \
+    (./configure --prefix=${INSTALL} && make && make install) \
+      >${LOGDIR}/autoconf.log 2>&1
+  check_fatal ${status} "*** Failed to build and install ${AUTOCONF}"
+
+  cd ${BASEDIR}/${AUTOMAKE} && \
+    (./configure --prefix=${INSTALL} && make && make install) \
+      >${LOGDIR}/autoconf.log 2>&1
+  check_fatal ${status} "*** Failed to build and install ${AUTOMAKE}"
+
+  # We can bootstrap RTEMS and build a native compiler in parallel
   parallel --verbose ${JOBS} ${dryrun} <<EOF
 (cd ${RTEMSDIR} && ./bootstrap -c && ./bootstrap) >${LOGDIR}/bootstrap.log 2>&1
 ${SCRIPTDIR}/gcc/do_one -n 
-cd ${AUTOCONF} && \
-  (./configure --prefix=${INSTALL} && make && make install) \
-    >${LOGDIR}/autoconf.log 2>&1
-cd ${AUTOMAKE} && \
-  (./configure --prefix=${INSTALL} && make && make install) \
-    >${LOGDIR}/automake.log 2>&1
 EOF
 
   status=$?
