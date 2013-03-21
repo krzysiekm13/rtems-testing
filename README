@@ -45,34 +45,33 @@ export PATH=${HOME}/test-gcc/rtems-testing/bin:${PATH}
 
 mkdir ~/test-gcc
 cd ~/test-gcc
-cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src login
-cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS login
+cvs -z 9 -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/src login
 
 # test script infrastructure
-cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P rtems-testing
+git clone git://git.rtems.org/rtems-testing.git
 make -C rtems-testing/sim-scripts
 
 # rtems
-cvs -z 9 -d :pserver:anonymous@www.rtems.org:/usr1/CVS co -P rtems
+git clone git://git.rtems.org/rtems.git
 
 # binutils
 mkdir binutils-cvs
 cd binutils-cvs
-READ ONLY: cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co binutils
+READ ONLY: cvs -z 9 -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/src co binutils
 WRITE: CVS_RSH=ssh cvs -d :ext:joel@sourceware.org:/cvs/src co -P binutils
 cd ..
 
 # newlib
 mkdir newlib-cvs
 cd newlib-cvs
-READ ONLY: cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co newlib
+READ ONLY: cvs -z 9 -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/src co newlib
 WRITE: CVS_RSH=ssh cvs -d :ext:joel@sourceware.org:/cvs/src co -P newlib
 cd ..
 
 # gdb
 mkdir gdb-cvs
 cd gdb-cvs
-READ ONLY: cvs -z 9 -d :pserver:anoncvs@sourceware.org:/cvs/src co gdb
+READ ONLY: cvs -z 9 -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/src co gdb
 WRITE: CVS_RSH=ssh cvs -d :ext:joel@sourceware.org:/cvs/src co -P gdb
 cd ..
 
@@ -88,10 +87,10 @@ cd ..
 
 # obtain automake and autoconf from ftp.gnu.org as tarballs
 # NOTE: Check versions required for RTEMS CVS.
-wget ftp://ftp.gnu.org/pub/gnu/autoconf/autoconf-2.63.tar.bz2
-tar xjf autoconf-2.63.tar.bz2
-wget ftp://ftp.gnu.org/pub/gnu/automake/automake-1.10.2.tar.bz2
-tar xjf automake-1.10.2.tar.bz2
+wget ftp://ftp.gnu.org/pub/gnu/autoconf/autoconf-2.69.tar.bz2
+tar xjf autoconf-2.69.tar.bz2
+wget ftp://ftp.gnu.org/pub/gnu/automake/automake-1.12.6.tar.bz2
+tar xjf automake-1.12.6.tar.bz2
 
 # make install points
 mkdir install
