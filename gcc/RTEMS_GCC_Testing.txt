@@ -1,0 +1,223 @@
+// Build with the following command:
+//     asciidoc -a data-uri -a icons -a toc -a max-width=55em \
+//        RTEMS_GCC_Testing.txt
+
+Testing GNU Tools on RTEMS Targets
+==================================
+Joel Sherrill <joel.sherrill@oarcorp.com>
+v0.1, 2013-04
+
+
+This document provides an overview of testing the GNU Development
+Tools on RTEMS targets.
+
+:numbered:
+
+Introduction
+------------
+This document describes the process and requirements for testing
+the GNU Development Tools including binutils, gcc, newlib, and gdb
+on RTEMS targets.
+
+Currently only testing on simulators is supported.
+
+Build Order
+----------
+This section describes the build order for testing purposes.
+It does not detail source setup including patching, symbolic
+linking, or specific build isntructions, etc. It is assumed
+that the install point (e.g. '--prefix') is a temporary location
+that does not conflict with any other existing installations or
+the host operating system tools.
+
+*NOTE*: The order in this section is the same as that in the
+'rtems-testing/gcc/do_one' script.
+
+In some cases, particularly with secondary languages, it may be necessary to
+build and install a native compile from the same source code you are building
+cross. If this is needed, then the first step is to:
+
+- Install native GNU Compiler Collection with support for *ALL* languages
+you plan to build a cross-compiler for.
+
+*NOTE*: These scripts assume that the native and cross tools are installed
+into the same directory. This simplifies having unified native and
+cross-toolsets for testing purposes.
+
+With the native compiler installed and it at the head of your $PATH,
+then build a cross toolset targetting a specific RTEMS target.
+
+- Install GNU binutils
+* can run tests on binutils without RTEMS
+- Install GNU Debugger (includes simulator when available)
+* can run tests on binutils without RTEMS
+- Install GNU Compiler Collection with C/C++ support
+* can *NOT* run tests on GCC without RTEMS
+* includes newlib
+
+Any failures in this part of the build are considered fatal for the
+target. Without a functioning C compiler, assembler, etc. there is
+not enough to build RTEMS, run gcc tests, or build the secondary
+languages.
+
+*NOTE*: There is no mailing list to submit 'binutils' or 'gdb' test results
+to. They could be sent to the RTEMS Test Results mailing list but 
+'rtems-testing/gcc/do_one' does not currently do this.
+
+At this point you have enough installed to build RTEMS. The RTEMS header
+files must be installed so programming languages with more complex
+run-tiems like Ada and Go can be compiled. Both require some header files
+that are not provided by the C Library.
+
+- Install RTEMS built multilib.
+* Build with 'make -k' since some BSPs you do not need for testing may
+fail. Please report these failures.];
+- Install RTEMS built for the BSP you will be testing on.
+
+At this point, you have the infrastructure required to:
+
+- Build and execute the GCC C/C++ tests
+- Build cross compilers for each secondary language and run their tests.
+Secondary languages with RTEMS support include:
+* Ada
+* Java (GCJ)
+* Go
+* FORTRAN
+* Objective-C (no threading yet)
+
+Test results for C/C++ and each secondary language are mailed to the GCC
+Test Results mailing list and to the RTEMS Tools Test Results mailing list.
+This is done by the 'rtems-testing/gcc/do_one' script if invoked with
+the correct arguments.
+
+The scripts in this directory build each secondary language separately.
+This is based on the assumption that one secondary language may fail
+but another may build. Thus we may end up with FORTRAN test results
+even when Ada doesn't build.
+
+*NOTE*: There is currently no support for checking the current test run
+against a previous run for regressions.
+
+*NOTE*: Some targets - in particular the h8300-rtems* have an excessively
+high number of failures due to multilib issues and tests not fitting into the
+simulator memory. Theses failures result in a test report which is too large
+to be accepted by the RTEMS and GCC Test Results mailing lists.
+
+Simulators Supported for GCC Testing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GCC testing requires that some tess be executed on the "target". For
+RTEMS GCC testing, the target is always a simulator.
+
+Although any simulator or target hardware could be used, only a subset
+of simulators supported in 'rtems-testing/sim-scripts' are supported
+for GCC testing currently. The focus is on executing tests using
+free and open source target simulators so any RTEMS Community Member
+can duplicate these results.
+
+The following table lists each RTEMS target and the BSP supported
+for GCC testing. In addition, this table lists the simulator used.
+
+- 'not executed' indicates that the target is built using a special
+configuration which does not run the tests.
+- 'not supported' indicates that there is no current support for
+this target
+
+.Targets and BSPs
+[width="60%",options="header",align="center"]
+|==================================================
+| Target             | BSP        | Simulator
+| arm-rtems*         | edb7312    | Skyeye
+| avr-rtems*         | avrtest    | avrtest
+| bfin-rtems*        | eZKit533   | Skyeye
+| h8300-rtems*       | h8sim      | gdb
+| i386-rtems*        | pc386      | qemu
+| lm32-rtems*        | lm32_evr   | gdb
+| m32c-rtems*        | m32csim    | gdb
+| m32r-rtems*        | m32rsim    | gdb
+| m68k-rtems*        | uC5282     | Qemu
+| microblaze-rtems*  | nosim      | not executed
+| mips-rtems*        | jmr3904    | gdb
+| moxie-rtems*       | N/A        | not supported
+| powerpc-rtems*     | psim       | gdb
+| powerpc-rtems*     | qemuppc    | qemu
+| nios2-rtems*       | N/A        | not supported
+| sh-rtems*          | simsh1     | gdb
+| sparc-rtems*       | sis        | gdb
+| sparc64-rtems*     | niagara    | not executed
+| v850-rtems*        | v850*sim*  | gdb
+|==================================================
+
+Support for other simulators could be added.
+
+DejaGNU Target Specific Support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The GNU Tools use the
+link:http://www.gnu.org/software/dejagnu/[DejaGNU]
+testing framework. DejaGNU includes the concept of baseboard which is
+how the test execution environment is described to the framework.
+'rtems-testing/dejagnu' includes the baseboard files which describe
+the target simulators listed in the previous section.
+
+In general, these baseboard files use the 'rtems-testing/sim-scripts'
+simulator invocation wrapper scripts in interactive mode. DejaGNU
+handles test case timeout.
+
+DejaGNU can also be used to run test cases on real target hardware.
+The RTEMS Project does not currently do this.
+
+rundeja Script
+~~~~~~~~~~~~~~
+The 'rundeja' script is invoked as follows:
+
+.rundeja Invocation
+----
+  rundeja BSP TESTSUITE
+----
+
+Where *BSP* is an RTEMS BSP supported by a DejaGNU baseboard configuration
+file.
+
+And *TESTSUITE* is one of the following:
+- gcc
+- objc
+- gccgo
+- libgo
+- java
+- fortran
+
+
+*NOTE*: Testing of Ada is performed by the
+'rtems-testing/gcc/testsuite/ada/acats/run_all_rtems.sh' script described
+in the next section.
+
+runall_rtems.sh Ada Testing Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The 'run_all_rtems.sh' script is invoked as follows:
+
+.run_all_rtems.sh Invocation
+----
+  run_all_rtems.sh TOOL_INSTALL BSP_INSTALL TARGET BSP
+----
+
+Where *TOOL_INSTALL* is the installation directory of the cross-development
+toolset. It is the same as the '--prefix' argument provided when configuring
+each tool.
+
+Where *BSP_INSTALL* is the installation directory of the RTEMS BSP to
+be used in this test run.  It is the same as the '--prefix' argument
+provided when configuring RTEMS.
+
+Where *TARGET* is a GNU style target such as sparc-rtems4.11.
+
+Where *BSP* is an RTEMS BSP supported by 'rtems-testing/sim_scripts'
+
+
+Native GCC Version Selection
+----------------------------
+For at least Ada, it is recommended to use a native compiler generated
+from the same source. There are technically ranges of versions which
+are supposed to work at any particular time but using a precise version
+match is more reliable.
+
+This advice likely applies to other secondary languages but Ada is
+known to be sensitive.
