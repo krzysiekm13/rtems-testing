@@ -44,11 +44,7 @@ bspLimit()
 {
   tname=$1
   case ${tname} in
-    *stackchk*)limit=5 ;;
-    *fatal*)   limit=1 ;;
-    *minimum*) limit=1 ;;
-    *psxtime*) limit=180 ;;
-    *)         limit=60 ;;
+    *)         limit=180 ;;
   esac
   echo ${limit}
 }
