@@ -60,3 +60,4 @@ uC5282
 usleep
 v850sim
 v850sim-gdb
+xilinx_zynq_a9_qemu

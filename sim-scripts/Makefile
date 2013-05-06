@@ -5,7 +5,9 @@ SKYEYE_SCRIPTS=ant5206 bf537Stamp-skyeye csb337 csb350 csb360 edb7312 \
   ezkit533-skyeye gumstix rtl22xx smdk2410 leon2-skyeye
 
 TSIM_SCRIPTS=erc32 leon2 leon3
-QEMU_SCRIPTS=pc386 qemuppc qemu-gumstix qemu-leon2 qemu-lm32_evr uC5282 lm3s6965 realview_pbx_a9_qemu
+QEMU_SCRIPTS=pc386 qemuppc qemu-gumstix qemu-leon2 qemu-lm32_evr uC5282 \
+  lm3s6965 realview_pbx_a9_qemu xilinx_zynq_a9_qemu
+
 OTHER_SCRIPTS=avrtest
 GENERATED_SCRIPTS=\
   ${GDBSIM_SCRIPTS} $(GDBSIM_SCRIPTS:%=%-gdb) \
@@ -51,6 +53,9 @@ lm3s6965: gdb-sim-run.in lm3s6965.in
 
 realview_pbx_a9_qemu: gdb-sim-run.in realview_pbx_a9_qemu.in
 	./mkrun no ARM arm realview_pbx_a9_qemu
+
+xilinx_zynq_a9_qemu: gdb-sim-run.in xilinx_zynq_a9_qemu.in
+	./mkrun no ARM arm xilinx_zynq_a9_qemu
 
 ### Skyeye Simulator BSPs
 ant5206: gdb-sim-run.in gdb-sim.in ant5206.in

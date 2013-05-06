@@ -494,6 +494,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
   if [ ${RUN_RTEMS_TESTS} = yes ] ; then
     case ${BSP_TO_TEST} in
       realview_pbx_a9_qemu) testable=yes ;;  # arm/realview_pbx_a9_qemu
+      xilinx_zynq_a9_qemu) testable=yes ;;  # arm/xilinx_zynq_a9_qemu
       edb7312) testable=yes ;;  # arm/edb7312
       rtl22xx) testable=yes ;;  # arm/rtl22xx
       jmr3904) testable=yes ;;  # mips/jmr3904
@@ -537,6 +538,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
       edb7312)  runner=edb7312 ;;
       gumstix)  runner=gumstix ;;
       realview_pbx_a9_qemu) runner=realview_pbx_a9_qemu ;;
+      xilinx_zynq_a9_qemu) runner=xilinx_zynq_a9_qemu ;;
       rtl22xx)  runner=rtl22xx ;;
       # SPARC
       erc32)    runner=erc32 ;;
