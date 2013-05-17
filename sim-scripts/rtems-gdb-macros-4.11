@@ -158,7 +158,8 @@ define rtems_helper_task_dump
   set $state = $pt->current_state
   set $pri = $pt->current_priority
   printf "%3d | ",$pri
-  set $cpu_time_used = ($pt->cpu_time_used.tv_sec * 1000000) + $pt->cpu_time_used.tv_nsec
+  # set $cpu_time_used = ($pt->cpu_time_used.tv_sec * 1000000) + $pt->cpu_time_used.tv_nsec
+  set $cpu_time_used = $pt->cpu_time_used
   printf "%12d | ", $cpu_time_used
 
   if $state == 0
@@ -317,7 +318,7 @@ define rtems_helper_score_threadq
   set $queues = &$tq->Queues
   while $pri_index < $limit
     set $chain = &$queues.Priority[$pri_index]
-    set $ptail = &$chain->Head.fill
+    set $ptail = &$chain->Head.Node.previous
     set $next = $chain->Head.Node.next
     while $next != $ptail
       set $t = (struct Thread_Control_struct *)$next
@@ -911,8 +912,8 @@ end
 # TODO: NONE
 define rtems_tasks
   printf "Executing: 0x%x, Heir: 0x%x\n", \
-    _Per_CPU[0].executing->Object.id, \
-    _Per_CPU[0].heir.Object.id
+    _Per_CPU_Information.executing->Object.id, \
+    _Per_CPU_Information.heir.Object.id
   printf "================================================================\n"
   printf "Internal Tasks\n"
   rtems_helper_show_tasks  _Thread_Internal_information
@@ -1009,8 +1010,10 @@ end
 # ARGUMENTS: NONE
 #
 define rtems_tod
-  printf "Current Time -- %d seconds %d nanoseconds since 1970\n", \
-    _TOD_Now.tv_sec, _TOD_Now.tv_nsec
+  #printf "Current Time -- %d seconds %d nanoseconds since 1970\n", \
+  #  _TOD_Now.tv_sec, _TOD_Now.tv_nsec
+  printf "Current Time -- current time is since 1970\n"
+  print _TOD
 end
 document rtems_tod
   Usage: rtems_tod
@@ -1043,7 +1046,7 @@ define rtems_check_state
   end
 
   # Check ISR Nesting and Dispatching Critical Sections
-  set $isrnl = _ISR_Nest_level
+  set $isrnl = _Per_CPU_Information.isr_nest_level
   if $isrnl == 0
     printf "NOT inside an ISR\n"
   end
