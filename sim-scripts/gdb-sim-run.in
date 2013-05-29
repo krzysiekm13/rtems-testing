@@ -29,13 +29,14 @@ USAGE=\
 	-N	   -- enable use of network adapter (default=no)
 	-G	   -- put simulator in GDB server mode (default=no)
 	-i	   -- interactive (default=no time limit)
+	-p cores   -- number of cores for SMP (default=1)
 	-s	   -- force System V IPC support (default=no)
 	-S	   -- skip Interrupt Critical Section Tests (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
         -L dir     -- specify log directory (default is 'log')
-        -T         -- rtems-test command mode
 
 NOTES:
+  + Most simulators do not support multicore support.
   + System V IPC and Coverage are not supported by all BSPs or simulators.
   + GDB Server mode is only supported by stand-along simulators.
   + When you generate a device tree and exit, remember to specify an
@@ -86,10 +87,10 @@ logdir="log"
 doTrace="no"
 enable_display_adapter="no"
 enable_network="no"
-rtems_test="no"
 skip_interrupt_critical_section_tests="no"
+number_of_cores=1
 
-while getopts "vcCgGil:L:DsNT" OPT
+while getopts "vcCgGil:L:p:DsNT" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
@@ -102,10 +103,10 @@ do
    i) interactive="yes";;
    l) defaultLimit="$OPTARG";;
    L) logdir="$OPTARG";;
+   p) number_of_cores="$OPTARG";;
    s) use_sysv_ipc="yes";;
    S) skip_interrupt_critical_section_tests="yes";;
    t) doTrace="yes";;
-   T) rtems_test="yes";;
    *) fatal;;
  esac
 done
@@ -114,6 +115,18 @@ shiftcount=`expr $OPTIND - 1`
 shift $shiftcount
 
 args=$*
+
+case ${number_of_cores} in
+  [1-9]) ;;
+  0)
+    echo "Zero cores does not make sense"
+    exit 1
+    ;;
+  *)  
+    echo "Cores specified (${number_of_cores}) is either not a valid"
+    echo "  number or supported quantity."
+    exit 1
+esac 
 
 if [ ${interactive} = "yes" ] ; then
   defaultLimit=0
@@ -138,6 +151,7 @@ bspRunsFailRandomly="no"
 bspInputDevice=/dev/console
 bspRedirectInput=no
 bspSkipInterruptCriticalSectionTests="no"
+bspSupportsSMP="no"
 
 for v in 4.11 4.10 4.9 4.8 4.7 ""
 do
@@ -168,9 +182,15 @@ if [ ${bspSupportsNIC} = "no" -a ${enable_network} = "yes"  ]; then
   echo "Simulator does not support a Network Interface Controller."
   exit 1
 fi
+
 if [ ${bspSupportsDisplayAdapter} = "no" -a \
      ${enable_display_adapter} = "yes"  ]; then
   echo "Simulator does not support Graphics Display Adapter."
+  exit 1
+fi
+
+if [ ${bspSupportsSMP} = "no" -a ${number_of_cores} != 1 ] ; then
+  echo "Simulator does not support multiple cores."
   exit 1
 fi
 

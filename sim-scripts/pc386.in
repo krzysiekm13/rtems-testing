@@ -3,6 +3,7 @@
 #
 
 bspUsesGDBSimulator="no"
+bspSupportsSMP="yes"
 runBSP=NOT_OVERRIDDEN
 if [ ! -r ${runBSP} ] ; then
   runBSP=notset
@@ -75,9 +76,15 @@ runARGS()
   else
      GRAPHIC_ARG="-vga cirrus"
   fi
-# core2duo with newer qemu for smp support
-# 486 or pentium for older qemu
-  echo "-m 512 -boot a -cpu 486 \
+
+  # core2duo with newer qemu for SMP support
+  # 486 or pentium for non-SMP
+  if [ ${number_of_cores} = 1 ] ; then
+    CPUARGS="-cpu 486"
+  else
+    CPUARGS="-cpu core2duo -smp ${number_of_cores}"
+  fi
+  echo "-m 512 -boot a ${CPUARGS} \
        -fda ${fd0Image} -hda fat:${hd0Dir} ${COVERAGE_ARG} \
        -monitor null ${GRAPHIC_ARG} -serial ${SERIAL_ARG} --no-reboot"
 }
