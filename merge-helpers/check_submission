@@ -222,14 +222,14 @@ if [ ${do_bsp} = "yes" ] ; then
   find_source -m -c -C | while read f
   do
     test_its_NOT_there ${f} printf
-    test_its_NOT_there ${f} puts
+    test_its_NOT_there ${f} "puts("
   done
 
   # BSPs should include RTEMS_BSP_CLEANUP_OPTIONS and maybe
   #   RTEMS_BSP_BOOTCARD_OPTIONS
   if [ -r configure.ac ] ; then
     echo "=== Checking for RTEMS_BSP_BOOTCARD_OPTIONS in BSP configure.ac"
-    test_its_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
+    test_its_not_there configure.ac RTEMS_BSP_BOOTCARD_OPTIONS
     echo "=== Checking for RTEMS_BSP_CLEANUP_OPTIONS in BSP configure.ac"
     test_its_there configure.ac RTEMS_BSP_CLEANUP_OPTIONS
   fi
