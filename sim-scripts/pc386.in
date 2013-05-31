@@ -79,7 +79,7 @@ runARGS()
 
   # core2duo with newer qemu for SMP support
   # 486 or pentium for non-SMP
-  if [ ${number_of_cores} = 1 ] ; then
+  if [ ${number_of_cores:-1} = 1 ] ; then
     CPUARGS="-cpu 486"
   else
     CPUARGS="-cpu core2duo -smp ${number_of_cores}"

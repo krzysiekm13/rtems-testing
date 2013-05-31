@@ -29,7 +29,7 @@ USAGE=\
 	-N	   -- enable use of network adapter (default=no)
 	-G	   -- put simulator in GDB server mode (default=no)
 	-i	   -- interactive (default=no time limit)
-	-p cores   -- number of cores for SMP (default=1)
+	-p cores   -- number of cores for SMP
 	-s	   -- force System V IPC support (default=no)
 	-S	   -- skip Interrupt Critical Section Tests (default=no)
         -l limit   -- specify time limit (default is 'BSP dependent')
@@ -88,7 +88,7 @@ doTrace="no"
 enable_display_adapter="no"
 enable_network="no"
 skip_interrupt_critical_section_tests="no"
-number_of_cores=1
+number_of_cores=
 
 while getopts "vcCgGil:L:p:DsNT" OPT
 do
@@ -117,7 +117,9 @@ shift $shiftcount
 args=$*
 
 case ${number_of_cores} in
+  "");;
   [1-9]) ;;
+  [1-9][0-9]) ;;
   0)
     echo "Zero cores does not make sense"
     exit 1
@@ -189,7 +191,7 @@ if [ ${bspSupportsDisplayAdapter} = "no" -a \
   exit 1
 fi
 
-if [ ${bspSupportsSMP} = "no" -a ${number_of_cores} != 1 ] ; then
+if [ ${bspSupportsSMP} = "no" -a ${number_of_cores:-1} != 1 ] ; then
   echo "Simulator does not support multiple cores."
   exit 1
 fi

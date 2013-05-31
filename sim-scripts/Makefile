@@ -6,7 +6,8 @@ SKYEYE_SCRIPTS=ant5206 bf537Stamp-skyeye csb337 csb350 csb360 edb7312 \
 
 TSIM_SCRIPTS=erc32 leon2 leon3
 QEMU_SCRIPTS=pc386 qemuppc qemu-gumstix qemu-leon2 qemu-lm32_evr uC5282 \
-  lm3s6965 realview_pbx_a9_qemu xilinx_zynq_a9_qemu
+  lm3s6965 realview_pbx_a9_qemu realview_pbx_a9_qemu_smp \
+  xilinx_zynq_a9_qemu
 
 OTHER_SCRIPTS=avrtest
 GENERATED_SCRIPTS=\
@@ -53,6 +54,9 @@ lm3s6965: gdb-sim-run.in lm3s6965.in
 
 realview_pbx_a9_qemu: gdb-sim-run.in realview_pbx_a9_qemu.in
 	./mkrun no ARM arm realview_pbx_a9_qemu
+
+realview_pbx_a9_qemu_smp: gdb-sim-run.in realview_pbx_a9_qemu_smp.in
+	./mkrun no ARM arm realview_pbx_a9_qemu_smp
 
 xilinx_zynq_a9_qemu: gdb-sim-run.in xilinx_zynq_a9_qemu.in
 	./mkrun no ARM arm xilinx_zynq_a9_qemu

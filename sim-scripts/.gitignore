@@ -48,6 +48,7 @@ qemu-leon2
 qemu-lm32_evr
 qemuppc
 realview_pbx_a9_qemu
+realview_pbx_a9_qemu_smp
 rtl22xx
 rtl22xx-gdb
 simsh

@@ -1,0 +1,38 @@
+#
+#  arm/realview_pbx_a9_qemu_smp Qemu Support
+#
+
+bspUsesGDBSimulator="no"
+bspSupportsSMP="yes"
+# bspGeneratesGDBCommands="yes"
+# bspSupportsGDBServerMode="yes"
+runBSP=NOT_OVERRIDDEN
+if [ ! -r ${runBSP} ] ; then
+  runBSP=qemu-system-arm
+fi
+bspNeedsDos2Unix="yes"
+
+runARGS()
+{
+  if [ ${coverage} = yes ] ; then
+    COVERAGE_ARG="-trace ${1}.cov"
+  fi
+
+  echo "-no-reboot -net none -nographic -M realview-pbx-a9 -m 256M -smp ${number_of_cores:-2} -icount 8 ${COVERAGE_ARG} -kernel ${1}"
+}
+
+checkBSPFaults()
+{
+  return 0
+}
+
+bspLimit()
+{
+  testname=$1
+  case ${testname} in
+    *)         limit=180 ;;
+  esac
+  echo ${limit}
+}
+
+bspGeneratesDeviceTree="no"
