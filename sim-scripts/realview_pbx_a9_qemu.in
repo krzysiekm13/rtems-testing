@@ -17,7 +17,7 @@ runARGS()
     COVERAGE_ARG="-trace ${1}.cov"
   fi
 
-  echo "-no-reboot -net none -nographic -M realview-pbx-a9 -m 256M ${COVERAGE_ARG} -kernel `basename ${1}`"
+  echo "-no-reboot -net none -nographic -M realview-pbx-a9 -m 256M ${COVERAGE_ARG} -kernel ${1}"
 }
 
 checkBSPFaults()
