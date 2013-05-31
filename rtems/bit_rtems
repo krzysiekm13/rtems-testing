@@ -536,7 +536,7 @@ if [ ${ENABLE_RTEMS_TESTS} = "samples" -o \
       # ARM
       edb7312)  runner=edb7312 ;;
       gumstix)  runner=gumstix ;;
-      realview_pbx_a9_qemu) runner=${BSP_TO_TEST} ;;
+      realview_pbx_a9_qemu*) runner=${BSP_TO_TEST} ;;
       xilinx_zynq_a9_qemu) runner=xilinx_zynq_a9_qemu ;;
       rtl22xx)  runner=rtl22xx ;;
       # SPARC
