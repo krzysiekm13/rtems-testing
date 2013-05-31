@@ -66,15 +66,7 @@ target=${CPU}-rtems
 
 case ${CPU} in
   a29k)        ;;
-  #arm)         ;;
-  arm)
-    # Cover up some insanity
-    CPU=arm
-    type arm-rtemseabi4.11-gcc >/dev/null 2>&1
-    if [ $? -eq 0 ] ; then
-      target=arm-rtemseabi4.11
-    fi
-    ;;
+  arm)         ;;
   avr)         ;;
   bfin)         ;;
   c3x)         CPU=c4x ; target=c4x-rtems ;;
