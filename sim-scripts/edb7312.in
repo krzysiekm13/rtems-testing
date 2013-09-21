@@ -10,7 +10,6 @@ checkBSPFaults()
   return $?
 }
 
-bspGeneratesDeviceTree="yes"
 bspTreeFile=edb7312.conf
 
 ### Generate the PSIM device tree based upon the type of application being run

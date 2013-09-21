@@ -31,7 +31,6 @@ bspLimit()
   echo ${limit}
 }
 
-bspGeneratesDeviceTree="yes"
 bspTreeFile=smdk2410.conf
 
 ### Generate the PSIM device tree based upon the type of application being run

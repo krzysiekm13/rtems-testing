@@ -23,7 +23,6 @@ bspLimit()
   echo ${limit}
 }
 
-bspGeneratesDeviceTree="yes"
 bspTreeFile=csb350.conf
 
 ### Generate the PSIM device tree based upon the type of application being run

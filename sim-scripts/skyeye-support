@@ -64,3 +64,4 @@ bspExited_ARM()
   done
   return 0
 }
+bspGeneratesDeviceTree="yes"
