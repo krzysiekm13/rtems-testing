@@ -27,6 +27,7 @@ USAGE=\
 	-g	   -- generate device tree and exit (default=no)
 	-D	   -- enable use of display adapter (default=no)
 	-N	   -- enable use of network adapter (default=no)
+	-T	   -- specify TAP network interface (none by default)
 	-G	   -- put simulator in GDB server mode (default=no)
 	-i	   -- interactive (default=no time limit)
 	-p cores   -- number of cores for SMP
@@ -87,10 +88,11 @@ logdir="log"
 doTrace="no"
 enable_display_adapter="no"
 enable_network="no"
+tap_network_interface=""
 skip_interrupt_critical_section_tests="no"
 number_of_cores=
 
-while getopts "vcCgGil:L:p:DsNT" OPT
+while getopts "vcCgGil:L:p:DsNT:" OPT
 do
  case "$OPT" in
    v) verbose="yes";;
@@ -100,6 +102,7 @@ do
    g) generate_tree_and_exit="yes" ;;
    G) gdb_server_mode="yes" ;;
    N) enable_network="yes" ;;
+   T) tap_network_interface="$OPTARG" ;;
    i) interactive="yes";;
    l) defaultLimit="$OPTARG";;
    L) logdir="$OPTARG";;
