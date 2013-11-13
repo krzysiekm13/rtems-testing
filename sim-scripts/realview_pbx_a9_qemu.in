@@ -2,6 +2,7 @@
 #  arm/realview_pbx_a9_qemu Qemu Support
 #
 
+bspSupportsNIC="yes"
 bspUsesGDBSimulator="no"
 # bspGeneratesGDBCommands="yes"
 # bspSupportsGDBServerMode="yes"
@@ -17,7 +18,16 @@ runARGS()
     COVERAGE_ARG="-trace ${1}.cov"
   fi
 
-  echo "-no-reboot -net none -nographic -M realview-pbx-a9 -m 256M ${COVERAGE_ARG} -kernel ${1}"
+  if [ ${enable_network} = yes ] ; then
+    NETWORK_ARG="-net nic,model=smc91c111,macaddr=0e:b0:ba:5e:ba:11"
+    if [ x${tap_network_interface} != x ] ; then
+      NETWORK_ARG="${NETWORK_ARG} -net tap,ifname=${tap_network_interface},script=no,downscript=no"
+    fi
+  else
+    NETWORK_ARG="-net none"
+  fi
+
+  echo "-no-reboot -nographic -M realview-pbx-a9 -m 256M ${COVERAGE_ARG} ${NETWORK_ARG} -kernel ${1}"
 }
 
 checkBSPFaults()
