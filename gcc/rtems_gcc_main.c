@@ -44,6 +44,7 @@ rtems_task Init(rtems_task_argument ignored)
   #define CONFIGURE_INIT_TASK_STACK_SIZE    (256 * 1024)
 #endif
 #define CONFIGURE_INIT_TASK_ATTRIBUTES    RTEMS_FLOATING_POINT
+#define CONFIGURE_INIT_TASK_INITIAL_MODES RTEMS_DEFAULT_MODES
 
 /* This helps language tests which need a real filesystem */
 #define CONFIGURE_USE_IMFS_AS_BASE_FILESYSTEM
