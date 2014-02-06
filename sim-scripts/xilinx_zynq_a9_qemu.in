@@ -17,7 +17,7 @@ runARGS()
     COVERAGE_ARG="-trace ${1}.cov"
   fi
 
-  echo "-no-reboot -serial /dev/null -serial mon:stdio -net none -nographic -M xilinx-zynq-a9 -m 256M ${COVERAGE_ARG} -kernel ${1}"
+  echo "-no-reboot -serial null -serial mon:stdio -net none -nographic -M xilinx-zynq-a9 -m 256M ${COVERAGE_ARG} -kernel ${1}"
 }
 
 checkBSPFaults()
