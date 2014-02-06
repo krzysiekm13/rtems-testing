@@ -12,6 +12,7 @@
 #include <bsp.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <pthread.h>
 
 /*
  * Set up first argument
@@ -22,8 +23,23 @@ static char *argv[20] = { arg0 };
 
 int main(int argc, char **argv, char **environp);
 
+/*
+ * Tests like "gcc.c-torture/execute/20101011-1.c" use signal() and raise().
+ * RTEMS ignores signals installed via signal() by default.  Enable SIGFPE for
+ * the initialization thread as a workaround.
+ */
+static void signal_workaround(void)
+{
+  sigset_t set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGFPE);
+  pthread_sigmask(SIG_UNBLOCK, &set, NULL);
+}
+
 rtems_task Init(rtems_task_argument ignored)
 {
+  signal_workaround();
   mkdir( "/tmp", 0777 );
   main(argc, argv, NULL);
 }
