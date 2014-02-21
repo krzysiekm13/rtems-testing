@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 /*
  * Set up first argument
@@ -39,9 +40,12 @@ static void signal_workaround(void)
 
 rtems_task Init(rtems_task_argument ignored)
 {
+  int status;
+
   signal_workaround();
   mkdir( "/tmp", 0777 );
-  main(argc, argv, NULL);
+  status = main(argc, argv, NULL);
+  exit(status);
 }
 
 /* configuration information */
