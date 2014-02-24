@@ -128,6 +128,7 @@ esac >>@BSP@-cmds
 ###  Add generic commands which break on known bad places
 cat >>@BSP@-cmds <<EOF
 b _Internal_error_Occurred
+b _Terminate
 condition 1 (the_source != RTEMS_FATAL_SOURCE_EXIT) || (the_error != 0)
 b rtems_fatal_error_occurred
 b __assert
