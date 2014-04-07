@@ -19,7 +19,7 @@ do
       *ppd*) ;;
       *minimum*) ;;
       *)
-        grep "END OF" $f >/dev/null
+        grep "^\*\*\* END OF" $f >/dev/null
         if [ $? -ne 0 ] ; then
           echo "WARNING - $f did not appear to complete execution"
           someFails=yes
