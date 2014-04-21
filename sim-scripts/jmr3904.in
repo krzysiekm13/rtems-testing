@@ -10,16 +10,43 @@ runARGS()
 checkBSPFaults()
 {
   logfile=$1
+  
+  for err in \
+    "^Unhandled exception" \
+    "^mips-core: " \
+    "Data Bus Error" \
+    "ReservedInstruction at PC =" \
+    "HILO: MFHI: MF"
+  do
+    grep "${err}" ${logfile}
+    if [ $? -eq 0 ]; then
+      return 1
+    fi
+  done
+
+  return 0
+
   grep "^Unhandled exception" ${logfile}
-  exceptionExit=$?
-  grep "^mips-core: " ${logfile}
-  badAccessExit=$?
-  grep "Data Bus Error" ${logfile}
-  dataBusError=$?
-  if [ $badAccessExit -eq 0 -o $exceptionExit -eq 0 -o \
-       $dataBusError -eq 0 ] ; then
+  if [ $? -eq 0 ]; then
     return 1
   fi
+
+  grep "^mips-core: " ${logfile}
+  if [ $? -eq 0 ]; then
+    return 1
+  fi
+
+  grep "Data Bus Error" ${logfile}
+  if [ $? -eq 0 ]; then
+    return 1
+  fi
+
+  grep "ReservedInstruction at PC =" ${logfile}
+  if [ $? -eq 0 ]; then
+    return 1
+  fi
+
+
   return 0
 }
 
@@ -27,11 +54,12 @@ bspLimit()
 {
   testname=$1
   case ${testname} in
-    *stackchk*)limit=5 ;;
-    *fatal*)   limit=1 ;;
-    *minimum*) limit=1 ;;
-    *psxtime*) limit=180 ;;
-    *)         limit=60 ;;
+    *stackchk*)        limit=5 ;;
+    *fatal*)           limit=1 ;;
+    *minimum*)         limit=1 ;;
+    *psxtime*)         limit=180 ;;
+    *fsdosfsformat01*) limit=90 ;;
+    *)                 limit=60 ;;
   esac
   echo ${limit}
 }
