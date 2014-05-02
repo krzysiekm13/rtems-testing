@@ -281,6 +281,12 @@ else
   POSIX_FLAG="--disable-posix"
 fi
 
+if [ ${ENABLE_RTEMS_SMP} = yes ] ; then
+  SMP_FLAG="--enable-smp"
+else
+  SMP_FLAG="--disable-smp"
+fi
+
 if [ ${ENABLE_RTEMS_ITRON} = yes ] ; then
   ITRON_FLAG="--enable-itron"
 else
@@ -351,7 +357,7 @@ fi
 
 ENABLE_ARGS="\
     --prefix=${INSTALL_POINT} \
-    ${DISABLE_INLINES_FLAG} ${ENABLE_MP_FLAG} \
+    ${DISABLE_INLINES_FLAG} ${ENABLE_MP_FLAG} ${ENABLE_SMP_FLAG} \
     ${ENABLE_RTEMS_DEBUG} ${ENABLE_RTEMS_CXX} \
     ${ENABLE_RTEMS_RDBG} ${ENABLE_RTEMS_MAINTAINER_MODE} \
     ${RTEMS_TESTS_FLAG} ${TCPIP_FLAG} \
@@ -388,16 +394,24 @@ fi
 njobs=`expr ${ncpus} / 2 + 1 + ${ncpus}`
 echo "Using make ${njobs} parallel jobs"
 
+if [ ${ENABLE_KEEP_BUILDING} = "yes" ] ; then
+  MAKE_KEEP_GOING_ARG="-k"
+else
+  MAKE_KEEP_GOING_ARG=""
+fi
+
 case ${BSP_TO_TEST} in
   multilib)
      echo "Executing ${MAKE} ${MAKE_DEBUG_ARG} ..."
-     ${MAKE} -j${njobs} RTEMS_BSP= ${MAKE_DEBUG_ARG}
+     ${MAKE} -j${njobs} ${MAKE_KEEP_GOING_ARG} ${MAKE_DEBUG_ARG} \
+             RTEMS_BSP=
      check_fatal $? "failed ${MAKE} ${MAKE_DEBUG_ARG}."
      BSP_TO_TEST=
      ;;
   *)
      echo "Executing ${MAKE} ${MAKE_DEBUG_ARG} ..."
-     ${MAKE} -j${njobs} RTEMS_BSP=${BSP_TO_TEST} ${MAKE_DEBUG_ARG}
+     ${MAKE} -j${njobs} ${MAKE_KEEP_GOING_ARG} ${MAKE_DEBUG_ARG} \
+             RTEMS_BSP=${BSP_TO_TEST}
      check_fatal $? "failed ${MAKE} ${MAKE_DEBUG_ARG}."
      ;;
 esac
