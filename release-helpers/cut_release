@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
 #  Cut a snapshot of a module in CVS
 #

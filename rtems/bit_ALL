@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
 #  Do a full test sweep using the other helper scripts
 #

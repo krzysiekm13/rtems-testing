@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/eval bash
 #
 #  This script checks for the "END OF" message in all RTEMS tests.
 #  It reports tests which do not appear to have completed successfully

@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /usr/bin/eval bash
 
 vfile=`dirname $0`/../VERSIONS
 if [ ! -r ${vfile} ] ; then

@@ -1,4 +1,5 @@
-
+#! /usr/bin/eval bash
+#
 # Execution Times (for sparc-rtems${RTEMS_VERSION})
 #
 #   - building native                      - ?
