@@ -112,7 +112,6 @@ struct gcov_statistics
   private:
 
     uint32_t				numberOfFunctions;
-    gcov_preamble 			gcdaPreamble;
     gcov_preamble 			gcnoPreamble;
     char				gcnoFileName[FILE_NAME_LENGTH];
     char				gcdaFileName[FILE_NAME_LENGTH];
