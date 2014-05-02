@@ -1,4 +1,4 @@
-#! /usr/bin/eval bash
+#! /usr/bin/env bash
 #
 # Execution Times (for sparc-rtems${RTEMS_VERSION})
 #

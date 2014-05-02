@@ -1,4 +1,4 @@
-#! /usr/bin/eval bash
+#! /usr/bin/env bash
 #
 # Example script to show how to test an installed RTEMS and GCC
 #

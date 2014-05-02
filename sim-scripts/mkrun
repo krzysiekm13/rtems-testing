@@ -1,4 +1,4 @@
-#! /usr/bin/eval bash
+#! /bin/sh
 #
 #  Helper to sed run scripts
 #
