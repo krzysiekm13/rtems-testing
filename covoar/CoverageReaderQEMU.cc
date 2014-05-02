@@ -16,8 +16,8 @@
 
 #include "qemu-traces.h"
 
-/* hack so this can compile on the RH7 RTEMS 4.5 host */
-#if (__GNUC__ <= 2)
+/* hack so this can compile on old Linux versions and FreeBSD */
+#if (__GNUC__ <= 2) || defined(__FreeBSD__)
 #define OPEN fopen
 #else
 #define OPEN fopen64

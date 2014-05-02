@@ -44,7 +44,11 @@ namespace Gcov {
     char*		tempString3;
 
     if ( strlen(fileName) >= FILE_NAME_LENGTH ){
-      fprintf( stderr, "ERROR: File name is to long to be correctly stored: %u\n", strlen(fileName) );
+      fprintf(
+        stderr,
+        "ERROR: File name is too long to be correctly stored: %u\n",
+        (unsigned int) strlen(fileName)
+      );
       return false;
     }
     strcpy( gcnoFileName, fileName );

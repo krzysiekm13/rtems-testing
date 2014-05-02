@@ -355,7 +355,9 @@ int main(
   SymbolsToAnalyze->load( symbolsFile );
   if (Verbose)
     fprintf(
-      stderr, "Analyzing %u symbols\n", SymbolsToAnalyze->set.size()
+      stderr,
+      "Analyzing %u symbols\n",
+      (unsigned int) SymbolsToAnalyze->set.size()
     );
 
   // Create explanations.

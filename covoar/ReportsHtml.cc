@@ -469,7 +469,7 @@ namespace Coverage {
     // format.  If it has changed close out the old format and open up the
     // new format.
     if ( state != lastState_m ) {
-      fprintf( aFile, stateText.c_str() );
+      fprintf( aFile, "%s", stateText.c_str() );
       lastState_m = state;
     }
 
