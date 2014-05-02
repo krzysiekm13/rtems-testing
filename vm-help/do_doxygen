@@ -1,0 +1,68 @@
+#! /bin/bash -x
+#
+#  Generate Doxygen for Head
+#
+
+# Assumes Virtual Machine Setup
+
+if [ ! -r  ~/rtems-4.11-work/setenv ] ; then
+  echo Assume RTEMS VM configuration. Fix me for directories
+  exit 1
+fi
+
+. ~/rtems-4.11-work/setenv
+
+type mscgen 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Warning! "
+  echo "  Missing mscgen. If you want to generate the complete figure set,"
+  echo "  visit http://www.mcternan.me.uk/mscgen/ and look for RPMs and Yum"
+  echo "  instructions."
+  echo ""
+  echo "  This is not necessary but some figures will be missing."
+fi
+
+# RTEMS Source
+# Where to put the Doxygen and Texinfo output
+onlineDoc=~/rtems-4.11-work/onlinedocs/
+
+test -d ${onlineDoc} || mkdir ${onlineDoc}
+
+# BEGIN SuperCore Doxygen
+do_doxy()
+{
+  d=${onlineDoc}/doxygen
+  outdir=${d}/cpukit
+
+  rm -rf ${outdir}
+  test -d ${outdir} || mkdir -p ${outdir}
+  cd $r
+  cd ..
+  rm -rf b-doc
+  mkdir b-doc
+  cd b-doc
+  $r/configure --target=sparc-rtems4.11 --enable-rtemsbsp=sis \
+    --disable-networking --disable-tests >c.log 2>&1
+  make -j3 preinstall >b.log 2>&1
+  cd sparc-rtems4.11/c/sis/cpukit
+
+  #mv Doxyfile Doxyfile.tmp
+  sed -e "s,^OUTPUT_DIRECTORY.*=.*$,OUTPUT_DIRECTORY = ${outdir}-tmp," \
+      -e "s,^STRIP_FROM_PATH.*=.*$,STRIP_FROM_PATH = ," \
+      -e "s,^INPUT.*=.*lib.*$,INPUT = ," \
+    <Doxyfile >../../../sis/lib/include/Doxyfile
+  
+  cd ../../../sis/lib/include
+
+  doxygen >${d}/doxy.log 2>&1
+
+  if [ $? -eq 0 ] ; then
+    rm -rf ${outdir}
+    mv ${outdir}-tmp ${outdir}
+  fi
+  cd $r/.. 
+}
+# END SuperCore Doxygen
+
+do_doxy
+exit 0

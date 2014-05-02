@@ -1,0 +1,55 @@
+#! /bin/sh
+#
+# Simple script to build CPU/BSP
+#
+# Assumes ${HOME}/rtems-4.11-work
+#
+# Must be edited to change configure settings
+
+if [ $# -ne 2 ] ; then
+  echo Usage: $0 CPU BSP
+  exit 1
+fi
+
+cd ${HOME}/rtems-4.11-work
+if [ $? -ne 0 ] ; then
+  echo "Assumed location of RTEMS is incorrect"
+  exit 1
+fi
+
+CPU=$1
+BSP=$2
+
+rm -rf b-${BSP}
+mkdir b-${BSP}
+cd b-${BSP}
+
+# Comment out the one in each set you do not want
+DEBUG="--enable-rtems-debug"
+# DEBUG=""
+
+#TESTS="--enable-tests"
+TESTS="--enable-tests=samples"
+
+SMP="--disable-smp"
+#SMP="--enable-smp"
+
+#POSIX="--enable-posix"
+POSIX="--disable-posix"
+# NET="--enable-networking"
+NET="--disable-networking"
+
+CXX="--enable-cxx"
+# CXX="--disable-cxx"
+
+# Now invoke configure and make using the arguments selected
+../rtems/configure --target=${CPU}-rtems4.11 --enable-rtemsbsp=${BSP} \
+  --prefix=${HOME}/rtems-4.11-work/bsp-install \
+  ${NET} ${POSIX} ${SMP} ${DEBUG} ${TESTS} ${CXX} \
+  --enable-maintainer-mode \
+ >c.log 2>&1 && \
+make -j6  >b.log 2>&1 
+status=$?
+echo $status
+exit $status
+

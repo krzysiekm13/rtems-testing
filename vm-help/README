@@ -1,0 +1,7 @@
+This directory contains helper scripts and instructions for setting
+up the RTEMS CentOS VM.
+
++ build_bsp      - helper script to "build_bsp CPU BSP"
++ build_schedsim - helper script to build Scheduler Simulator
++ do_doxygen     - helper script to build RTEMS Doxygen
++ do_tools       - helper script to build toolset using RSB

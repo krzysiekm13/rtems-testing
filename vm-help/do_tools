@@ -1,0 +1,16 @@
+#! /bin/sh
+
+if [ $# -eq 0 ] ; then
+   echo NO ARGUMENTS
+   exit 1
+fi
+
+# NEWLIB_HEAD="--macros=snapshots/newlib-head.mc"
+
+for tool in $*
+do
+  # --force when building all
+  time ../source-builder/sb-set-builder \
+     --log=l-${tool}.txt \
+     --prefix=${HOME}/rtems-4.11-work/tools 4.11/rtems-${tool}
+done

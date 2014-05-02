@@ -1,0 +1,53 @@
+#! /bin/sh
+#
+# Simple script to build scheduler simulator
+#
+# Assumes ${HOME}/rtems-4.11-work
+#
+# Must be edited to change configure settings
+
+cd ${HOME}/rtems-4.11-work
+if [ $? -ne 0 ] ; then
+  echo "Assumed root of RTEMS source code is incorrect"
+  exit 1
+fi
+
+if [ ! -d rtems-schedsim ] ; then
+  echo "rtems-schedsim not present"
+  exit 1
+fi
+
+if [ ! -d rtems ] ; then
+  echo "rtems is not present"
+  exit 1
+fi
+
+if [ ! -r rtems-schedsim/configure ] ; then
+  echo "rtems-schedsim is not bootstrapped"
+  exit 1
+fi
+
+rm -rf b-schedsim
+mkdir b-schedsim
+cd b-schedsim
+
+SMP="--disable-smp"
+#SMP="--enable-smp"
+
+DEBUG="--enable-rtems-debug"
+# DEBUG=""
+
+# Now invoke configure and make using the arguments selected
+../rtems-schedsim/configure \
+  CFLAGS_FOR_BUILD="-O2 -g" \
+  CXXFLAGS_FOR_BUILD="-O2 -g" \
+  ${SMP} ${DEBUG} \
+  --enable-rtemsdir=${HOME}/rtems-4.11-work/rtems \
+  --prefix=${HOME}/rtems-4.11-work/schedsim-install \
+  --enable-maintainer-mode \
+ >c.log 2>&1 && \
+make  >b.log 2>&1 
+status=$?
+echo $status
+exit $status
+
