@@ -274,15 +274,17 @@ checkGenericExits()
 catLog()
 {
   logfile=${1}
+
+  if [ ${bspNeedsDos2Unix} = "yes" ] ; then
+    sed --in-place -e 's/\r//g' ${logfile}
+    # alternative way to do the above
+    # tr -d "\015" <${logfile}
+  fi
+
   if [ ${doCatOutput} = "no" ] ; then
     return
   fi
-
-  if [ ${bspNeedsDos2Unix} = "yes" ] ; then
-    dos2unix ${logfile}
-  fi
-
-  tr -d "\015" <${logfile}
+  cat ${logfile}
   echo
 }
 

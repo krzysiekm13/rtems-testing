@@ -8,6 +8,7 @@ bspUsesGDBSimulator="no"
 bspGeneratesGDBCommands="yes"
 bspSupportsGDBServerMode="yes"
 bspNeedsSttySane="no"
+bspNeedsDos2Unix="yes"
 
 type ${runBSP} >/dev/null 2>&1
 if [ $? -ne 0 ] ; then
