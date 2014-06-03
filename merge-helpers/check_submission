@@ -614,7 +614,8 @@ function check_given_dir(){
 }
 
 # Evaluating Command Line Arguments
-function start(){
+function start()
+{
 
   path="0"
 
@@ -650,7 +651,8 @@ function start(){
     ;;
 
     *)
-      if [[ -d "$i" ]]; then   # If not above options, then assumed to be a path for bsp
+      # If not above options, then assumed to be a path for bsp
+      if [[ -d "$i" ]]; then
         echo > /dev/null
       else
         echo "$i is an invalid directory."
