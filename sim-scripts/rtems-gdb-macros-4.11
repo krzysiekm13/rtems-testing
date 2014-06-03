@@ -1,25 +1,10 @@
 ###
 # GDB macros for analyzing RTEMS threads
 #
-#
-#  20 July 2008 - Chris:
-#    + Use "struct Thread_Control_struct".
-#
-#  7 August 2006 - Joel:
-#    + Use Thread_Control_struct not Thread_Control to make gdb happy.
-#      Who knows why this makes gdb happier?
-#  10 July 2006 - Joel:
-#    + Renamed all methods to start with rtems_ if public and rtems_helper_
-#       if private
-#    + Merged code to dump timer delta chain
-#    + Added code to dump Classic Semaphores, Message Queues, and Regions
-#    + Added support code to dump SuperCore Mutexes, Semaphores,
-#        Message Queues, Thread Queues, and Heaps
-#
 #  TODO:
-#    + rtems_task_backtrack is CPU specific.  How to fix?
-#    + Need to detect when POSIX and ITRON are not configured so
-#      a nice message is printed when those commands are used
+#    + rtems_task_backtrack is CPU specific.  How to detect CPU in gdb?
+#    + Generally need to detect when options like SMP, POSIX, etc. are
+#      enabled/disabled and impact code generation for data structures.
 #    + Add support for Classic API
 #       - Periods
 #       - Timers
@@ -47,6 +32,7 @@
 #    rtems_posix_mutex index
 #    rtems_posix_mutexes
 #    rtems_tasks
+#    rtems_task_stacks
 #    rtems_internal_ticks_chain
 #    rtems_internal_seconds_chain
 #    rtems_malloc_walk
@@ -155,13 +141,17 @@ define rtems_helper_task_dump
 
   printf "%08x | ",$id
 
-  set $state = $pt->current_state
   set $pri = $pt->current_priority
   printf "%3d | ",$pri
-  # set $cpu_time_used = ($pt->cpu_time_used.tv_sec * 1000000) + $pt->cpu_time_used.tv_nsec
+
   set $cpu_time_used = $pt->cpu_time_used
   printf "%12d | ", $cpu_time_used
 
+  set $stack_base = $pt->Start.Initial_stack.area
+  set $stack_size = $pt->Start.Initial_stack.size
+  printf "%p 0x%04x | ", $stack_base, $stack_size
+
+  set $state = $pt->current_state
   if $state == 0
     printf "READY"
   end
@@ -236,11 +226,11 @@ end
 #
 define rtems_helper_task_header
     printf "\
-=====================================================================\n"
+============================================================================\n"
   printf "\
- # | Name |    ID    | Pri |    Nsecs     | State\n"
+ # | Name |    ID    | Pri |    Nsecs     | Stack Base/Size  | State\n"
     printf "\
----+------+----------+-----+--------------+------------------------------\n"
+---+------+----------+-----+--------------+------------------+--------------\n"
 end
 # Internal Helper Do Not Document
 
@@ -912,17 +902,23 @@ end
 # TODO: NONE
 define rtems_tasks
   printf "Executing: 0x%x, Heir: 0x%x\n", \
-    _Per_CPU_Information.executing->Object.id, \
-    _Per_CPU_Information.heir.Object.id
-  printf "================================================================\n"
+    _Per_CPU_Information.per_cpu.executing->Object.id, \
+    _Per_CPU_Information.per_cpu.heir.Object.id
+
   printf "Internal Tasks\n"
   rtems_helper_show_tasks  _Thread_Internal_information
-  printf "================================================================\n"
+  printf "\
+============================================================================\n"
+
   printf "Classic Tasks\n"
   rtems_helper_show_tasks  _RTEMS_tasks_Information
-  printf "================================================================\n"
+  printf "\
+============================================================================\n"
+
   printf "POSIX Tasks\n"
   rtems_helper_show_tasks  _POSIX_Threads_Information
+  printf "\
+============================================================================\n"
 end
 document rtems_tasks
   Usage: rtems_tasks
