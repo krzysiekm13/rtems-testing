@@ -65,7 +65,7 @@ runARGS()
 
   if [ ${coverage} = yes ] ; then
      rm -f trace ${1}.cov
-     COVERAGE_ARG="-trace ${1}.cov"
+     COVERAGE_ARG="-exec-trace ${1}.cov"
   fi
 
   # -cpu 486
